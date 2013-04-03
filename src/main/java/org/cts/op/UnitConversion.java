@@ -48,8 +48,8 @@ public class UnitConversion extends AbstractCoordinateOperation {
 
     public final static UnitConversion RAD2DD = createUnitConverter(Unit.RADIAN, Unit.DEGREE);
     public final static UnitConversion DD2RAD = createUnitConverter(Unit.DEGREE, Unit.RADIAN);
-    public final static UnitConversion RAD2GON = createUnitConverter(Unit.RADIAN, Unit.GRAD);
-    public final static UnitConversion GON2RAD = createUnitConverter(Unit.GRAD, Unit.RADIAN);
+    public final static UnitConversion RAD2GRAD = createUnitConverter(Unit.RADIAN, Unit.GRAD);
+    public final static UnitConversion GRAD2RAD = createUnitConverter(Unit.GRAD, Unit.RADIAN);
     private Unit[] sourceUnit;
     private Unit[] targetUnit;
 

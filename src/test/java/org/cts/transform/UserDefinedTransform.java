@@ -37,10 +37,9 @@ import org.cts.CoordinateOperation;
 import org.cts.Ellipsoid;
 import org.cts.Identifier;
 import org.cts.Parameter;
-import org.cts.op.CoordinateOperationSequence;
-import org.cts.op.LongitudeRotation;
-import org.cts.op.UnitConversion;
+import org.cts.op.*;
 import org.cts.op.projection.LambertConicConformal1SP;
+import org.cts.op.projection.LambertConicConformal2SP;
 import org.cts.units.Measure;
 import org.cts.units.Unit;
 import static org.junit.Assert.assertTrue;
@@ -64,7 +63,23 @@ public class UserDefinedTransform extends BaseCoordinateTransformTest {
         result = LongitudeRotation.PARIS2GREENWICH.transform(result);
         CoordinateOperation conv = UnitConversion.RAD2DD;
         result = conv.transform(result);
-        assertTrue(checkEquals("Lambert 2 to WGS84 degrees", result, pointDest, 0.01));
+        assertTrue(checkEquals("Lambert 2 etendu to WGS84 degrees", result, pointDest, 0.01));
+    }
+
+    @Test
+    public void fromWGS84TOLambert2Etendu() throws Exception {
+        double[] pointSource = new double[]{50.345609791, 2.114551393};
+        double[] pointDest = new double[]{584173.736, 2594514.828};
+        CoordinateOperationSequence WGS84_LAMB2E = new CoordinateOperationSequence(new Identifier("CTS",
+                "WGS84 (lon/lat)-> Lambert 2 etendu",
+                "WGS84 (lon/lat) to  Lambert 2 etendu"),
+                UnitConversion.DD2RAD,
+                LongitudeRotation.GREENWICH2PARIS,
+                LambertConicConformal1SP.LAMBERT2E,
+                CoordinateRounding.MILLIMETER);
+        System.out.println(WGS84_LAMB2E.toString());
+        double[] result = WGS84_LAMB2E.transform(pointSource);
+        assertTrue(checkEquals("WGS84 degrees to Lambert 2 etendu", result, pointDest, 0.01));
     }
 
     @Test
@@ -93,16 +108,13 @@ public class UserDefinedTransform extends BaseCoordinateTransformTest {
     @Test
     public void fromLambert1ToLambert2Etendu() throws Exception {
         double[] pointSource = new double[]{750000.00, 300000.00};
-        
-        CoordinateOperation LAMBERT2E = LambertConicConformal1SP.LAMBERT2E;        
+        CoordinateOperation LAMBERT2E = LambertConicConformal1SP.LAMBERT2E;
         CoordinateOperation LAMBERT1 = LambertConicConformal1SP.LAMBERT1.inverse();
-        
         final CoordinateOperation op = new CoordinateOperationSequence(new Identifier("CTS", "L1 -> L2E",
-						"From Lambert 1 to Lambert 2 etendu"),  LAMBERT1, LAMBERT2E);
+                "From Lambert 1 to Lambert 2 etendu"), LAMBERT1, LAMBERT2E);
         double[] result = op.transform(pointSource);
         assertTrue(checkEquals("Lambert I to Lambert 2 étendu", result,
                 new double[]{750283.12, 2600360.77}, 0.01));
-
     }
 
     @Test
@@ -125,5 +137,19 @@ public class UserDefinedTransform extends BaseCoordinateTransformTest {
         result = LAMBERT1.transform(result);
         checkEquals("From Geographic radians to Lambert 1", result, new double[]{
                     1029705.083, 272723.849}, 1E-3);
+    }
+
+    @Test
+    public void fromWGS84TOLambert93() throws Exception {
+        double[] pointSource = new double[]{50.345609791, 2.114551393};
+        double[] pointDest = new double[]{584173.736, 2594514.828};
+        CoordinateOperationSequence WGS84_LAMB2E = new CoordinateOperationSequence(new Identifier("CTS",
+                "WGS84 (lon/lat)-> RGF93/Lambert 93",
+                "WGS84 (lon/lat) to  RGF93/Lambert 93"),
+                CoordinateSwitch.SWITCH_LAT_LON, UnitConversion.DD2RAD,
+                LambertConicConformal2SP.LAMBERT93,
+                CoordinateRounding.MILLIMETER);
+        double[] result = WGS84_LAMB2E.transform(pointSource);
+        assertTrue(checkEquals("WGS84 degrees to RGF93/Lambert 93", result, pointDest, 0.01));
     }
 }
