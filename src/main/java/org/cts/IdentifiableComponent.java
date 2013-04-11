@@ -64,16 +64,16 @@ public class IdentifiableComponent implements Identifiable {
      * may represent a database name, a URL, a URN...
      */
     @Override
-    public String getNamespace() {
-        return identifier.getNamespace();
+    public String getAuthorityName() {
+        return identifier.getAuthorityName();
     }
 
     /**
      * Returns the id of this identifier (id must be unique inside a namespace).
      */
     @Override
-    public String getId() {
-        return identifier.getId();
+    public String getAuthorityKey() {
+        return identifier.getAuthorityKey();
     }
 
     /**
@@ -173,8 +173,8 @@ public class IdentifiableComponent implements Identifiable {
     public boolean equals(Object object) {
         if (object instanceof Identifiable) {
             Identifiable other = (Identifiable) object;
-            return ((getNamespace().equals(other.getNamespace())
-                    && getId().equals(other.getId()))
+            return ((getAuthorityName().equals(other.getAuthorityName())
+                    && getAuthorityKey().equals(other.getAuthorityKey()))
                     || getName().equals(other.getName()));
         } else {
             return false;
@@ -187,7 +187,7 @@ public class IdentifiableComponent implements Identifiable {
     @Override
     public String toString() {
         if (identifier != null) {
-            return "[" + identifier.getNamespace() + ":" + identifier.getId() + "] " + identifier.getName();
+            return "[" + identifier.getAuthorityName() + ":" + identifier.getAuthorityKey() + "] " + identifier.getName();
         }
         return null;
     }

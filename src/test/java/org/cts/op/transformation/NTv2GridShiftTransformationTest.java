@@ -29,18 +29,22 @@
  *
  * For more information, please consult: <https://github.com/irstv/cts/>
  */
-package org.cts;
+package org.cts.op.transformation;
+
+
+
+import static org.junit.Assert.assertTrue;
+import org.junit.Test;
 
 /**
  *
- * A CRS authority to match ogc spatial reference system identifier
- * 
- * @author Erwan Bocher
- *
+ * @author Michael Michaud, Erwan Bocher
  */
-public class CRSAuthority extends AbstractAuthority {
-
-    public CRSAuthority(Identifier rootIdentifier) {
-        super(rootIdentifier.getName(), Integer.valueOf(rootIdentifier.getAuthorityKey()));
+public class NTv2GridShiftTransformationTest {
+    
+    @Test
+    public void loadGRID(){
+        
     }
+    
 }
