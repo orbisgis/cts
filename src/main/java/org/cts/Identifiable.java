@@ -90,13 +90,13 @@ public interface Identifiable {
     * You'll find more on the URI syntax 
     * <a href="http://java.sun.com/javase/6/docs/api/java/net/URI.html">here</a>.
     */
-    public String getNamespace();
+    public String getAuthorityName();
 
    /**
     * Returns this identifier's id (must be unique in this Identifiable's
     * namespace).
     */
-    public String getId();
+    public String getAuthorityKey();
 
    /**
     * Returns the code formed with the namespace URI, ':' and the id value of

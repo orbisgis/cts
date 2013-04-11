@@ -29,7 +29,7 @@
  *
  * For more information, please consult: <https://github.com/irstv/cts/>
  */
-package org.cts.transform;
+package org.cts.op.transformation;
 
 import java.util.List;
 import org.cts.*;
@@ -38,6 +38,7 @@ import org.cts.crs.CoordinateReferenceSystem;
 import org.cts.crs.GeodeticCRS;
 import org.cts.op.CoordinateOperationFactory;
 import org.cts.op.CoordinateOperationSequence;
+import org.cts.parser.prj.PrjWriter;
 
 /**
  *
@@ -46,6 +47,7 @@ import org.cts.op.CoordinateOperationSequence;
 public class BaseCoordinateTransformTest extends CTSTestCase {
 
     CRSFactory crsf = new CRSFactory();
+    protected boolean verbose = false;
 
     /**
      * Return the crs from an authority and a srid ie : EPSG:4326
@@ -73,6 +75,17 @@ public class BaseCoordinateTransformTest extends CTSTestCase {
                 new Identifier(BaseCoordinateTransformTest.class, "From  "
                 + sourceCRS.getCode() + " to "
                 + targetCRS.getCode()), ops);
+        if (verbose) {
+            System.out.println(coordinateOperationSequence.toString());
+        }
         return coordinateOperationSequence.transform(new double[]{inputPoint[0], inputPoint[1], inputPoint[2]});
+    }
+
+    /**
+     * Display the CRS in a WKT representation
+     * @param crs 
+     */
+    public void printCRStoWKT(CoordinateReferenceSystem crs) {
+        System.out.println(PrjWriter.crsToWKT(crs));
     }
 }

@@ -40,7 +40,7 @@ import org.cts.parser.proj.ProjKeyParameters;
 import org.cts.parser.proj.ProjValueParameters;
 
 /**
- *
+ * This class is used to get values from parameter in the prj file.
  * @author Antoine Gourlay, Erwan Bocher
  */
 public final class PrjMatcher {
@@ -50,220 +50,6 @@ public final class PrjMatcher {
     private PrjMatcher() {
     }
     private Map<String, String> params = new HashMap<String, String>();
-    private static final String[] LONGPARAMNAMES = {
-        "centralmeridian",
-        "falseeasting",
-        "falsenorthing",
-        "latitudeoforigin",
-        "scalefactor",
-        "standardparallel1",
-        "standardparallel2"
-    };
-    private static final String[] SHORTPARAMNAMES = {
-        "lon_0",
-        "x_0",
-        "y_0",
-        "lat_0",
-        "k_0",
-        "lat_1",
-        "lat_2"
-    };
-    private static final String[] LONGPROJNAMES = {
-        "airy",
-        "aitoff",
-        "albers" + "equal" + "area",
-        "august" + "epicycloidal",
-        "azimuthal" + "equidistant",
-        "bipolar" + "conic" + "of" + "western" + "hemisphere",
-        "boggs" + "eumorphic",
-        "bonne",
-        "cassini",
-        "central" + "cylindrical",
-        "collignon",
-        "craster" + "parabolic",
-        "denoyer" + "semi" + "elliptical",
-        "eckert" + "i",
-        "eckert" + "ii",
-        "eckert" + "iv",
-        "eckert" + "v",
-        "eckert" + "vi",
-        "equidistant" + "conic",
-        "equidistant" + "cylindrical",
-        "euler",
-        "fahey",
-        "foucaut",
-        "foucaut" + "sinusoidal",
-        "gall",
-        "gnomonic",
-        "goode" + "homolosine",
-        "hammer" + "eckert" + "greifendorff",
-        "hatano" + "asymmetrical" + "equal" + "area",
-        "kavraisky" + "v",
-        "lagrange",
-        "lambert" + "azimuthal" + "equal" + "area",
-        "lambert" + "conformal" + "conic",
-        "lambert" + "conformal" + "conic" + "1sp",
-        "lambert" + "conformal" + "conic" + "2sp",
-        "lambert" + "equal" + "area" + "conic",
-        "landsat",
-        "larrivee",
-        "laskowski",
-        "latlong",
-        "longlat",
-        "loximuthal",
-        "mcbryde" + "thomas" + "flat" + "polar" + "parabolic",
-        "mcbryde" + "thomas" + "flat" + "polar" + "quartic",
-        "mcbryde" + "thomas" + "flat" + "pole" + "sine" + "2",
-        "mercator",
-        "miller" + "cylindrical",
-        "mollweide",
-        "murdoch" + "i",
-        "murdoch" + "ii",
-        "murdoch" + "iii",
-        "near" + "sided" + "perspective",
-        "nell",
-        "nicolosi" + "globular",
-        "oblique" + "mercator",
-        "oblique" + "stereographic" + "alternative",
-        "orthographic",
-        "perspective" + "conic",
-        "polyconic",
-        "putnins" + "p2",
-        "putnins" + "p4",
-        "putnins" + "p5",
-        "putnins" + "p5p",
-        "quartic" + "authalic",
-        "robinson",
-        "rectangular" + "polyconic",
-        "sinusoidal",
-        "stereographic",
-        "swiss" + "oblique" + "mercator",
-        "transverse" + "central" + "cylindrical",
-        "transverse" + "cylindrical" + "equal" + "area",
-        "transverse" + "mercator",
-        "universal" + "transverse" + "mercator",
-        "urmaev" + "flat" + "polar" + "sinusoidal",
-        "van" + "der" + "grinten",
-        "vitkovsky" + "i",
-        "wagner" + "i",
-        "wagner" + "ii",
-        "wagner" + "iii",
-        "wagner" + "iv",
-        "wagner" + "v",
-        "wagner" + "vii",
-        "werenskiold" + "i",
-        "winkel" + "tripel"
-    };
-    private static final String[] SHORTPROJNAMES = {
-        "airy",
-        "aitoff",
-        "aea",
-        "august",
-        "aeqd",
-        "bipc",
-        "boggs",
-        "bonne",
-        "cass",
-        "cc",
-        "collg",
-        "crast",
-        "denoy",
-        "eck1",
-        "eck2",
-        "eck4",
-        "eck5",
-        "eck6",
-        "eqdc",
-        "eqc",
-        "euler",
-        "fahey",
-        "fouc",
-        "fouc_s",
-        "gall",
-        "gnom",
-        "goode",
-        "hammer",
-        "hatano",
-        "kav5",
-        "lagrng",
-        "laea",
-        "lcc",
-        "lcc",
-        "lcc",
-        "leac",
-        "lsat",
-        "larr",
-        "lask",
-        "latlong",
-        "longlat",
-        "loxim",
-        "mbtfpp",
-        "mbtfpq",
-        "mbt_fps",
-        "merc",
-        "mill",
-        "moll",
-        "murd1",
-        "murd2",
-        "murd3",
-        "nsper",
-        "nell",
-        "nicol",
-        "omerc",
-        "sterea",
-        "ortho",
-        "pconic",
-        "poly",
-        "putp2",
-        "putp4p",
-        "putp5",
-        "putp5p",
-        "qua_aut",
-        "robin",
-        "rpoly",
-        "sinu",
-        "stere",
-        "somerc",
-        "tcc",
-        "tcea",
-        "tmerc",
-        "utm",
-        "urmfps",
-        "vandg",
-        "vitk1",
-        "wag1",
-        "wag2",
-        "wag3",
-        "wag4",
-        "wag5",
-        "wag7",
-        "weren",
-        "wintri"
-    };
-    private static final String[] LONGDATUMNAMES = new String[]{
-        "airy1830",
-        "carthage1934tunisia",
-        "dntf",
-        "greekgeodeticreferencesystem1987",
-        "ireland1965",
-        "newzealandgeodeticdatum1949",
-        "northamericandatum1927",
-        "northamericandatum1983",
-        "nouvelletriangulationfrancaiseparis",
-        "potsdamrauenberg1950dhdn"
-    };
-    private static final String[] SHORTDATUMNAMES = new String[]{
-        "osgb36",
-        "carthage",
-        "ntf",
-        "ggrs87",
-        "ire65",
-        "nzgd49",
-        "nad27",
-        "nad83",
-        "ntf",
-        "potsdam"
-    };
 
     static Map<String, String> match(PrjElement el) {
         PrjMatcher m = new PrjMatcher();
@@ -276,7 +62,7 @@ public final class PrjMatcher {
 
     @Override
     public String getName() {
-        return "geogcs";
+        return PrjKeyParameters.GEOGCS;
     }
 
     @Override
@@ -287,7 +73,7 @@ public final class PrjMatcher {
 
     @Override
     public String getName() {
-        return "unit";
+        return PrjKeyParameters.UNIT;
     }
 
     @Override
@@ -298,7 +84,7 @@ public final class PrjMatcher {
 
     @Override
     public String getName() {
-        return "projection";
+        return PrjKeyParameters.PROJECTION;
     }
 
     @Override
@@ -309,7 +95,7 @@ public final class PrjMatcher {
 
     @Override
     public String getName() {
-        return "parameter";
+        return PrjKeyParameters.PARAMETER;
     }
 
     @Override
@@ -320,7 +106,7 @@ public final class PrjMatcher {
 
     @Override
     public String getName() {
-        return "authority";
+        return PrjKeyParameters.AUTHORITY;
     }
 
     @Override
@@ -331,32 +117,32 @@ public final class PrjMatcher {
 
     private Map<String, String> doMatch(PrjElement el) {
         // PROJCS[ ...
-        List<PrjElement> ll = matchNode(el, "projcs", false);
+        List<PrjElement> ll = matchNode(el, PrjKeyParameters.PROJCS, false);
         if (ll == null) {
             // there is no PROJCS node, could still be valid...
             // let's look for GEOGCS directly
-            ll = matchNode(el, "geogcs");
+            ll = matchNode(el, PrjKeyParameters.GEOGCS);
             parseGeogcs(ll, true);
         }
         // projection name or GEOGCD name
-        parseString(ll.get(0), "name");
+        parseString(ll.get(0), PrjKeyParameters.NAME);
 
         for (int i = 1; i < ll.size(); i++) {
             matchAnyNode(ll.get(i), projCSmatchers);
         }
 
         // clean up params
-        String unit = params.remove("unitval");
+        String unit = params.remove(PrjKeyParameters.UNITVAL);
         if (unit == null || Double.valueOf(unit) - 1.0 < TOL) {
             params.put(ProjKeyParameters.units, ProjValueParameters.M);
         } else {
             params.put(ProjKeyParameters.to_meter, unit);
         }
         // authority, if present
-        String auth = params.remove("refauthority");
+        String auth = params.remove(PrjKeyParameters.REFAUTHORITY);
         if (auth != null) {
-            String code = params.remove("refcode");
-            params.put("refname", auth + ':' + code);
+            String code = params.remove(PrjKeyParameters.REFCODE);
+            params.put(PrjKeyParameters.REFNAME, auth + ':' + code);
         }
 
         String pm = params.get(ProjKeyParameters.pm);
@@ -374,7 +160,7 @@ public final class PrjMatcher {
     }
 
     private void parseGeogcs(List<PrjElement> ll, boolean rootElement) {
-        parseString(ll.get(0), "geogcs");
+        parseString(ll.get(0), PrjKeyParameters.GEOGCS);
 
         PrjNodeMatcher[] matchers;
         if (rootElement) {
@@ -398,7 +184,7 @@ public final class PrjMatcher {
 
             @Override
             public String getName() {
-                return "primem";
+                return PrjKeyParameters.PRIMEM;
             }
 
             @Override
@@ -412,7 +198,7 @@ public final class PrjMatcher {
 
                 @Override
                 public String getName() {
-                    return "authority";
+                    return PrjKeyParameters.AUTHORITY;
                 }
 
                 @Override
@@ -428,8 +214,8 @@ public final class PrjMatcher {
     }
 
     private void parseAuthority(List<PrjElement> ll) {
-        parseString(ll.get(0), "refauthority");
-        parseString(ll.get(1), "refcode");
+        parseString(ll.get(0), PrjKeyParameters.REFAUTHORITY);
+        parseString(ll.get(1), PrjKeyParameters.REFCODE);
     }
 
     private void parseDatum(List<PrjElement> ll) {
@@ -441,14 +227,14 @@ public final class PrjMatcher {
             found = true;
         }
         if (!found) {
-            int k = Arrays.binarySearch(LONGDATUMNAMES, datum.toLowerCase());
+            int k = Arrays.binarySearch(PrjValueParameters.LONGDATUMNAMES, datum.toLowerCase());
             if (k >= 0) {
-                params.put(ProjKeyParameters.datum, SHORTDATUMNAMES[k]);
+                params.put(ProjKeyParameters.datum, PrjValueParameters.SHORTDATUMNAMES[k]);
             } else {
-                List<PrjElement> nn = matchNode(ll.get(1), "spheroid");
+                List<PrjElement> nn = matchNode(ll.get(1), PrjKeyParameters.SPHEROID);
                 //parseString(nn.get(0), "ellps");
-                parseNumber(nn.get(1), "a");
-                parseNumber(nn.get(2), "rf");
+                parseNumber(nn.get(1), ProjKeyParameters.a);
+                parseNumber(nn.get(2), ProjKeyParameters.rf);
 
                 if (ll.size() > 2) {
                     List<PrjElement> els = matchNode(ll.get(2), ProjKeyParameters.towgs84, false);
@@ -467,15 +253,15 @@ public final class PrjMatcher {
 
     private void parseUnit(List<PrjElement> ll) {
         //parseString(ll.get(0), "unit");
-        parseNumber(ll.get(1), "unitval");
+        parseNumber(ll.get(1), PrjKeyParameters.UNITVAL);
     }
 
     private void parseProjection(List<PrjElement> ll) {
         String proj = getString(ll.get(0));
         proj = proj.replaceAll("[^a-zA-Z0-9]", "");
-        int i = Arrays.binarySearch(LONGPROJNAMES, proj.toLowerCase());
+        int i = Arrays.binarySearch(PrjValueParameters.LONGPROJNAMES, proj.toLowerCase());
         if (i >= 0) {
-            params.put(ProjKeyParameters.proj, SHORTPROJNAMES[i]);
+            params.put(ProjKeyParameters.proj, PrjValueParameters.SHORTPROJNAMES[i]);
         }
     }
 
@@ -492,9 +278,9 @@ public final class PrjMatcher {
     private void parseParameter(List<PrjElement> ll) {
         String param = getString(ll.get(0));
         param = param.replaceAll("[^a-zA-Z0-9]", "");
-        int i = Arrays.binarySearch(LONGPARAMNAMES, param.toLowerCase());
+        int i = Arrays.binarySearch(PrjValueParameters.LONGPARAMNAMES, param.toLowerCase());
         if (i >= 0) {
-            parseNumber(ll.get(1), SHORTPARAMNAMES[i]);
+            parseNumber(ll.get(1), PrjValueParameters.SHORTPARAMNAMES[i]);
         }
     }
 
@@ -529,7 +315,6 @@ public final class PrjMatcher {
                 return n.getChildren();
             }
         }
-
         if (strict) {
             throw new PrjParserException("Failed to parse PRJ. Found '" + e + "', expected PrjNodeElement[" + name + "].");
         } else {
@@ -557,7 +342,6 @@ public final class PrjMatcher {
             PrjStringElement s = (PrjStringElement) e;
             return s.getValue();
         }
-
         throw new PrjParserException("Failed to parse PRJ. Found '" + e + "', expected some PrjStringElement.");
     }
 
@@ -570,6 +354,9 @@ public final class PrjMatcher {
         }
     }
 
+    /*
+     * Return the value of the element as double representation
+     */
     private double getNumber(PrjElement e) {
         if (e instanceof PrjNumberElement) {
             PrjNumberElement n = (PrjNumberElement) e;

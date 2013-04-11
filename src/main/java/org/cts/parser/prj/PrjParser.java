@@ -43,14 +43,16 @@ import org.cts.crs.CoordinateReferenceSystem;
 /**
  * Parser for PRJ / WKT (OGC & ESRI) String.
  *
- * This very simple parser works in tree steps: 1. it parses the PRJ String and
- * produces an abstract tree, without any assumptions on it being a valid OGC
- * WKT String. 2. it walks the tree looking for the values needed for
- * transformation into a proj4 description string. 3. the proj4 description
- * string is passed to the {@link org.jproj.parser.Proj4Parser } that builds the
+ * This very simple parser works in tree steps: 
+ * 1. it parses the PRJ String and produces an abstract tree, without 
+ * any assumptions on it being a valid OGC WKT String. 
+ * 2. it walks the tree looking for the values needed for
+ * transformation into a proj4 description string. 
+ * 3. the proj4 description string is passed to the 
+ * {@link org.jproj.parser.Proj4Parser } that builds the
  * CRS.
  *
- * @author Antoine Gourlay
+ * @author Antoine Gourlay, Erwan Bocher
  */
 public class PrjParser {
 

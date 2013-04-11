@@ -41,6 +41,6 @@ package org.cts;
 public class CRSAuthority extends AbstractAuthority {
 
     public CRSAuthority(Identifier rootIdentifier) {
-        super(rootIdentifier.getName(), Integer.valueOf(rootIdentifier.getId()));
+        super(rootIdentifier.getName(), Integer.valueOf(rootIdentifier.getAuthorityKey()));
     }
 }

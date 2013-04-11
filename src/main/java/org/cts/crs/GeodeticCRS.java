@@ -134,6 +134,6 @@ public abstract class GeodeticCRS extends IdentifiableComponent
      */
     @Override
     public String toString() {
-        return "[" + getNamespace() + ":" + getId() + "] " + getName();
+        return "[" + getAuthorityName() + ":" + getAuthorityKey() + "] " + getName();
     }
 }
