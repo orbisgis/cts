@@ -172,8 +172,6 @@ public final class CoordinateOperationFactory {
 			}
 		}
 		if (opList.isEmpty()) {
-
-
 			try {
 
 				/*NTv2GridShiftTransformation ntv2 = new NTv2GridShiftTransformation(Datum.class.getResource(

@@ -29,7 +29,7 @@
  *
  * For more information, please consult: <https://github.com/irstv/cts/>
  */
-package org.cts.transform;
+package org.cts.op.transformation;
 
 import org.cts.IllegalCoordinateException;
 import org.cts.crs.CRSException;
@@ -55,10 +55,9 @@ public class EPSGTransform extends BaseCoordinateTransformTest {
         CoordinateReferenceSystem inputCRS = createCRS(csNameSrc);
         System.out.println(PrjWriter.crsToWKT(inputCRS));
         CoordinateReferenceSystem outputCRS = createCRS(csNameDest);
-        System.out.println(PrjWriter.crsToWKT(outputCRS));
+        verbose=true;
         double[] result = transform((GeodeticCRS) inputCRS, (GeodeticCRS) outputCRS, pointSource);
         assertTrue(checkEquals2D("EPSG:4326 to EPSG:27582 ", result, pointDest, tolerance));
-        assertTrue(checkEquals("EPSG:4326 to EPSG:27582 ", result, pointDest, tolerance));
     }
 
     @Test
@@ -69,11 +68,9 @@ public class EPSGTransform extends BaseCoordinateTransformTest {
         double[] pointDest = new double[]{2.114551393, 50.345609791, 0};
         double tolerance = 0.0001;
         CoordinateReferenceSystem inputCRS = createCRS(csNameSrc);
-        System.out.println(PrjWriter.crsToWKT(inputCRS));
         CoordinateReferenceSystem outputCRS = createCRS(csNameDest);
-        System.out.println(PrjWriter.crsToWKT(outputCRS));
+        verbose=true;
         double[] result = transform((GeodeticCRS) inputCRS, (GeodeticCRS) outputCRS, pointSource);
         assertTrue(checkEquals2D("EPSG:27582 to EPSG:4326", result, pointDest, tolerance));
-        assertTrue(checkEquals("EPSG:27582 to EPSG:4326", result, pointDest, tolerance));
     }
 }

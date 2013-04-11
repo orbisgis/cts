@@ -51,6 +51,7 @@ import org.cts.util.AngleFormat;
  */
 public class PrimeMeridian extends IdentifiableComponent {
 
+    //TODO have a look the value available in OGC WKT
     public static final PrimeMeridian GREENWICH =
             createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8901", "Greenwich"), 0.0);
     public static final PrimeMeridian LISBON =
@@ -202,7 +203,7 @@ public class PrimeMeridian extends IdentifiableComponent {
      */
     @Override
     public String toString() {
-        return "[" + getNamespace() + ":" + getId() + "] "
+        return "[" + getAuthorityName() + ":" + getAuthorityKey() + "] "
                 + getName() + " (" + getLongitudeFromGreenwichInDMS() + ")";
     }
 

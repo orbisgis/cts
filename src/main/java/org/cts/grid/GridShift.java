@@ -8,8 +8,6 @@ import java.io.Serializable;
 
 public class GridShift implements Serializable {
 
-        private static final double METRE_PER_SECOND = 30.922080775909329D;
-        private static final double RADIANS_PER_SECOND = 4.84813681109536E-06D;
         private double lon;
         private double lat;
         private double lonShift;
@@ -20,6 +18,13 @@ public class GridShift implements Serializable {
         boolean lonAccuracyAvailable;
         private String subGridName;
 
+        /**
+         * Initialize the GridShift object
+         */
+        public GridShift(){
+            
+        }
+        
         public double getLatSeconds() {
                 return this.lat;
         }

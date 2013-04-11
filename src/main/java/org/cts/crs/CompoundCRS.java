@@ -140,7 +140,7 @@ public abstract class CompoundCRS extends GeodeticCRS {
      */
     @Override
     public String toString() {
-        return "[" + getNamespace() + ":" + getId() + "] " + getName() + " ("
+        return "[" + getAuthorityName() + ":" + getAuthorityKey() + "] " + getName() + " ("
                 + getShortName() + ")";
     }
 }

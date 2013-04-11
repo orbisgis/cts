@@ -62,10 +62,10 @@ public class Identifier implements Identifiable {
     }
 
     // Mandatory attribute (default = LOCAL)
-    private String namespace;
+    private String authorityName;
 
     // Mandatory attribute (getNewId can generate local unique ID)
-    private String id;
+    private String authorityKey;
 
     // Complete name, sometimes called description
     private String name;
@@ -85,17 +85,17 @@ public class Identifier implements Identifiable {
 
    /**
     * Creates a complete identifier.
-    * @param namespace namespace of the identifier
-    * @param id unique id in the namespace
+    * @param authorityName namespace of the identifier ie EPSG, IGNF
+    * @param authorityKey unique key in the namespace
     * @param name name or description
     * @param shortName short name used for user interfaces
     * @param remarks
     * @param aliases synonyms of this Identifiable
     */
-    public Identifier(String namespace, String id, String name,
+    public Identifier(String authorityName, String authorityKey, String name,
         String shortName, String remarks, List<Identifiable> aliases) {
-        this.namespace = namespace;
-        this.id = id;
+        this.authorityName = authorityName;
+        this.authorityKey = authorityKey;
         this.name = name;
         this.shortName = shortName;
         this.remarks = remarks;
@@ -125,40 +125,40 @@ public class Identifier implements Identifiable {
 
    /**
     * Creates a complete identifier.
-    * @param namespace
-    * @param id
+    * @param authorityName ie EPSG, IGNF
+    * @param authorityKey ie 4326, LAMB
     * @param name
     */
-    public Identifier(String namespace, String id, String name) {
-        this(namespace, id, name, null, null, null);
+    public Identifier(String authorityName, String authorityKey, String name) {
+        this(authorityName, authorityKey, name, null, null, null);
     }
 
    /**
     * Creates a complete identifier.
-    * @param namespace
-    * @param id
+    * @param authorityName ie EPSG, IGNF
+    * @param authorityKey ie 4326, LAMB
     * @param name
 	* @param shortName a short name to use in user interfaces
     */
-    public Identifier(String namespace, String id, String name, String shortName) {
-        this(namespace, id, name, shortName, null, null);
+    public Identifier(String authorityName, String authorityKey, String name, String shortName) {
+        this(authorityName, authorityKey, name, shortName, null, null);
     }
 
    /**
-    * Return the namespace of this identifier (ex. EPSG, IGN-F)
+    * Return the authority name of this identifier (ex. EPSG, IGN-F)
     * The namespace may represent a database name, a URL, a URN...
     */
 	@Override
-    public String getNamespace() {
-        return namespace;
+    public String getAuthorityName() {
+        return authorityName;
     }
 
    /**
-    * Returns the id of this identifier (id must be unique inside a namespace).
+    * Returns the key of this identifier (id must be unique inside the authority name).
     */
 	@Override
-    public String getId() {
-        return id;
+    public String getAuthorityKey() {
+        return authorityKey;
     }
 
    /**
@@ -174,7 +174,7 @@ public class Identifier implements Identifiable {
     	//EX: 
     		//-EPSG : LAMBE
     		//-IGNF : 27572
-        return id;
+        return authorityKey;
     }
 
    /**
@@ -284,7 +284,7 @@ public class Identifier implements Identifiable {
     */
         @Override
     public String toString() {
-        return "[" + namespace + ":" + id + "] " + name;
+        return "[" + authorityName + ":" + authorityKey + "] " + name;
     }
 
 }

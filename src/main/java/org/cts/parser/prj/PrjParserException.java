@@ -32,7 +32,7 @@
 package org.cts.parser.prj;
 
 /**
- *
+ * Return an exception when the prj cannot be parsed.
  * @author Antoine Gourlay
  */
 public class PrjParserException extends RuntimeException {

@@ -29,30 +29,22 @@
  *
  * For more information, please consult: <https://github.com/irstv/cts/>
  */
-package org.cts.parser.prj;
+package org.cts.op.transformation;
+
+
+
+import static org.junit.Assert.assertTrue;
+import org.junit.Test;
 
 /**
  *
- * @author Antoine Gourlay
+ * @author Michael Michaud, Erwan Bocher
  */
-public class PrjNumberElement extends AbstractPrjElement {
-
-    private double value;
-
-    PrjNumberElement(double value) {
-        this.value = value;
+public class NTv2GridShiftTransformationTest {
+    
+    @Test
+    public void loadGRID(){
+        
     }
-
-    /**
-     * Return the value of the element
-     * @return 
-     */
-    public double getValue() {
-        return value;
-    }
-
-    @Override
-    public String toString() {
-        return "PrjNumberElement[" + value + "]";
-    }
+    
 }
