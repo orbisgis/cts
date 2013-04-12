@@ -131,7 +131,9 @@ public class Identifier implements Identifiable {
     */
     public Identifier(String authorityName, String authorityKey, String name) {
         this(authorityName, authorityKey, name, null, null, null);
-    }
+    }   
+    
+    
 
    /**
     * Creates a complete identifier.
