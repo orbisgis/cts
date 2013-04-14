@@ -47,39 +47,39 @@ import org.cts.util.AngleFormat;
  * les terres europ�ennes.<p> Taken from <a
  * href="http://fr.wikipedia.org/wiki/M%C3%A9ridien">wikipedia</a>
  *
- * @author Michael Michaud
+ * @author Michael Michaud, Erwan Bocher
  */
 public class PrimeMeridian extends IdentifiableComponent {
 
-    //TODO have a look the value available in OGC WKT
+    
     public static final PrimeMeridian GREENWICH =
-            createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8901", "Greenwich"), 0.0);
+            createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8901", "Greenwich", "Greenwich"), 0.0);
     public static final PrimeMeridian LISBON =
-            createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8902", "Lisbon"), -9.0754862);
+            createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8902", "Lisbon", "Lisbon"), -9.0754862);
     public static final PrimeMeridian PARIS =
-            createPrimeMeridianFromDMSLongitude(new Identifier("EPSG", "8903", "Paris"), "2�20'14.025\" E");
+            createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8903", "Paris","Paris","Value adopted by IGN (Paris) in 1936. Equivalent to 2°20'14.025\". Preferred by EPSG to earlier value of 2°20'13.95\" (2.596898 grads) used by RGS London", null), 2.33722917);
     public static final PrimeMeridian BOGOTA =
-            createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8904", "Bogota"), -74.04513);
+            createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8904", "Bogota", "Bogota"), -74.04513);
     public static final PrimeMeridian MADRID =
-            createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8905", "Madrid"), -3.411658);
+            createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8905", "Madrid", "Madrid"), -3.411658);
     public static final PrimeMeridian ROME =
-            createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8906", "Rome"), 12.27084);
+            createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8906", "Rome", "Rome"), 12.27084);
     public static final PrimeMeridian BERN =
-            createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8907", "Bern"), 7.26225);
+            createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8907", "Bern", "Bern", "1895 value. Newer value of 7°26'22.335\" determined in 1938.", null), 7.26225);
     public static final PrimeMeridian JAKARTA =
-            createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8908", "Jakarta"), 106.482779);
+            createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8908", "Jakarta", "Jakarta"), 106.482779);
     public static final PrimeMeridian FERRO =
-            createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8909", "Ferro"), -17.4);
+            createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8909", "Ferro","Ferro", "Used in Austria and former Czechoslovakia.", null), -17.4);
     public static final PrimeMeridian BRUSSELS =
-            createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8910", "Brussels"), 4.220471);
+            createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8910", "Brussels", "Brussels"), 4.220471);
     public static final PrimeMeridian STOCKHOLM =
             createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8911", "Stockholm"), 18.03298);
     public static final PrimeMeridian ATHENS =
-            createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8912", "Athens"), 23.4258815);
+            createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8912", "Athens", "Athens", "Used in Greece for older mapping based on Hatt projection.", null), 23.4258815);
     public static final PrimeMeridian OSLO =
-            createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8913", "Oslo"), 10.43225);
+            createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8913", "Oslo", "Oslo", " Formerly known as Kristiania or Christiania.", null), 10.43225);
     public static final PrimeMeridian PARIS_RGS =
-            createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8914", "Paris (RGS)"), 2.201395);
+            createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8914", "Paris (RGS)","Paris (RGS)","Value replaced by IGN (France) in 1936 - see code 8903. Equivalent to 2.596898 grads.", null), 2.201395);
     private double ddLongitude;
 
     /**
