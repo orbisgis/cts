@@ -87,7 +87,7 @@ public class LambertConicConformal1SP extends Projection {
 		Ellipsoid.CLARKE1880IGN, 47.8, 0.99994471, 0.0, Unit.GRAD,
 		234.358, 185861.369, Unit.METER);
 	/**
-	 * Lambert II �tendu, used as a unique projection for France with NTF datum.
+	 * Lambert II étendu, used as a unique projection for France with NTF datum.
 	 */
 	public static final LambertConicConformal1SP LAMBERT2E = createLCC1SP(
 		Ellipsoid.CLARKE1880IGN, 52.0, 0.99987742, 0.0, Unit.GRAD,
