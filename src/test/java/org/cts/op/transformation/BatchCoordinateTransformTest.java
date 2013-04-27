@@ -54,8 +54,8 @@ public class BatchCoordinateTransformTest extends BaseCoordinateTransformTest {
      */
     @Test
     public void testCoordinateTransformFromFile() throws Exception {
-        String filePath = BatchCoordinateTransformTest.class.getResource(
-                "crstransform.csv").getPath();
+        String filePath = BatchCoordinateTransformTest.class.getClassLoader().getResource(
+                "org/cts/transform/crstransform.csv").toURI().getPath();
         FileReader reader = new FileReader(filePath);
         LineNumberReader lineReader = new LineNumberReader(reader);
 
@@ -80,13 +80,15 @@ public class BatchCoordinateTransformTest extends BaseCoordinateTransformTest {
             double[] pointSource = new double[]{csNameSrc_X, csNameSrc_Y, 0};
             double[] result = transform((GeodeticCRS) inputCRS, (GeodeticCRS) outputCRS, pointSource);
             double[] pointDest = new double[]{csNameDest_X, csNameDest_Y, 0};
+            //printCRStoWKT(inputCRS);
+            //printCRStoWKT(outputCRS);
             assertTrue(checkEquals2D(id + "--> " + csNameSrc + " to " + csNameDest, result, pointDest, tolerance));
         }
         lineReader.close();
     }
 
     /**
-     * Parses a number from a String. If the string is empty returns {@link Double.Nan}.
+     * Parses a number from a String. If the string is empty returns {@link java.lang.Double.NaN}.
      *
      * @param numStr
      * @return the number as a double

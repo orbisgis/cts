@@ -172,11 +172,6 @@ public class CRSFactory {
 
     /**
      * A simple cache to manage {@link CoordinateReferenceSystem}
-     *
-     * @param <K>
-     * @param <V>
-     * @param maxSize
-     * @return
      */
     public class CRSCache<K, V> extends LinkedHashMap<K, V> {
 

@@ -31,8 +31,6 @@
 */
 package org.cts.crs;
 
-import java.util.HashMap;
-import java.util.Map;
 import org.apache.log4j.Logger;
 import org.cts.*;
 import org.cts.cs.Axis;
@@ -49,20 +47,20 @@ import org.cts.units.Measure;
 import org.cts.units.Quantity;
 import org.cts.units.Unit;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  *
- * @author Michael Michaud, Erwan Bocher
+ * @author Michaël Michaud, Erwan Bocher
  */
 public class CRSHelper {
 
         static final Logger LOGGER = Logger.getLogger(CRSHelper.class);
 
         /**
-         * Create a coordinateReferenceSystem
-         *
-         * @param identifier
-         * @param parameters
-         * @return
+         * Creates a new {@link org.cts.crs.CoordinateReferenceSystem}
+         * with the given Identifier and parameters.
          */
         public static CoordinateReferenceSystem createCoordinateReferenceSystem(Identifier identifier, Map<String, String> parameters) {
 
@@ -124,11 +122,10 @@ public class CRSHelper {
         }
 
         /**
-         * Set the towgs84 parameters to the
-         * <code>GeodeticDaum</code>
+         * Set default toWGS84 operation to a {@link org.cts.datum.GeodeticDatum}.
          *
-         * @param gd
-         * @param towgs84Parameters
+         * @param gd the GeodeticDatum we want to associate default toWGS84 operation with
+         * @param param the toWGS84 parameters to associate to gd
          */
         public static void setDefaultWGS84Parameters(GeodeticDatum gd, Map<String, String> param) {
                 CoordinateOperation op;
@@ -163,10 +160,10 @@ public class CRSHelper {
         }
 
         /**
-         * Return the prime meridian according its name
+         * Returns a {@link org.cts.datum.PrimeMeridian} from its name or from its parameters.
          *
-         * @param pmName
-         * @return
+         * @param param parameters including a {@link org.cts.datum.PrimeMeridian} definition
+         * @return a {@link org.cts.datum.PrimeMeridian}
          */
         public static PrimeMeridian getPrimeMeridian(Map<String, String> param) {
                 String pmName = param.get(ProjKeyParameters.pm);
@@ -214,10 +211,10 @@ public class CRSHelper {
         }
 
         /**
-         * Return true is the prime meridian is supported
+         * Returns true is the {@link org.cts.datum.PrimeMeridian} is supported
          *
-         * @param pmName
-         * @return
+         * @param pmName the PrimeMeridian to check
+         * @return true if pmName is a supported {@link org.cts.datum.PrimeMeridian}
          */
         public static boolean isPrimeMeridianSupported(String pmName) {
                 if (null != pmName) {
@@ -262,10 +259,11 @@ public class CRSHelper {
         }
 
         /**
-         * TODO : add others datum Return true if the datum name is supported
+         * Returns true if the {@link org.cts.datum.GeodeticDatum} with this name is supported.
+         * TODO : add other datum
          *
-         * @param datumName
-         * @return
+         * @param datumName name of the GeodeticDatum to check
+         * @return true if datumName is supported
          */
         public static boolean isDatumSupported(String datumName) {
                 if (null != datumName) {
@@ -284,6 +282,9 @@ public class CRSHelper {
                 return false;
         }
 
+        /**
+         * Returns a {@link GeodeticDatum} from a map of parameters.
+         */
         public static GeodeticDatum getDatum(Map<String, String> param) {
                 String datumName = param.get(ProjKeyParameters.datum);
                 if (null != datumName) {
@@ -307,9 +308,10 @@ public class CRSHelper {
                     String nadgrids = param.get(ProjKeyParameters.nadgrids);
                     if (nadgrids != null) {
                         LOGGER.warn("A grid has been founded.");
-                        //TODO : used a more generic approach to manage grids
+                        //TODO : use a more generic approach to manage grids
                         //French grid
                         if (nadgrids.contains("ntf_r93.gsb")) {
+                            //TODO : nadgrids management to be implemented
                         }
                     }
                     return gd;
@@ -320,13 +322,10 @@ public class CRSHelper {
         }
 
         /**
-         * Return the ellipsoid according its name or parameters
+         * Returns an Ellipsoid from its name or from its parameter.
          *
          * Try first to find a known ellipsoid then to create an ellipsoid from
          * its parameter then to get the ellipsoid associated with a known datum
-         *
-         * @param ellipsoidName
-         * @return
          */
         public static Ellipsoid getEllipsoid(Map<String, String> param) {
                 String ellipsoidName = param.get(ProjKeyParameters.ellps);
@@ -340,7 +339,7 @@ public class CRSHelper {
                                 return Ellipsoid.GRS80;
                         } else if (ellipsoidName.equals("WGS_1984") || (ellipsoidName.equals("WGS 84"))) {
                                 return Ellipsoid.WGS84;
-                        } else if (ellipsoidName.equals("International_1924")) {
+                        } else if (ellipsoidName.equals("International_1924") || ellipsoidName.equals("intl")) {
                                 return Ellipsoid.INTERNATIONAL1924;
                         } else if (ellipsoidName.equals("clrk66")) {
                                 return Ellipsoid.CLARKE1866;
@@ -369,12 +368,9 @@ public class CRSHelper {
                         if (null != b) {
                                 double b_ = Double.parseDouble(b);
                                 return Ellipsoid.createEllipsoidFromSemiMinorAxis(a_, b_);
-                        } else if (null != rf) {
+                        } else {
                                 double rf_ = Double.parseDouble(rf);
                                 return Ellipsoid.createEllipsoidFromInverseFlattening(a_, rf_);
-                        } else {
-                                LOGGER.warn("Ellipsoid cannot be defined");
-                                return null;
                         }
 
                 } else if (null != datum) {
@@ -386,18 +382,19 @@ public class CRSHelper {
                                 return null;
                         }
                 } else {
-                        LOGGER.warn("No way found to define an ellipsoid");
+                        LOGGER.warn("Ellipsoid cannot be defined");
                         return null;
                 }
         }
 
         /**
-         * Create a projection based on its name.
+         * Creates a {@link org.cts.op.projection.Projection} from a projection type,
+         * an ellipsoid and a map of parameters.
          *
-         * @param projectionName
-         * @param ell
-         * @param param
-         * @return
+         * @param projectionName name of the projection type
+         * @param ell ellipsoid to use
+         * @param param parameters of this projection
+         * @return a Projection
          */
         public static Projection getProjection(String projectionName, Ellipsoid ell,
                 Map<String, String> param) {

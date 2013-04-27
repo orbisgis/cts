@@ -31,27 +31,22 @@
 */
 package org.cts.op;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.apache.log4j.Logger;
 import org.cts.CoordinateOperation;
 import org.cts.Identifier;
 import org.cts.NonInvertibleOperationException;
-import org.cts.crs.CompoundCRS;
-import org.cts.crs.CoordinateReferenceSystem;
-import org.cts.crs.GeocentricCRS;
-import org.cts.crs.GeodeticCRS;
-import org.cts.crs.Geographic2DCRS;
-import org.cts.crs.Geographic3DCRS;
-import org.cts.crs.ProjectedCRS;
+import org.cts.crs.*;
 import org.cts.datum.Datum;
 import org.cts.datum.GeodeticDatum;
 import org.cts.op.transformation.GeocentricTranslation;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * CoordinateOperationFactory is a factory used to create new
- * {@link CoordinateOperation}s from {@link CoordinateReferenceSystem}s.
- * @author Michael Michaud
+ * {@link org.cts.CoordinateOperation}s from {@link CoordinateReferenceSystem}s.
+ * @author Michaël Michaud
  */
 public final class CoordinateOperationFactory {
 
@@ -67,8 +62,8 @@ public final class CoordinateOperationFactory {
 	public final static int UNIT_OP = 256; // ex. heights from meters to feet
 
 	/**
-	 * Create a CoordinateOperation from a source {@link CompoundCRS}
-	 * to a target {@link CompoundCRS}.
+	 * Create a {@link org.cts.CoordinateOperation} from a source {@link org.cts.crs.CompoundCRS}
+	 * to a target {@link org.cts.crs.CompoundCRS}.
 	 */
 	public static List<CoordinateOperation> createCoordinateOperations(
 		CompoundCRS source, CompoundCRS target) {
@@ -77,10 +72,10 @@ public final class CoordinateOperationFactory {
 	}
 
 	/**
-	 * Create a CoordinateOperation from a source {@link GeodeticCRS}
-	 * to a target {@link GeodeticCRS}.
-	 * Remember that {@link GeodeticCRS} includes {@link GeocentricCRS},
-	 * {@link Geographic2DCRS}, {@link Geographic3DCRS} and {@link ProjectedCRS}.
+	 * Create a CoordinateOperation from a source {@link org.cts.crs.GeodeticCRS}
+	 * to a target {@link org.cts.crs.GeodeticCRS}.
+	 * Remember that {@link org.cts.crs.GeodeticCRS} includes {@link org.cts.crs.GeocentricCRS},
+	 * {@link Geographic2DCRS}, {@link org.cts.crs.Geographic3DCRS} and {@link org.cts.crs.ProjectedCRS}.
 	 * @param source the (non null) source geodetic coordinate reference system
 	 * @param target the (non null) target geodetic coordinate reference system
 	 */
@@ -179,8 +174,8 @@ public final class CoordinateOperationFactory {
 				ntv2.setMode(NTv2GridShiftTransformation.SPEED);
 				ntv2.loadGridShiftFile();*/
 
-				opList.add(new CoordinateOperationSequence(new Identifier(CoordinateOperationSequence.class),
-					new CoordinateOperation[]{
+				opList.add(new CoordinateOperationSequence(
+                        new Identifier(CoordinateOperationSequence.class),
 						source.toGeographicCoordinateConverter(),
 						LongitudeRotation.getLongitudeRotationFrom(sourceDatum.getPrimeMeridian()),
 						new Geographic2Geocentric(sourceDatum.getEllipsoid()),
@@ -190,7 +185,8 @@ public final class CoordinateOperationFactory {
 						new Geocentric2Geographic(targetDatum.getEllipsoid()),
 						LongitudeRotation.getLongitudeRotationTo(targetDatum.getPrimeMeridian()),
 						target.fromGeographicCoordinateConverter()
-					}));
+					)
+                );
 
 				/*	CoordinateOperation[] sequence = new CoordinateOperation[]
 				{	source.toGeographicCoordinateConverter(),

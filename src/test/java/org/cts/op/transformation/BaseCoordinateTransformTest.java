@@ -31,14 +31,17 @@
  */
 package org.cts.op.transformation;
 
-import java.util.List;
-import org.cts.*;
+import org.cts.CRSFactory;
+import org.cts.CTSTestCase;
+import org.cts.CoordinateOperation;
+import org.cts.IllegalCoordinateException;
 import org.cts.crs.CRSException;
 import org.cts.crs.CoordinateReferenceSystem;
 import org.cts.crs.GeodeticCRS;
 import org.cts.op.CoordinateOperationFactory;
-import org.cts.op.CoordinateOperationSequence;
 import org.cts.parser.prj.PrjWriter;
+
+import java.util.List;
 
 /**
  *
@@ -71,14 +74,21 @@ public class BaseCoordinateTransformTest extends CTSTestCase {
      */
     public double[] transform(GeodeticCRS sourceCRS, GeodeticCRS targetCRS, double[] inputPoint) throws IllegalCoordinateException {
         List<CoordinateOperation> ops = CoordinateOperationFactory.createCoordinateOperations(sourceCRS, targetCRS);
-        CoordinateOperationSequence coordinateOperationSequence = new CoordinateOperationSequence(
-                new Identifier(BaseCoordinateTransformTest.class, "From  "
-                + sourceCRS.getCode() + " to "
-                + targetCRS.getCode()), ops);
-        if (verbose) {
-            System.out.println(coordinateOperationSequence.toString());
+        // No, ops is a list of possible Operation from source to target
+        // you should not create a sequence from this list but pick-up one of the operation
+        //CoordinateOperationSequence coordinateOperationSequence = new CoordinateOperationSequence(
+        //        new Identifier(BaseCoordinateTransformTest.class, "From  "
+        //        + sourceCRS.getCode() + " to "
+        //        + targetCRS.getCode()), ops);
+        if (!ops.isEmpty()) {
+            if (verbose) {
+                System.out.println(ops.get(0));
+            }
+            return ops.get(0).transform(new double[]{inputPoint[0], inputPoint[1], inputPoint[2]});
         }
-        return coordinateOperationSequence.transform(new double[]{inputPoint[0], inputPoint[1], inputPoint[2]});
+        else {
+            return new double[]{0.0d,0.0d,0.0d};
+        }
     }
 
     /**
