@@ -39,31 +39,29 @@ import org.cts.cs.Axis;
 import org.cts.cs.CoordinateSystem;
 
 /**
- * A CoordinateReferenceSystem is a system which has to be associated to
- * coordinates in order to establish a non ambiguous relation between those
- * coordinates and an absolute position. <p> There are several kinds of
- * CoordinateReferenceSystem based on 1D, 2D or 3D
- * {@link fr.cts.cs.CoordinateSystem}s. CoordinateReferenceSystem are defined by
- * a {@link fr.cts.datum.Datum} which is an absolute reference.
+ * A compound CoordinateReferenceSystem is a {@link org.cts.crs.CoordinateReferenceSystem}
+ * composed by two distinct CoordinateReferenceSystem : a {@link org.cts.crs.GeodeticCRS}
+ * for 2D horizontal coordinates and a {@link org.cts.crs.VerticalCRS} for the z
+ * coordinate.
  *
- * @author Michael Michaud
+ * @author Michaël Michaud
  */
 public abstract class CompoundCRS extends GeodeticCRS {
 
-    private GeodeticCRS geodeticCRS;
+    private GeodeticCRS horizontalCRS;
     private VerticalCRS verticalCRS;
 
     /**
      * Create a new GeodeticCRS.
      */
-    protected CompoundCRS(Identifier identifier, GeodeticCRS geodeticCRS,
+    protected CompoundCRS(Identifier identifier, GeodeticCRS horizontalCRS,
             VerticalCRS verticalCRS) {
-        super(identifier, geodeticCRS.getDatum(), new CoordinateSystem(
-                new Axis[]{geodeticCRS.getCoordinateSystem().getAxis(0),
-                    geodeticCRS.getCoordinateSystem().getAxis(1),
+        super(identifier, horizontalCRS.getDatum(), new CoordinateSystem(
+                new Axis[]{horizontalCRS.getCoordinateSystem().getAxis(0),
+                        horizontalCRS.getCoordinateSystem().getAxis(1),
                     verticalCRS.getCoordinateSystem().getAxis(0)},
-                new Unit[]{geodeticCRS.getCoordinateSystem().getUnit(0),
-                    geodeticCRS.getCoordinateSystem().getUnit(1),
+                new Unit[]{horizontalCRS.getCoordinateSystem().getUnit(0),
+                        horizontalCRS.getCoordinateSystem().getUnit(1),
                     verticalCRS.getCoordinateSystem().getUnit(0)}));
         this.verticalCRS = verticalCRS;
     }
@@ -77,12 +75,27 @@ public abstract class CompoundCRS extends GeodeticCRS {
     }
 
     /**
+     * @return the horizonal part of this CoordinateReferenceSystem
+     */
+    public GeodeticCRS getHorizontalCRS() {
+        return horizontalCRS;
+    }
+
+    /**
+     * @return the vertical part of this CoordinateReferenceSystem
+     */
+    public VerticalCRS getVerticalCRS() {
+        return verticalCRS;
+    }
+
+    /**
      * Returns the coordinate system of this CoordinateReferenceSystem.
      */
     /*
      * public CoordinateSystem getCoordinateSystem() { return coordinateSystem;
      * }
      */
+
     /**
      * Returns the number of dimensions of the coordinate system.
      */
@@ -97,6 +110,7 @@ public abstract class CompoundCRS extends GeodeticCRS {
     /*
      * public GeodeticDatum getDatum() { return geodeticDatum; }
      */
+
     /**
      * Return whether this coord is a valid coord in this
      * CoordinateReferenceSystem.
@@ -109,6 +123,7 @@ public abstract class CompoundCRS extends GeodeticCRS {
      * public boolean isValid(double[] coord) { return
      * geodeticDatum.getExtent().isInside(coord); }
      */
+
     /**
      * Creates a CoordinateOperation object to convert coordinates from this
      * CoordinateReferenceSystem to a GeographicReferenceSystem based on the

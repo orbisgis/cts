@@ -5428,7 +5428,8 @@
 # ED50 / UTM zone 31N
 <23031> +proj=utm +zone=31 +ellps=intl +towgs84=-87,-98,-121,0,0,0,0 +units=m +no_defs  <>
 # ED50 / UTM zone 32N
-<23032> +proj=utm +zone=32 +ellps=intl +towgs84=-87,-98,-121,0,0,0,0 +units=m +no_defs  <>
+#<23032> +proj=utm +zone=32 +ellps=intl +towgs84=-87,-98,-121,0,0,0,0 +units=m +no_defs  <>
+<23032> +proj=utm +zone=32 +ellps=intl +towgs84=-84,-97,-117,0,0,0,0 +units=m +no_defs  <>
 # ED50 / UTM zone 33N
 <23033> +proj=utm +zone=33 +ellps=intl +towgs84=-87,-98,-121,0,0,0,0 +units=m +no_defs  <>
 # ED50 / UTM zone 34N

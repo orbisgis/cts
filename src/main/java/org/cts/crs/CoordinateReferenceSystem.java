@@ -31,18 +31,15 @@
  */
 package org.cts.crs;
 
-import org.cts.Authority;
-import org.cts.CRSAuthority;
 import org.cts.Identifiable;
 import org.cts.cs.CoordinateSystem;
 import org.cts.datum.Datum;
 import org.cts.op.projection.Projection;
 
 /**
- * A coordinate system which is related to the real world by a {@link Datum}
- * (ISO/DIS 19111). <p> A point in the real world may have different
- * coordinates, depending on the
- * <code>CoordinateReferenceSystem</code> used. The different types of
+ * A coordinate system which is related to the real world by a {@link org.cts.datum.Datum}
+ * (ISO/DIS 19111). <p> A point in the real world may have different coordinates,
+ * depending on the <code>CoordinateReferenceSystem</code> used. The different types of
  * CoordinateReferenceSystem defined by <a href="http://www.epsg.org/"> EPSG</a>
  * are : </p> <ul> <li>Geocentric coordinate reference system</li>
  * <li>Geographic 3D coordinate reference system</li> <li>Geographic 2D
@@ -51,7 +48,7 @@ import org.cts.op.projection.Projection;
  * coordinate reference system</li> <li>Engineering coordinate reference
  * system</li> </ul>
  *
- * @author Michael Michaud
+ * @author Michaël Michaud
  */
 public interface CoordinateReferenceSystem extends Identifiable {
 
@@ -75,19 +72,11 @@ public interface CoordinateReferenceSystem extends Identifiable {
      * @return the {@link Datum} to which this
      * <code>CoordinateReferenceSystem</code> is refering. For compound
      * <code>CoordinateReferenceSystem</code>, getDatum returns the the main
-     * datum, i&#046;e&#046; the {@link fr.cts.datum.GeodeticDatum} (or
+     * datum, i&#046;e&#046; the {@link org.cts.datum.GeodeticDatum} (or
      * horizontal Datum).
      */
     public Datum getDatum();
 
     public Projection getProjection();
 
-    public Authority getAuthority();
-
-    /**
-     * Set a crs authority
-     *
-     * @param crsAuthority
-     */
-    public void setAuthority(CRSAuthority crsAuthority);
 }

@@ -40,14 +40,13 @@ import org.cts.datum.GeodeticDatum;
 import org.cts.op.projection.Projection;
 
 /**
- * A CoordinateReferenceSystem is a system which has to be associated to
- * coordinates in order to establish a non ambiguous relation between those
- * coordinates and an absolute position.<p> There are several kinds of
- * CoordinateReferenceSystem based on 1D, 2D or 3D
- * {@link fr.cts.cs.CoordinateSystem}s. CoordinateReferenceSystem are defined by
- * a {@link fr.cts.datum.Datum} which is an absolute reference.
+ * A geodetic {@link org.cts.crs.CoordinateReferenceSystem} is a coordinate
+ * system based on a {@link org.cts.datum.GeodeticDatum}, a
+ * {@link org.cts.datum.PrimeMeridian} and an {@link org.cts.Ellipsoid}.
+ * It is an abstract class including Geographic3D, Geographic2D and Projected
+ * CoordinateReferenceSystems.
  *
- * @author Michael Michaud
+ * @author Michaël Michaud
  */
 public abstract class GeodeticCRS extends IdentifiableComponent
         implements CoordinateReferenceSystem {
@@ -92,7 +91,7 @@ public abstract class GeodeticCRS extends IdentifiableComponent
     }
 
     /**
-     * Return the {@link fr.cts.datum.GeodeticDatum}.
+     * Return the {@link org.cts.datum.GeodeticDatum}.
      */
     @Override
     public GeodeticDatum getDatum() {

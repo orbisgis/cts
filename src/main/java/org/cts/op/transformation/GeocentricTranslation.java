@@ -48,7 +48,7 @@ import org.cts.op.AbstractCoordinateOperation;
  * this transformation are : <ul> <li>X' = X + tx</li> <li>Y' = Y + ty</li>
  * <li>Z' = Z + tz</li> </ul> </p>
  *
- * @author Michael Michaud, Erwan Bocher
+ * @author Michaël Michaud, Erwan Bocher
  */
 public class GeocentricTranslation extends AbstractCoordinateOperation implements GeoTransformation {
 
@@ -96,7 +96,6 @@ public class GeocentricTranslation extends AbstractCoordinateOperation implement
      */
     @Override
     public double[] transform(double[] coord) throws IllegalCoordinateException {
-        assert coord.length == 3 : "Input coordinate should be 3D";
         if (coord.length != 3) {
             throw new CoordinateDimensionException(coord, 3);
         }
@@ -147,7 +146,6 @@ public class GeocentricTranslation extends AbstractCoordinateOperation implement
         w.append((int) ty);
         w.append(',');
         w.append((int) tz);
-        w.append((precision == 1 ? "0" : precision));
         w.append("]");
         return w.toString();
     }
