@@ -31,18 +31,9 @@
  */
 package org.cts.crs;
 
-import static org.cts.units.Unit.METER;
-import static org.cts.cs.Axis.X;
-import static org.cts.cs.Axis.Y;
-import static org.cts.cs.Axis.Z;
-import java.util.ArrayList;
-import java.util.List;
-import org.cts.Authority;
-import org.cts.CRSAuthority;
 import org.cts.CoordinateOperation;
 import org.cts.Identifier;
 import org.cts.NonInvertibleOperationException;
-import org.cts.units.Unit;
 import org.cts.cs.Axis;
 import org.cts.cs.CoordinateSystem;
 import org.cts.datum.GeodeticDatum;
@@ -51,16 +42,23 @@ import org.cts.op.CoordinateOperationSequence;
 import org.cts.op.Geocentric2Geographic;
 import org.cts.op.Geographic2Geocentric;
 import org.cts.op.LongitudeRotation;
+import org.cts.units.Unit;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.cts.cs.Axis.*;
+import static org.cts.units.Unit.METER;
 
 /**
- * <p> A Geocentric CoordinateReferenceSystem is a 3D cartesian coordinate
- * system centered on the Earth center of mass. </p> <p>
+ * <p> A geocentric CoordinateReferenceSystem is a 3D cartesian coordinate
+ * system centered on the Earth center of mass. </p>
  *
- * @author Michael Michaud
+ * @author Michaël Michaud
  */
 public class GeocentricCRS extends GeodeticCRS {
 
-    private CRSAuthority crsAuthority;
+    //private CRSAuthority crsAuthority;
 
     public boolean hasProjection() {
         return false;
@@ -130,13 +128,4 @@ public class GeocentricCRS extends GeodeticCRS {
                 CoordinateOperationSequence.class), ops);
     }
 
-    @Override
-    public Authority getAuthority() {
-        return crsAuthority;
-    }
-
-    @Override
-    public void setAuthority(CRSAuthority crsAuthority) {
-        this.crsAuthority = crsAuthority;
-    }
 }

@@ -189,16 +189,24 @@ public class GeodeticDatum extends AbstractDatum {
     }
 
     /**
-     * Uses a geocentric transformation between this datum and WGS84 to create a
-     * {@link CoordinateOperation} from the {@link org.cts.crs.Geographic3DCRS}
-     * based on this Datum to the WGS84 {@link org.cts.crs.Geographic3DCRS}. This
-     * CoordinateOperation is usually the Identity transformation, a Translation
-     * or a SevenParameterTransformation (ex. Bursa-Wolf). <p> If other
-     * transformations are defined between this Datum and WGS84 datum or any
-     * other datum, they can be added to the datumTransformations map with the
-     * addCoordinateOperation(Datum datum, CoordinateOperation coordOp) method.
-     * Operations added to the map are always CoordinateOperations from a
-     * Geographic3DCRS to another.
+     * Set the default transformation to WGS84 in two forms :
+     * <p><b>toWGS84 Geocentric transformation</b></p>
+     * <p>toWGS84 is an operation to transform geocentric coordinates
+     * based on this datum to geocentric coordinates based on WGS84 datum,
+     * generally a translation or a SevenParameterTransformation (ex.
+     * Bursa-Wolf).</p>
+     * <p>toWGS84 does not use PrimeMerdian nor ellipsoid parameters.</p>
+     * <p><b>datumTransformations map (direct Geographic3D transformations)</b></p>
+     * <p>The toWGS84 transformation is also stored in the datumTransformations
+     * map, inherited from AbstractDatum, but this time, the operation is not
+     * stored as Geocentric to Geocentric transformation but as a Geographic3D to
+     * Geographic3D transformation.</p>
+     * <p>The convention for this transformation is to start from Geographic3D
+     * coordinates in radians, to include required longitude rotation, and
+     * ellipsoid transformations, and to return GeographicCoordinates in radian.
+     * Advantage is that it makes it possible to use algorithm which do not
+     * involve Geographic to Geocentric transformation like the use of NTv2
+     * grids.</p>
      *
      * @param toWGS84 geocentric transformation from this to geocentric WGS 84
      */
@@ -206,7 +214,7 @@ public class GeodeticDatum extends AbstractDatum {
         this.toWGS84 = toWGS84;
         // First case : toWGS (geocentric transformation) is not null
         if (toWGS84 != null && toWGS84 != Identity.IDENTITY) {
-            // Add CoordinateOperation from the Georaphic 3D CRS associated with
+            // Add CoordinateOperation from the Geographic 3D CRS associated with
             // this datum to the one associated with WGS84
             this.addCoordinateOperation(
                 GeodeticDatum.WGS84,

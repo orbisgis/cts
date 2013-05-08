@@ -44,8 +44,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * CoordinateOperationFactory is a factory used to create new
- * {@link org.cts.CoordinateOperation}s from {@link CoordinateReferenceSystem}s.
+ * CoordinateOperationFactory is a factory used to create
+ * {@link org.cts.CoordinateOperation}s from source and target {@link org.cts.crs.CoordinateReferenceSystem}s.
  * @author Michaël Michaud
  */
 public final class CoordinateOperationFactory {
@@ -107,8 +107,8 @@ public final class CoordinateOperationFactory {
 	}
 
 	/**
-	 * Create a CoordinateOperation from a source {@link GeodeticCRS}
-	 * to a target {@link GeodeticCRS} based on the same {@link Datum}.
+	 * Create a CoordinateOperation from a source {@link org.cts.crs.GeodeticCRS}
+	 * to a target {@link GeodeticCRS} using the same {@link org.cts.datum.GeodeticDatum}.
 	 * Remember that {@link GeodeticCRS} includes {@link GeocentricCRS},
 	 * {@link Geographic2DCRS}, {@link Geographic3DCRS} and {@link ProjectedCRS}.
 	 * @param datum the (non null) common datum of source and target CRS
@@ -150,6 +150,8 @@ public final class CoordinateOperationFactory {
 		if (targetDatum == null) {
 			throw new IllegalArgumentException("The target datum must not be null");
 		}
+        // We get registered transformation from source GeodeticDatum to target GeodeticDatum
+        // There maybe one or more transformations available.
 		List<CoordinateOperation> datumTransformations = sourceDatum.getCoordinateOperations(targetDatum);
 		List<CoordinateOperation> opList = new ArrayList<CoordinateOperation>();
 		for (CoordinateOperation datumTf : datumTransformations) {

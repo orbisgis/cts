@@ -131,6 +131,7 @@ public class CoordinateOperationSequence extends AbstractCoordinateOperation {
             throws IllegalCoordinateException {
         for (CoordinateOperation op : sequence) {
             coord = op.transform(coord);
+            //System.out.println(Arrays.toString(coord));
         }
         return coord;
     }

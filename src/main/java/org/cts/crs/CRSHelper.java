@@ -51,7 +51,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
+ * @TODO Not sure this class is useful here. I'd prefer a clear separation
+ * between the model (CRS/Datum/Ellipsoid/Projection...) and the parsers
+ * which create CRS from a file or from a stream. CRSHelper is in-between,
+ * no more a file, but not yet a model.
  * @author Michaël Michaud, Erwan Bocher
  */
 public class CRSHelper {
@@ -432,6 +435,7 @@ public class CRSHelper {
                 } else if (projectionName.equalsIgnoreCase(ProjValueParameters.UTM)) {
                         int zone = param.get("zone") != null ? Integer.parseInt(param.get("zone")) : 0;
                         lon_0 = (6.0 * (zone - 1) + 183.0) % 360.0;
+                        lon_0 = (((lon_0+180)%360)-180); // set lon_0 to -180;180 interval
                         y_0 = param.containsKey("south") ? 10000000.0 : 0.0;
                         map.put(Parameter.CENTRAL_MERIDIAN, new Measure(lon_0,
                                 Unit.DEGREE));

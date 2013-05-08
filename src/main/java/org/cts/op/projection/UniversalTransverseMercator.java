@@ -31,22 +31,16 @@
  */
 package org.cts.op.projection;
 
-import java.util.Map;
-import org.cts.util.Complex;
-import org.cts.CoordinateDimensionException;
-import org.cts.CoordinateOperation;
-import org.cts.Ellipsoid;
-import org.cts.Identifier;
+import org.cts.*;
 import org.cts.units.Measure;
-import org.cts.NonInvertibleOperationException;
+import org.cts.util.Complex;
+
+import java.util.Map;
 
 /**
- * A map projection is any method used in cartography (mapmaking) to represent
- * the two-dimensional curved surface of the earth or other body on a plane. The
- * term "projection" here refers to any function defined on the earth's surface
- * and with values on the plane, and not necessarily a geometric projection.<p>
+ * The Universal Transverse Mercator Projection (UTM).<p>
  *
- * @author Michael Michaud
+ * @author Michaël Michaud
  */
 public class UniversalTransverseMercator extends Projection {
 
@@ -76,9 +70,9 @@ public class UniversalTransverseMercator extends Projection {
     }
 
     /**
-     * Transform coord using a Lambert Conformal Conic projection. Input coord
-     * is supposed to be a geographic latitude / longitude coordinate in
-     * radians.
+     * Transform coord using the Universal Transverse Mercator Projection.
+     * Input coord is supposed to be a geographic latitude / longitude
+     * coordinate in radians.
      *
      * @param coord coordinate to transform
      * @throws CoordinateDimensionException if

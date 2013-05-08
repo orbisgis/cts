@@ -38,6 +38,7 @@ package org.cts;
  * 
  * @author Erwan Bocher
  */
+@Deprecated
 public abstract class AbstractAuthority implements Authority {
 
 	private String authorityName = "unknown";

@@ -38,6 +38,7 @@ package org.cts;
  * @author Erwan Bocher
  *
  */
+@Deprecated
 public class CRSAuthority extends AbstractAuthority {
 
     public CRSAuthority(Identifier rootIdentifier) {
