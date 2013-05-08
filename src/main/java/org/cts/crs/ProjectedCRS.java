@@ -31,12 +31,10 @@
  */
 package org.cts.crs;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.cts.*;
+import org.cts.CoordinateOperation;
+import org.cts.Identifier;
+import org.cts.NonInvertibleOperationException;
 import org.cts.cs.Axis;
-import static org.cts.cs.Axis.EASTING;
-import static org.cts.cs.Axis.NORTHING;
 import org.cts.cs.CoordinateSystem;
 import org.cts.datum.GeodeticDatum;
 import org.cts.op.ChangeCoordinateDimension;
@@ -45,12 +43,19 @@ import org.cts.op.CoordinateSwitch;
 import org.cts.op.UnitConversion;
 import org.cts.op.projection.Projection;
 import org.cts.units.Unit;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.cts.cs.Axis.EASTING;
+import static org.cts.cs.Axis.NORTHING;
 import static org.cts.units.Unit.METER;
 
 /**
- * A Projected CRS is a CRS issued from a projection coordinate operation <p>
+ * A Projected {@link org.cts.crs.CoordinateReferenceSystem} is a CoordinateReferenceSystem
+ * based on a GeodeticDatum and a Projection operation.
  *
- * @author Michael Michaud
+ * @author Michaël Michaud
  */
 public class ProjectedCRS extends GeodeticCRS {
 
@@ -60,7 +65,6 @@ public class ProjectedCRS extends GeodeticCRS {
                 NORTHING, EASTING}, new Unit[]{METER, METER});
     private Projection projection;
     private Unit angularUnit;
-    private CRSAuthority crsAuthority;
 
     public ProjectedCRS(Identifier identifier, GeodeticDatum datum,
             CoordinateSystem coordSys, Projection projection) {
@@ -148,13 +152,4 @@ public class ProjectedCRS extends GeodeticCRS {
         return angularUnit;
     }
 
-    @Override
-    public Authority getAuthority() {
-        return crsAuthority;
-    }
-
-    @Override
-    public void setAuthority(CRSAuthority crsAuthority) {
-        this.crsAuthority = crsAuthority;
-    }
 }

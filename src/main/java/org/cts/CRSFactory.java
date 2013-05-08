@@ -31,9 +31,6 @@
  */
 package org.cts;
 
-import java.io.*;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import org.cts.crs.CRSException;
 import org.cts.crs.CRSHelper;
 import org.cts.crs.CoordinateReferenceSystem;
@@ -41,7 +38,20 @@ import org.cts.parser.prj.PrjParser;
 import org.cts.registry.Registry;
 import org.cts.registry.RegistryManager;
 
+import java.io.*;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 /**
+ * This factory is in charge of creating new {@link org.cts.crs.CoordinateReferenceSystem}s
+ * from an authority name and a code.
+ * <p>Creation of the {@link org.cts.crs.CoordinateReferenceSystem} from a text file
+ * will be delegated to one of RegistryManager's registries. If RegistryManager don't
+ * know the authority of the CRS, an exception is returned.</p>
+ * <p>This class also manages a Cache which return
+ * {@link org.cts.crs.CoordinateReferenceSystem}s which have already been parsed.</p>
+ *
+ * @TODO authorityAndSrid is the same as Identifier.getCode()
  *
  * @author Erwan Bocher
  */
@@ -114,9 +124,6 @@ public class CRSFactory {
      *
      * @param prjString the PRJ String
      * @return a {@link CoordinateReferenceSystem}
-     * @throws UnsupportedParameterException if a PROJ.4 parameter is not
-     * supported
-     * @throws InvalidValueException if a parameter value is invalid
      */
     public CoordinateReferenceSystem createFromPrj(String prjString) {
         PrjParser p = new PrjParser();
@@ -129,10 +136,7 @@ public class CRSFactory {
      *
      * @param stream
      * @return a {@link CoordinateReferenceSystem}
-     * @throws UnsupportedParameterException if a PROJ.4 parameter is not
-     * supported
      * @throws IOException
-     * @throws InvalidValueException if a parameter value is invalid
      */
     public CoordinateReferenceSystem createFromPrj(InputStream stream) throws IOException {
         BufferedReader r = new BufferedReader(new InputStreamReader(stream));
@@ -150,10 +154,7 @@ public class CRSFactory {
      *
      * @param file
      * @return a {@link CoordinateReferenceSystem}
-     * @throws UnsupportedParameterException if a PROJ.4 parameter is not
-     * supported
      * @throws IOException if there is a problem reading the file
-     * @throws InvalidValueException if a parameter value is invalid
      */
     public CoordinateReferenceSystem createFromPrj(File file) throws IOException {
         InputStream i = null;
@@ -172,11 +173,6 @@ public class CRSFactory {
 
     /**
      * A simple cache to manage {@link CoordinateReferenceSystem}
-     *
-     * @param <K>
-     * @param <V>
-     * @param maxSize
-     * @return
      */
     public class CRSCache<K, V> extends LinkedHashMap<K, V> {
 

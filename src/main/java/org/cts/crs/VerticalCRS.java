@@ -31,28 +31,25 @@
  */
 package org.cts.crs;
 
-import static org.cts.units.Unit.METER;
-import static org.cts.cs.Axis.ALTITUDE;
-import static org.cts.cs.Axis.HEIGHT;
-import org.cts.Authority;
-import org.cts.CRSAuthority;
 import org.cts.IdentifiableComponent;
 import org.cts.Identifier;
-import org.cts.units.Unit;
 import org.cts.cs.Axis;
 import org.cts.cs.CoordinateSystem;
 import org.cts.datum.VerticalDatum;
 import org.cts.op.projection.Projection;
+import org.cts.units.Unit;
+
+import static org.cts.cs.Axis.ALTITUDE;
+import static org.cts.cs.Axis.HEIGHT;
+import static org.cts.units.Unit.METER;
 
 /**
- * A CoordinateReferenceSystem is a system which has to be associated to
- * coordinates in order to establish a non ambiguous relation between those
- * coordinates and an absolute position. <p> There are several kinds of
- * CoordinateReferenceSystem based on 1D, 2D or 3D
- * {@link fr.cts.cs.CoordinateSystem}s. CoordinateReferenceSystem are defined by
- * a {@link fr.cts.datum.Datum} which is an absolute reference.
+ * A vertical {@link org.cts.crs.CoordinateReferenceSystem} is a
+ * CoordinateReferenceSystem based on a VerticalDatum. It is used
+ * to indicate what is the reference for the vertical ordinate of
+ * a 3D point (ex. ellipsoid surface, world geoid, local geoid...).
  *
- * @author Michael Michaud
+ * @author Michaël Michaud
  */
 public class VerticalCRS extends IdentifiableComponent implements
         CoordinateReferenceSystem {
@@ -63,7 +60,6 @@ public class VerticalCRS extends IdentifiableComponent implements
             new Axis[]{ALTITUDE}, new Unit[]{METER});
     private VerticalDatum verticalDatum;
     private CoordinateSystem coordinateSystem;
-    private CRSAuthority crsAuthority;
 
     /**
      * Create a new VerticalCRS.
@@ -104,7 +100,7 @@ public class VerticalCRS extends IdentifiableComponent implements
     }
 
     /**
-     * Return the {@link fr.cts.datum.VerticalDatum}.
+     * Return the {@link org.cts.datum.VerticalDatum}.
      */
     @Override
     public VerticalDatum getDatum() {
@@ -132,13 +128,4 @@ public class VerticalCRS extends IdentifiableComponent implements
                 + getShortName() + ")";
     }
 
-    @Override
-    public Authority getAuthority() {
-        return crsAuthority;
-    }
-
-    @Override
-    public void setAuthority(CRSAuthority crsAuthority) {
-        this.crsAuthority = crsAuthority;
-    }
 }

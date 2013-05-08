@@ -31,18 +31,19 @@
  */
 package org.cts.op;
 
-import java.util.List;
 import org.apache.log4j.Logger;
 import org.cts.CoordinateOperation;
 import org.cts.Identifier;
 import org.cts.IllegalCoordinateException;
 import org.cts.NonInvertibleOperationException;
 
+import java.util.List;
+
 /**
  * A coordinate operation sequence can transform a coordinate through several
  * ordered {@link CoordinateOperation}s.
  *
- * @author Michael Michaud
+ * @author Michaël Michaud
  */
 public class CoordinateOperationSequence extends AbstractCoordinateOperation {
 
@@ -50,9 +51,9 @@ public class CoordinateOperationSequence extends AbstractCoordinateOperation {
     protected static final Logger LOG = Logger.getLogger(CoordinateOperationSequence.class);
 
     /**
-     * Create a CoordinateOperationSequence from an identifier and an array of {@link fr.cts.CoordinateOperation}s.
+     * Create a CoordinateOperationSequence from an identifier and an array of {@link org.cts.CoordinateOperation}s.
      * Precision of this sequence is considered as the sum of all single
-     * {@link fr.cts.CoordinateOperation}.
+     * {@link org.cts.CoordinateOperation}.
      *
      * @param identifier this operation sequence identifier
      * @param sequence an array containing ordered operations to apply to
@@ -68,9 +69,9 @@ public class CoordinateOperationSequence extends AbstractCoordinateOperation {
     }
 
     /**
-     * Create a CoordinateOperationSequence from an identifier and a List of {@link fr.cts.CoordinateOperation}s.
+     * Create a CoordinateOperationSequence from an identifier and a List of {@link org.cts.CoordinateOperation}s.
      * Precision of this sequence is considered as the sum of all single
-     * {@link fr.cts.CoordinateOperation}.
+     * {@link org.cts.CoordinateOperation}.
      *
      * @param identifier this operation sequence identifier
      * @param list a list containing ordered operations to apply to coordinates
@@ -86,7 +87,7 @@ public class CoordinateOperationSequence extends AbstractCoordinateOperation {
 
     /**
      * Create a CoordinateOperationSequence from an identifier an array of
-     * {@link fr.cts.CoordinateOperation}s and a precision.
+     * {@link org.cts.CoordinateOperation}s and a precision.
      *
      * @param identifier this operation sequence identifier
      * @param sequence a list containing ordered operations to apply to
@@ -102,7 +103,7 @@ public class CoordinateOperationSequence extends AbstractCoordinateOperation {
 
     /**
      * Creates a CoordinateOperationSequence from an identifier, a List of
-     * {@link fr.cts.CoordinateOperation}s and a precision.
+     * {@link org.cts.CoordinateOperation}s and a precision.
      *
      * @param identifier this operation sequence identifier
      * @param list a list containing ordered operations to apply to coordinates
@@ -118,7 +119,7 @@ public class CoordinateOperationSequence extends AbstractCoordinateOperation {
     /**
      * Implementation of the transform method for a sequence of transformation.
      * It is important that input coordinate is a 3D coordinate because any of
-     * the coordinate operation of the sequence may be a 3D coordinate of {@link fr.cts.CoordinateOperation}s.
+     * the coordinate operation of the sequence may be a 3D coordinate of {@link org.cts.CoordinateOperation}s.
      *
      * @param coord the 3D coord to transform
      * @throws IllegalCoordinateException if
@@ -130,6 +131,7 @@ public class CoordinateOperationSequence extends AbstractCoordinateOperation {
             throws IllegalCoordinateException {
         for (CoordinateOperation op : sequence) {
             coord = op.transform(coord);
+            //System.out.println(Arrays.toString(coord));
         }
         return coord;
     }

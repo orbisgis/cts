@@ -31,15 +31,9 @@
 */
 package org.cts.crs;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.cts.Authority;
-import org.cts.CRSAuthority;
 import org.cts.CoordinateOperation;
 import org.cts.Identifier;
 import org.cts.cs.Axis;
-import static org.cts.cs.Axis.LATITUDE;
-import static org.cts.cs.Axis.LONGITUDE;
 import org.cts.cs.CoordinateSystem;
 import org.cts.datum.GeodeticDatum;
 import org.cts.op.ChangeCoordinateDimension;
@@ -48,13 +42,19 @@ import org.cts.op.CoordinateSwitch;
 import org.cts.op.UnitConversion;
 import org.cts.op.projection.Projection;
 import org.cts.units.Unit;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.cts.cs.Axis.LATITUDE;
+import static org.cts.cs.Axis.LONGITUDE;
 import static org.cts.units.Unit.*;
 
 /**
  * <p> A Geographic CoordinateReferenceSystem is a reference system based on a
  * GeodeticDatum and a 2D or 3D Ellipsoidal Coordinate System. </p> <p>
  *
- * @author Michael Michaud, Erwan Bocher
+ * @author Michaël Michaud, Erwan Bocher
  */
 public class Geographic2DCRS extends GeodeticCRS {
 
@@ -70,7 +70,6 @@ public class Geographic2DCRS extends GeodeticCRS {
             new Axis[]{LATITUDE, LONGITUDE}, new Unit[]{GRAD, GRAD});
     public static CoordinateSystem LONLAT_GG_CS = new CoordinateSystem(
             new Axis[]{LONGITUDE, LATITUDE}, new Unit[]{GRAD, GRAD});
-    private CRSAuthority crsAuthority;
 
     /**
      * Create a new Geographic2DCRS
@@ -143,16 +142,6 @@ public class Geographic2DCRS extends GeodeticCRS {
                 getCoordinateSystem().getUnit(0)));
         return new CoordinateOperationSequence(new Identifier(
                 CoordinateOperationSequence.class), ops);
-    }
-
-    @Override
-    public Authority getAuthority() {
-        return crsAuthority;
-    }
-
-    @Override
-    public void setAuthority(CRSAuthority crsAuthority) {
-        this.crsAuthority = crsAuthority;
     }
 
     @Override

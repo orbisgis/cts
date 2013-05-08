@@ -29,23 +29,24 @@
  *
  * For more information, please consult: <https://github.com/irstv/cts/>
  */
-package org.cts.op.transformation;
+package org.cts.op;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.cts.CoordinateOperation;
 import org.cts.Ellipsoid;
 import org.cts.Identifier;
 import org.cts.Parameter;
 import org.cts.datum.GeodeticDatum;
-import org.cts.op.*;
 import org.cts.op.projection.LambertConicConformal1SP;
 import org.cts.op.projection.LambertConicConformal2SP;
 import org.cts.units.Measure;
 import org.cts.units.Unit;
-import static org.junit.Assert.assertTrue;
 import org.junit.Test;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  *
