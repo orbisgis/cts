@@ -29,7 +29,7 @@
  *
  * For more information, please consult: <https://github.com/irstv/cts/>
  */
-package org.cts.op.transformation;
+package org.cts.op;
 
 import org.cts.CRSFactory;
 import org.cts.CTSTestCase;

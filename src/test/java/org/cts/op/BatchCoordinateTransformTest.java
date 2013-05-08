@@ -29,14 +29,16 @@
  *
  * For more information, please consult: <https://github.com/irstv/cts/>
  */
-package org.cts.op.transformation;
+package org.cts.op;
+
+import org.cts.crs.CoordinateReferenceSystem;
+import org.cts.crs.GeodeticCRS;
+import org.junit.Test;
 
 import java.io.FileReader;
 import java.io.LineNumberReader;
-import org.cts.crs.CoordinateReferenceSystem;
-import org.cts.crs.GeodeticCRS;
+
 import static org.junit.Assert.assertTrue;
-import org.junit.Test;
 
 /**
  * This class is used to test several transformations.
@@ -54,8 +56,7 @@ public class BatchCoordinateTransformTest extends BaseCoordinateTransformTest {
      */
     @Test
     public void testCoordinateTransformFromFile() throws Exception {
-        String filePath = BatchCoordinateTransformTest.class.getClassLoader().getResource(
-                "org/cts/transform/crstransform.csv").toURI().getPath();
+        String filePath = BatchCoordinateTransformTest.class.getResource("crstransform.csv").toURI().getPath();
         FileReader reader = new FileReader(filePath);
         LineNumberReader lineReader = new LineNumberReader(reader);
 
@@ -65,6 +66,8 @@ public class BatchCoordinateTransformTest extends BaseCoordinateTransformTest {
             String line = lineReader.readLine();
             if (line == null) {
                 break;
+            } else if (line.startsWith("#")) {
+                continue;
             }
             String[] values = line.split(";");
             String id = values[0];
@@ -88,7 +91,7 @@ public class BatchCoordinateTransformTest extends BaseCoordinateTransformTest {
     }
 
     /**
-     * Parses a number from a String. If the string is empty returns {@link java.lang.Double.NaN}.
+     * Parses a number from a String. If the string is empty returns {@link java.lang.Double#NaN}.
      *
      * @param numStr
      * @return the number as a double
