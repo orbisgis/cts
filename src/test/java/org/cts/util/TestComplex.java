@@ -4,7 +4,7 @@
  * and parameter sets. 
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
- * This library has been originaled developed by Michael Michaud under the JGeod
+ * This library has been originaled developed by Michaël Michaud under the JGeod
  * name. It has been renamed CTS in 2009 and shared to the community from 
  * the Atelier SIG code repository.
  * 
@@ -32,13 +32,14 @@
 package org.cts.util;
 
 import org.cts.CTSTestCase;
-import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
+import static org.junit.Assert.assertTrue;
+
 /**
- * Test {@link fr.cts.Complex} class</p>
+ * Test {@link org.cts.util.Complex} class</p>
  *
- * @author Michael Michaud
+ * @author Michaël Michaud
  */
 public class TestComplex extends CTSTestCase {
 
@@ -107,10 +108,10 @@ public class TestComplex extends CTSTestCase {
     }
 
     protected boolean assertEquals(String test, Complex o1, Complex o2) {
-        if (Math.abs(o1.re() - o2.re()) <= Math.max(Math.ulp(o1.re()), Math.ulp(o1.re()))
+        if (Math.abs(o1.re() - o2.re()) <= Math.max(Math.ulp(o1.re()), Math.ulp(o2.re()))
                 && Math.abs(o1.im() - o2.im()) <= Math.max(Math.ulp(o1.im()),
-                Math.ulp(o1.im()))) {
-            LOGGER.info("TRUE : " + test + " " + o1 + " = " + o2 + " � 1 ulp");
+                Math.ulp(o2.im()))) {
+            LOGGER.info("TRUE : " + test + " " + o1 + " = " + o2 + " \u2213  1 ulp");
 
             return true;
         } else {
