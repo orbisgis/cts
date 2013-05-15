@@ -430,4 +430,31 @@ public class EllipsoidTest extends CTSTestCase {
         assertEquals("latitude equator", eTest.latitude(0), 0, 1e-11);
         assertEquals("latitude pole", eTest.latitude(Double.POSITIVE_INFINITY), Math.PI/2, 1e-11);
     }
+    
+    Ellipsoid eTest2 = createEllipsoidFromEccentricity(6378388, 0.08199189);
+    
+    /*
+     * Test transverseRadiusOfCurvatureTest() based on the algorithm "ALG0021" from the IGN.
+     * See <http://geodesie.ign.fr/contenu/fichiers/documentation/algorithmes/notice/NTG_71.pdf>.
+     * Date of consultation : May 15th 2013.
+     */
+    @Test
+    public void transverseRadiusOfCurvatureTest() {
+        assertEquals("transverseRadiusOfCurvature test 1", eTest2.transverseRadiusOfCurvature(0.977384381), 6393174.9755, 1e-4);
+        assertEquals("transverseRadiusOfCurvature equator", eTest2.transverseRadiusOfCurvature(0), 6378388, 1e-4);
+        assertEquals("transverseRadiusOfCurvature pole", eTest2.transverseRadiusOfCurvature(Math.PI/2), 6399936.6081, 1e-4);
+    }
+    
+    /*
+     * Test curvilinearAbscissaTest() based on the algorithm "ALG0026" from the IGN.
+     * See <http://geodesie.ign.fr/contenu/fichiers/documentation/algorithmes/notice/NTG_76.pdf>.
+     * Date of consultation : May 15th 2013.
+     */
+    @Test
+    public void curvilinearAbscissaTest() {
+        Ellipsoid eTestLocal = createEllipsoidFromEccentricity(6378388, 0.081819191043);
+        assertEquals("curvilinearAbscissa test 1", eTest.curvilinearAbscissa(0.78539816340), 0.781551253561, 1e-12);
+        assertEquals("curvilinearAbscissa pole", eTestLocal.curvilinearAbscissa(1.57079632679), 1.568164140908, 1e-12);
+        assertEquals("curvilinearAbscissa equator", eTestLocal.curvilinearAbscissa(0), 0, 1e-12);
+    }
 }
