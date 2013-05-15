@@ -457,4 +457,25 @@ public class EllipsoidTest extends CTSTestCase {
         assertEquals("curvilinearAbscissa pole", eTestLocal.curvilinearAbscissa(1.57079632679), 1.568164140908, 1e-12);
         assertEquals("curvilinearAbscissa equator", eTestLocal.curvilinearAbscissa(0), 0, 1e-12);
     }
+    
+    @Test
+    public void meridionalRadiusOfCurvatureTest() {
+        assertEquals("meridionalRadiusOfCurvature test 1", eTest2.meridionalRadiusOfCurvature(0.977384381), 6379673.1341, 1e-4);
+        assertEquals("meridionalRadiusOfCurvature equator", eTest2.meridionalRadiusOfCurvature(0), 6335508.2022, 1e-4);
+        assertEquals("meridionalRadiusOfCurvature pole", eTest2.meridionalRadiusOfCurvature(Math.PI/2), 6399936.6081, 1e-4);
+    }
+    
+    @Test
+    public void arcFromLatTest() {
+        assertEquals("arcFromLatTest test 1", eTest2.arcFromLat(Math.PI/3), 6654228.3963, 1e-4);
+        assertEquals("arcFromLatTest test 2", eTest2.arcFromLat(Math.PI/7), 2845220.2110, 1e-4);
+        assertEquals("arcFromLatTest equator", eTest2.arcFromLat(0), 0, 1e-11);
+    }
+    
+    @Test
+    public void latFromArcTest() {
+        assertEquals("latFromArcTest test 1", eTest2.latFromArc(6654228.3963), Math.PI/3, 1e-11);
+        assertEquals("latFromArcTest test 2", eTest2.latFromArc(2845220.2110), Math.PI/7, 1e-11);
+        assertEquals("latFromArcTest equator", eTest2.latFromArc(0), 0, 1e-11);
+    }
 }
