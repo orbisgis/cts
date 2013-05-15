@@ -401,4 +401,33 @@ public class EllipsoidTest extends CTSTestCase {
         assertEquals(KRASSOWSKI.getName()+" KCoeff6", KRASSOWSKI.getKCoeff(8)[6], 0, tol);
         assertEquals(KRASSOWSKI.getName()+" KCoeff7", KRASSOWSKI.getKCoeff(8)[7], 0, tol);
     }
+    
+    Ellipsoid eTest = createEllipsoidFromEccentricity(6380000, 0.08199188998);
+    
+    /*
+     * Test isometricLatitudeTest() based on the algorithm "ALG0001" from the IGN.
+     * See <http://geodesie.ign.fr/contenu/fichiers/documentation/algorithmes/notice/NTG_71.pdf>.
+     * Date of consultation : May 15th 2013.
+     */
+    @Test
+    public void isometricLatitudeTest() {
+        assertEquals("isometricLatitude test 1", eTest.isometricLatitude(0.872664626), 1.00552653649, 1e-11);
+        assertEquals("isometricLatitude test 2", eTest.isometricLatitude(-0.3), -0.30261690063, 1e-11);
+        assertEquals("isometricLatitude test 3", eTest.isometricLatitude(0.19998903370), 0.200000000009, 1e-11);
+        assertEquals("isometricLatitude equator", eTest.isometricLatitude(0), 0, 1e-11);
+    }
+    
+    /*
+     * Test curvilinearAbscissaTest() based on the algorithm "ALG0002" from the IGN.
+     * See <http://geodesie.ign.fr/contenu/fichiers/documentation/algorithmes/notice/NTG_71.pdf>.
+     * Date of consultation : May 15th 2013.
+     */
+    @Test
+    public void latitudeTest() {
+        assertEquals("latitude test 1", eTest.latitude(1.00552653648), 0.872664626, 1e-11);
+        assertEquals("latitude test 2", eTest.latitude(-0.30261690060), -0.29999999997, 1e-11);
+        assertEquals("latitude test 3", eTest.latitude(0.2), 0.19998903369, 1e-11);
+        assertEquals("latitude equator", eTest.latitude(0), 0, 1e-11);
+        assertEquals("latitude pole", eTest.latitude(Double.POSITIVE_INFINITY), Math.PI/2, 1e-11);
+    }
 }
