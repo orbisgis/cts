@@ -260,6 +260,7 @@ public class Identifier implements Identifiable {
     * Test equality between codes (namespace + id), then between aliases.
     * @param object
     */
+    @Override
     public boolean equals(Object object) {
         if (object instanceof Identifier) {
             Identifier other = (Identifier)object;

@@ -653,16 +653,16 @@ public class Ellipsoid extends IdentifiableComponent {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(getIdentifier().toString());
-        sb.append(" (Semi-major axis = ").append(semiMajorAxis).append(" | ");
+        sb.append(" (Semi-major axis = ").append(semiMajorAxis);
         switch (secondParameter) {
             case SemiMinorAxis:
-                sb.append("Semi-minor axis = ").append(b).append(")");
+                sb.append(" | Semi-minor axis = ").append(b).append(")");
                 break;
             case InverseFlattening:
-                sb.append("Flattening = 1/").append(invf).append(")");
+                sb.append(" | Flattening = 1/").append(invf).append(")");
                 break;
             case Eccentricity:
-                sb.append("Eccentricity = ").append(e).append(")");
+                sb.append(" | Eccentricity = ").append(e).append(")");
                 break;
             default:
                 sb.append(")");
