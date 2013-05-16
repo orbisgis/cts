@@ -198,7 +198,7 @@ public class Identifier implements Identifiable {
     }
 
    /**
-    * Returns a short string used to identify unambiguously the object.
+    * Change the short string used to identify unambiguously the object.
     * A short name should have less than 16 characters whenever possible, and
     * should never exceed 48 characters.
     */
@@ -208,7 +208,7 @@ public class Identifier implements Identifiable {
     }
 
    /**
-    * Returns the name of this extent.
+    * Returns remarks.
     */
 	@Override
     public String getRemarks() {

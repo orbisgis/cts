@@ -275,7 +275,7 @@ public class GeodeticDatum extends AbstractDatum {
     }
 
     /**
-     * Return the ellipsoid of this Datum
+     * Returns the default transformation to WGS84 of this Datum
      */
     @Override
     public CoordinateOperation getToWGS84() {

@@ -53,7 +53,7 @@ public class IdentifiableComponent implements Identifiable {
     }
 
     /**
-     * Return this component's Identifier
+     * Change this component's Identifier
      */
     protected void setIdentifier(Identifier identifier) {
         this.identifier = identifier;
@@ -105,7 +105,7 @@ public class IdentifiableComponent implements Identifiable {
     }
 
     /**
-     * Returns a short string used to identify unambiguously the object. The
+     * Change the short string used to identify unambiguously the object. The
      * string must have a maximum of 16 characters to fit menus with ease.
      */
     @Override
