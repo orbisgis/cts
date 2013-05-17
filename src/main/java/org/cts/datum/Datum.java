@@ -41,7 +41,7 @@ import org.cts.cs.Extent;
  * This interface defines getters and setters for attributes common to every
  * kind of datum (horizontal or vertical) : origin, extent, epoch
  *
- * @author Michael Michaud
+ * @author Michaël Michaud
  *
  */
 public interface Datum extends Identifiable {

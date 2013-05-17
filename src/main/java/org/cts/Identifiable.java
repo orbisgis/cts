@@ -60,7 +60,7 @@ import java.util.List;
  * The syntax recommended by ogc for epsg object is described in
  * <a href="http://www.faqs.org/rfcs/rfc5165.html">rfc5165</a>.
  *
- * @author Micha�l Michaud
+ * @author Michaël Michaud
  */
 
 

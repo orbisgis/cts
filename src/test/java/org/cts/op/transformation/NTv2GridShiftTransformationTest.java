@@ -38,7 +38,7 @@ import org.junit.Test;
 
 /**
  *
- * @author Michael Michaud, Erwan Bocher
+ * @author Michaël Michaud, Erwan Bocher
  */
 public class NTv2GridShiftTransformationTest {
     

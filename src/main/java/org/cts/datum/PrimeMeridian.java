@@ -47,7 +47,7 @@ import org.cts.util.AngleFormat;
  * les terres europ�ennes.<p> Taken from <a
  * href="http://fr.wikipedia.org/wiki/M%C3%A9ridien">wikipedia</a>
  *
- * @author Michael Michaud, Erwan Bocher
+ * @author Michaël Michaud, Erwan Bocher
  */
 public class PrimeMeridian extends IdentifiableComponent {
 

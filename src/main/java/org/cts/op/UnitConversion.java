@@ -42,7 +42,7 @@ import org.cts.units.Unit;
 /**
  * Convert coordinates from a source unit to a target unit.
  *
- * @author Michael Michaud
+ * @author Michaël Michaud
  */
 public class UnitConversion extends AbstractCoordinateOperation {
 

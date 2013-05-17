@@ -51,7 +51,7 @@ import org.cts.op.UnitConversion;
  * compatible RGF93.<p> It is a geocentric translation which parameters are
  * interpolated on a geographic grid.
  *
- * @author Michael Michaud
+ * @author Michaël Michaud
  */
 public class FrenchGeocentricNTF2RGF extends AbstractCoordinateOperation {
 

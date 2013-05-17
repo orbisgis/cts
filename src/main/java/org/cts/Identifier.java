@@ -44,7 +44,7 @@ import java.util.List;
  * @see Identifiable
  * @see IdentifiableComponent
  *
- * @author Michael Michaud
+ * @author Michaël Michaud
  */
 
 public class Identifier implements Identifiable {

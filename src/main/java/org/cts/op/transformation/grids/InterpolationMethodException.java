@@ -35,7 +35,7 @@ package org.cts.op.transformation.grids;
  * <p>Try to use an interpolation method which is not defined or not yet
  * implemented.</p>
  *
- * @author Michael Michaud
+ * @author Michaël Michaud
  */
 public class InterpolationMethodException extends Exception {
 

@@ -42,7 +42,7 @@ import static org.cts.units.Quantity.*;
  * This interface is not a complete definition of what units are and what one can do with
  * them, but rather a simple definition for conversion purposes as used ni geodesy.
  * See JSR-275 for a complete package.
- * @author Micha�l Michaud
+ * @author Michaël Michaud
  * @version 0.1 (2007-09-10)
  */
 public class Unit implements java.io.Serializable {

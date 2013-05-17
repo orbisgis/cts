@@ -56,7 +56,7 @@ import static java.lang.Math.tan;
  * computed from 4, 5 or 6 iteration (see initKCoeff) give consistant results at
  * a precision of 1 micron (1E-6).</li> </ul>
  *
- * @author Michael Michaud
+ * @author Michaël Michaud
  */
 public class Ellipsoid extends IdentifiableComponent {
 

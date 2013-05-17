@@ -40,7 +40,7 @@ import org.cts.NonInvertibleOperationException;
 /**
  * A class to switch to values in a double array.
  *
- * @author Michael Michaud
+ * @author Michaël Michaud
  */
 public class CoordinateSwitch extends AbstractCoordinateOperation {
 

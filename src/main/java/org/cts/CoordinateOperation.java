@@ -37,7 +37,7 @@ package org.cts;
  * coordinate conversions or coordinate transformations from one
  * {@link fr.cts.crs.CoordinateReferenceSystem} to another.
  *
- * @author Michael Michaud
+ * @author Michaël Michaud
  */
 public interface CoordinateOperation extends Identifiable {
 

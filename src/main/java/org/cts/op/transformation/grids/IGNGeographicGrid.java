@@ -67,7 +67,7 @@ import java.util.zip.ZipInputStream;
  * longitude, latitude, N, precision code<br>
  * For geoid grids :<br>
  * N = He - A = Ellipsoidal height - Altitude (above geoid)<br>
- * @author Michael Michaud
+ * @author Michaël Michaud
  */
 
 public class IGNGeographicGrid extends GeographicGrid {

@@ -38,7 +38,7 @@ import org.cts.IllegalCoordinateException;
 /**
  * A class to change the coordinate precision
  *
- * @author Michael Michaud
+ * @author Michaël Michaud
  */
 public class CoordinateRounding extends AbstractCoordinateOperation {
 
