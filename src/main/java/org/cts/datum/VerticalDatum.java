@@ -98,7 +98,7 @@ public class VerticalDatum extends AbstractDatum {
      * <p>Return the Datum with idEPSG identifier.</p>
      */
     public static VerticalDatum getDatum(Identifier identifier) {
-        return datums.get(identifier);
+        return datums.get(identifier.getCode());
     }
 
     /**

@@ -231,7 +231,7 @@ public class Unit implements java.io.Serializable {
 
 	public static Unit getUnit(String name) {
 		for (Unit unit : units) {
-			if (unit.getNames().size() == 0) {
+			if (unit.getNames().isEmpty()) {
 				if (unit.getName().toLowerCase().equals(name)) {
 					return unit;
 				}

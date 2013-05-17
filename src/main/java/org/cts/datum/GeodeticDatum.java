@@ -59,7 +59,7 @@ import java.util.Map;
  */
 public class GeodeticDatum extends AbstractDatum {
 
-    private final static Map<Identifier, GeodeticDatum> datums = new HashMap<Identifier, GeodeticDatum>();
+    private final static Map<String, GeodeticDatum> datums = new HashMap<String, GeodeticDatum>();
 
     private final PrimeMeridian primeMeridian;
 
@@ -156,6 +156,7 @@ public class GeodeticDatum extends AbstractDatum {
         super(identifier, extent, origin, epoch);
         this.ellipsoid = ellipsoid;
         this.primeMeridian = primeMeridian;
+        datums.put(identifier.getCode(), this);
     }
 
     /**
@@ -171,7 +172,7 @@ public class GeodeticDatum extends AbstractDatum {
      * @param idEPSG the EPSG identifier of the datum
      */
     public static GeodeticDatum getDatum(Identifier idEPSG) {
-        return datums.get(idEPSG);
+        return datums.get(idEPSG.getCode());
     }
 
     /**
@@ -210,7 +211,7 @@ public class GeodeticDatum extends AbstractDatum {
      *
      * @param toWGS84 geocentric transformation from this to geocentric WGS 84
      */
-    public void setDefaultToWGS84Operation(CoordinateOperation toWGS84) {
+    public final void setDefaultToWGS84Operation(CoordinateOperation toWGS84) {
         this.toWGS84 = toWGS84;
         // First case : toWGS (geocentric transformation) is not null
         if (toWGS84 != null && toWGS84 != Identity.IDENTITY) {
@@ -275,7 +276,7 @@ public class GeodeticDatum extends AbstractDatum {
     }
 
     /**
-     * Return the ellipsoid of this Datum
+     * Returns the default transformation to WGS84 of this Datum
      */
     @Override
     public CoordinateOperation getToWGS84() {

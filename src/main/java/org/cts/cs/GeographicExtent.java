@@ -56,7 +56,7 @@ public class GeographicExtent implements Extent {
     public GeographicExtent(String name,
             double southernBound, double northernBound,
             double westernBound, double easternBound) {
-        this(name, southernBound, northernBound, westernBound, easternBound, 180.0);
+        this(name, southernBound, northernBound, westernBound, easternBound, 360.0);
     }
 
     public GeographicExtent(String name,

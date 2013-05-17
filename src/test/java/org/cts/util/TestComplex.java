@@ -107,9 +107,9 @@ public class TestComplex extends CTSTestCase {
     }
 
     protected boolean assertEquals(String test, Complex o1, Complex o2) {
-        if (Math.abs(o1.re() - o2.re()) <= Math.max(Math.ulp(o1.re()), Math.ulp(o1.re()))
+        if (Math.abs(o1.re() - o2.re()) <= Math.max(Math.ulp(o1.re()), Math.ulp(o2.re()))
                 && Math.abs(o1.im() - o2.im()) <= Math.max(Math.ulp(o1.im()),
-                Math.ulp(o1.im()))) {
+                Math.ulp(o2.im()))) {
             LOGGER.info("TRUE : " + test + " " + o1 + " = " + o2 + " � 1 ulp");
 
             return true;
