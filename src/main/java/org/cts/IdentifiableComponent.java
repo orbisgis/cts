@@ -39,7 +39,7 @@ import java.util.List;
  * Identifiable methods in each component class, the programmer just has to
  * extends IdentifiableComponent.
  *
- * @author Michael Michaud
+ * @author Michaël Michaud
  */
 public class IdentifiableComponent implements Identifiable {
 

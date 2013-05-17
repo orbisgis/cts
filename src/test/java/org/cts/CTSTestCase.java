@@ -36,7 +36,7 @@ import org.apache.log4j.Logger;
 
 /**
  *
- * @author ebocher
+ * @author Erwan Bocher
  */
 public class CTSTestCase {
 

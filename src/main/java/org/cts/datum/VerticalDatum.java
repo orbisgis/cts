@@ -43,7 +43,7 @@ import org.cts.cs.GeographicExtent;
  * <p>Vertical datum are used to determine elevation. They are generally based
  * upon a gravity model.</p>
  *
- * @author Michael Michaud
+ * @author Michaël Michaud
  */
 public class VerticalDatum extends AbstractDatum {
 

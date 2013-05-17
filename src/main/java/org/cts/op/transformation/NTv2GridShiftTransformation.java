@@ -45,7 +45,7 @@ import org.cts.op.AbstractCoordinateOperation;
  * The relationship between some geographical 2D coordinate reference systems
  * is available through gridded data sets of latitude and longitude offsets.
  *
- * @author Michael Michaud
+ * @author Michaël Michaud
  */
 public class NTv2GridShiftTransformation extends AbstractCoordinateOperation {
 

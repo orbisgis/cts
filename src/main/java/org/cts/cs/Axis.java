@@ -37,7 +37,7 @@ package org.cts.cs;
  * perpendicular axis. In the context of this library, Axis objects are used for
  * any kind of coordinate system, including vertical and ellipsoidal ones.
  *
- * @author Michael Michaud
+ * @author Michaël Michaud
  */
 public enum Axis {
 

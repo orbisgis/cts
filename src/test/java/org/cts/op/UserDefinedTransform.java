@@ -50,7 +50,7 @@ import static org.junit.Assert.assertTrue;
 
 /**
  *
- * @author ebocher
+ * @author Erwan Bocher
  */
 public class UserDefinedTransform extends BaseCoordinateTransformTest {
 

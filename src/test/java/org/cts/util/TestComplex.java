@@ -38,7 +38,7 @@ import org.junit.Test;
 /**
  * Test {@link fr.cts.Complex} class</p>
  *
- * @author Michael Michaud
+ * @author Michaël Michaud
  */
 public class TestComplex extends CTSTestCase {
 

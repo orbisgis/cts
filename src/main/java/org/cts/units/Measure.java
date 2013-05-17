@@ -33,7 +33,7 @@ package org.cts.units;
 
 /**
  *
- * @author Michael Michaud
+ * @author Michaël Michaud
  */
 public class Measure implements java.io.Serializable {
 

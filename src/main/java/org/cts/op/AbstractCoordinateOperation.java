@@ -41,7 +41,7 @@ import org.cts.NonInvertibleOperationException;
  * AbstractCoordinateOperation is a partial implementation of the
  * {@link CoordinateOperation} interface.
  *
- * @author Michael Michaud
+ * @author Michaël Michaud
  */
 public abstract class AbstractCoordinateOperation
         extends IdentifiableComponent

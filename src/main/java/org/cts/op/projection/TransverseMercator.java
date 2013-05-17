@@ -46,7 +46,7 @@ import org.cts.NonInvertibleOperationException;
  * term "projection" here refers to any function defined on the earth's surface
  * and with values on the plane, and not necessarily a geometric projection.<p>
  *
- * @author Michael Michaud
+ * @author Michaël Michaud
  */
 public class TransverseMercator extends Projection {
 

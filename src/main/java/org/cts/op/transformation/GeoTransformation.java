@@ -33,7 +33,7 @@ package org.cts.op.transformation;
 
 /**
  *
- * @author ebocher
+ * @author Erwan Bocher
  */
 public interface GeoTransformation {
         

@@ -35,7 +35,7 @@ package org.cts;
 /**
  * <p>Try to use an interpolation method which is not defined or not yet
  * implemented.</p>
- * @author Michael Michaud
+ * @author Michaël Michaud
  */
 
 public class NonInvertibleOperationException extends Exception {

@@ -61,7 +61,7 @@ import org.cts.NonInvertibleOperationException;
  * <li>OXYZ is direct</li>
  * <li>Units = radian, meter (to facilitate transformation operations).</li>
  * </ul>
- * @author Michael Michaud
+ * @author Michaël Michaud
  */
 public class Geocentric2Geographic extends AbstractCoordinateOperation {
 

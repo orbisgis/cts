@@ -49,7 +49,7 @@ import org.cts.cs.Extent;
  * from <a ref="http://en.wikipedia.org/wiki/Datum">wikipedia</a> on
  * 2006-10-06)</p>
  *
- * @author Michael Michaud
+ * @author Michaël Michaud
  */
 public abstract class AbstractDatum extends IdentifiableComponent
         implements Datum {

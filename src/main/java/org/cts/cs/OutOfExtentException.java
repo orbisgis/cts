@@ -37,7 +37,7 @@ import java.util.Arrays;
  * An exception arising while trying to work out of a valid area defined by an
  * Extent object.
  *
- * @author Michael Michaud
+ * @author Michaël Michaud
  */
 public class OutOfExtentException extends Exception {
 

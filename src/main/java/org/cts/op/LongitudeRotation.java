@@ -42,7 +42,7 @@ import org.cts.datum.PrimeMeridian;
  * Longitude rotation is a simple transformation which shift the longitude
  * parameter of a geographic coordinate.
  *
- * @author Michael Michaud
+ * @author Michaël Michaud
  */
 public class LongitudeRotation extends AbstractCoordinateOperation {
 

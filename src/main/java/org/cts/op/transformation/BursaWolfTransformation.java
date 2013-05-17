@@ -53,7 +53,7 @@ import org.cts.NonInvertibleOperationException;
  * @see PositionVector7ParameterTransformation
  * @see CoordinateFrame7ParameterTransformation
  *
- * @author Michael Michaud
+ * @author Michaël Michaud
  */
 public class BursaWolfTransformation extends Helmert7ParameterTransformation {
 

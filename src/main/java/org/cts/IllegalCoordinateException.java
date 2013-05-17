@@ -34,7 +34,7 @@ package org.cts;
 
 /**
  * Try to use an illegal coordinate.
- * @author Michael Michaud
+ * @author Michaël Michaud
  */
 
 public class IllegalCoordinateException extends Exception {

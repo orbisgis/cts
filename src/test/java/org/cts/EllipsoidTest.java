@@ -37,7 +37,7 @@ import static org.cts.Ellipsoid.*;
 
 /**
  *
- * @author jparty
+ * @author Jules Party
  */
 public class EllipsoidTest extends CTSTestCase {
     

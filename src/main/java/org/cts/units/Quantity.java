@@ -51,7 +51,7 @@ package org.cts.units;
  * method return equalsIgnoreCase values.
  * 
  * For a complete package about units, quantities and measurements, see JSR-275.
- * @author Michael Michaud
+ * @author Michaël Michaud
  */
 public interface Quantity {
 
