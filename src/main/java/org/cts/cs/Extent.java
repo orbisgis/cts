@@ -38,7 +38,7 @@ package org.cts.cs;
  * false for coordinates lying outside (input coordinates must be an array of n
  * doubles).
  *
- * @author Michael Michaud
+ * @author Michaël Michaud
  */
 public interface Extent {
 

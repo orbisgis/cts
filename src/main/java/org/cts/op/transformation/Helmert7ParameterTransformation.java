@@ -54,7 +54,7 @@ import org.cts.op.AbstractCoordinateOperation;
  * cos(rot)=1.0. It is most often associated with Position Vector
  * convention.</li> </ul> </ul>
  *
- * @author Michael Michaud, Erwan Bocher
+ * @author Michaël Michaud, Erwan Bocher
  */
 abstract public class Helmert7ParameterTransformation extends AbstractCoordinateOperation implements GeoTransformation {
 

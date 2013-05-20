@@ -58,7 +58,7 @@ import org.cts.cs.OutOfExtentException;
  * <a href="http://www.geovista.psu.edu/sites/geocomp99/Gc99/082/gc_082.htm">
  * What's the point? Interpolation and extrapolation with a regular grid DEM</a>
  * </p>
- * @author Micha�l Michaud
+ * @author Michaël Michaud
  */
  
 public interface Grid {

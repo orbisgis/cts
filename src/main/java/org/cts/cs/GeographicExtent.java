@@ -40,7 +40,7 @@ package org.cts.cs;
  * (ex. -179) which is lesser than western meridian (ex. 170) and lesser than
  * eastern meridian ex. -170).
  *
- * @author Michael Michaud
+ * @author Michaël Michaud
  */
 public class GeographicExtent implements Extent {
 

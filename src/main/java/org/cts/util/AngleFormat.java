@@ -46,7 +46,7 @@ import java.util.regex.Pattern;
  * DMS strings</p>
  * <p>The format method uses pattern such as #D� MM' SS\" H(N|S) to define the
  * string representation of an angle.</p>
- * @author Michael Michaud<br>
+ * @author Michaël Michaud<br>
  * <p>
  */
 public final class AngleFormat {

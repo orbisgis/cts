@@ -38,7 +38,7 @@ import org.cts.cs.OutOfExtentException;
  * A grid with column and rows representing meridians and parallels and cell values representing
  * any parameter as heights (geoid definition), altitudes (digital elevation model), or
  * transformation parameters for transformations based on a model.
- * @author Micha�l Michaud
+ * @author Michaël Michaud
  */
 public class GeographicGrid implements Grid {
     

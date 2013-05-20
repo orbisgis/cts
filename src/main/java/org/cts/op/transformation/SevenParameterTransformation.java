@@ -55,7 +55,7 @@ import org.cts.op.AbstractCoordinateOperation;
  * rotations. In this convention, most used in USA and recommended by NATO,
  * rotation parameters represent rotations to be applied to the frame.</li>
  *
- * @author Michael Michaud
+ * @author Michaël Michaud
  */
 public class SevenParameterTransformation extends AbstractCoordinateOperation implements GeoTransformation {
 

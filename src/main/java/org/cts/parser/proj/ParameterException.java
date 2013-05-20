@@ -33,7 +33,7 @@ package org.cts.parser.proj;
 
 /**
  *
- * @author ebocher
+ * @author Erwan Bocher
  */
 public class ParameterException  extends RuntimeException {
 

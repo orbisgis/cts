@@ -43,7 +43,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * This class is used to test several transformations.
  *
- * @author ebocher
+ * @author Erwan Bocher
  */
 public class BatchCoordinateTransformTest extends BaseCoordinateTransformTest {
 

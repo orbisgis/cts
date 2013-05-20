@@ -39,7 +39,7 @@ import org.cts.NonInvertibleOperationException;
 /**
  * The identity transformation.<p> This transformation doesn't do anything.
  *
- * @author Michael Michaud
+ * @author Michaël Michaud
  */
 public class Identity extends AbstractCoordinateOperation {
 

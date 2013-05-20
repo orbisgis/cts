@@ -67,7 +67,7 @@ import org.cts.cs.GeographicExtent;
  * en zig-zag<br> Le dernier blocs peut �tre l�g�rement plus grand que
  * n�cessaire.</p>
  *
- * @author Micha�l Michaud
+ * @author Michaël Michaud
  */
 public class BleggGeographicGrid extends GeographicGrid {
 

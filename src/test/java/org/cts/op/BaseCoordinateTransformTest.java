@@ -45,7 +45,7 @@ import java.util.List;
 
 /**
  *
- * @author ebocher
+ * @author Erwan Bocher
  */
 public class BaseCoordinateTransformTest extends CTSTestCase {
 

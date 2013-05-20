@@ -38,7 +38,7 @@ import org.cts.units.Unit;
  * A CoordinateSystem is a set of ordered {@link Axis} defining how coordinates
  * assigned to a point have to be interpreted.</p>
  *
- * @author Michael Michaud
+ * @author Michaël Michaud
  */
 public class CoordinateSystem {
 

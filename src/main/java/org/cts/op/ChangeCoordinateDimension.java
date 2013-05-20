@@ -38,7 +38,7 @@ import org.cts.IllegalCoordinateException;
  * Change de coordinate dimension. For example, this operation can add or remove
  * a vertical dimension to a 2D coordinate.
  *
- * @author Michael Michaud
+ * @author Michaël Michaud
  */
 public class ChangeCoordinateDimension extends AbstractCoordinateOperation {
 
