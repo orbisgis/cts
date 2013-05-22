@@ -656,13 +656,13 @@ public class Ellipsoid extends IdentifiableComponent {
         sb.append(" (Semi-major axis = ").append(semiMajorAxis);
         switch (secondParameter) {
             case SemiMinorAxis:
-                sb.append(" | Semi-minor axis = ").append(b).append(")");
+                sb.append(" | ").append("Semi-minor axis = ").append(b).append(")");
                 break;
             case InverseFlattening:
-                sb.append(" | Flattening = 1/").append(invf).append(")");
+                sb.append(" | ").append("Flattening = 1/").append(invf).append(")");
                 break;
             case Eccentricity:
-                sb.append(" | Eccentricity = ").append(e).append(")");
+                sb.append(" | ").append("Eccentricity = ").append(e).append(")");
                 break;
             default:
                 sb.append(")");
