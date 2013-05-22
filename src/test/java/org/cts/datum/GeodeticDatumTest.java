@@ -43,7 +43,7 @@ import org.cts.op.transformation.GeocentricTranslation;
 
 /**
  *
- * @author jparty
+ * @author Jules Party
  */
 public class GeodeticDatumTest extends CTSTestCase {
     
