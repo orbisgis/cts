@@ -59,7 +59,7 @@ import java.util.Map;
  */
 public class GeodeticDatum extends AbstractDatum {
 
-    private final static Map<String, GeodeticDatum> datums = new HashMap<String, GeodeticDatum>();
+    private final static Map<Identifier, GeodeticDatum> datums = new HashMap<Identifier, GeodeticDatum>();
 
     private final PrimeMeridian primeMeridian;
 
@@ -156,7 +156,7 @@ public class GeodeticDatum extends AbstractDatum {
         super(identifier, extent, origin, epoch);
         this.ellipsoid = ellipsoid;
         this.primeMeridian = primeMeridian;
-        datums.put(identifier.getCode(), this);
+        datums.put(identifier, this);
     }
 
     /**
@@ -172,7 +172,7 @@ public class GeodeticDatum extends AbstractDatum {
      * @param idEPSG the EPSG identifier of the datum
      */
     public static GeodeticDatum getDatum(Identifier idEPSG) {
-        return datums.get(idEPSG.getCode());
+        return datums.get(idEPSG);
     }
 
     /**
@@ -293,7 +293,7 @@ public class GeodeticDatum extends AbstractDatum {
             if (getIdentifier().equals(gd.getIdentifier())) {
                 return true;
             }
-            boolean toWGS84rs = false;
+            boolean toWGS84rs;
             if (getToWGS84() == null) {
                 if (gd.getToWGS84() == null) {
                     toWGS84rs = true;
@@ -309,5 +309,14 @@ public class GeodeticDatum extends AbstractDatum {
         } else {
             return false;
         }
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 83 * hash + (this.primeMeridian != null ? this.primeMeridian.hashCode() : 0);
+        hash = 83 * hash + (this.ellipsoid != null ? this.ellipsoid.hashCode() : 0);
+        hash = 83 * hash + (this.toWGS84 != null ? this.toWGS84.hashCode() : 0);
+        return hash;
     }
 }

@@ -262,6 +262,9 @@ public class Identifier implements Identifiable {
     */
     @Override
     public boolean equals(Object object) {
+        if (object == this) {
+            return true;
+        }
         if (object instanceof Identifier) {
             Identifier other = (Identifier)object;
             // Test equality between this code and object's code
@@ -280,6 +283,14 @@ public class Identifier implements Identifiable {
             return false;
         }
         else return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 11 * hash + (this.authorityKey != null ? this.authorityKey.hashCode() : 0);
+        hash = 11 * hash + (this.aliases != null ? this.aliases.hashCode() : 0);
+        return hash;
     }
 
    /**
