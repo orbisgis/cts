@@ -47,8 +47,8 @@ import org.cts.cs.GeographicExtent;
  */
 public class VerticalDatum extends AbstractDatum {
 
-    private final static Map<String, VerticalDatum> datums =
-            new HashMap<String, VerticalDatum>();
+    private final static Map<Identifier, VerticalDatum> datums =
+            new HashMap<Identifier, VerticalDatum>();
     /**
      * WGS84VD stands for WGS84 Vertical Datum. This not a real datum, but a
      * reference used to transform 3D Ellipsoidal coordinates into coordinates
@@ -68,7 +68,7 @@ public class VerticalDatum extends AbstractDatum {
     public VerticalDatum(String name) {
         super(new Identifier(VerticalDatum.class, name),
                 GeographicExtent.WORLD, null, null);
-        datums.put(getCode(), this);
+        datums.put(getIdentifier(), this);
         //addCoordinateOperation(WGS84VD, altitude2EllipsoidalHeight);
     }
 
@@ -83,7 +83,7 @@ public class VerticalDatum extends AbstractDatum {
     public VerticalDatum(Identifier identifier, GeographicExtent extent,
             String origin, String epoch) {
         super(identifier, extent, origin, epoch);
-        datums.put(identifier.getCode(), this);
+        datums.put(identifier, this);
         //addCoordinateOperation(WGS84VD, altitude2EllipsoidalHeight);
     }
 
@@ -105,7 +105,7 @@ public class VerticalDatum extends AbstractDatum {
      * <p>Return the Datum with this name.</p>
      */
     public static VerticalDatum getEpsgDatum(int idEpsg) {
-        return datums.get("EPSG:" + idEpsg);
+        return datums.get(new Identifier("EPSG", String.valueOf(idEpsg), DEFAULT));
     }
 
     public Ellipsoid getEllipsoid() {

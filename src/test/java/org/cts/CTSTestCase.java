@@ -53,7 +53,7 @@ public class CTSTestCase {
     }
 
     /**
-     * Check is the result point is equal to the target point using an epsilon
+     * Check if the result point is equal to the target point using an epsilon
      * clause
      *
      * @param resultPoint
@@ -79,7 +79,7 @@ public class CTSTestCase {
     }
 
     /**
-     * Check is the result point is equal in X and Y to the target point using
+     * Check if the result point is equal in X and Y to the target point using
      * an epsilon clause
      *
      * @param test

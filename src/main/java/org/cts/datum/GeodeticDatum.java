@@ -156,6 +156,7 @@ public class GeodeticDatum extends AbstractDatum {
         super(identifier, extent, origin, epoch);
         this.ellipsoid = ellipsoid;
         this.primeMeridian = primeMeridian;
+        datums.put(identifier, this);
     }
 
     /**
@@ -210,7 +211,7 @@ public class GeodeticDatum extends AbstractDatum {
      *
      * @param toWGS84 geocentric transformation from this to geocentric WGS 84
      */
-    public void setDefaultToWGS84Operation(CoordinateOperation toWGS84) {
+    public final void setDefaultToWGS84Operation(CoordinateOperation toWGS84) {
         this.toWGS84 = toWGS84;
         // First case : toWGS (geocentric transformation) is not null
         if (toWGS84 != null && toWGS84 != Identity.IDENTITY) {
@@ -275,7 +276,7 @@ public class GeodeticDatum extends AbstractDatum {
     }
 
     /**
-     * Return the ellipsoid of this Datum
+     * Returns the default transformation to WGS84 of this Datum
      */
     @Override
     public CoordinateOperation getToWGS84() {
@@ -292,7 +293,7 @@ public class GeodeticDatum extends AbstractDatum {
             if (getIdentifier().equals(gd.getIdentifier())) {
                 return true;
             }
-            boolean toWGS84rs = false;
+            boolean toWGS84rs;
             if (getToWGS84() == null) {
                 if (gd.getToWGS84() == null) {
                     toWGS84rs = true;
@@ -308,5 +309,14 @@ public class GeodeticDatum extends AbstractDatum {
         } else {
             return false;
         }
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 83 * hash + (this.primeMeridian != null ? this.primeMeridian.hashCode() : 0);
+        hash = 83 * hash + (this.ellipsoid != null ? this.ellipsoid.hashCode() : 0);
+        hash = 83 * hash + (this.toWGS84 != null ? this.toWGS84.hashCode() : 0);
+        return hash;
     }
 }
