@@ -118,7 +118,9 @@ public interface Identifiable {
     public String getShortName();
 
    /**
-    * Returns a short name for this Identifiable.
+    * Change the short name for this Identifiable.
+    * A short name should have less than 16 characters whenever possible, and
+    * should never exceed 48 characters.
     */
     public void setShortName(String shortName);
 

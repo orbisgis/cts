@@ -198,7 +198,7 @@ public class Identifier implements Identifiable {
     }
 
    /**
-    * Returns a short string used to identify unambiguously the object.
+    * Change the short string used to identify unambiguously the object.
     * A short name should have less than 16 characters whenever possible, and
     * should never exceed 48 characters.
     */
@@ -208,7 +208,7 @@ public class Identifier implements Identifiable {
     }
 
    /**
-    * Returns the name of this extent.
+    * Returns remarks.
     */
 	@Override
     public String getRemarks() {
@@ -260,7 +260,11 @@ public class Identifier implements Identifiable {
     * Test equality between codes (namespace + id), then between aliases.
     * @param object
     */
+    @Override
     public boolean equals(Object object) {
+        if (object == this) {
+            return true;
+        }
         if (object instanceof Identifier) {
             Identifier other = (Identifier)object;
             // Test equality between this code and object's code
@@ -279,6 +283,14 @@ public class Identifier implements Identifiable {
             return false;
         }
         else return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 11 * hash + (this.authorityKey != null ? this.authorityKey.hashCode() : 0);
+        hash = 11 * hash + (this.aliases != null ? this.aliases.hashCode() : 0);
+        return hash;
     }
 
    /**
