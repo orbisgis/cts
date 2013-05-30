@@ -153,6 +153,8 @@ public class Ellipsoid extends IdentifiableComponent {
     // this second method is taken from http://www.ngs.noaa.gov/gps-toolbox/Hehl
     // It makes it possible to choose the precision of the result
     transient private double[] kk;
+    //coefficients used by the inverse Mercator projection
+    transient private double[] inv_merc_coeff;
 
     /**
      * Create a new Ellipsoid and initialize common parameters : a, b, e, e2, f,
@@ -265,6 +267,13 @@ public class Ellipsoid extends IdentifiableComponent {
     public double[] getKCoeff(int max) {
         initKCoeff(max);
         return kk;
+    }
+    
+    /**
+     * Get coefficients for the inverse Mercator projection
+     */
+    public double[] getInverseMercatorCoeff() {
+        return inv_merc_coeff;
     }
 
     /**
@@ -428,6 +437,12 @@ public class Ellipsoid extends IdentifiableComponent {
         inv_utm_coeff[2] = e4 * 1 / 768 + e6 * 3 / 1280 + e8 * 559 / 368640;
         inv_utm_coeff[3] = e6 * 17 / 30720 + e8 * 283 / 430080;
         inv_utm_coeff[4] = e8 * 4397 / 41287680;
+        inv_merc_coeff = new double[5];
+        inv_merc_coeff[0] = 1.0;
+        inv_merc_coeff[1] = e2 * 1 / 2 + e4 * 5 / 24 + e6 * 1 / 12 + e8 * 13 / 360;
+        inv_merc_coeff[2] = e4 * 7 / 48 + e6 * 29 / 240 + e8 * 811 / 11520;
+        inv_merc_coeff[3] = e6 * 7 / 120 + e8 * 81 / 1120;
+        inv_merc_coeff[4] = e8 * 4279 / 161280;
     }
 
     /**

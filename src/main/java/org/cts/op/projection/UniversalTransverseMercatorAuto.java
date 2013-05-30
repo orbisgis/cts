@@ -106,8 +106,9 @@ public class UniversalTransverseMercatorAuto extends Projection {
     */
 	@Override
     public CoordinateOperation inverse() throws NonInvertibleOperationException {
-        return new LambertConicConformal1SP(ellipsoid, parameters) {
-			@Override
+        return new UniversalTransverseMercatorAuto(ellipsoid, parameters) {
+            
+            @Override
             public double[] transform(double[] coord) throws CoordinateDimensionException {
                 double lon0 = 0;
                 double ys = coord[0] >= 0 ? 0 : 10000000;
@@ -119,7 +120,7 @@ public class UniversalTransverseMercatorAuto extends Projection {
                 }
                 double lon = lon0 + Math.atan(Math.sinh(Z.im())/Math.cos(Z.re()));
                 double PHI = Math.asin(Math.sin(Z.re())/Math.cosh(Z.im()));
-                double latIso = ellipsoid.isometricLatitude(PHI);
+                double latIso = Ellipsoid.SPHERE.isometricLatitude(PHI);
                 double lat = ellipsoid.latitude(latIso);
                 coord[0] = lat;
                 coord[1] = lon;

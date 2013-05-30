@@ -405,6 +405,7 @@ public class CRSHelper {
                 String slat_1 = param.get("lat_1");
                 String slat_2 = param.get("lat_2");
                 String slon_0 = param.get("lon_0");
+                String sk = param.get("k");
                 String sk_0 = param.get("k_0");
                 String sx_0 = param.get("x_0");
                 String sy_0 = param.get("y_0");
@@ -412,7 +413,12 @@ public class CRSHelper {
                 double lat_1 = slat_1 != null ? Double.parseDouble(slat_1) : 0.;
                 double lat_2 = slat_2 != null ? Double.parseDouble(slat_2) : 0.;
                 double lon_0 = slon_0 != null ? Double.parseDouble(slon_0) : 0.;
-                double k_0 = sk_0 != null ? Double.parseDouble(sk_0) : 0.;
+                if (sk!=null && sk_0!=null) {
+                    if (!sk.equals(sk_0)) {
+                        LOGGER.warn("Two different scales factor at origin are defined, the one chosen for the projection is k_0");
+                    }
+                }
+                double k_0 = sk_0 != null ? Double.parseDouble(sk_0) : sk != null ? Double.parseDouble(sk) : 1.;
                 double x_0 = sx_0 != null ? Double.parseDouble(sx_0) : 0.;
                 double y_0 = sy_0 != null ? Double.parseDouble(sy_0) : 0.;
                 Map<String, Measure> map = new HashMap<String, Measure>();
@@ -441,6 +447,8 @@ public class CRSHelper {
                                 Unit.DEGREE));
                         map.put(Parameter.FALSE_NORTHING, new Measure(y_0, Unit.METER));
                         return new UniversalTransverseMercator(ell, map);
+                } else if (projectionName.equalsIgnoreCase(ProjValueParameters.MERC)) {
+                    return new Mercator1SP(ell, map);
                 } else {
                         throw new RuntimeException("Cannot create the projection " + projectionName);
                 }
