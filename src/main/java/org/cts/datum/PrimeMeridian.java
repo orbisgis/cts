@@ -57,7 +57,7 @@ public class PrimeMeridian extends IdentifiableComponent {
     public static final PrimeMeridian LISBON =
             createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8902", "Lisbon", "Lisbon"), -9.0754862);
     public static final PrimeMeridian PARIS =
-            createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8903", "Paris","Paris","Value adopted by IGN (Paris) in 1936. Equivalent to 2°20'14.025\". Preferred by EPSG to earlier value of 2°20'13.95\" (2.596898 grads) used by RGS London", null), 2.33722917);
+            createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8903", "Paris","Paris","Value adopted by IGN (Paris) in 1936. Equivalent to 2°20'14.025\". Preferred by EPSG to earlier value of 2°20'13.95\" (2.596898 grads) used by RGS London", null), 2.337229167);
     public static final PrimeMeridian BOGOTA =
             createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8904", "Bogota", "Bogota"), -74.04513);
     public static final PrimeMeridian MADRID =

@@ -52,6 +52,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import org.cts.grid.GridShift;
+import org.cts.op.CoordinateOperationSequence;
 import org.cts.op.transformation.NTv2GridShiftTransformation;
 
 /**
@@ -343,10 +344,20 @@ public class CRSHelper {
                                                     LOGGER.warn("The grid transformation "+grid+" is not inversible.");
                                                 }
                                             }
-                                            else if (gd.getShortName().equals(gt.getToDatum())) {
-                                                gtSource.addCoordinateOperation(gd, gt);
+                                            else {
+                                                if (gd.getCoordinateOperations(gtSource).isEmpty()) {
+                                                    CoordinateOperationSequence opList = new CoordinateOperationSequence(
+                                                            new Identifier(CoordinateOperationSequence.class, gd.getName() + " to " + gtSource.getName() + " through " + GeodeticDatum.WGS84.getName()),
+                                                            gd.getCoordinateOperations(GeodeticDatum.WGS84).get(0),
+                                                            GeodeticDatum.WGS84.getCoordinateOperations(gtSource).get(0));
+                                                    gd.addCoordinateOperation(gtSource, opList);
+                                                }
+                                                CoordinateOperationSequence opList1 = new CoordinateOperationSequence(
+                                                        new Identifier(CoordinateOperationSequence.class, gd.getName() + " to " + gtTarget.getName() + " through " + grid + " transformation"),
+                                                        gd.getCoordinateOperations(gtSource).get(0), gt);
+                                                gd.addCoordinateOperation(gtTarget, opList1);
                                                 try {
-                                                    gd.addCoordinateOperation(gtSource, gt.inverse());
+                                                    gtTarget.addCoordinateOperation(gd, opList1.inverse());
                                                 } catch (NonInvertibleOperationException ex) {
                                                     LOGGER.warn("The grid transformation "+grid+" is not inversible.");
                                                 }
