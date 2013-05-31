@@ -31,6 +31,7 @@
 */
 package org.cts.crs;
 
+import java.io.IOException;
 import org.apache.log4j.Logger;
 import org.cts.*;
 import org.cts.cs.Axis;
@@ -49,6 +50,9 @@ import org.cts.units.Unit;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import org.cts.grid.GridShift;
+import org.cts.op.transformation.NTv2GridShiftTransformation;
 
 /**
  * @TODO Not sure this class is useful here. I'd prefer a clear separation
@@ -308,13 +312,51 @@ public class CRSHelper {
                 if (null != pm && null != ell) {
                     GeodeticDatum gd = new GeodeticDatum(pm, ell);
                     setDefaultWGS84Parameters(gd, param);
+                    gd = gd.checkExistingGeodeticDatum();
+                    
                     String nadgrids = param.get(ProjKeyParameters.nadgrids);
                     if (nadgrids != null) {
-                        LOGGER.warn("A grid has been founded.");
-                        //TODO : use a more generic approach to manage grids
-                        //French grid
-                        if (nadgrids.contains("ntf_r93.gsb")) {
-                            //TODO : nadgrids management to be implemented
+                        String[] grids = nadgrids.split(",");
+                        for (String grid : grids) {
+                            if (!grid.equals("null")) {
+                                LOGGER.warn("A grid has been founded.");
+                                if (grid.equals("@null")) {
+                                    gd.addCoordinateOperation(GeodeticDatum.WGS84, Identity.IDENTITY);
+                                    GeodeticDatum.WGS84.addCoordinateOperation(gd, Identity.IDENTITY);
+                                } else {
+                                    try {
+                                        NTv2GridShiftTransformation gt = new NTv2GridShiftTransformation(
+                                                GridShift.class.getResource(grid).getPath());
+                                        gt.setMode(NTv2GridShiftTransformation.SPEED);
+                                        gt.loadGridShiftFile();
+                                        GeodeticDatum gtSource = GeodeticDatum.getGeodeticDatumFromShortName(gt.getFromDatum());
+                                        GeodeticDatum gtTarget = GeodeticDatum.getGeodeticDatumFromShortName(gt.getToDatum());
+                                        if (gtSource == null || gtTarget == null) {
+                                            LOGGER.warn("At least one of the geodetic datum bound by the grid transformation "+grid+" is not recognized.");
+                                        }
+                                        else {
+                                            if (gd.getShortName().equals(gt.getFromDatum())) {
+                                                gd.addCoordinateOperation(gtTarget, gt);
+                                                try {
+                                                    gtTarget.addCoordinateOperation(gd, gt.inverse());
+                                                } catch (NonInvertibleOperationException ex) {
+                                                    LOGGER.warn("The grid transformation "+grid+" is not inversible.");
+                                                }
+                                            }
+                                            else if (gd.getShortName().equals(gt.getToDatum())) {
+                                                gtSource.addCoordinateOperation(gd, gt);
+                                                try {
+                                                    gd.addCoordinateOperation(gtSource, gt.inverse());
+                                                } catch (NonInvertibleOperationException ex) {
+                                                    LOGGER.warn("The grid transformation "+grid+" is not inversible.");
+                                                }
+                                            }
+                                        }
+                                    } catch (IOException ex) {
+                                        java.util.logging.Logger.getLogger(CRSHelper.class.getName()).log(Level.SEVERE, null, ex);
+                                    }
+                                }
+                            }
                         }
                     }
                     return gd;

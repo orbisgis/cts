@@ -113,6 +113,33 @@ public class GeodeticDatum extends AbstractDatum {
         ED50.setDefaultToWGS84Operation(new GeocentricTranslation(-84.0, -97.0,
                 -117.0, 1.0));
     }
+    
+    /**
+     * Returns the GeodeticDatum corresponding to the short name given in argument.
+     * Return null if none GeodeticDatum match.
+     * @param shortName the name of the GeodeticDatum to be returned.
+     * @return 
+     */
+    public static GeodeticDatum getGeodeticDatumFromShortName(String shortName) {
+        if (WGS84.getShortName().equals(shortName)) {
+            return WGS84;
+        }
+        else if (RGF93.getShortName().equals(shortName)) {
+            return RGF93;
+        }
+        else if (NTF.getShortName().equals(shortName)) {
+            return NTF;
+        }
+        else if (NTF_PARIS.getShortName().equals(shortName)) {
+            return NTF_PARIS;
+        }
+        else if (ED50.getShortName().equals(shortName)) {
+            return ED50;
+        }
+        else {
+            return null;
+        }
+    }
 
     /**
      * Creates a new Datum.
