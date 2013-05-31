@@ -142,7 +142,8 @@ public class PrimeMeridian extends IdentifiableComponent {
      */
     public static PrimeMeridian createPrimeMeridianFromDDLongitude(
             Identifier identifier, double ddLongitude) {
-        return new PrimeMeridian(identifier, ddLongitude);
+        PrimeMeridian pm = new PrimeMeridian(identifier, ddLongitude);
+        return pm.checkExistingPrimeMeridian();
     }
 
     /**
@@ -154,7 +155,8 @@ public class PrimeMeridian extends IdentifiableComponent {
      */
     public static PrimeMeridian createPrimeMeridianFromDMSLongitude(
             Identifier identifier, double dmsLongitude) {
-        return new PrimeMeridian(identifier, AngleFormat.dms2dd(dmsLongitude));
+        PrimeMeridian pm = new PrimeMeridian(identifier, AngleFormat.dms2dd(dmsLongitude));
+        return pm.checkExistingPrimeMeridian();
     }
 
     /**
@@ -169,7 +171,8 @@ public class PrimeMeridian extends IdentifiableComponent {
             Identifier identifier, String dmsLongitude)
             throws IllegalArgumentException {
         double ddLongitude = AngleFormat.parseAngle(dmsLongitude);
-        return new PrimeMeridian(identifier, ddLongitude);
+        PrimeMeridian pm = new PrimeMeridian(identifier, ddLongitude);
+        return pm.checkExistingPrimeMeridian();
     }
 
     /**
@@ -181,7 +184,8 @@ public class PrimeMeridian extends IdentifiableComponent {
      */
     public static PrimeMeridian createPrimeMeridianFromLongitudeInRadians(
             Identifier identifier, double longitude) {
-        return new PrimeMeridian(identifier, Math.toDegrees(longitude));
+        PrimeMeridian pm = new PrimeMeridian(identifier, Math.toDegrees(longitude));
+        return pm.checkExistingPrimeMeridian();
     }
 
     /**
@@ -194,8 +198,43 @@ public class PrimeMeridian extends IdentifiableComponent {
      */
     public static PrimeMeridian createPrimeMeridianFromLongitudeInGrades(
             Identifier identifier, double longitude) {
-        return new PrimeMeridian(identifier, longitude * 180.0 / 200.0);
+        PrimeMeridian pm = new PrimeMeridian(identifier, longitude * 180.0 / 200.0);
+        return pm.checkExistingPrimeMeridian();
     }
+    
+    private PrimeMeridian checkExistingPrimeMeridian() {
+        if (this.equals(PrimeMeridian.GREENWICH)) {
+            return PrimeMeridian.GREENWICH;
+        } else if (this.equals(PrimeMeridian.ATHENS)) {
+            return PrimeMeridian.ATHENS;
+        } else if (this.equals(PrimeMeridian.BERN)) {
+            return PrimeMeridian.BERN;
+        } else if (this.equals(PrimeMeridian.BOGOTA)) {
+            return PrimeMeridian.BOGOTA;
+        } else if (this.equals(PrimeMeridian.BRUSSELS)) {
+            return PrimeMeridian.BRUSSELS;
+        } else if (this.equals(PrimeMeridian.FERRO)) {
+            return PrimeMeridian.FERRO;
+        } else if (this.equals(PrimeMeridian.JAKARTA)) {
+            return PrimeMeridian.JAKARTA;
+        } else if (this.equals(PrimeMeridian.LISBON)) {
+            return PrimeMeridian.LISBON;
+        } else if (this.equals(PrimeMeridian.MADRID)) {
+            return PrimeMeridian.MADRID;
+        } else if (this.equals(PrimeMeridian.OSLO)) {
+            return PrimeMeridian.OSLO;
+        } else if (this.equals(PrimeMeridian.PARIS)) {
+            return PrimeMeridian.PARIS;
+        } else if (this.equals(PrimeMeridian.PARIS_RGS)) {
+            return PrimeMeridian.PARIS_RGS;
+        } else if (this.equals(PrimeMeridian.ROME)) {
+            return PrimeMeridian.ROME;
+        } else if (this.equals(PrimeMeridian.STOCKHOLM)) {
+            return PrimeMeridian.STOCKHOLM;
+        } else {
+            return this;
+        }
+     }
 
     /**
      * @return a String representation of this
