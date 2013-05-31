@@ -38,7 +38,6 @@ import org.cts.NonInvertibleOperationException;
 import org.cts.crs.*;
 import org.cts.datum.Datum;
 import org.cts.datum.GeodeticDatum;
-import org.cts.op.transformation.GeocentricTranslation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -117,7 +116,6 @@ public final class CoordinateOperationFactory {
 	 */
 	private static List<CoordinateOperation> createCoordinateOperations(
 		GeodeticDatum datum, GeodeticCRS source, GeodeticCRS target) {
-		//if (datum ==  null) throw new IllegalArgumentException("The datum must not be null");
 		List<CoordinateOperation> opList = new ArrayList<CoordinateOperation>();
 		try {
 			opList.add(new CoordinateOperationSequence(
@@ -144,12 +142,6 @@ public final class CoordinateOperationFactory {
 	private static List<CoordinateOperation> createCoordinateOperations(
 		GeodeticDatum sourceDatum, GeodeticCRS source,
 		GeodeticDatum targetDatum, GeodeticCRS target) {
-		if (sourceDatum == null) {
-			throw new IllegalArgumentException("The source datum must not be null");
-		}
-		if (targetDatum == null) {
-			throw new IllegalArgumentException("The target datum must not be null");
-		}
         // We get registered transformation from source GeodeticDatum to target GeodeticDatum
         // There maybe one or more transformations available.
 		List<CoordinateOperation> datumTransformations = sourceDatum.getCoordinateOperations(targetDatum);
@@ -170,162 +162,20 @@ public final class CoordinateOperationFactory {
 		}
 		if (opList.isEmpty()) {
 			try {
-
-				/*NTv2GridShiftTransformation ntv2 = new NTv2GridShiftTransformation(Datum.class.getResource(
-				"ntf_r93.gsb").getPath(), 0.001);
-				ntv2.setMode(NTv2GridShiftTransformation.SPEED);
-				ntv2.loadGridShiftFile();*/
-
 				opList.add(new CoordinateOperationSequence(
                         new Identifier(CoordinateOperationSequence.class),
 						source.toGeographicCoordinateConverter(),
-						LongitudeRotation.getLongitudeRotationFrom(sourceDatum.getPrimeMeridian()),
-						new Geographic2Geocentric(sourceDatum.getEllipsoid()),
-						sourceDatum.getToWGS84(),
-						//ntv2,
-						targetDatum.getToWGS84() == null ? new GeocentricTranslation(0, 0, 0) : targetDatum.getToWGS84().inverse(),
-						new Geocentric2Geographic(targetDatum.getEllipsoid()),
-						LongitudeRotation.getLongitudeRotationTo(targetDatum.getPrimeMeridian()),
+                        sourceDatum.getCoordinateOperations(GeodeticDatum.WGS84).get(0),
+                        GeodeticDatum.WGS84.getCoordinateOperations(targetDatum).get(0),
 						target.fromGeographicCoordinateConverter()
 					)
                 );
-
-				/*	CoordinateOperation[] sequence = new CoordinateOperation[]
-				{	source.toGeographicCoordinateConverter(),
-				LongitudeRotation.getLongitudeRotationFrom(sourceDatum.getPrimeMeridian()),
-				new Geographic2Geocentric(sourceDatum.getEllipsoid())};
-				if(sourceDatum.getToWGS84()!=null) {
-				sequence[sequence.length] = new AbstractCoordinateOperation("");
-				sourceDatum.getToWGS84();
-				if(targetDatum.getToWGS84()!=null)
-				sequence[sequence.length] = targetDatum.getToWGS84().inverse();
-				sequence[sequence.length] = new Geocentric2Geographic(targetDatum.getEllipsoid());
-				sequence[sequence.length] = LongitudeRotation.getLongitudeRotationTo(targetDatum.getPrimeMeridian());
-				if(target.fromGeographicCoordinateConverter()!=null)
-				sequence[sequence.length] = target.fromGeographicCoordinateConverter();
-
-				opList.add(new CoordinateOperationSequence(
-				new Identifier(CoordinateOperationSequence.class),
-				sequence));*/
-
 			} catch (NonInvertibleOperationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} /*catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			}*/
-
+                LOG.warn("Operation from " + source.getName() + " to " + target.getName()
+                        + " through " + GeodeticDatum.WGS84.getName() + " could not be created");
+                LOG.error("CoordinateOperationFactory", e);
+            }
 		}
 		return opList;
-	}
-
-	/**
-	 * Create a CoordinateOperation from a source {@link CoordinateReferenceSystem}
-	 * and a target {@link CoordinateReferenceSystem}.
-	 */
-	/*public static List<CoordinateOperation> createCoordinateOperations(
-	GeodeticCRS source, GeodeticCRS target) {
-	List<CoordinateOperation> oplist = new ArrayList<CoordinateOperation>();
-	if (source == null || target == null) {
-	throw new IllegalArgumentException(
-	"Source and target arguments must be non null");
-	}
-	GeodeticDatum sourceGDatum = source.getDatum();
-	if (sourceGDatum == null) {
-	LOG.warning(source.getName() + " has no Geodetic Datum");
-	}
-	GeodeticDatum targetGDatum = target.getDatum();
-	if (targetGDatum == null) {
-	LOG.warning(source.getName() + " has no Geodetic Datum");
-	}
-	CoordinateReferenceSystem.Type sourceCRSType = source.getType();
-	CoordinateReferenceSystem.Type targetCRSType = target.getType();
-	// 1 - Geodetic Datums are identical
-	if (sourceGDatum.equals(targetGDatum)) {
-	// 1.1 - CRS are both geodetic CRS (either geocentric, geographic or projected)
-	if ((sourceCRSType == GEOCENTRIC || sourceCRSType == GEOGRAPHIC2D ||
-	sourceCRSType == GEOGRAPHIC3D || sourceCRSType == PROJECTED) &&
-	(targetCRSType == GEOCENTRIC || targetCRSType == GEOGRAPHIC2D ||
-	targetCRSType == GEOGRAPHIC3D || targetCRSType == PROJECTED)) {
-	try {
-	oplist.add(new CoordinateOperationSequence(
-	new Identifier(CoordinateOperation.class,
-	source.getName() + " to " + target.getName()),
-	new CoordinateOperation[]{
-	source.toGeographicCoordinateConverter(),
-	target.fromGeographicCoordinateConverter()}));
-	} catch(NonInvertibleOperationException e) {
-	LOG.warning("Operation from " + source.getName() + " to " +
-	target.getName() + " could not be created");
-	LOG.throwing("CoordinateOperationFactory", "createCoordinateOperations", e);
-	}
-
-	// 1.1.1 - CRS Types are also identical
-	//if (sourceCRSType == targetCRSType) {
-	//    return createCoordinateOperation(source, target, sourceGDatum, sourceCRSType);
-	//}
-	// 1.1.2 - CRS Types are different
-	//else {
-	//    return createCoordinateOperation(source, target, sourceGDatum);
-	//}
-	}
-	else if (sourceCRSType == COMPOUND || targetCRSType == COMPOUND) {
-	// not yet implemented
-	LOG.warning("Coumpound CRS transformation is not yet implemented");
-	}
-	else if (sourceCRSType == VERTICAL || targetCRSType == VERTICAL) {
-	// not yet implemented
-	LOG.warning("Vertical CRS transformation is not yet implemented");
-	}
-	else if (sourceCRSType == ENGINEERING || targetCRSType == ENGINEERING) {
-	// not yet implemented
-	LOG.warning("Engineering CRS transformation is not yet implemented");
-	}
-	else {
-	// should never reach here
-	throw new IllegalArgumentException("Source CRS " +
-	source.getName() + " cannot be transformed into " +
-	target.getName());
-	}
-	return oplist;
-
-	}
-	// 2 - Geodetic Datums are different
-	else {
-	List<CoordinateOperation> datumTfs =
-	sourceGDatum.getCoordinateOperations(targetGDatum);
-	for (CoordinateOperation co : datumTfs) {
-	try {
-	oplist.add(new CoordinateOperationSequence(
-	new Identifier(CoordinateOperation.class,
-	source.getName() + " to " + target.getName()),
-	new CoordinateOperation[]{
-	source.toGeographicCoordinateConverter(),
-	co,
-	target.fromGeographicCoordinateConverter()}));
-	} catch(NonInvertibleOperationException e) {
-	LOG.warning("Operation from " + source.getName() + " to " +
-	target.getName() + " could not be created");
-	LOG.throwing("CoordinateOperationFactory", "createCoordinateOperations", e);
-	}
-	}
-	return oplist;
-	}
-
-	}
-	 */
-	private static CoordinateOperation createCoordinateOperation(
-		GeodeticCRS source,
-		GeodeticCRS target,
-		GeodeticDatum sourceGDatum,
-		CoordinateReferenceSystem.Type sourceCRSType) {
-		return null;
-	}
-
-	private static CoordinateOperation createCoordinateOperation(GeodeticCRS source,
-		GeodeticCRS target,
-		GeodeticDatum sourceGDatum) {
-		return null;
 	}
 }
