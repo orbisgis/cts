@@ -149,4 +149,25 @@ public class GeocentricTranslation extends AbstractCoordinateOperation implement
         w.append("]");
         return w.toString();
     }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o instanceof GeocentricTranslation) {
+            GeocentricTranslation gt = (GeocentricTranslation) o;
+            return ((this.tx==gt.tx)&&(this.ty==gt.ty)&&(this.tz==gt.tz));
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 19 * hash + (int) (Double.doubleToLongBits(this.tx) ^ (Double.doubleToLongBits(this.tx) >>> 32));
+        hash = 19 * hash + (int) (Double.doubleToLongBits(this.ty) ^ (Double.doubleToLongBits(this.ty) >>> 32));
+        hash = 19 * hash + (int) (Double.doubleToLongBits(this.tz) ^ (Double.doubleToLongBits(this.tz) >>> 32));
+        return hash;
+    }
 }
