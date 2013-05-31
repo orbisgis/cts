@@ -289,8 +289,9 @@ public class Ellipsoid extends IdentifiableComponent {
             double invFlattening)
             throws IllegalArgumentException {
         Identifier id = new Identifier(Ellipsoid.class, Identifiable.UNKNOWN);
-        return new Ellipsoid(id, semiMajorAxis,
-                SecondParameter.InverseFlattening, invFlattening);
+        Ellipsoid ellps = new Ellipsoid(id, semiMajorAxis,
+                 SecondParameter.InverseFlattening, invFlattening);
+        return ellps.checkExistingEllipsoid();
     }
 
     /**
@@ -307,8 +308,9 @@ public class Ellipsoid extends IdentifiableComponent {
             double semiMajorAxis,
             double invFlattening)
             throws IllegalArgumentException {
-        return new Ellipsoid(identifier, semiMajorAxis,
-                SecondParameter.InverseFlattening, invFlattening);
+        Ellipsoid ellps = new Ellipsoid(identifier, semiMajorAxis,
+                 SecondParameter.InverseFlattening, invFlattening);
+        return ellps.checkExistingEllipsoid();
     }
 
     /**
@@ -324,8 +326,9 @@ public class Ellipsoid extends IdentifiableComponent {
             double semiMinorAxis)
             throws IllegalArgumentException {
         Identifier id = new Identifier(Ellipsoid.class, Identifiable.UNKNOWN);
-        return new Ellipsoid(id, semiMajorAxis,
-                SecondParameter.SemiMinorAxis, semiMinorAxis);
+        Ellipsoid ellps = new Ellipsoid(id, semiMajorAxis,
+                 SecondParameter.SemiMinorAxis, semiMinorAxis);
+        return ellps.checkExistingEllipsoid();
     }
 
     /**
@@ -342,8 +345,9 @@ public class Ellipsoid extends IdentifiableComponent {
             double semiMajorAxis,
             double semiMinorAxis)
             throws IllegalArgumentException {
-        return new Ellipsoid(identifier, semiMajorAxis,
-                SecondParameter.SemiMinorAxis, semiMinorAxis);
+        Ellipsoid ellps = new Ellipsoid(identifier, semiMajorAxis,
+                 SecondParameter.SemiMinorAxis, semiMinorAxis);
+        return ellps.checkExistingEllipsoid();
     }
 
     /**
@@ -359,8 +363,9 @@ public class Ellipsoid extends IdentifiableComponent {
             double eccentricity)
             throws IllegalArgumentException {
         Identifier id = new Identifier(Ellipsoid.class, Identifiable.UNKNOWN);
-        return new Ellipsoid(id, semiMajorAxis,
-                SecondParameter.Eccentricity, eccentricity);
+        Ellipsoid ellps = new Ellipsoid(id, semiMajorAxis,
+                 SecondParameter.Eccentricity, eccentricity);
+        return ellps.checkExistingEllipsoid();
     }
 
     /**
@@ -375,9 +380,36 @@ public class Ellipsoid extends IdentifiableComponent {
     public static Ellipsoid createEllipsoidFromEccentricity(
             Identifier identifier, double semiMajorAxis, double eccentricity)
             throws IllegalArgumentException {
-        return new Ellipsoid(identifier, semiMajorAxis,
-                SecondParameter.Eccentricity, eccentricity);
+        Ellipsoid ellps = new Ellipsoid(identifier, semiMajorAxis,
+                 SecondParameter.Eccentricity, eccentricity);
+        return ellps.checkExistingEllipsoid();
     }
+    
+    private Ellipsoid checkExistingEllipsoid() {
+        if (this.equals(Ellipsoid.GRS80)) {
+            return Ellipsoid.GRS80;
+        } else if (this.equals(Ellipsoid.WGS84)) {
+            return Ellipsoid.WGS84;
+        } else if (this.equals(Ellipsoid.INTERNATIONAL1924)) {
+            return Ellipsoid.INTERNATIONAL1924;
+        } else if (this.equals(Ellipsoid.CLARKE1866)) {
+            return Ellipsoid.CLARKE1866;
+        } else if (this.equals(Ellipsoid.CLARKE1880ARC)) {
+            return Ellipsoid.CLARKE1880ARC;
+        } else if (this.equals(Ellipsoid.CLARKE1880IGN)) {
+            return Ellipsoid.CLARKE1880IGN;
+        } else if (this.equals(Ellipsoid.CLARKE1880RGS)) {
+            return Ellipsoid.CLARKE1880RGS;
+        } else if (this.equals(Ellipsoid.SPHERE)) {
+            return Ellipsoid.SPHERE;
+        } else if (this.equals(Ellipsoid.BESSEL1841)) {
+            return Ellipsoid.BESSEL1841;
+        } else if (this.equals(Ellipsoid.KRASSOWSKI)) {
+            return Ellipsoid.KRASSOWSKI;
+        } else {
+            return this;
+        }
+     }
 
     /**
      * Since version 0&#046;3 : initialization of all the double parameters of
