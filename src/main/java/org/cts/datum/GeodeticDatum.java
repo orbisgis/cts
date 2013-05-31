@@ -310,6 +310,11 @@ public class GeodeticDatum extends AbstractDatum {
         return toWGS84;
     }
     
+    /**
+     * If the GeodeticDatum is equal to one of the wellknown GeodeticDatum (WGS84, RGF93, NTF, NTF_PARIS and ED50),
+     * the method return this wellknown GeodeticDatumatum.
+     * If there is no such datum, the method return the GeodeticDatum to which the method is applied.
+     */
     public GeodeticDatum checkExistingGeodeticDatum() {
         if (this.equals(WGS84)) {
             return WGS84;
