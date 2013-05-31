@@ -282,6 +282,22 @@ public class GeodeticDatum extends AbstractDatum {
     public CoordinateOperation getToWGS84() {
         return toWGS84;
     }
+    
+    public GeodeticDatum checkExistingGeodeticDatum() {
+        if (this.equals(WGS84)) {
+            return WGS84;
+        } else if (this.equals(RGF93)) {
+            return RGF93;
+        } else if (this.equals(NTF)) {
+            return NTF;
+        } else if (this.equals(NTF_PARIS)) {
+            return NTF_PARIS;
+        } else if (this.equals(ED50)) {
+            return ED50;
+        } else {
+            return this;
+        }
+    }
 
     @Override
     public boolean equals(Object o) {
