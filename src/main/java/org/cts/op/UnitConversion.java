@@ -173,10 +173,10 @@ public class UnitConversion extends AbstractCoordinateOperation {
         Identifier identifier;
         assert planiSourceUnit.isComparable(planiTargetUnit) : "source and target horizontal units must be comparable";
         assert altiSourceUnit.isComparable(altiTargetUnit) : "source and target vertical units must be comparable";
-        if (planiSourceUnit.getQuantity().equals("LENGTH")) {
+        if (planiSourceUnit.getQuantity().equals(Quantity.LENGTH)) {
             identifier = new Identifier(UnitConversion.class,
                     planiSourceUnit.getName() + " to " + planiTargetUnit.getName());
-        } else if (planiSourceUnit.getQuantity().equals("ANGLE")) {
+        } else if (planiSourceUnit.getQuantity().equals(Quantity.ANGLE)) {
             identifier = new Identifier(UnitConversion.class,
                     planiSourceUnit.getName() + " to " + planiTargetUnit.getName());
         } else {

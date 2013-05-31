@@ -107,7 +107,7 @@ public class TransverseMercator extends Projection {
      */
     @Override
     public CoordinateOperation inverse() throws NonInvertibleOperationException {
-        return new LambertConicConformal1SP(ellipsoid, parameters) {
+        return new TransverseMercator(ellipsoid, parameters) {
 
             @Override
             public double[] transform(double[] coord) throws CoordinateDimensionException {
@@ -119,7 +119,7 @@ public class TransverseMercator extends Projection {
                 }
                 double lon = lon0 + Math.atan(Math.sinh(Z.im()) / Math.cos(Z.re()));
                 double PHI = Math.asin(Math.sin(Z.re()) / Math.cosh(Z.im()));
-                double latIso = ellipsoid.isometricLatitude(PHI);
+                double latIso = Ellipsoid.SPHERE.isometricLatitude(PHI);
                 double lat = ellipsoid.latitude(latIso);
                 coord[0] = lat;
                 coord[1] = lon;
