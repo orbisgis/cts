@@ -153,6 +153,8 @@ public class Ellipsoid extends IdentifiableComponent {
     // this second method is taken from http://www.ngs.noaa.gov/gps-toolbox/Hehl
     // It makes it possible to choose the precision of the result
     transient private double[] kk;
+    //coefficients used by the inverse Mercator projection
+    transient private double[] inv_merc_coeff;
 
     /**
      * Create a new Ellipsoid and initialize common parameters : a, b, e, e2, f,
@@ -266,6 +268,13 @@ public class Ellipsoid extends IdentifiableComponent {
         initKCoeff(max);
         return kk;
     }
+    
+    /**
+     * Get coefficients for the inverse Mercator projection
+     */
+    public double[] getInverseMercatorCoeff() {
+        return inv_merc_coeff;
+    }
 
     /**
      * Creates a new Ellipsoid whose definition is based on semi-major axis and
@@ -280,8 +289,9 @@ public class Ellipsoid extends IdentifiableComponent {
             double invFlattening)
             throws IllegalArgumentException {
         Identifier id = new Identifier(Ellipsoid.class, Identifiable.UNKNOWN);
-        return new Ellipsoid(id, semiMajorAxis,
-                SecondParameter.InverseFlattening, invFlattening);
+        Ellipsoid ellps = new Ellipsoid(id, semiMajorAxis,
+                 SecondParameter.InverseFlattening, invFlattening);
+        return ellps.checkExistingEllipsoid();
     }
 
     /**
@@ -298,8 +308,9 @@ public class Ellipsoid extends IdentifiableComponent {
             double semiMajorAxis,
             double invFlattening)
             throws IllegalArgumentException {
-        return new Ellipsoid(identifier, semiMajorAxis,
-                SecondParameter.InverseFlattening, invFlattening);
+        Ellipsoid ellps = new Ellipsoid(identifier, semiMajorAxis,
+                 SecondParameter.InverseFlattening, invFlattening);
+        return ellps.checkExistingEllipsoid();
     }
 
     /**
@@ -315,8 +326,9 @@ public class Ellipsoid extends IdentifiableComponent {
             double semiMinorAxis)
             throws IllegalArgumentException {
         Identifier id = new Identifier(Ellipsoid.class, Identifiable.UNKNOWN);
-        return new Ellipsoid(id, semiMajorAxis,
-                SecondParameter.SemiMinorAxis, semiMinorAxis);
+        Ellipsoid ellps = new Ellipsoid(id, semiMajorAxis,
+                 SecondParameter.SemiMinorAxis, semiMinorAxis);
+        return ellps.checkExistingEllipsoid();
     }
 
     /**
@@ -333,8 +345,9 @@ public class Ellipsoid extends IdentifiableComponent {
             double semiMajorAxis,
             double semiMinorAxis)
             throws IllegalArgumentException {
-        return new Ellipsoid(identifier, semiMajorAxis,
-                SecondParameter.SemiMinorAxis, semiMinorAxis);
+        Ellipsoid ellps = new Ellipsoid(identifier, semiMajorAxis,
+                 SecondParameter.SemiMinorAxis, semiMinorAxis);
+        return ellps.checkExistingEllipsoid();
     }
 
     /**
@@ -350,8 +363,9 @@ public class Ellipsoid extends IdentifiableComponent {
             double eccentricity)
             throws IllegalArgumentException {
         Identifier id = new Identifier(Ellipsoid.class, Identifiable.UNKNOWN);
-        return new Ellipsoid(id, semiMajorAxis,
-                SecondParameter.Eccentricity, eccentricity);
+        Ellipsoid ellps = new Ellipsoid(id, semiMajorAxis,
+                 SecondParameter.Eccentricity, eccentricity);
+        return ellps.checkExistingEllipsoid();
     }
 
     /**
@@ -366,9 +380,36 @@ public class Ellipsoid extends IdentifiableComponent {
     public static Ellipsoid createEllipsoidFromEccentricity(
             Identifier identifier, double semiMajorAxis, double eccentricity)
             throws IllegalArgumentException {
-        return new Ellipsoid(identifier, semiMajorAxis,
-                SecondParameter.Eccentricity, eccentricity);
+        Ellipsoid ellps = new Ellipsoid(identifier, semiMajorAxis,
+                 SecondParameter.Eccentricity, eccentricity);
+        return ellps.checkExistingEllipsoid();
     }
+    
+    private Ellipsoid checkExistingEllipsoid() {
+        if (this.equals(Ellipsoid.GRS80)) {
+            return Ellipsoid.GRS80;
+        } else if (this.equals(Ellipsoid.WGS84)) {
+            return Ellipsoid.WGS84;
+        } else if (this.equals(Ellipsoid.INTERNATIONAL1924)) {
+            return Ellipsoid.INTERNATIONAL1924;
+        } else if (this.equals(Ellipsoid.CLARKE1866)) {
+            return Ellipsoid.CLARKE1866;
+        } else if (this.equals(Ellipsoid.CLARKE1880ARC)) {
+            return Ellipsoid.CLARKE1880ARC;
+        } else if (this.equals(Ellipsoid.CLARKE1880IGN)) {
+            return Ellipsoid.CLARKE1880IGN;
+        } else if (this.equals(Ellipsoid.CLARKE1880RGS)) {
+            return Ellipsoid.CLARKE1880RGS;
+        } else if (this.equals(Ellipsoid.SPHERE)) {
+            return Ellipsoid.SPHERE;
+        } else if (this.equals(Ellipsoid.BESSEL1841)) {
+            return Ellipsoid.BESSEL1841;
+        } else if (this.equals(Ellipsoid.KRASSOWSKI)) {
+            return Ellipsoid.KRASSOWSKI;
+        } else {
+            return this;
+        }
+     }
 
     /**
      * Since version 0&#046;3 : initialization of all the double parameters of
@@ -428,6 +469,12 @@ public class Ellipsoid extends IdentifiableComponent {
         inv_utm_coeff[2] = e4 * 1 / 768 + e6 * 3 / 1280 + e8 * 559 / 368640;
         inv_utm_coeff[3] = e6 * 17 / 30720 + e8 * 283 / 430080;
         inv_utm_coeff[4] = e8 * 4397 / 41287680;
+        inv_merc_coeff = new double[5];
+        inv_merc_coeff[0] = 1.0;
+        inv_merc_coeff[1] = e2 * 1 / 2 + e4 * 5 / 24 + e6 * 1 / 12 + e8 * 13 / 360;
+        inv_merc_coeff[2] = e4 * 7 / 48 + e6 * 29 / 240 + e8 * 811 / 11520;
+        inv_merc_coeff[3] = e6 * 7 / 120 + e8 * 81 / 1120;
+        inv_merc_coeff[4] = e8 * 4279 / 161280;
     }
 
     /**

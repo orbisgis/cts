@@ -31,6 +31,7 @@
 */
 package org.cts.crs;
 
+import java.io.IOException;
 import org.apache.log4j.Logger;
 import org.cts.*;
 import org.cts.cs.Axis;
@@ -49,6 +50,10 @@ import org.cts.units.Unit;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import org.cts.grid.GridShift;
+import org.cts.op.CoordinateOperationSequence;
+import org.cts.op.transformation.NTv2GridShiftTransformation;
 
 /**
  * @TODO Not sure this class is useful here. I'd prefer a clear separation
@@ -308,13 +313,61 @@ public class CRSHelper {
                 if (null != pm && null != ell) {
                     GeodeticDatum gd = new GeodeticDatum(pm, ell);
                     setDefaultWGS84Parameters(gd, param);
+                    gd = gd.checkExistingGeodeticDatum();
+                    
                     String nadgrids = param.get(ProjKeyParameters.nadgrids);
                     if (nadgrids != null) {
-                        LOGGER.warn("A grid has been founded.");
-                        //TODO : use a more generic approach to manage grids
-                        //French grid
-                        if (nadgrids.contains("ntf_r93.gsb")) {
-                            //TODO : nadgrids management to be implemented
+                        String[] grids = nadgrids.split(",");
+                        for (String grid : grids) {
+                            if (!grid.equals("null")) {
+                                LOGGER.warn("A grid has been founded.");
+                                if (grid.equals("@null")) {
+                                    gd.addCoordinateOperation(GeodeticDatum.WGS84, Identity.IDENTITY);
+                                    GeodeticDatum.WGS84.addCoordinateOperation(gd, Identity.IDENTITY);
+                                } else {
+                                    try {
+                                        NTv2GridShiftTransformation gt = new NTv2GridShiftTransformation(
+                                                GridShift.class.getResource(grid).getPath());
+                                        gt.setMode(NTv2GridShiftTransformation.SPEED);
+                                        gt.loadGridShiftFile();
+                                        GeodeticDatum gtSource = GeodeticDatum.getGeodeticDatumFromShortName(gt.getFromDatum());
+                                        GeodeticDatum gtTarget = GeodeticDatum.getGeodeticDatumFromShortName(gt.getToDatum());
+                                        if (gtSource == null || gtTarget == null) {
+                                            LOGGER.warn("At least one of the geodetic datum bound by the grid transformation "+grid+" is not recognized.");
+                                        }
+                                        else {
+                                            if (gd.getShortName().equals(gt.getFromDatum())) {
+                                                gd.addCoordinateOperation(gtTarget, gt);
+                                                try {
+                                                    gtTarget.addCoordinateOperation(gd, gt.inverse());
+                                                } catch (NonInvertibleOperationException ex) {
+                                                    LOGGER.warn("The grid transformation "+grid+" is not inversible.");
+                                                }
+                                            }
+                                            else {
+                                                if (gd.getCoordinateOperations(gtSource).isEmpty()) {
+                                                    CoordinateOperationSequence opList = new CoordinateOperationSequence(
+                                                            new Identifier(CoordinateOperationSequence.class, gd.getName() + " to " + gtSource.getName() + " through " + GeodeticDatum.WGS84.getName()),
+                                                            gd.getCoordinateOperations(GeodeticDatum.WGS84).get(0),
+                                                            GeodeticDatum.WGS84.getCoordinateOperations(gtSource).get(0));
+                                                    gd.addCoordinateOperation(gtSource, opList);
+                                                }
+                                                CoordinateOperationSequence opList1 = new CoordinateOperationSequence(
+                                                        new Identifier(CoordinateOperationSequence.class, gd.getName() + " to " + gtTarget.getName() + " through " + grid + " transformation"),
+                                                        gd.getCoordinateOperations(gtSource).get(0), gt);
+                                                gd.addCoordinateOperation(gtTarget, opList1);
+                                                try {
+                                                    gtTarget.addCoordinateOperation(gd, opList1.inverse());
+                                                } catch (NonInvertibleOperationException ex) {
+                                                    LOGGER.warn("The grid transformation "+grid+" is not inversible.");
+                                                }
+                                            }
+                                        }
+                                    } catch (IOException ex) {
+                                        java.util.logging.Logger.getLogger(CRSHelper.class.getName()).log(Level.SEVERE, null, ex);
+                                    }
+                                }
+                            }
                         }
                     }
                     return gd;
@@ -405,6 +458,7 @@ public class CRSHelper {
                 String slat_1 = param.get("lat_1");
                 String slat_2 = param.get("lat_2");
                 String slon_0 = param.get("lon_0");
+                String sk = param.get("k");
                 String sk_0 = param.get("k_0");
                 String sx_0 = param.get("x_0");
                 String sy_0 = param.get("y_0");
@@ -412,7 +466,12 @@ public class CRSHelper {
                 double lat_1 = slat_1 != null ? Double.parseDouble(slat_1) : 0.;
                 double lat_2 = slat_2 != null ? Double.parseDouble(slat_2) : 0.;
                 double lon_0 = slon_0 != null ? Double.parseDouble(slon_0) : 0.;
-                double k_0 = sk_0 != null ? Double.parseDouble(sk_0) : 0.;
+                if (sk!=null && sk_0!=null) {
+                    if (!sk.equals(sk_0)) {
+                        LOGGER.warn("Two different scales factor at origin are defined, the one chosen for the projection is k_0");
+                    }
+                }
+                double k_0 = sk_0 != null ? Double.parseDouble(sk_0) : sk != null ? Double.parseDouble(sk) : 1.;
                 double x_0 = sx_0 != null ? Double.parseDouble(sx_0) : 0.;
                 double y_0 = sy_0 != null ? Double.parseDouble(sy_0) : 0.;
                 Map<String, Measure> map = new HashMap<String, Measure>();
@@ -441,6 +500,8 @@ public class CRSHelper {
                                 Unit.DEGREE));
                         map.put(Parameter.FALSE_NORTHING, new Measure(y_0, Unit.METER));
                         return new UniversalTransverseMercator(ell, map);
+                } else if (projectionName.equalsIgnoreCase(ProjValueParameters.MERC)) {
+                    return new Mercator1SP(ell, map);
                 } else {
                         throw new RuntimeException("Cannot create the projection " + projectionName);
                 }

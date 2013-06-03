@@ -199,5 +199,13 @@ public class NTv2GridShiftTransformation extends AbstractCoordinateOperation {
 	public String toString() {
 		return "NTv2 Geographic Offset (" + grid_file + ")";
 	}
+        
+    public String getFromDatum() {
+        return gsf.getFromEllipsoid().trim();
+    }
+    
+    public String getToDatum() {
+        return gsf.getToEllipsoid().trim();
+    }
 }
 

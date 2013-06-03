@@ -41,7 +41,7 @@ public class Util {
                         i = getIntLE(b, 4);
                         j = getIntLE(b, 0);
                 }
-                long l = i << 32 | j & 0xFFFFFFFF;
+                long l = ((long) i) << 32 | j & 0xFFFFFFFF;
 
                 return Double.longBitsToDouble(l);
         }
