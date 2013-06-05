@@ -507,6 +507,8 @@ public class CRSHelper {
                     return new Mercator1SP(ell, map);
                 } else if (projectionName.equalsIgnoreCase(ProjValueParameters.EQC)) {
                     return new EquidistantCylindrical(ell, map);
+                } else if (projectionName.equalsIgnoreCase(ProjValueParameters.STERE)) {
+                    return new Stereographic(ell, map);
                 } else {
                         throw new RuntimeException("Cannot create the projection " + projectionName);
                 }
