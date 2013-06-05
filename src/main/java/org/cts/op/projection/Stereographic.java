@@ -41,7 +41,7 @@ import org.cts.CoordinateOperation;
 import org.cts.NonInvertibleOperationException;
 
 /**
- * The World Mercator Projection (MERC). <p>
+ * The Polar Stereographic Projection (STERE). <p>
  *
  * @author Jules Party
  */

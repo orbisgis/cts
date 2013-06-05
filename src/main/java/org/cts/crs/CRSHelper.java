@@ -509,6 +509,8 @@ public class CRSHelper {
                     return new EquidistantCylindrical(ell, map);
                 } else if (projectionName.equalsIgnoreCase(ProjValueParameters.STERE)) {
                     return new Stereographic(ell, map);
+                } else if (projectionName.equalsIgnoreCase(ProjValueParameters.STEREA)) {
+                    return new ObliqueStereographicAlternative(ell, map);
                 } else {
                         throw new RuntimeException("Cannot create the projection " + projectionName);
                 }
