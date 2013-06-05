@@ -159,6 +159,10 @@ public abstract class Projection extends AbstractCoordinateOperation {
     public double getStandardParallel2() {
         return parameters.get(Parameter.STANDARD_PARALLEL_2).getSValue();
     }
+    
+     public double getLatitudeOfTrueScale() {
+        return parameters.get(Parameter.LATITUDE_OF_TRUE_SCALE).getSValue();
+    }
 
     public double getScaleFactor() {
         Measure m = parameters.get(Parameter.SCALE_FACTOR);

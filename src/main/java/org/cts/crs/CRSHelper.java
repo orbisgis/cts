@@ -457,6 +457,7 @@ public class CRSHelper {
                 String slat_0 = param.get("lat_0");
                 String slat_1 = param.get("lat_1");
                 String slat_2 = param.get("lat_2");
+                String slat_ts = param.get("lat_ts");
                 String slon_0 = param.get("lon_0");
                 String sk = param.get("k");
                 String sk_0 = param.get("k_0");
@@ -465,6 +466,7 @@ public class CRSHelper {
                 double lat_0 = slat_0 != null ? Double.parseDouble(slat_0) : 0.;
                 double lat_1 = slat_1 != null ? Double.parseDouble(slat_1) : 0.;
                 double lat_2 = slat_2 != null ? Double.parseDouble(slat_2) : 0.;
+                double lat_ts = slat_ts != null ? Double.parseDouble(slat_ts) : 0.;
                 double lon_0 = slon_0 != null ? Double.parseDouble(slon_0) : 0.;
                 if (sk!=null && sk_0!=null) {
                     if (!sk.equals(sk_0)) {
@@ -479,6 +481,7 @@ public class CRSHelper {
                 map.put(Parameter.LATITUDE_OF_ORIGIN, new Measure(lat_0, Unit.DEGREE));
                 map.put(Parameter.STANDARD_PARALLEL_1, new Measure(lat_1, Unit.DEGREE));
                 map.put(Parameter.STANDARD_PARALLEL_2, new Measure(lat_2, Unit.DEGREE));
+                map.put(Parameter.LATITUDE_OF_TRUE_SCALE, new Measure(lat_ts, Unit.DEGREE));
                 map.put(Parameter.SCALE_FACTOR, new Measure(k_0, Unit.UNIT));
                 map.put(Parameter.FALSE_EASTING, new Measure(x_0, Unit.METER));
                 map.put(Parameter.FALSE_NORTHING, new Measure(y_0, Unit.METER));

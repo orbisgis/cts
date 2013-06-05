@@ -54,17 +54,23 @@ public class Mercator1SP extends Projection {
             xs, // x coordinate of the pole
             ys,   // y coordinate of the pole
             n; // projection expnent
-    protected final boolean isWebMercator; //true if it is a Web Mercator projection ie ellipsoid is spherical
 
     public Mercator1SP(final Ellipsoid ellipsoid,
             final Map<String, Measure> parameters) {
         super(MERC, ellipsoid, parameters);
-        isWebMercator = (ellipsoid.getEccentricity() == 0);
         lon0 = getCentralMeridian();
         lat0 = getLatitudeOfOrigin();
         xs = getFalseEasting();
         ys = getFalseNorthing();
-        double k0 = getScaleFactor();
+        double lat_ts = getLatitudeOfTrueScale();
+        double e2 = ellipsoid.getSquareEccentricity();
+        double k0;
+        if (lat_ts != 0) {
+            k0 = cos(lat_ts)/pow(1 - e2*pow(sin(lat_ts),2), 0.5);
+        }
+        else {
+            k0 = getScaleFactor();
+        }
         double a = getSemiMajorAxis();
         n = k0 * a;
     }
