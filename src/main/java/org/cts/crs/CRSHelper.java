@@ -505,6 +505,8 @@ public class CRSHelper {
                         return new UniversalTransverseMercator(ell, map);
                 } else if (projectionName.equalsIgnoreCase(ProjValueParameters.MERC)) {
                     return new Mercator1SP(ell, map);
+                } else if (projectionName.equalsIgnoreCase(ProjValueParameters.EQC)) {
+                    return new EquidistantCylindrical(ell, map);
                 } else {
                         throw new RuntimeException("Cannot create the projection " + projectionName);
                 }
