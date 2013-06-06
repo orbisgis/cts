@@ -41,32 +41,35 @@ import org.cts.CoordinateOperation;
 import org.cts.NonInvertibleOperationException;
 
 /**
- * The Equidistant Cylindrical projection (EQC). <p>
+ * The Cassini-Soldner Projection (STEREA). <p>
  *
  * @author Jules Party
  */
-public class EquidistantCylindrical extends Projection {
+public class CassiniSoldner extends Projection {
 
-    public static final Identifier EQC =
-            new Identifier("EPSG", "1028", "Equidistant Cylindrical", "EQC");
+    public static final Identifier STERE =
+            new Identifier("EPSG", "9806", "Cassini-Soldner", "CASS");
     protected final double lat0, // the reference latitude
             lon0, // the reference longitude (from the datum prime meridian)
+            M0, // the arc length between the equator and the reference latitude.
             xs, // x coordinate of the pole
             ys,   // y coordinate of the pole
             k0, // scale coefficent for easting
-            a; // semi major axis
+            e, // eccentricity of the ellipsoid
+            e2; // square eccentricity of the ellipsoid
+    private double PI_2 = PI/2;
 
-    public EquidistantCylindrical(final Ellipsoid ellipsoid,
+    public CassiniSoldner(final Ellipsoid ellipsoid,
             final Map<String, Measure> parameters) {
-        super(EQC, ellipsoid, parameters);
+        super(STERE, ellipsoid, parameters);
         lon0 = getCentralMeridian();
         lat0 = getLatitudeOfOrigin();
         xs = getFalseEasting();
         ys = getFalseNorthing();
-        double lat_ts = getLatitudeOfTrueScale();
-        double e2 = ellipsoid.getSquareEccentricity();
-        k0 =cos(lat_ts)/pow(1 - e2*pow(sin(lat_ts),2), 0.5);
-        a = getSemiMajorAxis();
+        e = ellipsoid.getEccentricity();
+        e2 = ellipsoid.getSquareEccentricity();
+        k0 = getScaleFactor();
+        M0 = ellipsoid.arcFromLat(lat0);
     }
 
     /**
@@ -112,11 +115,18 @@ public class EquidistantCylindrical extends Projection {
     @Override
     public double[] transform(double[] coord) throws CoordinateDimensionException {
         double lon = coord[1];
-        double lat = abs(coord[0]) > PI * 85 / 180 ? PI * 85 / 180 : coord[0];
-        double E = a * k0 * (lon - lon0);
-        double N = ellipsoid.arcFromLat(lat);
-        coord[0] = xs + E;
-        coord[1] = ys + N;
+        double lat = coord[0];
+        double A = (lon-lon0)*cos(lat);
+        double A2 = A*A;
+        double A4 = A2*A2;
+        double T = pow(tan(lat), 2);
+        double C = e2*pow(cos(lat), 2)/(1-e2);
+        double v = ellipsoid.transverseRadiusOfCurvature(lat);
+        double M = ellipsoid.arcFromLat(lat);
+        double dE = v*A*(1-T*A2/6-(8*(1+C)-T)*T*A4/120);
+        double dN = M - M0 + v*tan(lat)*(A2/2+(5-T+6*C)*A4/24);
+        coord[0] = xs + dE;
+        coord[1] = ys + dN;
         return coord;
     }
     
@@ -130,13 +140,19 @@ public class EquidistantCylindrical extends Projection {
      */
     @Override
     public CoordinateOperation inverse() throws NonInvertibleOperationException {
-        return new EquidistantCylindrical(ellipsoid, parameters) {
+        return new ObliqueStereographicAlternative(ellipsoid, parameters) {
 
             @Override
             public double[] transform(double[] coord) throws CoordinateDimensionException {
-                double lat = ellipsoid.latFromArc(coord[1]);
-                coord[1] = (coord[0]-xs)/k0/a + lon0;
-                coord[0] = lat;
+                double M1 = M0 + coord[1]-ys;
+                double lat1 = ellipsoid.latFromArc(M1);
+                double T1 = pow(tan(lat1), 2);
+                double v1 = ellipsoid.transverseRadiusOfCurvature(lat1);
+                double rho1 = ellipsoid.meridionalRadiusOfCurvature(lat1);
+                double D = (coord[0]-xs)/v1;
+                double D2 = D*D;
+                coord[1] = lon0 + D*(1 - T1*D2/3 + (1+3*T1)*T1*D2*D2/15)/cos(lat1);
+                coord[0] = lat1 - v1*tan(lat1)/rho1*D2/2*(1-(1+3*T1)*D2/12);
                 return coord;
             }
         };

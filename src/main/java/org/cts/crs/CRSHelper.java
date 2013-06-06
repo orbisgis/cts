@@ -511,6 +511,8 @@ public class CRSHelper {
                     return new Stereographic(ell, map);
                 } else if (projectionName.equalsIgnoreCase(ProjValueParameters.STEREA)) {
                     return new ObliqueStereographicAlternative(ell, map);
+                } else if (projectionName.equalsIgnoreCase(ProjValueParameters.CASS)) {
+                    return new CassiniSoldner(ell, map);
                 } else {
                         throw new RuntimeException("Cannot create the projection " + projectionName);
                 }
