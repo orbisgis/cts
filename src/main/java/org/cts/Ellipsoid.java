@@ -123,6 +123,11 @@ public class Ellipsoid extends IdentifiableComponent {
      */
     public static final Ellipsoid KRASSOWSKI = createEllipsoidFromInverseFlattening(
             new Identifier("EPSG", "7024", "Krassowski 1940", "Krassowski_1940"), 6378245.0, 298.3);
+    /**
+     * Everest 1830 (1967 definition).
+     */
+    public static final Ellipsoid EVERESTSS = createEllipsoidFromInverseFlattening(
+            new Identifier("EPSG", "4016", "Everest 1830 (1967 Definition)", "evrstSS"), 6377298.556, 300.8017);
     private double semiMajorAxis;
     transient SecondParameter secondParameter;
     // Following fields are initialized at construction time

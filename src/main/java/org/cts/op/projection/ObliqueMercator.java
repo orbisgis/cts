@@ -41,43 +41,51 @@ import org.cts.CoordinateOperation;
 import org.cts.NonInvertibleOperationException;
 
 /**
- * The Polar Stereographic Projection (STERE). <p>
+ * The Oblique Mercator Projection (OMERC). <p>
  *
  * @author Jules Party
  */
-public class Stereographic extends Projection {
+public class ObliqueMercator extends Projection {
 
-    public static final Identifier STERE =
-            new Identifier("EPSG", "9810", "Polar Stereographic", "STERE");
-    protected final double lat0, // the reference latitude
-            lon0, // the reference longitude (from the datum prime meridian)
-            xs, // x coordinate of the pole
-            ys,   // y coordinate of the pole
-            k0, // scale coefficent for easting
-            a, // semi major axis
-            e, // eccentricity of the ellipsoid
-            e2; // square eccentricity of the ellipsoid
-    private double PI_2 = PI/2;
+    public static final Identifier OMERC =
+            new Identifier("EPSG", "9815", "Oblique Mercator", "OMERC");
+    protected final double latc, // latitude of the projection center
+            lonc, // longitude of the projection center
+            alphac, // azimuth of the initial line
+            gammac, // angle from the rectified grid to the skew (oblique) grid
+            kc, // scale factor on the initial line
+            FE, // false easting
+            FN,   // false northing
+            B, //constant of the projection
+            A, //constant of the projection
+            H, //constant of the projection
+            gamma0, //constant of the projection
+            lambda0, //constant of the projection
+            uc; // center of the projection
 
-    public Stereographic(final Ellipsoid ellipsoid,
+    public ObliqueMercator(final Ellipsoid ellipsoid,
             final Map<String, Measure> parameters) {
-        super(STERE, ellipsoid, parameters);
-        lon0 = getCentralMeridian();
-        lat0 = getLatitudeOfOrigin();
-        xs = getFalseEasting();
-        ys = getFalseNorthing();
-        e = ellipsoid.getEccentricity();
-        e2 = ellipsoid.getSquareEccentricity();
-        if (abs(getLatitudeOfTrueScale()) != PI_2) {
-            double lat_ts = getLatitudeOfTrueScale();
-            double esints = e * sin(lat_ts);
-            double tf = tan((PI_2+lat_ts)/2) / pow ((1+esints)/(1-esints), e/2);
-            double mf = cos(lat_ts)/pow(1 - esints*esints, 0.5);
-            k0 = mf * pow(pow(1 + e, 1 + e) * pow(1 - e, 1 - e), 0.5) / 2 / tf;
-        } else {
-            k0 = getScaleFactor();
-        }
-        a = getSemiMajorAxis();
+        super(OMERC, ellipsoid, parameters);
+        lonc = getCentralMeridian();
+        latc = getLatitudeOfOrigin();
+        alphac = getAzimuthOfInitialLine();
+        gammac = getAngleRectifiedToOblique();
+        FE = getFalseEasting();
+        FN = getFalseNorthing();
+        kc = getScaleFactor();
+        double e = ellipsoid.getEccentricity();
+        double e2 = ellipsoid.getSquareEccentricity();
+        double esin = e*sin(latc);
+        B = pow(1+(e2*pow(cos(latc), 4)/(1-e2)), 0.5);
+        A = ellipsoid.getSemiMajorAxis()*B*kc*pow(1-e2, 0.5)/(1-esin*esin);
+        double t0 = tan((PI/2-latc)/2)/pow((1-esin)/(1+esin), e/2);
+        double D = B*pow((1-e2)/(1-esin*esin), 0.5)/cos(latc);
+        double F = (D<1) ? D : D + pow(D*D-1, 0.5)*signum(latc);
+        H = F * pow(t0, B);
+        double G = (F - 1/F)/2;
+        gamma0 = asin(sin(alphac)/D);
+        lambda0 = lonc - asin(G*tan(gamma0))/B;
+        uc = (D>1) ? A/B * atan(pow(D*D-1, 0.5)/cos(alphac))*signum(latc) : 0;
     }
 
     /**
@@ -87,7 +95,7 @@ public class Stereographic extends Projection {
      */
     @Override
     public Surface getSurface() {
-        return Projection.Surface.AZIMUTHAL;
+        return Projection.Surface.CYLINDRICAL;
     }
 
     /**
@@ -111,7 +119,7 @@ public class Stereographic extends Projection {
     }
 
     /**
-     * Transform coord using the Stereographic Projection. Input coord is supposed to
+     * Transform coord using the Oblique Mercator Projection. Input coord is supposed to
      * be a geographic latitude / longitude coordinate in radians.
      * Algorithm based on the OGP's Guidance Note Number 7 Part 2 :
      * <http://www.epsg.org/guides/G7-2.html>
@@ -122,29 +130,23 @@ public class Stereographic extends Projection {
      */
     @Override
     public double[] transform(double[] coord) throws CoordinateDimensionException {
-        double lon = coord[1];
-        double lat = coord[0];
-        double esin = e * sin(lat);
-        double t;
-        if (lat0 < 0) {
-            t = tan((PI_2 + lat) / 2) / pow((1 + esin) / (1 - esin), e / 2);
-        } else {
-            t = tan((PI_2 - lat) / 2) * pow((1 + esin) / (1 - esin), e / 2);
-        }
-        double rho = 2 * a * k0 * t / pow(pow(1 + e, 1 + e) * pow(1 - e, 1 - e), 0.5);
-        double dE = rho * sin(lon - lon0);
-        double dN = rho * cos(lon - lon0);
-        coord[0] = xs + dE;
-        if (lat0 < 0) {
-            coord[1] = ys + dN;
-        } else {
-            coord[1] = ys - dN;
-        }
+        double e = ellipsoid.getEccentricity();
+        double esin = e*sin(coord[0]);
+        double t = tan((PI/2-coord[0])/2)/pow((1-esin)/(1+esin), e/2);
+        double Q = H / pow(t, B);
+        double S = (Q - 1/Q)/2;
+        double T = (Q + 1/Q)/2;
+        double V = sin(B*(coord[1]-lambda0));
+        double U = (S*sin(gamma0) - V*cos(gamma0))/T;
+        double v = A*log((1-U)/(1+U))/2/B;
+        double u = A*atan((S*cos(gamma0)+V*sin(gamma0))/cos(B*(coord[1]-lambda0)))/B - abs(uc)*signum(latc);
+        coord[0] = FE + v*cos(gammac) + u*sin(gammac);
+        coord[1] = FN + u*cos(gammac) - v*sin(gammac);
         return coord;
     }
     
     /**
-     * Creates the inverse operation for Stereographic Projection.
+     * Creates the inverse operation for Oblique Mercator Projection.
      * Input coord is supposed to be a projected easting / northing coordinate in meters.
      * Algorithm based on the OGP's Guidance Note Number 7 Part 2 :
      * <http://www.epsg.org/guides/G7-2.html>
@@ -153,28 +155,26 @@ public class Stereographic extends Projection {
      */
     @Override
     public CoordinateOperation inverse() throws NonInvertibleOperationException {
-        return new Stereographic(ellipsoid, parameters) {
+        return new Mercator1SP(ellipsoid, parameters) {
 
             @Override
             public double[] transform(double[] coord) throws CoordinateDimensionException {
-                double rho = pow((coord[0] - xs) * (coord[0] - xs) + (coord[1] - ys) * (coord[1] - ys), 0.5);
-                double t = rho * pow(pow(1 + e, 1 + e) * pow(1 - e, 1 - e), 0.5) / 2 / a / k0;
-                double ki;
-                if (lat0 > 0) {
-                    ki = PI / 2 - 2 * atan(t);
-                } else {
-                    ki = 2 * atan(t) - PI / 2;
-                }
+                double v = (coord[0]-FE)*cos(gammac) - (coord[1]-FN)*sin(gammac);
+                double u = (coord[1]-FN)*cos(gammac) + (coord[0]-FE)*sin(gammac)+ abs(uc)*signum(latc);
+                double Q = exp(-B*v/A);
+                double S = (Q - 1/Q)/2;
+                double T = (Q + 1/Q)/2;
+                double V = sin(B*u/A);
+                double U = (V*cos(gamma0)+S*sin(gamma0))/T;
+                double t = pow(H/pow((1+U)/(1-U), 0.5), 1/B);
+                double ki = 2*(PI/4 - atan(t));
                 double lat = ki;
-                for (int i = 1; i < 5; i++) {
-                    lat += ellipsoid.getInverseMercatorCoeff()[i] * sin(2 * i * ki);
-                }
-                if (lat0 < 0) {
-                    coord[1] = lon0 + atan2(coord[0] - xs, coord[1] - ys);
-                } else {
-                    coord[1] = lon0 + atan2(coord[0] - xs, ys - coord[1]);
+                double[] coeff = ellipsoid.getInverseMercatorCoeff();
+                for (int i =1;i<5;i++) {
+                    lat+= coeff[i]*sin(2*i*ki);
                 }
                 coord[0] = lat;
+                coord[1] = lambda0 - atan((S*cos(gamma0)-V*sin(gamma0))/cos(B*u/A))/B;
                 return coord;
             }
         };

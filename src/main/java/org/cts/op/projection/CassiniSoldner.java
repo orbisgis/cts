@@ -103,7 +103,7 @@ public class CassiniSoldner extends Projection {
     }
 
     /**
-     * Transform coord using the Mercator Projection. Input coord is supposed to
+     * Transform coord using the Cassini-Soldner Projection. Input coord is supposed to
      * be a geographic latitude / longitude coordinate in radians.
      * Algorithm based on the OGP's Guidance Note Number 7 Part 2 :
      * <http://www.epsg.org/guides/G7-2.html>
@@ -131,7 +131,7 @@ public class CassiniSoldner extends Projection {
     }
     
     /**
-     * Creates the inverse operation for Mercator Projection.
+     * Creates the inverse operation for Cassini-Soldner Projection.
      * Input coord is supposed to be a projected easting / northing coordinate in meters.
      * Algorithm based on the OGP's Guidance Note Number 7 Part 2 :
      * <http://www.epsg.org/guides/G7-2.html>
