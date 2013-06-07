@@ -524,6 +524,8 @@ public class CRSHelper {
                     return new CassiniSoldner(ell, map);
                 } else if (projectionName.equalsIgnoreCase(ProjValueParameters.OMERC)) {
                     return new ObliqueMercator(ell, map);
+                } else if (projectionName.equalsIgnoreCase(ProjValueParameters.SOMERC)) {
+                    return new SwissObliqueMercator(ell, map);
                 } else {
                         throw new RuntimeException("Cannot create the projection " + projectionName);
                 }
