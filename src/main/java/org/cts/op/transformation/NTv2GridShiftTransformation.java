@@ -42,128 +42,129 @@ import org.cts.op.AbstractCoordinateOperation;
 
 /**
  * Geographic Offset by Interpolation of Gridded Data.<p>
- * The relationship between some geographical 2D coordinate reference systems
- * is available through gridded data sets of latitude and longitude offsets.
+ * The relationship between some geographical 2D coordinate reference systems is
+ * available through gridded data sets of latitude and longitude offsets.
  *
  * @author Michaël Michaud
  */
 public class NTv2GridShiftTransformation extends AbstractCoordinateOperation {
 
-	////////////////////////////////////////////////////////////////////////////
-	////////////////              CLASS ATTRIBUTES              ////////////////
-	////////////////////////////////////////////////////////////////////////////
-	private static final Identifier opId =
-		new Identifier("EPSG", "9615", "NTv2 Geographic Offset", "NTv2");
-	public static final int SPEED = 0;
-	public static final int LOW_MEMORY = 1;
-	/**
-	 * if set to true, this class will use a RandomAccessFile to access the
-	 * gridded data instead of loading it into memory
-	 */
-	private int mode = 1;	
-	private String grid_file;
-	private GridShiftFile gsf;
-    
-    
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////              CLASS ATTRIBUTES              ////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    private static final Identifier opId =
+            new Identifier("EPSG", "9615", "NTv2 Geographic Offset", "NTv2");
+    public static final int SPEED = 0;
+    public static final int LOW_MEMORY = 1;
     /**
-	 * NTv2GridShiftTransformation constructor.
-	 * @param ntv2_gridFile file containing the description of the NTv2 grid
-	 * @param precision mean precision of the geodetic transformation
-	 */
-	public NTv2GridShiftTransformation(String ntv2_gridFile, double precision) {
-		super(opId);
-		this.grid_file = ntv2_gridFile;
-		this.gsf = new GridShiftFile();
-		this.precision = Math.max(0.000000001, precision);
-	}
+     * if set to true, this class will use a RandomAccessFile to access the
+     * gridded data instead of loading it into memory
+     */
+    private int mode = 1;
+    private String grid_file;
+    private GridShiftFile gsf;
 
-	/**
-	 * NTv2GridShiftTransformation constructor.
-	 * @param ntv2_gridFile file containing the description of the NTv2 grid
-	 */
-	public NTv2GridShiftTransformation(String ntv2_gridFile) {
-		super(opId);
-		this.grid_file = ntv2_gridFile;
-		this.gsf = new GridShiftFile();
-	}
+    /**
+     * NTv2GridShiftTransformation constructor.
+     *
+     * @param ntv2_gridFile file containing the description of the NTv2 grid
+     * @param precision mean precision of the geodetic transformation
+     */
+    public NTv2GridShiftTransformation(String ntv2_gridFile, double precision) {
+        super(opId);
+        this.grid_file = ntv2_gridFile;
+        this.gsf = new GridShiftFile();
+        this.precision = Math.max(0.000000001, precision);
+    }
 
-	/**
-	 * Shift geographic coordinates (in decimal degrees) by an offset
-	 * interpolated in a grid.
-	 * @param coord coordinate to shift
-	 * @throws IllegalCoordinateException if <code>coord</code> is not
-	 * compatible with this <code>CoordinateOperation</code>.
-	 */
-	@Override
-	public double[] transform(double[] coord) throws IllegalCoordinateException {
-		if (coord.length < 2) {
-			throw new CoordinateDimensionException(coord, 2);
-		}
-		GridShift gs = new GridShift();
-		gs.setLatDegrees(coord[0] * 180d / Math.PI);
-		gs.setLonPositiveEastDegrees(coord[1] * 180d / Math.PI);
-		try {
-			if (gsf == null) {
-				loadGridShiftFile();
-			}
-			boolean withinGrid = gsf.gridShiftForward(gs);
-			if (withinGrid) {
-				coord[0] = gs.getShiftedLatDegrees() * Math.PI / 180d;
-				coord[1] = gs.getShiftedLonPositiveEastDegrees() * Math.PI / 180d;
-			}
-		} catch (IOException ioe) {
-			throw new CoordinateDimensionException(ioe.getMessage());
-		}
-		return coord;
-	}
+    /**
+     * NTv2GridShiftTransformation constructor.
+     *
+     * @param ntv2_gridFile file containing the description of the NTv2 grid
+     */
+    public NTv2GridShiftTransformation(String ntv2_gridFile) {
+        super(opId);
+        this.grid_file = ntv2_gridFile;
+        this.gsf = new GridShiftFile();
+    }
 
-	/**
-	 * Creates the inverse CoordinateOperation.
-	 */
-	@Override
-	public CoordinateOperation inverse() throws NonInvertibleOperationException {
-		return new NTv2GridShiftTransformation(grid_file, precision) {
+    /**
+     * Shift geographic coordinates (in decimal degrees) by an offset
+     * interpolated in a grid.
+     *
+     * @param coord coordinate to shift
+     * @throws IllegalCoordinateException if <code>coord</code> is not
+     * compatible with this <code>CoordinateOperation</code>.
+     */
+    @Override
+    public double[] transform(double[] coord) throws IllegalCoordinateException {
+        if (coord.length < 2) {
+            throw new CoordinateDimensionException(coord, 2);
+        }
+        GridShift gs = new GridShift();
+        gs.setLatDegrees(coord[0] * 180d / Math.PI);
+        gs.setLonPositiveEastDegrees(coord[1] * 180d / Math.PI);
+        try {
+            if (gsf == null) {
+                loadGridShiftFile();
+            }
+            boolean withinGrid = gsf.gridShiftForward(gs);
+            if (withinGrid) {
+                coord[0] = gs.getShiftedLatDegrees() * Math.PI / 180d;
+                coord[1] = gs.getShiftedLonPositiveEastDegrees() * Math.PI / 180d;
+            }
+        } catch (IOException ioe) {
+            throw new CoordinateDimensionException(ioe.getMessage());
+        }
+        return coord;
+    }
 
-			@Override
-			public double[] transform(double[] coord) throws IllegalCoordinateException {
-				if (coord.length < 2) {
-					throw new CoordinateDimensionException(coord, 2);
-				}
-				GridShift gs = new GridShift();
-				gs.setLatDegrees(coord[0] * 180d / Math.PI);
-				gs.setLonPositiveEastDegrees(coord[1] * 180d / Math.PI);
-				try {
-					if (gsf == null) {
-						loadGridShiftFile();
-					}
-					boolean withinGrid = gsf.gridShiftReverse(gs);
-					if (withinGrid) {
-						coord[0] = gs.getShiftedLatDegrees() * Math.PI / 180d;
-						coord[1] = gs.getShiftedLonPositiveEastDegrees() * Math.PI / 180d;
-					}
-				} catch (IOException ioe) {
-					throw new CoordinateDimensionException(ioe.getMessage());
-				}
-				return coord;
-			}
+    /**
+     * Creates the inverse CoordinateOperation.
+     */
+    @Override
+    public CoordinateOperation inverse() throws NonInvertibleOperationException {
+        return new NTv2GridShiftTransformation(grid_file, precision) {
+            @Override
+            public double[] transform(double[] coord) throws IllegalCoordinateException {
+                if (coord.length < 2) {
+                    throw new CoordinateDimensionException(coord, 2);
+                }
+                GridShift gs = new GridShift();
+                gs.setLatDegrees(coord[0] * 180d / Math.PI);
+                gs.setLonPositiveEastDegrees(coord[1] * 180d / Math.PI);
+                try {
+                    if (gsf == null) {
+                        loadGridShiftFile();
+                    }
+                    boolean withinGrid = gsf.gridShiftReverse(gs);
+                    if (withinGrid) {
+                        coord[0] = gs.getShiftedLatDegrees() * Math.PI / 180d;
+                        coord[1] = gs.getShiftedLonPositiveEastDegrees() * Math.PI / 180d;
+                    }
+                } catch (IOException ioe) {
+                    throw new CoordinateDimensionException(ioe.getMessage());
+                }
+                return coord;
+            }
 
-			@Override
-			public CoordinateOperation inverse()
-				throws NonInvertibleOperationException {
-				return NTv2GridShiftTransformation.this;
-			}
-		};
-	}
+            @Override
+            public CoordinateOperation inverse()
+                    throws NonInvertibleOperationException {
+                return NTv2GridShiftTransformation.this;
+            }
+        };
+    }
 
-	/**
-	 * Load the gridshift file
-	 */
-	public void loadGridShiftFile() throws IOException {
-		if (mode == 0) {
-			InputStream is;
-			is = NTv2GridShiftTransformation.class.getClassLoader().getResourceAsStream(grid_file);
-			if (is == null) {
-			             gsf.loadGridShiftFile(new FileInputStream(grid_file), false);
+    /**
+     * Load the gridshift file
+     */
+    public void loadGridShiftFile() throws IOException {
+        if (mode == 0) {
+            InputStream is;
+            is = NTv2GridShiftTransformation.class.getClassLoader().getResourceAsStream(grid_file);
+            if (is == null) {
+                gsf.loadGridShiftFile(new FileInputStream(grid_file), false);
             } else {
                 gsf.loadGridShiftFile(is, false);
             }
@@ -173,39 +174,38 @@ public class NTv2GridShiftTransformation extends AbstractCoordinateOperation {
         } else;
     }
 
-	public boolean isLoaded() {
-		return gsf.isLoaded();
-	}
+    public boolean isLoaded() {
+        return gsf.isLoaded();
+    }
 
-	public void unload() throws IOException {
-		gsf.unload();
-	}
+    public void unload() throws IOException {
+        gsf.unload();
+    }
 
-	public boolean setMode(int mode) throws IOException {
-		if ((mode == 0 || mode == 1) && this.mode != mode) {
-			this.mode = mode;
-			unload();
-			loadGridShiftFile();
-			return true;
-		} else {
-			return false;
-		}
-	}
+    public boolean setMode(int mode) throws IOException {
+        if ((mode == 0 || mode == 1) && this.mode != mode) {
+            this.mode = mode;
+            unload();
+            loadGridShiftFile();
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-	/**
-	 * Returns this Geocentric translation as a String.
-	 */
-	@Override
-	public String toString() {
-		return "NTv2 Geographic Offset (" + grid_file + ")";
-	}
-        
+    /**
+     * Returns this Geocentric translation as a String.
+     */
+    @Override
+    public String toString() {
+        return "NTv2 Geographic Offset (" + grid_file + ")";
+    }
+
     public String getFromDatum() {
         return gsf.getFromEllipsoid().trim();
     }
-    
+
     public String getToDatum() {
         return gsf.getToEllipsoid().trim();
     }
 }
-

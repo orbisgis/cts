@@ -50,7 +50,6 @@ import org.cts.units.Unit;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
 import org.cts.grid.GridShift;
 import org.cts.op.CoordinateOperationSequence;
 import org.cts.op.transformation.NTv2GridShiftTransformation;
@@ -72,11 +71,7 @@ public class CRSHelper {
          */
         public static CoordinateReferenceSystem createCoordinateReferenceSystem(Identifier identifier, Map<String, String> parameters) {
 
-                //Name of the projection
-                String name = parameters.get(ProjKeyParameters.title);
-
                 //Get the datum
-
                 GeodeticDatum geodeticDatum = getDatum(parameters);
 
                 if (geodeticDatum == null) {
