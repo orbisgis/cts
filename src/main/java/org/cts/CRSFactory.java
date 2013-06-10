@@ -39,6 +39,8 @@ import org.cts.registry.Registry;
 import org.cts.registry.RegistryManager;
 
 import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -68,7 +70,7 @@ public class CRSFactory {
 
     /**
      * Return a @CoordinateReferenceSystem according an authority and srid ie :
-     * EPSG:4326
+     * EPSG:4326 or IGNF:LAMB
      *
      * @param authorityAndSrid
      * @return
@@ -135,17 +137,30 @@ public class CRSFactory {
      * (PRJ).
      *
      * @param stream
+     * @param encoding
      * @return a {@link CoordinateReferenceSystem}
      * @throws IOException
      */
-    public CoordinateReferenceSystem createFromPrj(InputStream stream) throws IOException {
-        BufferedReader r = new BufferedReader(new InputStreamReader(stream));
+    public CoordinateReferenceSystem createFromPrj(InputStream stream, Charset encoding) throws IOException {
+        BufferedReader r = new BufferedReader(new InputStreamReader(stream, encoding));
         StringBuilder b = new StringBuilder();
         while (r.ready()) {
             b.append(r.readLine());
         }
 
         return createFromPrj(b.toString());
+    }
+    
+    /**
+     * Creates a {@link CoordinateReferenceSystem} defined by an OGC WKT String
+     * (PRJ).
+     * 
+     * @param stream
+     * @return
+     * @throws IOException 
+     */
+    public CoordinateReferenceSystem createFromPrj(InputStream stream) throws IOException{
+        return createFromPrj(stream, Charset.defaultCharset());
     }
 
     /**

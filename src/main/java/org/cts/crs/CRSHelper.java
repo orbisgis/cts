@@ -50,7 +50,6 @@ import org.cts.units.Unit;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
 import org.cts.grid.GridShift;
 import org.cts.op.CoordinateOperationSequence;
 import org.cts.op.transformation.NTv2GridShiftTransformation;
@@ -72,11 +71,7 @@ public class CRSHelper {
          */
         public static CoordinateReferenceSystem createCoordinateReferenceSystem(Identifier identifier, Map<String, String> parameters) {
 
-                //Name of the projection
-                String name = parameters.get(ProjKeyParameters.title);
-
                 //Get the datum
-
                 GeodeticDatum geodeticDatum = getDatum(parameters);
 
                 if (geodeticDatum == null) {
@@ -296,15 +291,15 @@ public class CRSHelper {
         public static GeodeticDatum getDatum(Map<String, String> param) {
                 String datumName = param.get(ProjKeyParameters.datum);
                 if (null != datumName) {
-                        if (datumName.equals(GeodeticDatum.WGS84.getShortName())) {
+                        if (datumName.equalsIgnoreCase(GeodeticDatum.WGS84.getShortName())) {
                                 return GeodeticDatum.WGS84;
-                        } else if (datumName.equals(GeodeticDatum.ED50.getName())) {
+                        } else if (datumName.equalsIgnoreCase(GeodeticDatum.ED50.getShortName())) {
                                 return GeodeticDatum.ED50;
-                        } else if (datumName.equals(GeodeticDatum.NTF.getName())) {
+                        } else if (datumName.equalsIgnoreCase(GeodeticDatum.NTF.getShortName())) {
                                 return GeodeticDatum.NTF;
-                        } else if (datumName.equals(GeodeticDatum.NTF_PARIS.getName())) {
+                        } else if (datumName.equalsIgnoreCase(GeodeticDatum.NTF_PARIS.getShortName())) {
                                 return GeodeticDatum.NTF_PARIS;
-                        } else if (datumName.equals(GeodeticDatum.RGF93.getName())) {
+                        } else if (datumName.equalsIgnoreCase(GeodeticDatum.RGF93.getShortName())) {
                                 return GeodeticDatum.RGF93;
                         }
                } else {
@@ -364,7 +359,7 @@ public class CRSHelper {
                                             }
                                         }
                                     } catch (IOException ex) {
-                                        java.util.logging.Logger.getLogger(CRSHelper.class.getName()).log(Level.SEVERE, null, ex);
+                                        LOGGER.error("Cannot found the nadgrid", ex);
                                     }
                                 }
                             }
