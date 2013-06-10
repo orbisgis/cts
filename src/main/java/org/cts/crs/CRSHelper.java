@@ -528,6 +528,8 @@ public class CRSHelper {
                     return new SwissObliqueMercator(ell, map);
                 } else if (projectionName.equalsIgnoreCase(ProjValueParameters.AEA)) {
                     return new AlbersEqualArea(ell, map);
+                } else if (projectionName.equalsIgnoreCase(ProjValueParameters.LAEA)) {
+                    return new LambertAzimuthalEqualArea(ell, map);
                 } else {
                         throw new RuntimeException("Cannot create the projection " + projectionName);
                 }
