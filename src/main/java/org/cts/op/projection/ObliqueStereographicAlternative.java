@@ -72,8 +72,8 @@ public class ObliqueStereographicAlternative extends Projection {
         e = ellipsoid.getEccentricity();
         e2 = ellipsoid.getSquareEccentricity();
         k0 = getScaleFactor();
-        R = pow(ellipsoid.meridionalRadiusOfCurvature(lat0)*ellipsoid.transverseRadiusOfCurvature(lat0), 0.5);
-        n = pow(1+e2*pow(cos(lat0), 4)/(1-e2), 0.5);
+        R = sqrt(ellipsoid.meridionalRadiusOfCurvature(lat0)*ellipsoid.transverseRadiusOfCurvature(lat0));
+        n = sqrt(1+e2*pow(cos(lat0), 4)/(1-e2));
         double w1 = w(lat0);
         double sinki0 = (w1-1)/(w1+1);
         c = (n + sin(lat0))*(1-sinki0)/(n-sin(lat0))/(1+sinki0);

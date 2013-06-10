@@ -41,43 +41,46 @@ import org.cts.CoordinateOperation;
 import org.cts.NonInvertibleOperationException;
 
 /**
- * The Polar Stereographic Projection (STERE). <p>
+ * The Albers Equal Area Projection (OMERC). <p>
  *
  * @author Jules Party
  */
-public class Stereographic extends Projection {
+public class AlbersEqualArea extends Projection {
 
-    public static final Identifier STERE =
-            new Identifier("EPSG", "9810", "Polar Stereographic", "STERE");
+    public static final Identifier AEA =
+            new Identifier("EPSG", "9822", "Albers Equal Area", "AEA");
     protected final double lat0, // the reference latitude
             lon0, // the reference longitude (from the datum prime meridian)
-            xs, // x coordinate of the pole
-            ys,   // y coordinate of the pole
-            k0, // scale coefficent for easting
-            a, // semi major axis
-            e, // eccentricity of the ellipsoid
-            e2; // square eccentricity of the ellipsoid
-    private double PI_2 = PI/2;
+            FE, // false easting
+            FN,   // false northing
+            rho0, // constant of the projection for north axis
+            C, // constant of the projection
+            n; // exponent of the projection
 
-    public Stereographic(final Ellipsoid ellipsoid,
+    public AlbersEqualArea(final Ellipsoid ellipsoid,
             final Map<String, Measure> parameters) {
-        super(STERE, ellipsoid, parameters);
+        super(AEA, ellipsoid, parameters);
         lon0 = getCentralMeridian();
         lat0 = getLatitudeOfOrigin();
-        xs = getFalseEasting();
-        ys = getFalseNorthing();
-        e = ellipsoid.getEccentricity();
-        e2 = ellipsoid.getSquareEccentricity();
-        if (abs(getLatitudeOfTrueScale()) != PI_2) {
-            double lat_ts = getLatitudeOfTrueScale();
-            double esints = e * sin(lat_ts);
-            double tf = tan((PI_2+lat_ts)/2) / pow ((1+esints)/(1-esints), e/2);
-            double mf = cos(lat_ts)/sqrt(1 - esints*esints);
-            k0 = mf * sqrt(pow(1 + e, 1 + e) * pow(1 - e, 1 - e)) / 2 / tf;
-        } else {
-            k0 = getScaleFactor();
-        }
-        a = getSemiMajorAxis();
+        FE = getFalseEasting();
+        FN = getFalseNorthing();
+        double e2 = ellipsoid.getSquareEccentricity();
+        double lat1 = getStandardParallel1();
+        double alpha1 = alpha(lat1);
+        double m1 = cos(lat1)/sqrt(1-e2*sin(lat1)*sin(lat1));
+        double lat2 = getStandardParallel2();
+        double alpha2 = alpha(lat2);
+        double m2 = cos(lat2)/sqrt(1-e2*sin(lat2)*sin(lat2));
+        n = (m1*m1 - m2*m2)/(alpha2 - alpha1);
+        C = m1*m1 + n*alpha1;
+        rho0 = ellipsoid.getSemiMajorAxis()/n*sqrt(C - n*alpha(lat0));
+    }
+    
+    private double alpha(double lat) {
+        double e = ellipsoid.getEccentricity();
+        double e2 = ellipsoid.getSquareEccentricity();
+        double esin = e*sin(lat);
+        return (1-e2)*(sin(lat)/(1-esin*esin) - log((1-esin)/(1+esin))/2/e);
     }
 
     /**
@@ -87,7 +90,7 @@ public class Stereographic extends Projection {
      */
     @Override
     public Surface getSurface() {
-        return Projection.Surface.AZIMUTHAL;
+        return Projection.Surface.CYLINDRICAL;
     }
 
     /**
@@ -111,7 +114,7 @@ public class Stereographic extends Projection {
     }
 
     /**
-     * Transform coord using the Stereographic Projection. Input coord is supposed to
+     * Transform coord using the Albers Equal Area Projection. Input coord is supposed to
      * be a geographic latitude / longitude coordinate in radians.
      * Algorithm based on the OGP's Guidance Note Number 7 Part 2 :
      * <http://www.epsg.org/guides/G7-2.html>
@@ -122,29 +125,15 @@ public class Stereographic extends Projection {
      */
     @Override
     public double[] transform(double[] coord) throws CoordinateDimensionException {
-        double lon = coord[1];
-        double lat = coord[0];
-        double esin = e * sin(lat);
-        double t;
-        if (lat0 < 0) {
-            t = tan((PI_2 + lat) / 2) / pow((1 + esin) / (1 - esin), e / 2);
-        } else {
-            t = tan((PI_2 - lat) / 2) * pow((1 + esin) / (1 - esin), e / 2);
-        }
-        double rho = 2 * a * k0 * t / sqrt(pow(1 + e, 1 + e) * pow(1 - e, 1 - e));
-        double dE = rho * sin(lon - lon0);
-        double dN = rho * cos(lon - lon0);
-        coord[0] = xs + dE;
-        if (lat0 < 0) {
-            coord[1] = ys + dN;
-        } else {
-            coord[1] = ys - dN;
-        }
+        double theta = n*(coord[1]-lon0);
+        double rho = ellipsoid.getSemiMajorAxis()/n*sqrt(C - n*alpha(coord[0]));
+        coord[0] = FE + rho*sin(theta);
+        coord[1] = FN + rho0 - rho*cos(theta);
         return coord;
     }
     
     /**
-     * Creates the inverse operation for Stereographic Projection.
+     * Creates the inverse operation for Albers Equal Area Projection.
      * Input coord is supposed to be a projected easting / northing coordinate in meters.
      * Algorithm based on the OGP's Guidance Note Number 7 Part 2 :
      * <http://www.epsg.org/guides/G7-2.html>
@@ -153,28 +142,23 @@ public class Stereographic extends Projection {
      */
     @Override
     public CoordinateOperation inverse() throws NonInvertibleOperationException {
-        return new Stereographic(ellipsoid, parameters) {
+        return new AlbersEqualArea(ellipsoid, parameters) {
 
             @Override
             public double[] transform(double[] coord) throws CoordinateDimensionException {
-                double rho = sqrt((coord[0] - xs) * (coord[0] - xs) + (coord[1] - ys) * (coord[1] - ys));
-                double t = rho * sqrt(pow(1 + e, 1 + e) * pow(1 - e, 1 - e)) / 2 / a / k0;
-                double ki;
-                if (lat0 > 0) {
-                    ki = PI / 2 - 2 * atan(t);
-                } else {
-                    ki = 2 * atan(t) - PI / 2;
-                }
-                double lat = ki;
-                for (int i = 1; i < 5; i++) {
-                    lat += ellipsoid.getInverseMercatorCoeff()[i] * sin(2 * i * ki);
-                }
-                if (lat0 < 0) {
-                    coord[1] = lon0 + atan2(coord[0] - xs, coord[1] - ys);
-                } else {
-                    coord[1] = lon0 + atan2(coord[0] - xs, ys - coord[1]);
-                }
-                coord[0] = lat;
+                double e = ellipsoid.getEccentricity();
+                double e2 = ellipsoid.getSquareEccentricity();
+                double e4 = e2*e2;
+                double e6 = e4*e2;
+                double x = coord[0]-FE;
+                double y = rho0-(coord[1]-FN);
+                double theta = atan(x/y);
+                double rho = sqrt(x*x+y*y);
+                double alphap = (C-pow(rho*n/ellipsoid.getSemiMajorAxis(), 2))/n;
+                double betap = asin(alphap/(1-(1-e2)/2/e*log((1-e)/(1+e))));
+                coord[0] = betap + (e2/3 + 31/180*e4 +517/5040*e6)*sin(2*betap)
+                        + (23/360*e4 + 251/3780*e6)*sin(4*betap) + 761/45360*e6*sin(6*betap);
+                coord[1] = lon0 + theta/n;
                 return coord;
             }
         };

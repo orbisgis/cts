@@ -66,7 +66,7 @@ public class Mercator1SP extends Projection {
         double e2 = ellipsoid.getSquareEccentricity();
         double k0;
         if (lat_ts != 0) {
-            k0 = cos(lat_ts)/pow(1 - e2*pow(sin(lat_ts),2), 0.5);
+            k0 = cos(lat_ts)/sqrt(1 - e2*pow(sin(lat_ts),2));
         }
         else {
             k0 = getScaleFactor();

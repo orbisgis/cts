@@ -76,16 +76,16 @@ public class ObliqueMercator extends Projection {
         double e = ellipsoid.getEccentricity();
         double e2 = ellipsoid.getSquareEccentricity();
         double esin = e*sin(latc);
-        B = pow(1+(e2*pow(cos(latc), 4)/(1-e2)), 0.5);
-        A = ellipsoid.getSemiMajorAxis()*B*kc*pow(1-e2, 0.5)/(1-esin*esin);
+        B = sqrt(1+(e2*pow(cos(latc), 4)/(1-e2)));
+        A = ellipsoid.getSemiMajorAxis()*B*kc*sqrt(1-e2)/(1-esin*esin);
         double t0 = tan((PI/2-latc)/2)/pow((1-esin)/(1+esin), e/2);
-        double D = B*pow((1-e2)/(1-esin*esin), 0.5)/cos(latc);
-        double F = (D<1) ? D : D + pow(D*D-1, 0.5)*signum(latc);
+        double D = B*sqrt((1-e2)/(1-esin*esin))/cos(latc);
+        double F = (D<1) ? D : D + sqrt(D*D-1)*signum(latc);
         H = F * pow(t0, B);
         double G = (F - 1/F)/2;
         gamma0 = asin(sin(alphac)/D);
         lambda0 = lonc - asin(G*tan(gamma0))/B;
-        uc = (D>1) ? A/B * atan(pow(D*D-1, 0.5)/cos(alphac))*signum(latc) : 0;
+        uc = (D>1) ? A/B * atan(sqrt(D*D-1)/cos(alphac))*signum(latc) : 0;
     }
 
     /**
@@ -155,7 +155,7 @@ public class ObliqueMercator extends Projection {
      */
     @Override
     public CoordinateOperation inverse() throws NonInvertibleOperationException {
-        return new Mercator1SP(ellipsoid, parameters) {
+        return new ObliqueMercator(ellipsoid, parameters) {
 
             @Override
             public double[] transform(double[] coord) throws CoordinateDimensionException {
@@ -166,7 +166,7 @@ public class ObliqueMercator extends Projection {
                 double T = (Q + 1/Q)/2;
                 double V = sin(B*u/A);
                 double U = (V*cos(gamma0)+S*sin(gamma0))/T;
-                double t = pow(H/pow((1+U)/(1-U), 0.5), 1/B);
+                double t = pow(H/sqrt((1+U)/(1-U)), 1/B);
                 double ki = 2*(PI/4 - atan(t));
                 double lat = ki;
                 double[] coeff = ellipsoid.getInverseMercatorCoeff();

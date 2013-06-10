@@ -49,3 +49,6 @@ id;csNameSrc;csNameSrc_X;csNameSrc_Y;csNameDest;csNameDest_X;csNameDest_Y;tolera
 36;EPSG:4298;115.8055054;5.387253583;EPSG:29873;679245.73;596562.78;0.01
 37;EPSG:4149;8.486419798;47.0580435;EPSG:21781;679520.05;212273.44;0.01
 38;EPSG:4150;8.486419798;47.0580435;EPSG:2056;2679520.05;1212273.44;0.01
+# The next test come from https://svn.osgeo.org/geotools/tags/2.3.0-RC0/module/referencing/test/org/geotools/referencing/test-data/scripts/AlbersEqualArea.txt
+# There is lot of other tests we can use in the future if needed.
+39;EPSG:4326;-123.1;49.2166666666;EPSG:3153;1211425.84962133;471033.644210806;0.01

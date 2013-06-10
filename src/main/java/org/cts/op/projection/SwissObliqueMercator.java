@@ -72,8 +72,8 @@ public class SwissObliqueMercator extends Projection {
         double e = ellipsoid.getEccentricity();
         double e2 = ellipsoid.getSquareEccentricity();
         double esin = e*sin(latc);
-        alpha = pow(1+(e2*pow(cos(latc), 4)/(1-e2)), 0.5);
-        R = ellipsoid.getSemiMajorAxis()*kc*pow(1-e2, 0.5)/(1-esin*esin);
+        alpha = sqrt(1+(e2*pow(cos(latc), 4)/(1-e2)));
+        R = ellipsoid.getSemiMajorAxis()*kc*sqrt(1-e2)/(1-esin*esin);
         b0 = asin(sin(latc)/alpha);
         K = log(tan((PI/2+b0)/2)) - alpha*log(tan((PI/2+latc)/2)) + alpha*e/2*log((1+e*sin(latc))/(1-e*sin(latc)));
     }
@@ -161,7 +161,7 @@ public class SwissObliqueMercator extends Projection {
      */
     @Override
     public CoordinateOperation inverse() throws NonInvertibleOperationException {
-        return new Mercator1SP(ellipsoid, parameters) {
+        return new SwissObliqueMercator(ellipsoid, parameters) {
 
             @Override
             public double[] transform(double[] coord) throws CoordinateDimensionException {

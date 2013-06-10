@@ -526,6 +526,8 @@ public class CRSHelper {
                     return new ObliqueMercator(ell, map);
                 } else if (projectionName.equalsIgnoreCase(ProjValueParameters.SOMERC)) {
                     return new SwissObliqueMercator(ell, map);
+                } else if (projectionName.equalsIgnoreCase(ProjValueParameters.AEA)) {
+                    return new AlbersEqualArea(ell, map);
                 } else {
                         throw new RuntimeException("Cannot create the projection " + projectionName);
                 }

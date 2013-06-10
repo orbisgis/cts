@@ -65,7 +65,7 @@ public class EquidistantCylindrical extends Projection {
         ys = getFalseNorthing();
         double lat_ts = getLatitudeOfTrueScale();
         double e2 = ellipsoid.getSquareEccentricity();
-        k0 =cos(lat_ts)/pow(1 - e2*pow(sin(lat_ts),2), 0.5);
+        k0 =cos(lat_ts)/sqrt(1 - e2*pow(sin(lat_ts),2));
         a = getSemiMajorAxis();
     }
 
