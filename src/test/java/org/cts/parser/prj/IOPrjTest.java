@@ -48,7 +48,7 @@ public class IOPrjTest {
 
     //This test has been added to fix the prj parser.
     //It doesn't work due to a bad datum identification
-    //@Test
+    @Test
     public void readPrjNTF_Lambert_II_etendu() throws Exception {
         String filePath = IOPrjTest.class.getResource("NTF_Lambert_II_etendu.prj").toURI().getPath();
         CoordinateReferenceSystem crs = crsf.createFromPrj(new File(filePath));
