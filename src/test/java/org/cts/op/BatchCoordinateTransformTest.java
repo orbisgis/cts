@@ -37,6 +37,14 @@ import org.junit.Test;
 
 import java.io.FileReader;
 import java.io.LineNumberReader;
+import java.util.Map;
+import org.cts.Ellipsoid;
+import org.cts.Identifier;
+import org.cts.datum.GeodeticDatum;
+import org.cts.crs.ProjectedCRS;
+import org.cts.crs.CRSHelper;
+import org.cts.registry.Registry;
+import org.cts.registry.RegistryManager;
 
 import static org.junit.Assert.assertTrue;
 
@@ -80,6 +88,15 @@ public class BatchCoordinateTransformTest extends BaseCoordinateTransformTest {
             double tolerance = parseNumber(values[7]);
             CoordinateReferenceSystem inputCRS = createCRS(csNameSrc);
             CoordinateReferenceSystem outputCRS = createCRS(csNameDest);
+            if (id.equals("41")) {
+                // The CRS OGC uses for its tets are not defined by EPSG code or any other authority,
+                // it is similar to EPSG:29101 but uses GRS80 instead of GRS67.
+                RegistryManager registryManager = new RegistryManager();
+                Registry registry = registryManager.getRegistry("epsg");
+                Map<String, String> crsParameters = registry.getParameters("29101");
+                outputCRS = new ProjectedCRS(new Identifier(outputCRS.getAuthorityName(), outputCRS.getAuthorityKey(), outputCRS.getName(), outputCRS.getShortName(), outputCRS.getRemarks(), outputCRS.getAliases()),
+                        GeodeticDatum.RGF93, CRSHelper.getProjection("poly", Ellipsoid.GRS80, crsParameters));
+            }
             double[] pointSource = new double[]{csNameSrc_X, csNameSrc_Y, 0};
             double[] result = transform((GeodeticCRS) inputCRS, (GeodeticCRS) outputCRS, pointSource);
             double[] pointDest = new double[]{csNameDest_X, csNameDest_Y, 0};

@@ -416,6 +416,10 @@ public class CRSHelper {
                                 return Ellipsoid.KRASSOWSKI;
                         } else if (ellipsoidName.equals("evrstSS")) {
                                 return Ellipsoid.EVERESTSS;
+                        } else if (ellipsoidName.equals("GRS67")) {
+                                return Ellipsoid.GRS67;
+                        } else if (ellipsoidName.equals("aust_SA")) {
+                                return Ellipsoid.AustSA;
                         } else {
                                 LOGGER.warn(ellipsoidName + " return default ellipsoid WGS84");
                                 return Ellipsoid.WGS84;
@@ -530,6 +534,8 @@ public class CRSHelper {
                     return new AlbersEqualArea(ell, map);
                 } else if (projectionName.equalsIgnoreCase(ProjValueParameters.LAEA)) {
                     return new LambertAzimuthalEqualArea(ell, map);
+                } else if (projectionName.equalsIgnoreCase(ProjValueParameters.POLY)) {
+                    return new Polyconic(ell, map);
                 } else {
                         throw new RuntimeException("Cannot create the projection " + projectionName);
                 }
