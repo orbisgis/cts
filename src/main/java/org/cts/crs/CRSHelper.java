@@ -536,6 +536,8 @@ public class CRSHelper {
                     return new LambertAzimuthalEqualArea(ell, map);
                 } else if (projectionName.equalsIgnoreCase(ProjValueParameters.POLY)) {
                     return new Polyconic(ell, map);
+                } else if (projectionName.equalsIgnoreCase(ProjValueParameters.CEA)) {
+                    return new CylindricalEqualArea(ell, map);
                 } else {
                         throw new RuntimeException("Cannot create the projection " + projectionName);
                 }
