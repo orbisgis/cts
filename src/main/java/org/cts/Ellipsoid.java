@@ -4,11 +4,11 @@
  * and parameter sets. 
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
- * This library has been originaled developed by Michael Michaud under the JGeod
+ * This library has been originally developed by Michaël Michaud under the JGeod
  * name. It has been renamed CTS in 2009 and shared to the community from 
  * the Atelier SIG code repository.
  * 
- * Since them, CTS is supported by the Atelier SIG team in collaboration with Michael 
+ * Since them, CTS is supported by the Atelier SIG team in collaboration with Michaël 
  * Michaud.
  * The new CTS has been funded  by the French Agence Nationale de la Recherche 
  * (ANR) under contract ANR-08-VILL-0005-01 and the regional council 
@@ -56,7 +56,7 @@ import static java.lang.Math.tan;
  * computed from 4, 5 or 6 iteration (see initKCoeff) give consistant results at
  * a precision of 1 micron (1E-6).</li> </ul>
  *
- * @author Michaël Michaud
+ * @author Michaël Michaud, Jules Party
  */
 public class Ellipsoid extends IdentifiableComponent {
 
@@ -123,6 +123,22 @@ public class Ellipsoid extends IdentifiableComponent {
      */
     public static final Ellipsoid KRASSOWSKI = createEllipsoidFromInverseFlattening(
             new Identifier("EPSG", "7024", "Krassowski 1940", "Krassowski_1940"), 6378245.0, 298.3);
+    /**
+     * Everest 1830 (1967 definition).
+     */
+    public static final Ellipsoid EVERESTSS = createEllipsoidFromInverseFlattening(
+            new Identifier("EPSG", "4016", "Everest 1830 (1967 Definition)", "evrstSS"), 6377298.556, 300.8017);
+    /**
+     * GRS 1967 ellipsoid, used in Australian Geodetic Datum and in South American Datum 1969.
+     */
+    public static final Ellipsoid GRS67 = createEllipsoidFromInverseFlattening(
+            new Identifier("EPSG", "7036", "GRS 1967", "GRS67"), 6378160, 298.247167427);
+    /**
+     * GRS 1967 (SAD 1969) ellipsoid, used in Australian Geodetic Datum and in South American Datum 1969.
+     */
+    public static final Ellipsoid AustSA = createEllipsoidFromInverseFlattening(
+            new Identifier("EPSG", "7050", "GRS 1967 (SAD 1969)", "aust_SA"), 6378160, 298.25);
+    
     private double semiMajorAxis;
     transient SecondParameter secondParameter;
     // Following fields are initialized at construction time
@@ -406,6 +422,10 @@ public class Ellipsoid extends IdentifiableComponent {
             return Ellipsoid.BESSEL1841;
         } else if (this.equals(Ellipsoid.KRASSOWSKI)) {
             return Ellipsoid.KRASSOWSKI;
+        } else if (this.equals(Ellipsoid.GRS67)) {
+            return Ellipsoid.GRS67;
+        } else if (this.equals(Ellipsoid.AustSA)) {
+            return Ellipsoid.AustSA;
         } else {
             return this;
         }

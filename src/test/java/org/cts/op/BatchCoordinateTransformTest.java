@@ -4,11 +4,11 @@
  * and parameter sets. 
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
- * This library has been originaled developed by Michael Michaud under the JGeod
+ * This library has been originally developed by Michaël Michaud under the JGeod
  * name. It has been renamed CTS in 2009 and shared to the community from 
  * the Atelier SIG code repository.
  * 
- * Since them, CTS is supported by the Atelier SIG team in collaboration with Michael 
+ * Since them, CTS is supported by the Atelier SIG team in collaboration with Michaël 
  * Michaud.
  * The new CTS has been funded  by the French Agence Nationale de la Recherche 
  * (ANR) under contract ANR-08-VILL-0005-01 and the regional council 
@@ -86,8 +86,8 @@ public class BatchCoordinateTransformTest extends BaseCoordinateTransformTest {
             double[] check = transform((GeodeticCRS) outputCRS, (GeodeticCRS) inputCRS, pointDest);
             //printCRStoWKT(inputCRS);
             //printCRStoWKT(outputCRS);
-            assertTrue(checkEquals2D(id + "--> " + csNameSrc + " to " + csNameDest, result, pointDest, tolerance));
-            assertTrue(checkEquals2D(id + "--> " + csNameDest + " to " + csNameSrc, check, pointSource, tolerance));
+            assertTrue(checkEquals2D(id + " dir--> " + csNameSrc + " to " + csNameDest, result, pointDest, tolerance));
+            assertTrue(checkEquals2D(id + " inv--> " + csNameDest + " to " + csNameSrc, check, pointSource, tolerance));
         }
         lineReader.close();
     }
