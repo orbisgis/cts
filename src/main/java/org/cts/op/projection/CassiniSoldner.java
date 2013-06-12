@@ -41,38 +41,35 @@ import org.cts.CoordinateOperation;
 import org.cts.NonInvertibleOperationException;
 
 /**
- * The World Mercator Projection (MERC). <p>
+ * The Cassini-Soldner Projection (STEREA). <p>
  *
  * @author Jules Party
  */
-public class Mercator1SP extends Projection {
+public class CassiniSoldner extends Projection {
 
-    public static final Identifier MERC =
-            new Identifier("EPSG", "9804", "Mercator (1SP)", "MERC");
+    public static final Identifier STERE =
+            new Identifier("EPSG", "9806", "Cassini-Soldner", "CASS");
     protected final double lat0, // the reference latitude
             lon0, // the reference longitude (from the datum prime meridian)
+            M0, // the arc length between the equator and the reference latitude.
             xs, // x coordinate of the pole
             ys,   // y coordinate of the pole
-            n; // projection expnent
+            k0, // scale coefficent for easting
+            e, // eccentricity of the ellipsoid
+            e2; // square eccentricity of the ellipsoid
+    private double PI_2 = PI/2;
 
-    public Mercator1SP(final Ellipsoid ellipsoid,
+    public CassiniSoldner(final Ellipsoid ellipsoid,
             final Map<String, Measure> parameters) {
-        super(MERC, ellipsoid, parameters);
+        super(STERE, ellipsoid, parameters);
         lon0 = getCentralMeridian();
         lat0 = getLatitudeOfOrigin();
         xs = getFalseEasting();
         ys = getFalseNorthing();
-        double lat_ts = getLatitudeOfTrueScale();
-        double e2 = ellipsoid.getSquareEccentricity();
-        double k0;
-        if (lat_ts != 0) {
-            k0 = cos(lat_ts)/sqrt(1 - e2*pow(sin(lat_ts),2));
-        }
-        else {
-            k0 = getScaleFactor();
-        }
-        double a = getSemiMajorAxis();
-        n = k0 * a;
+        e = ellipsoid.getEccentricity();
+        e2 = ellipsoid.getSquareEccentricity();
+        k0 = getScaleFactor();
+        M0 = ellipsoid.arcFromLat(lat0);
     }
 
     /**
@@ -92,7 +89,7 @@ public class Mercator1SP extends Projection {
      */
     @Override
     public Property getProperty() {
-        return Projection.Property.CONFORMAL;
+        return Projection.Property.APHYLACTIC;
     }
 
     /**
@@ -106,7 +103,7 @@ public class Mercator1SP extends Projection {
     }
 
     /**
-     * Transform coord using the Mercator Projection. Input coord is supposed to
+     * Transform coord using the Cassini-Soldner Projection. Input coord is supposed to
      * be a geographic latitude / longitude coordinate in radians.
      * Algorithm based on the OGP's Guidance Note Number 7 Part 2 :
      * <http://www.epsg.org/guides/G7-2.html>
@@ -118,16 +115,23 @@ public class Mercator1SP extends Projection {
     @Override
     public double[] transform(double[] coord) throws CoordinateDimensionException {
         double lon = coord[1];
-        double lat = abs(coord[0]) > PI * 85 / 180 ? PI * 85 / 180 : coord[0];
-        double E = n * (lon - lon0);
-        double N = n * ellipsoid.isometricLatitude(lat);
-        coord[0] = xs + E;
-        coord[1] = ys + N;
+        double lat = coord[0];
+        double A = (lon-lon0)*cos(lat);
+        double A2 = A*A;
+        double A4 = A2*A2;
+        double T = pow(tan(lat), 2);
+        double C = e2*pow(cos(lat), 2)/(1-e2);
+        double v = ellipsoid.transverseRadiusOfCurvature(lat);
+        double M = ellipsoid.arcFromLat(lat);
+        double dE = v*A*(1-T*A2/6-(8*(1+C)-T)*T*A4/120);
+        double dN = M - M0 + v*tan(lat)*(A2/2+(5-T+6*C)*A4/24);
+        coord[0] = xs + dE;
+        coord[1] = ys + dN;
         return coord;
     }
     
     /**
-     * Creates the inverse operation for Mercator Projection.
+     * Creates the inverse operation for Cassini-Soldner Projection.
      * Input coord is supposed to be a projected easting / northing coordinate in meters.
      * Algorithm based on the OGP's Guidance Note Number 7 Part 2 :
      * <http://www.epsg.org/guides/G7-2.html>
@@ -136,18 +140,19 @@ public class Mercator1SP extends Projection {
      */
     @Override
     public CoordinateOperation inverse() throws NonInvertibleOperationException {
-        return new Mercator1SP(ellipsoid, parameters) {
+        return new ObliqueStereographicAlternative(ellipsoid, parameters) {
 
             @Override
             public double[] transform(double[] coord) throws CoordinateDimensionException {
-                double t = exp((ys-coord[1])/n);
-                double ki = PI/2 - 2 * atan(t);
-                double lat = ki;
-                for (int i =1;i<5;i++) {
-                    lat+= ellipsoid.getInverseMercatorCoeff()[i]*sin(2*i*ki);
-                }
-                coord[1] = (coord[0]-xs)/n + lon0;
-                coord[0] = lat;
+                double M1 = M0 + coord[1]-ys;
+                double lat1 = ellipsoid.latFromArc(M1);
+                double T1 = pow(tan(lat1), 2);
+                double v1 = ellipsoid.transverseRadiusOfCurvature(lat1);
+                double rho1 = ellipsoid.meridionalRadiusOfCurvature(lat1);
+                double D = (coord[0]-xs)/v1;
+                double D2 = D*D;
+                coord[1] = lon0 + D*(1 - T1*D2/3 + (1+3*T1)*T1*D2*D2/15)/cos(lat1);
+                coord[0] = lat1 - v1*tan(lat1)/rho1*D2/2*(1-(1+3*T1)*D2/12);
                 return coord;
             }
         };

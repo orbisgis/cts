@@ -159,10 +159,22 @@ public abstract class Projection extends AbstractCoordinateOperation {
     public double getStandardParallel2() {
         return parameters.get(Parameter.STANDARD_PARALLEL_2).getSValue();
     }
+    
+     public double getLatitudeOfTrueScale() {
+        return parameters.get(Parameter.LATITUDE_OF_TRUE_SCALE).getSValue();
+    }
+     
+     public double getAzimuthOfInitialLine() {
+        return parameters.get(Parameter.AZIMUTH_OF_INITIAL_LINE).getSValue();
+    }
+     
+     public double getAngleRectifiedToOblique() {
+        return parameters.get(Parameter.ANGLE_RECTIFIED_TO_OBLIQUE).getSValue();
+    }
 
     public double getScaleFactor() {
         Measure m = parameters.get(Parameter.SCALE_FACTOR);
-        return m != null ? parameters.get(Parameter.SCALE_FACTOR).getSValue() : 1.;
+        return parameters.get(Parameter.SCALE_FACTOR).getSValue();
     }
 
     public double getFalseEasting() {

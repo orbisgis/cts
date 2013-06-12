@@ -41,38 +41,32 @@ import org.cts.CoordinateOperation;
 import org.cts.NonInvertibleOperationException;
 
 /**
- * The World Mercator Projection (MERC). <p>
+ * The Equidistant Cylindrical projection (EQC). <p>
  *
  * @author Jules Party
  */
-public class Mercator1SP extends Projection {
+public class EquidistantCylindrical extends Projection {
 
-    public static final Identifier MERC =
-            new Identifier("EPSG", "9804", "Mercator (1SP)", "MERC");
+    public static final Identifier EQC =
+            new Identifier("EPSG", "1028", "Equidistant Cylindrical", "EQC");
     protected final double lat0, // the reference latitude
             lon0, // the reference longitude (from the datum prime meridian)
             xs, // x coordinate of the pole
             ys,   // y coordinate of the pole
-            n; // projection expnent
+            k0, // scale coefficent for easting
+            a; // semi major axis
 
-    public Mercator1SP(final Ellipsoid ellipsoid,
+    public EquidistantCylindrical(final Ellipsoid ellipsoid,
             final Map<String, Measure> parameters) {
-        super(MERC, ellipsoid, parameters);
+        super(EQC, ellipsoid, parameters);
         lon0 = getCentralMeridian();
         lat0 = getLatitudeOfOrigin();
         xs = getFalseEasting();
         ys = getFalseNorthing();
         double lat_ts = getLatitudeOfTrueScale();
         double e2 = ellipsoid.getSquareEccentricity();
-        double k0;
-        if (lat_ts != 0) {
-            k0 = cos(lat_ts)/sqrt(1 - e2*pow(sin(lat_ts),2));
-        }
-        else {
-            k0 = getScaleFactor();
-        }
-        double a = getSemiMajorAxis();
-        n = k0 * a;
+        k0 =cos(lat_ts)/sqrt(1 - e2*pow(sin(lat_ts),2));
+        a = getSemiMajorAxis();
     }
 
     /**
@@ -92,7 +86,7 @@ public class Mercator1SP extends Projection {
      */
     @Override
     public Property getProperty() {
-        return Projection.Property.CONFORMAL;
+        return Projection.Property.APHYLACTIC;
     }
 
     /**
@@ -106,8 +100,8 @@ public class Mercator1SP extends Projection {
     }
 
     /**
-     * Transform coord using the Mercator Projection. Input coord is supposed to
-     * be a geographic latitude / longitude coordinate in radians.
+     * Transform coord using the Equidistant Cylindrical Projection. Input coord
+     * is supposed to be a geographic latitude / longitude coordinate in radians.
      * Algorithm based on the OGP's Guidance Note Number 7 Part 2 :
      * <http://www.epsg.org/guides/G7-2.html>
      *
@@ -119,15 +113,15 @@ public class Mercator1SP extends Projection {
     public double[] transform(double[] coord) throws CoordinateDimensionException {
         double lon = coord[1];
         double lat = abs(coord[0]) > PI * 85 / 180 ? PI * 85 / 180 : coord[0];
-        double E = n * (lon - lon0);
-        double N = n * ellipsoid.isometricLatitude(lat);
+        double E = a * k0 * (lon - lon0);
+        double N = ellipsoid.arcFromLat(lat);
         coord[0] = xs + E;
         coord[1] = ys + N;
         return coord;
     }
     
     /**
-     * Creates the inverse operation for Mercator Projection.
+     * Creates the inverse operation for Equidistant Cylindrical Projection.
      * Input coord is supposed to be a projected easting / northing coordinate in meters.
      * Algorithm based on the OGP's Guidance Note Number 7 Part 2 :
      * <http://www.epsg.org/guides/G7-2.html>
@@ -136,17 +130,12 @@ public class Mercator1SP extends Projection {
      */
     @Override
     public CoordinateOperation inverse() throws NonInvertibleOperationException {
-        return new Mercator1SP(ellipsoid, parameters) {
+        return new EquidistantCylindrical(ellipsoid, parameters) {
 
             @Override
             public double[] transform(double[] coord) throws CoordinateDimensionException {
-                double t = exp((ys-coord[1])/n);
-                double ki = PI/2 - 2 * atan(t);
-                double lat = ki;
-                for (int i =1;i<5;i++) {
-                    lat+= ellipsoid.getInverseMercatorCoeff()[i]*sin(2*i*ki);
-                }
-                coord[1] = (coord[0]-xs)/n + lon0;
+                double lat = ellipsoid.latFromArc(coord[1]);
+                coord[1] = (coord[0]-xs)/k0/a + lon0;
                 coord[0] = lat;
                 return coord;
             }

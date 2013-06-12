@@ -41,38 +41,51 @@ import org.cts.CoordinateOperation;
 import org.cts.NonInvertibleOperationException;
 
 /**
- * The World Mercator Projection (MERC). <p>
+ * The Oblique Mercator Projection (OMERC). <p>
  *
  * @author Jules Party
  */
-public class Mercator1SP extends Projection {
+public class ObliqueMercator extends Projection {
 
-    public static final Identifier MERC =
-            new Identifier("EPSG", "9804", "Mercator (1SP)", "MERC");
-    protected final double lat0, // the reference latitude
-            lon0, // the reference longitude (from the datum prime meridian)
-            xs, // x coordinate of the pole
-            ys,   // y coordinate of the pole
-            n; // projection expnent
+    public static final Identifier OMERC =
+            new Identifier("EPSG", "9815", "Oblique Mercator", "OMERC");
+    protected final double latc, // latitude of the projection center
+            lonc, // longitude of the projection center
+            alphac, // azimuth of the initial line
+            gammac, // angle from the rectified grid to the skew (oblique) grid
+            kc, // scale factor on the initial line
+            FE, // false easting
+            FN,   // false northing
+            B, //constant of the projection
+            A, //constant of the projection
+            H, //constant of the projection
+            gamma0, //constant of the projection
+            lambda0, //constant of the projection
+            uc; // center of the projection
 
-    public Mercator1SP(final Ellipsoid ellipsoid,
+    public ObliqueMercator(final Ellipsoid ellipsoid,
             final Map<String, Measure> parameters) {
-        super(MERC, ellipsoid, parameters);
-        lon0 = getCentralMeridian();
-        lat0 = getLatitudeOfOrigin();
-        xs = getFalseEasting();
-        ys = getFalseNorthing();
-        double lat_ts = getLatitudeOfTrueScale();
+        super(OMERC, ellipsoid, parameters);
+        lonc = getCentralMeridian();
+        latc = getLatitudeOfOrigin();
+        alphac = getAzimuthOfInitialLine();
+        gammac = getAngleRectifiedToOblique();
+        FE = getFalseEasting();
+        FN = getFalseNorthing();
+        kc = getScaleFactor();
+        double e = ellipsoid.getEccentricity();
         double e2 = ellipsoid.getSquareEccentricity();
-        double k0;
-        if (lat_ts != 0) {
-            k0 = cos(lat_ts)/sqrt(1 - e2*pow(sin(lat_ts),2));
-        }
-        else {
-            k0 = getScaleFactor();
-        }
-        double a = getSemiMajorAxis();
-        n = k0 * a;
+        double esin = e*sin(latc);
+        B = sqrt(1+(e2*pow(cos(latc), 4)/(1-e2)));
+        A = ellipsoid.getSemiMajorAxis()*B*kc*sqrt(1-e2)/(1-esin*esin);
+        double t0 = tan((PI/2-latc)/2)/pow((1-esin)/(1+esin), e/2);
+        double D = B*sqrt((1-e2)/(1-esin*esin))/cos(latc);
+        double F = (D<1) ? D : D + sqrt(D*D-1)*signum(latc);
+        H = F * pow(t0, B);
+        double G = (F - 1/F)/2;
+        gamma0 = asin(sin(alphac)/D);
+        lambda0 = lonc - asin(G*tan(gamma0))/B;
+        uc = (D>1) ? A/B * atan(sqrt(D*D-1)/cos(alphac))*signum(latc) : 0;
     }
 
     /**
@@ -106,7 +119,7 @@ public class Mercator1SP extends Projection {
     }
 
     /**
-     * Transform coord using the Mercator Projection. Input coord is supposed to
+     * Transform coord using the Oblique Mercator Projection. Input coord is supposed to
      * be a geographic latitude / longitude coordinate in radians.
      * Algorithm based on the OGP's Guidance Note Number 7 Part 2 :
      * <http://www.epsg.org/guides/G7-2.html>
@@ -117,17 +130,23 @@ public class Mercator1SP extends Projection {
      */
     @Override
     public double[] transform(double[] coord) throws CoordinateDimensionException {
-        double lon = coord[1];
-        double lat = abs(coord[0]) > PI * 85 / 180 ? PI * 85 / 180 : coord[0];
-        double E = n * (lon - lon0);
-        double N = n * ellipsoid.isometricLatitude(lat);
-        coord[0] = xs + E;
-        coord[1] = ys + N;
+        double e = ellipsoid.getEccentricity();
+        double esin = e*sin(coord[0]);
+        double t = tan((PI/2-coord[0])/2)/pow((1-esin)/(1+esin), e/2);
+        double Q = H / pow(t, B);
+        double S = (Q - 1/Q)/2;
+        double T = (Q + 1/Q)/2;
+        double V = sin(B*(coord[1]-lambda0));
+        double U = (S*sin(gamma0) - V*cos(gamma0))/T;
+        double v = A*log((1-U)/(1+U))/2/B;
+        double u = A*atan((S*cos(gamma0)+V*sin(gamma0))/cos(B*(coord[1]-lambda0)))/B - abs(uc)*signum(latc);
+        coord[0] = FE + v*cos(gammac) + u*sin(gammac);
+        coord[1] = FN + u*cos(gammac) - v*sin(gammac);
         return coord;
     }
     
     /**
-     * Creates the inverse operation for Mercator Projection.
+     * Creates the inverse operation for Oblique Mercator Projection.
      * Input coord is supposed to be a projected easting / northing coordinate in meters.
      * Algorithm based on the OGP's Guidance Note Number 7 Part 2 :
      * <http://www.epsg.org/guides/G7-2.html>
@@ -136,18 +155,26 @@ public class Mercator1SP extends Projection {
      */
     @Override
     public CoordinateOperation inverse() throws NonInvertibleOperationException {
-        return new Mercator1SP(ellipsoid, parameters) {
+        return new ObliqueMercator(ellipsoid, parameters) {
 
             @Override
             public double[] transform(double[] coord) throws CoordinateDimensionException {
-                double t = exp((ys-coord[1])/n);
-                double ki = PI/2 - 2 * atan(t);
+                double v = (coord[0]-FE)*cos(gammac) - (coord[1]-FN)*sin(gammac);
+                double u = (coord[1]-FN)*cos(gammac) + (coord[0]-FE)*sin(gammac)+ abs(uc)*signum(latc);
+                double Q = exp(-B*v/A);
+                double S = (Q - 1/Q)/2;
+                double T = (Q + 1/Q)/2;
+                double V = sin(B*u/A);
+                double U = (V*cos(gamma0)+S*sin(gamma0))/T;
+                double t = pow(H/sqrt((1+U)/(1-U)), 1/B);
+                double ki = 2*(PI/4 - atan(t));
                 double lat = ki;
+                double[] coeff = ellipsoid.getInverseMercatorCoeff();
                 for (int i =1;i<5;i++) {
-                    lat+= ellipsoid.getInverseMercatorCoeff()[i]*sin(2*i*ki);
+                    lat+= coeff[i]*sin(2*i*ki);
                 }
-                coord[1] = (coord[0]-xs)/n + lon0;
                 coord[0] = lat;
+                coord[1] = lambda0 - atan((S*cos(gamma0)-V*sin(gamma0))/cos(B*u/A))/B;
                 return coord;
             }
         };

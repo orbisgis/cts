@@ -46,6 +46,7 @@ public class ProjKeyParameters {
         public static final String b = "b";
         public static final String f = "f";
         public static final String alpha = "alpha";
+        public static final String gamma = "gamma";
         public static final String datum = "datum";
         public static final String ellps = "ellps";
         public static final String es = "es";
@@ -95,6 +96,7 @@ public class ProjKeyParameters {
                         supportedParams.add(rf);
                         supportedParams.add(f);
                         supportedParams.add(alpha);
+                        supportedParams.add(gamma);
                         supportedParams.add(es);
                         supportedParams.add(b);
                         supportedParams.add(datum);

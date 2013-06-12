@@ -409,6 +409,12 @@ public class CRSHelper {
                                 return Ellipsoid.BESSEL1841;
                         } else if (ellipsoidName.equals("krass")) {
                                 return Ellipsoid.KRASSOWSKI;
+                        } else if (ellipsoidName.equals("evrstSS")) {
+                                return Ellipsoid.EVERESTSS;
+                        } else if (ellipsoidName.equals("GRS67")) {
+                                return Ellipsoid.GRS67;
+                        } else if (ellipsoidName.equals("aust_SA")) {
+                                return Ellipsoid.AustSA;
                         } else {
                                 LOGGER.warn(ellipsoidName + " return default ellipsoid WGS84");
                                 return Ellipsoid.WGS84;
@@ -452,7 +458,11 @@ public class CRSHelper {
                 String slat_0 = param.get("lat_0");
                 String slat_1 = param.get("lat_1");
                 String slat_2 = param.get("lat_2");
+                String slat_ts = param.get("lat_ts");
                 String slon_0 = param.get("lon_0");
+                String slonc = param.get("lonc");
+                String salpha = param.get("alpha");
+                String sgamma = param.get("gamma");
                 String sk = param.get("k");
                 String sk_0 = param.get("k_0");
                 String sx_0 = param.get("x_0");
@@ -460,7 +470,10 @@ public class CRSHelper {
                 double lat_0 = slat_0 != null ? Double.parseDouble(slat_0) : 0.;
                 double lat_1 = slat_1 != null ? Double.parseDouble(slat_1) : 0.;
                 double lat_2 = slat_2 != null ? Double.parseDouble(slat_2) : 0.;
-                double lon_0 = slon_0 != null ? Double.parseDouble(slon_0) : 0.;
+                double lat_ts = slat_ts != null ? Double.parseDouble(slat_ts) : 0.;
+                double lon_0 = slon_0 != null ? Double.parseDouble(slon_0) : slonc != null ? Double.parseDouble(slonc) : 0.;
+                double alpha = salpha != null ? Double.parseDouble(salpha) : 0.;
+                double gamma = sgamma != null ? Double.parseDouble(sgamma) : 0.;
                 if (sk!=null && sk_0!=null) {
                     if (!sk.equals(sk_0)) {
                         LOGGER.warn("Two different scales factor at origin are defined, the one chosen for the projection is k_0");
@@ -474,6 +487,9 @@ public class CRSHelper {
                 map.put(Parameter.LATITUDE_OF_ORIGIN, new Measure(lat_0, Unit.DEGREE));
                 map.put(Parameter.STANDARD_PARALLEL_1, new Measure(lat_1, Unit.DEGREE));
                 map.put(Parameter.STANDARD_PARALLEL_2, new Measure(lat_2, Unit.DEGREE));
+                map.put(Parameter.LATITUDE_OF_TRUE_SCALE, new Measure(lat_ts, Unit.DEGREE));
+                map.put(Parameter.AZIMUTH_OF_INITIAL_LINE, new Measure(alpha, Unit.DEGREE));
+                map.put(Parameter.ANGLE_RECTIFIED_TO_OBLIQUE, new Measure(gamma, Unit.DEGREE));
                 map.put(Parameter.SCALE_FACTOR, new Measure(k_0, Unit.UNIT));
                 map.put(Parameter.FALSE_EASTING, new Measure(x_0, Unit.METER));
                 map.put(Parameter.FALSE_NORTHING, new Measure(y_0, Unit.METER));
@@ -497,6 +513,26 @@ public class CRSHelper {
                         return new UniversalTransverseMercator(ell, map);
                 } else if (projectionName.equalsIgnoreCase(ProjValueParameters.MERC)) {
                     return new Mercator1SP(ell, map);
+                } else if (projectionName.equalsIgnoreCase(ProjValueParameters.EQC)) {
+                    return new EquidistantCylindrical(ell, map);
+                } else if (projectionName.equalsIgnoreCase(ProjValueParameters.STERE)) {
+                    return new Stereographic(ell, map);
+                } else if (projectionName.equalsIgnoreCase(ProjValueParameters.STEREA)) {
+                    return new ObliqueStereographicAlternative(ell, map);
+                } else if (projectionName.equalsIgnoreCase(ProjValueParameters.CASS)) {
+                    return new CassiniSoldner(ell, map);
+                } else if (projectionName.equalsIgnoreCase(ProjValueParameters.OMERC)) {
+                    return new ObliqueMercator(ell, map);
+                } else if (projectionName.equalsIgnoreCase(ProjValueParameters.SOMERC)) {
+                    return new SwissObliqueMercator(ell, map);
+                } else if (projectionName.equalsIgnoreCase(ProjValueParameters.AEA)) {
+                    return new AlbersEqualArea(ell, map);
+                } else if (projectionName.equalsIgnoreCase(ProjValueParameters.LAEA)) {
+                    return new LambertAzimuthalEqualArea(ell, map);
+                } else if (projectionName.equalsIgnoreCase(ProjValueParameters.POLY)) {
+                    return new Polyconic(ell, map);
+                } else if (projectionName.equalsIgnoreCase(ProjValueParameters.CEA)) {
+                    return new CylindricalEqualArea(ell, map);
                 } else {
                         throw new RuntimeException("Cannot create the projection " + projectionName);
                 }
