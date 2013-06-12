@@ -314,68 +314,68 @@ public class CRSHelper {
                     GeodeticDatum gd = new GeodeticDatum(pm, ell);
                     setDefaultWGS84Parameters(gd, param);
                     gd = gd.checkExistingGeodeticDatum();
-                    
-                    String nadgrids = param.get(ProjKeyParameters.nadgrids);
-                    if (nadgrids != null) {
-                        String[] grids = nadgrids.split(",");
-                        for (String grid : grids) {
-                            if (!grid.equals("null")) {
-                                LOGGER.warn("A grid has been founded.");
-                                if (grid.equals("@null")) {
-                                    gd.addCoordinateOperation(GeodeticDatum.WGS84, Identity.IDENTITY);
-                                    GeodeticDatum.WGS84.addCoordinateOperation(gd, Identity.IDENTITY);
-                                } else {
-                                    try {
-                                        NTv2GridShiftTransformation gt = new NTv2GridShiftTransformation(
-                                                GridShift.class.getResource(grid).getPath());
-                                        gt.setMode(NTv2GridShiftTransformation.SPEED);
-                                        gt.loadGridShiftFile();
-                                        GeodeticDatum gtSource = GeodeticDatum.getGeodeticDatumFromShortName(gt.getFromDatum());
-                                        GeodeticDatum gtTarget = GeodeticDatum.getGeodeticDatumFromShortName(gt.getToDatum());
-                                        if (gtSource == null || gtTarget == null) {
-                                            LOGGER.warn("At least one of the geodetic datum bound by the grid transformation "+grid+" is not recognized.");
-                                        }
-                                        else {
-                                            if (gd.getShortName().equals(gt.getFromDatum())) {
-                                                gd.addCoordinateOperation(gtTarget, gt);
-                                                try {
-                                                    gtTarget.addCoordinateOperation(gd, gt.inverse());
-                                                } catch (NonInvertibleOperationException ex) {
-                                                    LOGGER.warn("The grid transformation "+grid+" is not inversible.");
-                                                }
-                                            }
-                                            else {
-                                                if (gd.getCoordinateOperations(gtSource).isEmpty()) {
-                                                    CoordinateOperationSequence opList = new CoordinateOperationSequence(
-                                                            new Identifier(CoordinateOperationSequence.class, gd.getName() + " to " + gtSource.getName() + " through " + GeodeticDatum.WGS84.getName()),
-                                                            gd.getCoordinateOperations(GeodeticDatum.WGS84).get(0),
-                                                            GeodeticDatum.WGS84.getCoordinateOperations(gtSource).get(0));
-                                                    gd.addCoordinateOperation(gtSource, opList);
-                                                }
-                                                CoordinateOperationSequence opList1 = new CoordinateOperationSequence(
-                                                        new Identifier(CoordinateOperationSequence.class, gd.getName() + " to " + gtTarget.getName() + " through " + grid + " transformation"),
-                                                        gd.getCoordinateOperations(gtSource).get(0), gt);
-                                                gd.addCoordinateOperation(gtTarget, opList1);
-                                                try {
-                                                    gtTarget.addCoordinateOperation(gd, opList1.inverse());
-                                                } catch (NonInvertibleOperationException ex) {
-                                                    LOGGER.warn("The grid transformation "+grid+" is not inversible.");
-                                                }
-                                            }
-                                        }
-                                    } catch (IOException ex) {
-                                        java.util.logging.Logger.getLogger(CRSHelper.class.getName()).log(Level.SEVERE, null, ex);
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    setNadgrids(gd, param);
                     return gd;
                 }
-
             }
             return null;
         }
+        
+        private static void setNadgrids(GeodeticDatum gd, Map<String, String> param) {
+        String nadgrids = param.get(ProjKeyParameters.nadgrids);
+        if (nadgrids != null) {
+            String[] grids = nadgrids.split(",");
+            for (String grid : grids) {
+                if (!grid.equals("null")) {
+                    LOGGER.warn("A grid has been founded.");
+                    if (grid.equals("@null")) {
+                        gd.addCoordinateOperation(GeodeticDatum.WGS84, Identity.IDENTITY);
+                        GeodeticDatum.WGS84.addCoordinateOperation(gd, Identity.IDENTITY);
+                    } else {
+                        try {
+                            NTv2GridShiftTransformation gt = new NTv2GridShiftTransformation(
+                                    GridShift.class.getResource(grid).getPath());
+                            gt.setMode(NTv2GridShiftTransformation.SPEED);
+                            gt.loadGridShiftFile();
+                            GeodeticDatum gtSource = GeodeticDatum.getGeodeticDatumFromShortName(gt.getFromDatum());
+                            GeodeticDatum gtTarget = GeodeticDatum.getGeodeticDatumFromShortName(gt.getToDatum());
+                            if (gtSource == null || gtTarget == null) {
+                                LOGGER.warn("At least one of the geodetic datum bound by the grid transformation " + grid + " is not recognized.");
+                            } else if (gd.getCoordinateOperations(gtTarget).isEmpty()) {
+                                if (gd.getShortName().equals(gt.getFromDatum())) {
+                                    gd.addCoordinateOperation(gtTarget, gt);
+                                    try {
+                                        gtTarget.addCoordinateOperation(gd, gt.inverse());
+                                    } catch (NonInvertibleOperationException ex) {
+                                        LOGGER.warn("The grid transformation " + grid + " is not inversible.");
+                                    }
+                                } else {
+                                    if (gd.getCoordinateOperations(gtSource).isEmpty()) {
+                                        CoordinateOperationSequence opList = new CoordinateOperationSequence(
+                                                new Identifier(CoordinateOperationSequence.class, gd.getName() + " to " + gtSource.getName() + " through " + GeodeticDatum.WGS84.getName()),
+                                                gd.getCoordinateOperations(GeodeticDatum.WGS84).get(0),
+                                                GeodeticDatum.WGS84.getCoordinateOperations(gtSource).get(0));
+                                        gd.addCoordinateOperation(gtSource, opList);
+                                    }
+                                    CoordinateOperationSequence opList1 = new CoordinateOperationSequence(
+                                            new Identifier(CoordinateOperationSequence.class, gd.getName() + " to " + gtTarget.getName() + " through " + grid + " transformation"),
+                                            gd.getCoordinateOperations(gtSource).get(0), gt);
+                                    gd.addCoordinateOperation(gtTarget, opList1);
+                                    try {
+                                        gtTarget.addCoordinateOperation(gd, opList1.inverse());
+                                    } catch (NonInvertibleOperationException ex) {
+                                        LOGGER.warn("The grid transformation " + grid + " is not inversible.");
+                                    }
+                                }
+                            }
+                        } catch (IOException ex) {
+                            java.util.logging.Logger.getLogger(CRSHelper.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                }
+            }
+        }
+    }
 
         /**
          * Returns an Ellipsoid from its name or from its parameter.

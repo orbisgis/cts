@@ -112,6 +112,8 @@ public class GeodeticDatum extends AbstractDatum {
                 -60.0, 320.0, 1.0));
         ED50.setDefaultToWGS84Operation(new GeocentricTranslation(-84.0, -97.0,
                 -117.0, 1.0));
+        NTF.addCoordinateOperation(NTF_PARIS, LongitudeRotation.getLongitudeRotationTo(NTF_PARIS.primeMeridian));
+        NTF_PARIS.addCoordinateOperation(NTF, LongitudeRotation.getLongitudeRotationFrom(NTF_PARIS.primeMeridian));
     }
     
     /**
@@ -240,65 +242,64 @@ public class GeodeticDatum extends AbstractDatum {
      */
     public final void setDefaultToWGS84Operation(CoordinateOperation toWGS84) {
         this.toWGS84 = toWGS84;
-        // First case : toWGS (geocentric transformation) is not null
-        if (toWGS84 != null && toWGS84 != Identity.IDENTITY) {
+        setToOtherDatumOperation(toWGS84, GeodeticDatum.WGS84);
+    }
+    
+    public final void setToOtherDatumOperation(CoordinateOperation toOtherDatum, GeodeticDatum targetDatum) {
+        // First case : toOtherDatum (geocentric transformation) is not null
+        if (toOtherDatum != null && toOtherDatum != Identity.IDENTITY) {
             // Add CoordinateOperation from the Geographic 3D CRS associated with
             // this datum to the one associated with WGS84
             this.addCoordinateOperation(
-                GeodeticDatum.WGS84,
-                new CoordinateOperationSequence(
-                    new Identifier(CoordinateOperation.class, getName() + " to WGS84"),
-                    LongitudeRotation.getLongitudeRotationFrom(primeMeridian),
-                    new Geographic2Geocentric(getEllipsoid()),
-                    toWGS84,
-                    new Geocentric2Geographic(GeodeticDatum.WGS84.getEllipsoid())
-                )
-            );
-            try {
-                GeodeticDatum.WGS84.addCoordinateOperation(
-                    this,
+                    targetDatum,
                     new CoordinateOperationSequence(
-                        new Identifier(CoordinateOperation.class, "WGS84 to " + getName()),
-                        new Geographic2Geocentric(GeodeticDatum.WGS84.getEllipsoid()),
-                        toWGS84.inverse(),
+                    new Identifier(CoordinateOperation.class, getName() + " to " + targetDatum.getName()),
+                    new LongitudeRotation(primeMeridian.getLongitudeFromGreenwichInRadians() - targetDatum.getPrimeMeridian().getLongitudeFromGreenwichInRadians()),
+                    new Geographic2Geocentric(getEllipsoid()),
+                    toOtherDatum,
+                    new Geocentric2Geographic(targetDatum.getEllipsoid())));
+            try {
+                targetDatum.addCoordinateOperation(
+                        this,
+                        new CoordinateOperationSequence(
+                        new Identifier(CoordinateOperation.class, targetDatum.getName() + " to " + getName()),
+                        new Geographic2Geocentric(targetDatum.getEllipsoid()),
+                        toOtherDatum.inverse(),
                         new Geocentric2Geographic(getEllipsoid()),
-                        LongitudeRotation.getLongitudeRotationTo(primeMeridian)
-                    )
-                );
+                        new LongitudeRotation(targetDatum.getPrimeMeridian().getLongitudeFromGreenwichInDegrees() - primeMeridian.getLongitudeFromGreenwichInRadians())));
             } catch (NonInvertibleOperationException e) {
                 // eat it
                 // toWGS84 should be Identity, GeocentricTranslation or
                 // SevenParameterTransformation which are invertible
-                // else, no transformation will be add from WGS84 to this
+                // else, no transformation will be add from targetDatum to this
             }
         } // Second case : geocentric transformation is null but the ellipsoids
         // and the prime meridians are not the same
-        else if (toWGS84 == Identity.IDENTITY
-                && !primeMeridian.equals(PrimeMeridian.GREENWICH)
-                && !ellipsoid.equals(Ellipsoid.WGS84)) {
-            this.addCoordinateOperation(GeodeticDatum.WGS84,
+        else if (toOtherDatum == Identity.IDENTITY
+                && !primeMeridian.equals(targetDatum.getPrimeMeridian())
+                && !ellipsoid.equals(targetDatum.getEllipsoid())) {
+            this.addCoordinateOperation(targetDatum,
                     new CoordinateOperationSequence(
-                    new Identifier(CoordinateOperation.class, getName()
-                    + " to WGS84"), LongitudeRotation.getLongitudeRotationFrom(primeMeridian),
+                    new Identifier(CoordinateOperation.class, getName() + " to " + targetDatum.getName()),
+                    new LongitudeRotation(primeMeridian.getLongitudeFromGreenwichInRadians() - targetDatum.getPrimeMeridian().getLongitudeFromGreenwichInRadians()),
                     new Geographic2Geocentric(getEllipsoid()),
-                    new Geocentric2Geographic(GeodeticDatum.WGS84.getEllipsoid())));
-            GeodeticDatum.WGS84.addCoordinateOperation(this,
+                    new Geocentric2Geographic(targetDatum.getEllipsoid())));
+            targetDatum.addCoordinateOperation(this,
                     new CoordinateOperationSequence(
-                    new Identifier(CoordinateOperation.class, getName()
-                    + " to WGS84"), new Geographic2Geocentric(
-                    GeodeticDatum.WGS84.getEllipsoid()),
+                    new Identifier(CoordinateOperation.class, getName() + " to " + targetDatum.getName()),
+                    new Geographic2Geocentric(targetDatum.getEllipsoid()),
                     new Geocentric2Geographic(getEllipsoid()),
-                    LongitudeRotation.getLongitudeRotationTo(primeMeridian)));
+                    new LongitudeRotation(targetDatum.getPrimeMeridian().getLongitudeFromGreenwichInDegrees() - primeMeridian.getLongitudeFromGreenwichInRadians())));
         } // Third case : geocentric transformation is null and ellipsoid are
         // the same but prime meridians are not the same
         else if (toWGS84 == Identity.IDENTITY
-                && !primeMeridian.equals(PrimeMeridian.GREENWICH)) {
-            this.addCoordinateOperation(GeodeticDatum.WGS84, LongitudeRotation.getLongitudeRotationFrom(primeMeridian));
-            GeodeticDatum.WGS84.addCoordinateOperation(this, LongitudeRotation.getLongitudeRotationTo(primeMeridian));
+                && !primeMeridian.equals(targetDatum.getPrimeMeridian())) {
+            this.addCoordinateOperation(targetDatum, new LongitudeRotation(primeMeridian.getLongitudeFromGreenwichInRadians() - targetDatum.getPrimeMeridian().getLongitudeFromGreenwichInRadians()));
+            targetDatum.addCoordinateOperation(this, new LongitudeRotation(targetDatum.getPrimeMeridian().getLongitudeFromGreenwichInDegrees() - primeMeridian.getLongitudeFromGreenwichInRadians()));
         } // Fourth case : this datum and WGS84 are equivalent
         else if (toWGS84 == Identity.IDENTITY) {
             this.addCoordinateOperation(GeodeticDatum.WGS84, Identity.IDENTITY);
-            GeodeticDatum.WGS84.addCoordinateOperation(this, Identity.IDENTITY);
+            targetDatum.addCoordinateOperation(this, Identity.IDENTITY);
         }
     }
 
