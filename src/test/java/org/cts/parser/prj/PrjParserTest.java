@@ -4,7 +4,7 @@
  * and parameter sets. 
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
- * This library has been originaly developed by Michaël Michaud under the JGeod
+ * This library has been originally developed by Michaël Michaud under the JGeod
  * name. It has been renamed CTS in 2009 and shared to the community from 
  * the Atelier SIG code repository.
  * 
