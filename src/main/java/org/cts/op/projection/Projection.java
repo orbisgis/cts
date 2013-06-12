@@ -4,11 +4,11 @@
  * and parameter sets. 
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
- * This library has been originaled developed by Michael Michaud under the JGeod
+ * This library has been originally developed by Michaël Michaud under the JGeod
  * name. It has been renamed CTS in 2009 and shared to the community from 
  * the Atelier SIG code repository.
  * 
- * Since them, CTS is supported by the Atelier SIG team in collaboration with Michael 
+ * Since them, CTS is supported by the Atelier SIG team in collaboration with Michaël 
  * Michaud.
  * The new CTS has been funded  by the French Agence Nationale de la Recherche 
  * (ANR) under contract ANR-08-VILL-0005-01 and the regional council 
@@ -136,39 +136,87 @@ public abstract class Projection extends AbstractCoordinateOperation {
         }
     }
 
+    /**
+     * Return the semi-major axis of the ellipsoid used for this projection (fr : demi grand axe).
+     */
     public double getSemiMajorAxis() {
         return ellipsoid.getSemiMajorAxis();
     }
 
+    /**
+     * Return the semi-minor axis of the ellipsoid used for this projection (fr : demi petit axe).
+     */
     public double getSemiMinorAxis() {
         return ellipsoid.getSemiMinorAxis();
     }
 
+    /**
+     * Return the central meridian used for this projection.
+     */
     public double getCentralMeridian() {
         return parameters.get(Parameter.CENTRAL_MERIDIAN).getSValue();
     }
 
+    /**
+     * Return the reference latitude used for this projection.
+     */
     public double getLatitudeOfOrigin() {
         return parameters.get(Parameter.LATITUDE_OF_ORIGIN).getSValue();
     }
 
+    /**
+     * Return the the first standard parallel of secant conformal conic projections.
+     */
     public double getStandardParallel1() {
         return parameters.get(Parameter.STANDARD_PARALLEL_1).getSValue();
     }
 
+    /**
+     * Return the the second standard parallel of secant conformal conic projections.
+     */
     public double getStandardParallel2() {
         return parameters.get(Parameter.STANDARD_PARALLEL_2).getSValue();
     }
-
-    public double getScaleFactor() {
-        Measure m = parameters.get(Parameter.SCALE_FACTOR);
-        return m != null ? parameters.get(Parameter.SCALE_FACTOR).getSValue() : 1.;
+    
+    /**
+     * Return the latitude of true scale of secant projections.
+     */
+    public double getLatitudeOfTrueScale() {
+        return parameters.get(Parameter.LATITUDE_OF_TRUE_SCALE).getSValue();
+    }
+     
+    /**
+     * Return the azimuth of the initial line of oblique projections.
+     */
+    public double getAzimuthOfInitialLine() {
+        return parameters.get(Parameter.AZIMUTH_OF_INITIAL_LINE).getSValue();
+    }
+     
+    /**
+     * Return the angle from the rectified grid to the skew (oblique) grid of oblique projections.
+     */
+    public double getAngleRectifiedToOblique() {
+        return parameters.get(Parameter.ANGLE_RECTIFIED_TO_OBLIQUE).getSValue();
     }
 
+    /**
+     * Return the scale factor of this projection.
+     */
+    public double getScaleFactor() {
+        Measure m = parameters.get(Parameter.SCALE_FACTOR);
+        return parameters.get(Parameter.SCALE_FACTOR).getSValue();
+    }
+
+    /**
+     * Return the false easting of this projection.
+     */
     public double getFalseEasting() {
         return parameters.get(Parameter.FALSE_EASTING).getSValue();
     }
 
+    /**
+     * Return the false northing of this projection.
+     */
     public double getFalseNorthing() {
         return parameters.get(Parameter.FALSE_NORTHING).getSValue();
     }

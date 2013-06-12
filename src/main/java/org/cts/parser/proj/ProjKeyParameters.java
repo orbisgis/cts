@@ -4,11 +4,11 @@
  * and parameter sets. 
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
- * This library has been originaled developed by Michael Michaud under the JGeod
+ * This library has been originally developed by Michaël Michaud under the JGeod
  * name. It has been renamed CTS in 2009 and shared to the community from 
  * the Atelier SIG code repository.
  * 
- * Since them, CTS is supported by the Atelier SIG team in collaboration with Michael 
+ * Since them, CTS is supported by the Atelier SIG team in collaboration with Michaël 
  * Michaud.
  * The new CTS has been funded  by the French Agence Nationale de la Recherche 
  * (ANR) under contract ANR-08-VILL-0005-01 and the regional council 
@@ -46,6 +46,7 @@ public class ProjKeyParameters {
         public static final String b = "b";
         public static final String f = "f";
         public static final String alpha = "alpha";
+        public static final String gamma = "gamma";
         public static final String datum = "datum";
         public static final String ellps = "ellps";
         public static final String es = "es";
@@ -95,6 +96,7 @@ public class ProjKeyParameters {
                         supportedParams.add(rf);
                         supportedParams.add(f);
                         supportedParams.add(alpha);
+                        supportedParams.add(gamma);
                         supportedParams.add(es);
                         supportedParams.add(b);
                         supportedParams.add(datum);
