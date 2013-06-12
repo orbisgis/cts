@@ -58,11 +58,23 @@ public class FrenchProjectionsRobustnessTest extends BaseCoordinateTransformTest
     }
 
     @Test
-    public void Lamb1toLamb93_2DProjection() throws Exception {
+    public void Lamb1toLamb93_2DProjection1() throws Exception {
         //IGN data : POINT (201418.662 137651.011 0)	ID0141
         double[] srcPoint = new double[]{201418.662, 137651.011, 0};
         //IGN data : POINT (252831.433 6873925.434 0)	ID0141
         double[] expectedPoint = new double[]{252831.433, 6873925.434, 0};
+        CoordinateReferenceSystem srcCRS = createCRS("IGNF:LAMB1");
+        CoordinateReferenceSystem outCRS = createCRS("IGNF:LAMB93");
+        double[] result = transform((GeodeticCRS) srcCRS, (GeodeticCRS) outCRS, srcPoint);
+        assertTrue(checkEquals2D(srcCRS + " to " + outCRS, result, expectedPoint, 10E-3));
+    }
+    
+    @Test
+    public void Lamb1toLamb93_2DProjection2() throws Exception {
+        //IGN data : POINT (87842.341 101687.92 449.99)	ID0003 
+        double[] srcPoint = new double[]{87842.341, 101687.92, 0};
+        //IGN data : POINT (139121.353 6838500.192 449.99)	ID0003
+        double[] expectedPoint = new double[]{139121.353, 6838500.192, 0};
         CoordinateReferenceSystem srcCRS = createCRS("IGNF:LAMB1");
         CoordinateReferenceSystem outCRS = createCRS("IGNF:LAMB93");
         double[] result = transform((GeodeticCRS) srcCRS, (GeodeticCRS) outCRS, srcPoint);
@@ -79,5 +91,42 @@ public class FrenchProjectionsRobustnessTest extends BaseCoordinateTransformTest
         CoordinateReferenceSystem outCRS = createCRS("IGNF:LAMB93");
         double[] result = transform((GeodeticCRS) srcCRS, (GeodeticCRS) outCRS, srcPoint);       
         assertTrue(checkEquals2D(srcCRS + " to " + outCRS, result, expectedPoint, 10E-3));
+    }
+    
+    
+    @Test
+    public void LonLat_RGF93_circetoLamb93_2DProjection() throws Exception {
+        //IGN data : POINT (6.4 43.008 2525.68)	ID5863
+        double[] srcPoint = new double[]{6.4, 43.008, 0};
+        //IGN data : POINT (977362.95 6218045.569 0)	ID5863
+        double[] expectedPoint = new double[]{977362.95, 6218045.569, 0};
+        CoordinateReferenceSystem srcCRS = createCRS("IGNF:RGF93G");
+        CoordinateReferenceSystem outCRS = createCRS("IGNF:LAMB93");
+        double[] result = transform((GeodeticCRS) srcCRS, (GeodeticCRS) outCRS, srcPoint);       
+        assertTrue(checkEquals2D(srcCRS + " to " + outCRS, result, expectedPoint, 10E-3));
+    }
+    
+    @Test
+    public void Lamb2e_circetoLamb93_2DProjection() throws Exception {
+        //IGN data : POINT (931813.94 1786923.891 2525.68) ID5863
+        double[] srcPoint = new double[]{931813.94, 1786923.891, 0};
+        //IGN data : POINT (977362.95 6218045.569 0)	ID5863
+        double[] expectedPoint = new double[]{977362.95, 6218045.569, 0};
+        CoordinateReferenceSystem srcCRS = createCRS("IGNF:LAMBE");
+        CoordinateReferenceSystem outCRS = createCRS("IGNF:LAMB93");
+        double[] result = transform((GeodeticCRS) srcCRS, (GeodeticCRS) outCRS, srcPoint);       
+        assertTrue(checkEquals2D(srcCRS + " to " + outCRS, result, expectedPoint, 10E-2));
+    } 
+    
+    @Test
+    public void LonLat_RGF93_circetoLamb93_3DProjection() throws Exception {
+        //IGN data : POINT (6.4 43.008 2525.68)	ID5863
+        double[] srcPoint = new double[]{6.4, 43.008, 2525.68};
+        //IGN data : POINT (977362.95 6218045.569 2525.68)	ID5863
+        double[] expectedPoint = new double[]{977362.95, 6218045.569, 2525.68};
+        CoordinateReferenceSystem srcCRS = createCRS("IGNF:RGF93G");
+        CoordinateReferenceSystem outCRS = createCRS("IGNF:LAMB93");
+        double[] result = transform((GeodeticCRS) srcCRS, (GeodeticCRS) outCRS, srcPoint);       
+        assertTrue(checkEquals(srcCRS + " to " + outCRS, result, expectedPoint, 10E-3));
     }
 }
