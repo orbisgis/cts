@@ -4,11 +4,11 @@
 * and parameter sets. 
 * Its main focus are simplicity, flexibility, interoperability, in this order.
 *
-* This library has been originaled developed by Michael Michaud under the JGeod
+* This library has been originally developed by Michaël Michaud under the JGeod
 * name. It has been renamed CTS in 2009 and shared to the community from 
 * the Atelier SIG code repository.
 * 
-* Since them, CTS is supported by the Atelier SIG team in collaboration with Michael 
+* Since them, CTS is supported by the Atelier SIG team in collaboration with Michaël 
 * Michaud.
 * The new CTS has been funded  by the French Agence Nationale de la Recherche 
 * (ANR) under contract ANR-08-VILL-0005-01 and the regional council 
@@ -60,7 +60,7 @@ import org.cts.op.transformation.NTv2GridShiftTransformation;
  * between the model (CRS/Datum/Ellipsoid/Projection...) and the parsers
  * which create CRS from a file or from a stream. CRSHelper is in-between,
  * no more a file, but not yet a model.
- * @author Michaël Michaud, Erwan Bocher
+ * @author Michaël Michaud, Erwan Bocher, Jules Party
  */
 public class CRSHelper {
 
