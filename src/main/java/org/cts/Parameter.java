@@ -53,10 +53,10 @@ public class Parameter {
     /** Key to access latitude of true scale, one possible parameter of the projection.*/
     public static final String LATITUDE_OF_TRUE_SCALE = "latitude of true scale";
     
-    /** Key to access latitude of true scale, one possible parameter of the projection.*/
+    /** Key to access azimuth of the initial line of oblique projections.*/
     public static final String AZIMUTH_OF_INITIAL_LINE = "azimuth of the initial line";
     
-    /** Key to access latitude of true scale, one possible parameter of the projection.*/
+    /** Key to access angle from the rectified grid to the skew (oblique) grid of oblique projections.*/
     public static final String ANGLE_RECTIFIED_TO_OBLIQUE = "angle from the rectified grid to the skew (oblique) grid";
 
     /** Key to access scale factor, one possible parameter of the projection.*/

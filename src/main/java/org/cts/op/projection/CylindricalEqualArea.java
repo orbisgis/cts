@@ -56,6 +56,15 @@ public class CylindricalEqualArea extends Projection {
             k0; // scale factor of the projection
             
 
+    /**
+     * Create a new Cylindrical Equal Area (normal case) Projection corresponding to
+     * the <code>Ellipsoid</code> and the list of parameters given in argument
+     * and initialize common parameters lon0, FE, FN and other parameters
+     * useful for the projection.
+     * 
+     * @param ellipsoid ellipsoid used to define the projection.
+     * @param parameters a map of useful parameters to define the projection.
+     */
     public CylindricalEqualArea(final Ellipsoid ellipsoid,
             final Map<String, Measure> parameters) {
         super(CEA, ellipsoid, parameters);

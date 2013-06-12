@@ -57,6 +57,15 @@ public class AlbersEqualArea extends Projection {
             C, // constant of the projection
             n; // exponent of the projection
 
+    /**
+     * Create a new Albers Equal Area Projection corresponding to
+     * the <code>Ellipsoid</code> and the list of parameters given in argument
+     * and initialize common parameters lon0, lat0, FE, FN and other parameters
+     * useful for the projection.
+     * 
+     * @param ellipsoid ellipsoid used to define the projection.
+     * @param parameters a map of useful parameters to define the projection.
+     */
     public AlbersEqualArea(final Ellipsoid ellipsoid,
             final Map<String, Measure> parameters) {
         super(AEA, ellipsoid, parameters);

@@ -57,6 +57,15 @@ public class UniversalTransverseMercatorAuto extends Projection {
         
     protected final double[] dircoeff, invcoeff;
     
+    /**
+     * Create a new Universal Transverse Mercator Projection corresponding to
+     * the <code>Ellipsoid</code> and the list of parameters given in argument
+     * and initialize common parameters lat0 and other parameters
+     * useful for the projection.
+     * 
+     * @param ellipsoid ellipsoid used to define the projection.
+     * @param parameters a map of useful parameters to define the projection.
+     */
     public UniversalTransverseMercatorAuto(final Ellipsoid ellipsoid,
             final Map<String,Measure> parameters) {
         super(UTM, ellipsoid, parameters);

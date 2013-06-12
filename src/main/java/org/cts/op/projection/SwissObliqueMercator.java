@@ -61,6 +61,15 @@ public class SwissObliqueMercator extends Projection {
             K, // constant of the latitude formula
             R; // Radius of the projection sphere
 
+    /**
+     * Create a new Oblique Stereographic Alternative Projection corresponding to
+     * the <code>Ellipsoid</code> and the list of parameters given in argument
+     * and initialize common parameters FE, FN and other parameters
+     * useful for the projection.
+     * 
+     * @param ellipsoid ellipsoid used to define the projection.
+     * @param parameters a map of useful parameters to define the projection.
+     */
     public SwissObliqueMercator(final Ellipsoid ellipsoid,
             final Map<String, Measure> parameters) {
         super(OMERC, ellipsoid, parameters);

@@ -76,6 +76,15 @@ public class LambertConicConformal2SP extends Projection {
             xs, // x coordinate of the pole
             ys;   // y coordinate of the pole
 
+    /**
+     * Create a new Lambert Conic Conformal 2SP Projection corresponding to
+     * the <code>Ellipsoid</code> and the list of parameters given in argument
+     * and initialize common parameter lon0 and other parameters
+     * useful for the projection.
+     * 
+     * @param ellipsoid ellipsoid used to define the projection.
+     * @param parameters a map of useful parameters to define the projection.
+     */
     public LambertConicConformal2SP(final Ellipsoid ellipsoid,
             final Map<String, Measure> parameters) {
         super(LCC2SP, ellipsoid, parameters);

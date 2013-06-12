@@ -51,22 +51,30 @@ public class EquidistantCylindrical extends Projection {
             new Identifier("EPSG", "1028", "Equidistant Cylindrical", "EQC");
     protected final double lat0, // the reference latitude
             lon0, // the reference longitude (from the datum prime meridian)
-            xs, // x coordinate of the pole
-            ys,   // y coordinate of the pole
-            k0, // scale coefficent for easting
-            a; // semi major axis
+            FE, // false easting
+            FN,   // false northing
+            C; // constant of the projection
 
+    /**
+     * Create a new Equidistant Cylindrical Projection corresponding to
+     * the <code>Ellipsoid</code> and the list of parameters given in argument
+     * and initialize common parameters lon0, lat0, FE, FN and C a constant useful
+     * for the projection.
+     * 
+     * @param ellipsoid ellipsoid used to define the projection.
+     * @param parameters a map of useful parameters to define the projection.
+     */
     public EquidistantCylindrical(final Ellipsoid ellipsoid,
             final Map<String, Measure> parameters) {
         super(EQC, ellipsoid, parameters);
         lon0 = getCentralMeridian();
         lat0 = getLatitudeOfOrigin();
-        xs = getFalseEasting();
-        ys = getFalseNorthing();
+        FE = getFalseEasting();
+        FN = getFalseNorthing();
         double lat_ts = getLatitudeOfTrueScale();
         double e2 = ellipsoid.getSquareEccentricity();
-        k0 =cos(lat_ts)/sqrt(1 - e2*pow(sin(lat_ts),2));
-        a = getSemiMajorAxis();
+        double k0 = cos(lat_ts)/sqrt(1 - e2*pow(sin(lat_ts),2));
+        C = getSemiMajorAxis()*k0;
     }
 
     /**
@@ -113,10 +121,10 @@ public class EquidistantCylindrical extends Projection {
     public double[] transform(double[] coord) throws CoordinateDimensionException {
         double lon = coord[1];
         double lat = abs(coord[0]) > PI * 85 / 180 ? PI * 85 / 180 : coord[0];
-        double E = a * k0 * (lon - lon0);
+        double E = C * (lon - lon0);
         double N = ellipsoid.arcFromLat(lat);
-        coord[0] = xs + E;
-        coord[1] = ys + N;
+        coord[0] = FE + E;
+        coord[1] = FN + N;
         return coord;
     }
     
@@ -134,8 +142,8 @@ public class EquidistantCylindrical extends Projection {
 
             @Override
             public double[] transform(double[] coord) throws CoordinateDimensionException {
-                double lat = ellipsoid.latFromArc(coord[1]);
-                coord[1] = (coord[0]-xs)/k0/a + lon0;
+                double lat = ellipsoid.latFromArc(coord[1]-FN);
+                coord[1] = (coord[0]-FE)/C + lon0;
                 coord[0] = lat;
                 return coord;
             }

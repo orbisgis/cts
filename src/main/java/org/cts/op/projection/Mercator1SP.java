@@ -51,17 +51,26 @@ public class Mercator1SP extends Projection {
             new Identifier("EPSG", "9804", "Mercator (1SP)", "MERC");
     protected final double lat0, // the reference latitude
             lon0, // the reference longitude (from the datum prime meridian)
-            xs, // x coordinate of the pole
-            ys,   // y coordinate of the pole
+            FE, // the false easting
+            FN,   // the false northing
             n; // projection expnent
 
+    /**
+     * Create a new Mercator 1SP Projection corresponding to
+     * the <code>Ellipsoid</code> and the list of parameters given in argument
+     * and initialize common parameters lon0, lat0, FE, FN and other parameters
+     * useful for the projection.
+     * 
+     * @param ellipsoid ellipsoid used to define the projection.
+     * @param parameters a map of useful parameters to define the projection.
+     */
     public Mercator1SP(final Ellipsoid ellipsoid,
             final Map<String, Measure> parameters) {
         super(MERC, ellipsoid, parameters);
         lon0 = getCentralMeridian();
         lat0 = getLatitudeOfOrigin();
-        xs = getFalseEasting();
-        ys = getFalseNorthing();
+        FE = getFalseEasting();
+        FN = getFalseNorthing();
         double lat_ts = getLatitudeOfTrueScale();
         double e2 = ellipsoid.getSquareEccentricity();
         double k0;
@@ -121,8 +130,8 @@ public class Mercator1SP extends Projection {
         double lat = abs(coord[0]) > PI * 85 / 180 ? PI * 85 / 180 : coord[0];
         double E = n * (lon - lon0);
         double N = n * ellipsoid.isometricLatitude(lat);
-        coord[0] = xs + E;
-        coord[1] = ys + N;
+        coord[0] = FE + E;
+        coord[1] = FN + N;
         return coord;
     }
     
@@ -140,13 +149,13 @@ public class Mercator1SP extends Projection {
 
             @Override
             public double[] transform(double[] coord) throws CoordinateDimensionException {
-                double t = exp((ys-coord[1])/n);
+                double t = exp((FN-coord[1])/n);
                 double ki = PI/2 - 2 * atan(t);
                 double lat = ki;
                 for (int i =1;i<5;i++) {
                     lat+= ellipsoid.getInverseMercatorCoeff()[i]*sin(2*i*ki);
                 }
-                coord[1] = (coord[0]-xs)/n + lon0;
+                coord[1] = (coord[0]-FE)/n + lon0;
                 coord[0] = lat;
                 return coord;
             }

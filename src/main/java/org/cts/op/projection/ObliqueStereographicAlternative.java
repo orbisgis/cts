@@ -52,8 +52,8 @@ public class ObliqueStereographicAlternative extends Projection {
     protected final double lat0, // the reference latitude
             lon0, // the reference longitude (from the datum prime meridian)
             conLat0, // the conformal latitude of the origin
-            xs, // x coordinate of the pole
-            ys,   // y coordinate of the pole
+            FE, // x coordinate of the pole
+            FN,   // y coordinate of the pole
             k0, // scale coefficent for easting
             R, // geometrical mean of the radius of curvature at origin
             e, // eccentricity of the ellipsoid
@@ -62,13 +62,22 @@ public class ObliqueStereographicAlternative extends Projection {
             n; // exponent of the projection
     private double PI_2 = PI/2;
 
+    /**
+     * Create a new Oblique Stereographic Alternative Projection corresponding to
+     * the <code>Ellipsoid</code> and the list of parameters given in argument
+     * and initialize common parameters lon0, lat0 and other parameters
+     * useful for the projection.
+     * 
+     * @param ellipsoid ellipsoid used to define the projection.
+     * @param parameters a map of useful parameters to define the projection.
+     */
     public ObliqueStereographicAlternative(final Ellipsoid ellipsoid,
             final Map<String, Measure> parameters) {
         super(STERE, ellipsoid, parameters);
         lon0 = getCentralMeridian();
         lat0 = getLatitudeOfOrigin();
-        xs = getFalseEasting();
-        ys = getFalseNorthing();
+        FE = getFalseEasting();
+        FN = getFalseNorthing();
         e = ellipsoid.getEccentricity();
         e2 = ellipsoid.getSquareEccentricity();
         k0 = getScaleFactor();
@@ -133,8 +142,8 @@ public class ObliqueStereographicAlternative extends Projection {
         double B = 1 + sin(conLat) * sin(conLat0) + cos(conLat) * cos(conLat0) * cos(conLon - lon0);
         double dE = 2 * R * k0 * cos(conLat) * sin(conLon - lon0) / B;
         double dN = 2 * R * k0 * (sin(conLat) * cos(conLat0) - cos(conLat) * sin(conLat0) * cos(conLon - lon0)) / B;
-        coord[0] = xs + dE;
-        coord[1] = ys + dN;
+        coord[0] = FE + dE;
+        coord[1] = FN + dN;
         return coord;
     }
     
@@ -152,8 +161,8 @@ public class ObliqueStereographicAlternative extends Projection {
 
             @Override
             public double[] transform(double[] coord) throws CoordinateDimensionException {
-                double dE = coord[0]-xs;
-                double dN = coord[1]-ys;
+                double dE = coord[0]-FE;
+                double dN = coord[1]-FN;
                 double g = 2*R*k0*tan((PI_2-conLat0)/2);
                 double h = 4*R*k0*tan(conLat0) + g;
                 double i = atan(dE/(h+dN));

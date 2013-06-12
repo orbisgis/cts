@@ -107,7 +107,16 @@ public class LambertConicConformal1SP extends Projection {
 		xs, // x coordinate of the pole
 		ys;   // y coordinate of the pole
 
-	public LambertConicConformal1SP(final Ellipsoid ellipsoid,
+    /**
+     * Create a new Lambert Conic Conformal 1SP Projection corresponding to
+     * the <code>Ellipsoid</code> and the list of parameters given in argument
+     * and initialize common parameters lon0 and other parameters
+     * useful for the projection.
+     * 
+     * @param ellipsoid ellipsoid used to define the projection.
+     * @param parameters a map of useful parameters to define the projection.
+     */
+    public LambertConicConformal1SP(final Ellipsoid ellipsoid,
 		final Map<String, Measure> parameters) {
 		super(LCC1SP, ellipsoid, parameters);
 		double semimajor = getSemiMajorAxis();

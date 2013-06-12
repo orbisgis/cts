@@ -52,20 +52,29 @@ public class CassiniSoldner extends Projection {
     protected final double lat0, // the reference latitude
             lon0, // the reference longitude (from the datum prime meridian)
             M0, // the arc length between the equator and the reference latitude.
-            xs, // x coordinate of the pole
-            ys,   // y coordinate of the pole
+            FE, // x coordinate of the pole
+            FN,   // y coordinate of the pole
             k0, // scale coefficent for easting
             e, // eccentricity of the ellipsoid
             e2; // square eccentricity of the ellipsoid
     private double PI_2 = PI/2;
 
+    /**
+     * Create a new Cassini-Soldner Projection corresponding to
+     * the <code>Ellipsoid</code> and the list of parameters given in argument
+     * and initialize common parameters lon0, lat0, FE, FN and other parameters
+     * useful for the projection.
+     * 
+     * @param ellipsoid ellipsoid used to define the projection.
+     * @param parameters a map of useful parameters to define the projection.
+     */
     public CassiniSoldner(final Ellipsoid ellipsoid,
             final Map<String, Measure> parameters) {
         super(STERE, ellipsoid, parameters);
         lon0 = getCentralMeridian();
         lat0 = getLatitudeOfOrigin();
-        xs = getFalseEasting();
-        ys = getFalseNorthing();
+        FE = getFalseEasting();
+        FN = getFalseNorthing();
         e = ellipsoid.getEccentricity();
         e2 = ellipsoid.getSquareEccentricity();
         k0 = getScaleFactor();
@@ -125,8 +134,8 @@ public class CassiniSoldner extends Projection {
         double M = ellipsoid.arcFromLat(lat);
         double dE = v*A*(1-T*A2/6-(8*(1+C)-T)*T*A4/120);
         double dN = M - M0 + v*tan(lat)*(A2/2+(5-T+6*C)*A4/24);
-        coord[0] = xs + dE;
-        coord[1] = ys + dN;
+        coord[0] = FE + dE;
+        coord[1] = FN + dN;
         return coord;
     }
     
@@ -144,12 +153,12 @@ public class CassiniSoldner extends Projection {
 
             @Override
             public double[] transform(double[] coord) throws CoordinateDimensionException {
-                double M1 = M0 + coord[1]-ys;
+                double M1 = M0 + coord[1]-FN;
                 double lat1 = ellipsoid.latFromArc(M1);
                 double T1 = pow(tan(lat1), 2);
                 double v1 = ellipsoid.transverseRadiusOfCurvature(lat1);
                 double rho1 = ellipsoid.meridionalRadiusOfCurvature(lat1);
-                double D = (coord[0]-xs)/v1;
+                double D = (coord[0]-FE)/v1;
                 double D2 = D*D;
                 coord[1] = lon0 + D*(1 - T1*D2/3 + (1+3*T1)*T1*D2*D2/15)/cos(lat1);
                 coord[0] = lat1 - v1*tan(lat1)/rho1*D2/2*(1-(1+3*T1)*D2/12);

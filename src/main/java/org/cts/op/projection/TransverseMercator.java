@@ -60,6 +60,15 @@ public class TransverseMercator extends Projection {
             ys;   // y coordinate of the pole
     protected final double[] dircoeff, invcoeff;
 
+    /**
+     * Create a new Transverse Mercator Projection corresponding to
+     * the <code>Ellipsoid</code> and the list of parameters given in argument
+     * and initialize common parameters lon0, lat0 and other parameters
+     * useful for the projection.
+     * 
+     * @param ellipsoid ellipsoid used to define the projection.
+     * @param parameters a map of useful parameters to define the projection.
+     */
     public TransverseMercator(final Ellipsoid ellipsoid,
             final Map<String, Measure> parameters) {
         super(UTM, ellipsoid, parameters);

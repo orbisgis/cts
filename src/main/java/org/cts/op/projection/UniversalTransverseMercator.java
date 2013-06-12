@@ -46,24 +46,33 @@ public class UniversalTransverseMercator extends Projection {
 
     public static final Identifier UTM =
             new Identifier("EPSG", "9824", "Transverse Mercator Zoned Grid System", "UTM");
-    protected final double x0, // false easting
+    protected final double FE, // false easting
             lon0, // the reference longitude (from the datum prime meridian)
             n, // projection exponent
             xs, // x coordinate of the pole
             ys;   // y coordinate of the pole
     protected final double[] dircoeff, invcoeff;
 
+    /**
+     * Create a new Universal Transverse Mercator Projection corresponding to
+     * the <code>Ellipsoid</code> and the list of parameters given in argument
+     * and initialize common parameters lon0, FE and other parameters
+     * useful for the projection.
+     * 
+     * @param ellipsoid ellipsoid used to define the projection.
+     * @param parameters a map of useful parameters to define the projection.
+     */
     public UniversalTransverseMercator(final Ellipsoid ellipsoid,
             final Map<String, Measure> parameters) {
         super(UTM, ellipsoid, parameters);
-        x0 = 500000;
+        FE = 500000;
         double y0 = getFalseNorthing();
         double k0 = 0.9996;
         lon0 = getCentralMeridian();
         double lat0 = 0.0;
         //C    = 0.0; // ????????
         n = k0 * ellipsoid.getSemiMajorAxis();
-        xs = x0;
+        xs = FE;
         ys = y0 - n * ellipsoid.curvilinearAbscissa(lat0);
         dircoeff = ellipsoid.getDirectUTMCoeff();
         invcoeff = ellipsoid.getInverseUTMCoeff();

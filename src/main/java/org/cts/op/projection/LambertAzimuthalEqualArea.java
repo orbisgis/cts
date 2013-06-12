@@ -58,6 +58,15 @@ public class LambertAzimuthalEqualArea extends Projection {
             D, // another constant of the projection
             Rq; // another constant of the projection
 
+    /**
+     * Create a new Lambert Azimuthal Equal Area Projection corresponding to
+     * the <code>Ellipsoid</code> and the list of parameters given in argument
+     * and initialize common parameters lon0, lat0, FE, FN and other parameters
+     * useful for the projection.
+     * 
+     * @param ellipsoid ellipsoid used to define the projection.
+     * @param parameters a map of useful parameters to define the projection.
+     */
     public LambertAzimuthalEqualArea(final Ellipsoid ellipsoid,
             final Map<String, Measure> parameters) {
         super(LAEA, ellipsoid, parameters);

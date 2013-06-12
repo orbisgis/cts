@@ -51,21 +51,30 @@ public class Stereographic extends Projection {
             new Identifier("EPSG", "9810", "Polar Stereographic", "STERE");
     protected final double lat0, // the reference latitude
             lon0, // the reference longitude (from the datum prime meridian)
-            xs, // x coordinate of the pole
-            ys,   // y coordinate of the pole
+            FE, // false easting
+            FN,   // false northing
             k0, // scale coefficent for easting
             a, // semi major axis
             e, // eccentricity of the ellipsoid
             e2; // square eccentricity of the ellipsoid
     private double PI_2 = PI/2;
 
+    /**
+     * Create a new Stereographic Projection corresponding to
+     * the <code>Ellipsoid</code> and the list of parameters given in argument
+     * and initialize common parameters lon0, lat0, FE, FN and other parameters
+     * useful for the projection.
+     * 
+     * @param ellipsoid ellipsoid used to define the projection.
+     * @param parameters a map of useful parameters to define the projection.
+     */
     public Stereographic(final Ellipsoid ellipsoid,
             final Map<String, Measure> parameters) {
         super(STERE, ellipsoid, parameters);
         lon0 = getCentralMeridian();
         lat0 = getLatitudeOfOrigin();
-        xs = getFalseEasting();
-        ys = getFalseNorthing();
+        FE = getFalseEasting();
+        FN = getFalseNorthing();
         e = ellipsoid.getEccentricity();
         e2 = ellipsoid.getSquareEccentricity();
         if (abs(getLatitudeOfTrueScale()) != PI_2) {
@@ -134,11 +143,11 @@ public class Stereographic extends Projection {
         double rho = 2 * a * k0 * t / sqrt(pow(1 + e, 1 + e) * pow(1 - e, 1 - e));
         double dE = rho * sin(lon - lon0);
         double dN = rho * cos(lon - lon0);
-        coord[0] = xs + dE;
+        coord[0] = FE + dE;
         if (lat0 < 0) {
-            coord[1] = ys + dN;
+            coord[1] = FN + dN;
         } else {
-            coord[1] = ys - dN;
+            coord[1] = FN - dN;
         }
         return coord;
     }
@@ -157,7 +166,7 @@ public class Stereographic extends Projection {
 
             @Override
             public double[] transform(double[] coord) throws CoordinateDimensionException {
-                double rho = sqrt((coord[0] - xs) * (coord[0] - xs) + (coord[1] - ys) * (coord[1] - ys));
+                double rho = sqrt((coord[0] - FE) * (coord[0] - FE) + (coord[1] - FN) * (coord[1] - FN));
                 double t = rho * sqrt(pow(1 + e, 1 + e) * pow(1 - e, 1 - e)) / 2 / a / k0;
                 double ki;
                 if (lat0 > 0) {
@@ -170,9 +179,9 @@ public class Stereographic extends Projection {
                     lat += ellipsoid.getInverseMercatorCoeff()[i] * sin(2 * i * ki);
                 }
                 if (lat0 < 0) {
-                    coord[1] = lon0 + atan2(coord[0] - xs, coord[1] - ys);
+                    coord[1] = lon0 + atan2(coord[0] - FE, coord[1] - FN);
                 } else {
-                    coord[1] = lon0 + atan2(coord[0] - xs, ys - coord[1]);
+                    coord[1] = lon0 + atan2(coord[0] - FE, FN - coord[1]);
                 }
                 coord[0] = lat;
                 return coord;

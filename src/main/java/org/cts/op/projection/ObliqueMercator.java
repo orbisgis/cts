@@ -55,7 +55,7 @@ public class ObliqueMercator extends Projection {
             gammac, // angle from the rectified grid to the skew (oblique) grid
             kc, // scale factor on the initial line
             FE, // false easting
-            FN,   // false northing
+            FN, // false northing
             B, //constant of the projection
             A, //constant of the projection
             H, //constant of the projection
@@ -63,6 +63,15 @@ public class ObliqueMercator extends Projection {
             lambda0, //constant of the projection
             uc; // center of the projection
 
+    /**
+     * Create a new Oblique Mercator Projection corresponding to
+     * the <code>Ellipsoid</code> and the list of parameters given in argument
+     * and initialize common parameters FE, FN and other parameters
+     * useful for the projection.
+     * 
+     * @param ellipsoid ellipsoid used to define the projection.
+     * @param parameters a map of useful parameters to define the projection.
+     */
     public ObliqueMercator(final Ellipsoid ellipsoid,
             final Map<String, Measure> parameters) {
         super(OMERC, ellipsoid, parameters);
