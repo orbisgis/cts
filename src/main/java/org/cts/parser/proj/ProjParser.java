@@ -93,11 +93,13 @@ public class ProjParser {
                                 String[] tokens = line.split(regex);
                                 Map<String, String> v = new HashMap<String, String>();
                                 String crsID = null;
+                                boolean crsFounded = true;
                                 for (String token : tokens) {
                                         if (token.startsWith("<") && token.endsWith(">")
                                                 && token.length() > 2) {
                                                 crsID = token.substring(1, token.length() - 1);
-                                                if (!crsID.equals(nameOfCRS)) {
+                                                if (!crsID.toLowerCase().equals(nameOfCRS.toLowerCase())) {
+                                                        crsFounded = false;
                                                         break;
                                                 }
                                         } else if (token.equals("<>")) {
@@ -116,7 +118,7 @@ public class ProjParser {
                                         }
                                 }
                                 // found requested CRS?
-                                if (crsID.equals(nameOfCRS)) {
+                                if (crsFounded) {
                                         return v;
                                 }
                         }

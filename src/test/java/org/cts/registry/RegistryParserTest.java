@@ -141,6 +141,13 @@ public class RegistryParserTest {
                 assertTrue(parameters.get(ProjKeyParameters.ellps).equals("GRS80"));
                 assertTrue(parameters.get(ProjKeyParameters.datum).equals("NAD83"));
                 assertTrue(parameters.get(ProjKeyParameters.to_meter).equals("0.3048006096012192"));
-
-        }      
+        }        
+        
+        @Test
+        public void testRegisteryCaseInsensitive () {
+                Map<String, String>  parameters = getParameters("IGnF","AmSt63");
+                assertTrue(parameters!=null);
+                parameters = getParameters("EPsg","4326");
+                assertTrue(parameters!=null);
+        }
 }
