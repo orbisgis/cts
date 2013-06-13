@@ -162,7 +162,7 @@ public class NTv2GridShiftTransformation extends AbstractCoordinateOperation {
     }
 
     /**
-     * Load the gridshift file
+     * Load the grid file that will be used to transform the coordinates
      */
     public void loadGridShiftFile() throws IOException {
         if (grid_file != null) {
