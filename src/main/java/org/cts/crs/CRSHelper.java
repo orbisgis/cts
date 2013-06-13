@@ -32,6 +32,7 @@
 package org.cts.crs;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import org.apache.log4j.Logger;
 import org.cts.*;
 import org.cts.cs.Axis;
@@ -50,6 +51,7 @@ import org.cts.units.Unit;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import org.cts.grid.GridShift;
 import org.cts.op.CoordinateOperationSequence;
 import org.cts.op.transformation.NTv2GridShiftTransformation;
@@ -308,8 +310,7 @@ public class CRSHelper {
                 if (null != pm && null != ell) {
                     GeodeticDatum gd = new GeodeticDatum(pm, ell);
                     setDefaultWGS84Parameters(gd, param);
-                    gd = gd.checkExistingGeodeticDatum();
-                    
+                    gd = gd.checkExistingGeodeticDatum();                    
                     String nadgrids = param.get(ProjKeyParameters.nadgrids);
                     if (nadgrids != null) {
                         String[] grids = nadgrids.split(",");
@@ -322,9 +323,8 @@ public class CRSHelper {
                                 } else {
                                     try {
                                         NTv2GridShiftTransformation gt = new NTv2GridShiftTransformation(
-                                                GridShift.class.getResource(grid).getPath());
-                                        gt.setMode(NTv2GridShiftTransformation.SPEED);
-                                        gt.loadGridShiftFile();
+                                                GridShift.class.getResource(grid).toURI().toURL());
+                                        gt.setMode(NTv2GridShiftTransformation.SPEED);                                        
                                         GeodeticDatum gtSource = GeodeticDatum.getGeodeticDatumFromShortName(gt.getFromDatum());
                                         GeodeticDatum gtTarget = GeodeticDatum.getGeodeticDatumFromShortName(gt.getToDatum());
                                         if (gtSource == null || gtTarget == null) {
@@ -360,6 +360,8 @@ public class CRSHelper {
                                         }
                                     } catch (IOException ex) {
                                         LOGGER.error("Cannot found the nadgrid", ex);
+                                    } catch (URISyntaxException ex) {
+                                       LOGGER.error("Cannot found the nadgrid", ex);
                                     }
                                 }
                             }

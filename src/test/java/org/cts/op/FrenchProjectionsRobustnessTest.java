@@ -106,11 +106,23 @@ public class FrenchProjectionsRobustnessTest extends BaseCoordinateTransformTest
     }
 
     @Test
-    public void Lamb2e_circetoLamb93_2DProjection() throws Exception {
-        //IGN data : POINT (931813.94 1786923.891 2525.68) ID5863
+    public void Lamb2e_circetoLamb93_2DProjection1() throws Exception {
+        //IGN data : POINT (931813.94 1786923.891 2525.68)
         double[] srcPoint = new double[]{931813.94, 1786923.891, 0};
         //IGN data : POINT (977362.95 6218045.569 0)	ID5863
         double[] expectedPoint = new double[]{977362.95, 6218045.569, 0};
+        CoordinateReferenceSystem srcCRS = createCRS("IGNF:LAMBE");
+        CoordinateReferenceSystem outCRS = createCRS("IGNF:LAMB93");
+        double[] result = transform((GeodeticCRS) srcCRS, (GeodeticCRS) outCRS, srcPoint);
+        assertTrue(checkEquals2D(srcCRS + " to " + outCRS, result, expectedPoint, 10E-2));
+    }
+
+    @Test
+    public void Lamb2e_circetoLamb93_2DProjection2() throws Exception {
+        //IGN data : POINT (87674.404 2400935.485 449.99)	ID0003
+        double[] srcPoint = new double[]{87674.404, 2400935.485, 0};
+        //IGN data : POINT (139121.353 6838500.192 449.99)	ID0003
+        double[] expectedPoint = new double[]{139121.353, 6838500.192, 0};
         CoordinateReferenceSystem srcCRS = createCRS("IGNF:LAMBE");
         CoordinateReferenceSystem outCRS = createCRS("IGNF:LAMB93");
         double[] result = transform((GeodeticCRS) srcCRS, (GeodeticCRS) outCRS, srcPoint);
@@ -140,8 +152,7 @@ public class FrenchProjectionsRobustnessTest extends BaseCoordinateTransformTest
         double[] result = transform((GeodeticCRS) srcCRS, (GeodeticCRS) outCRS, srcPoint);
         assertTrue(checkEquals(srcCRS + " to " + outCRS, result, expectedPoint, 10E-3));
     }
-    
-    
+
     @Test
     public void CC42toLamb93_3DProjection() throws Exception {
         //IGN data : POINT (1708465.025 1256428.742 2423.84)	ID3673
@@ -153,10 +164,11 @@ public class FrenchProjectionsRobustnessTest extends BaseCoordinateTransformTest
         double[] result = transform((GeodeticCRS) srcCRS, (GeodeticCRS) outCRS, srcPoint);
         assertTrue(checkEquals(srcCRS + " to " + outCRS, result, expectedPoint, 10E-3));
     }
-    
+
     /**
-     * Guadeloupe projection test  - Fort Marigot
-     * @throws Exception 
+     * Guadeloupe projection test - Fort Marigot
+     *
+     * @throws Exception
      */
     @Test
     public void FortMarigottoRRAF_UTM20_2DProjection() throws Exception {
@@ -169,11 +181,11 @@ public class FrenchProjectionsRobustnessTest extends BaseCoordinateTransformTest
         double[] result = transform((GeodeticCRS) srcCRS, (GeodeticCRS) outCRS, srcPoint);
         assertTrue(checkEquals(srcCRS + " to " + outCRS, result, expectedPoint, 10E-3));
     }
-    
-    
+
     /**
      * Guadeloupe projection test - Saint Anne
-     * @throws Exception 
+     *
+     * @throws Exception
      */
     @Test
     public void SaintAnnetoRRAF_UTM20_2DProjection() throws Exception {
@@ -186,10 +198,11 @@ public class FrenchProjectionsRobustnessTest extends BaseCoordinateTransformTest
         double[] result = transform((GeodeticCRS) srcCRS, (GeodeticCRS) outCRS, srcPoint);
         assertTrue(checkEquals(srcCRS + " to " + outCRS, result, expectedPoint, 10E-3));
     }
-   
+
     /**
      * Guyanne projection test
-     * @throws Exception 
+     *
+     * @throws Exception
      */
     //@Test this projection is badly supported or maybe or pb with CRS identifiants.
     public void UTM22RGFG95toCSG67UTM22_2DProjection() throws Exception {
