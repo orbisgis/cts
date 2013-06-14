@@ -47,7 +47,7 @@ import org.cts.NonInvertibleOperationException;
  */
 public class ObliqueStereographicAlternative extends Projection {
 
-    public static final Identifier STERE =
+    public static final Identifier STEREA =
             new Identifier("EPSG", "9809", "Oblique Stereographic Alternative", "STEREA");
     protected final double lat0, // the reference latitude
             lon0, // the reference longitude (from the datum prime meridian)
@@ -73,7 +73,7 @@ public class ObliqueStereographicAlternative extends Projection {
      */
     public ObliqueStereographicAlternative(final Ellipsoid ellipsoid,
             final Map<String, Measure> parameters) {
-        super(STERE, ellipsoid, parameters);
+        super(STEREA, ellipsoid, parameters);
         lon0 = getCentralMeridian();
         lat0 = getLatitudeOfOrigin();
         FE = getFalseEasting();

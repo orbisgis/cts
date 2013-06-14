@@ -41,7 +41,7 @@ import org.cts.CoordinateOperation;
 import org.cts.NonInvertibleOperationException;
 
 /**
- * The Cylindrical Equal Area (normal case) Projection (OMERC). <p>
+ * The Cylindrical Equal Area (normal case) Projection (CEA). <p>
  *
  * @author Jules Party
  */

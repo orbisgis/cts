@@ -41,7 +41,7 @@ import org.cts.CoordinateOperation;
 import org.cts.NonInvertibleOperationException;
 
 /**
- * The Albers Equal Area Projection (OMERC). <p>
+ * The Albers Equal Area Projection (AEA). <p>
  *
  * @author Jules Party
  */

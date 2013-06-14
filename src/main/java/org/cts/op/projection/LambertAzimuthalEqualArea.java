@@ -41,7 +41,7 @@ import org.cts.CoordinateOperation;
 import org.cts.NonInvertibleOperationException;
 
 /**
- * The Lambert Azimuthal Equal Area Projection (OMERC). <p>
+ * The Lambert Azimuthal Equal Area Projection (LAEA). <p>
  *
  * @author Jules Party
  */

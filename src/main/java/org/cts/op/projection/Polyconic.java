@@ -41,7 +41,7 @@ import org.cts.CoordinateOperation;
 import org.cts.NonInvertibleOperationException;
 
 /**
- * The Polyconic (American) Projection (OMERC). <p>
+ * The Polyconic (American) Projection (POLY). <p>
  *
  * @author Jules Party
  */
@@ -55,7 +55,7 @@ public class Polyconic extends Projection {
             FN;   // false northing
 
     /**
-     * Create a new Oblique Stereographic Alternative Projection corresponding to
+     * Create a new Polyconic Projection corresponding to
      * the <code>Ellipsoid</code> and the list of parameters given in argument
      * and initialize common parameters lon0, lat0, FE, FN.
      * 

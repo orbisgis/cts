@@ -41,13 +41,13 @@ import org.cts.CoordinateOperation;
 import org.cts.NonInvertibleOperationException;
 
 /**
- * The Cassini-Soldner Projection (STEREA). <p>
+ * The Cassini-Soldner Projection (CASS). <p>
  *
  * @author Jules Party
  */
 public class CassiniSoldner extends Projection {
 
-    public static final Identifier STERE =
+    public static final Identifier CASS =
             new Identifier("EPSG", "9806", "Cassini-Soldner", "CASS");
     protected final double lat0, // the reference latitude
             lon0, // the reference longitude (from the datum prime meridian)
@@ -70,7 +70,7 @@ public class CassiniSoldner extends Projection {
      */
     public CassiniSoldner(final Ellipsoid ellipsoid,
             final Map<String, Measure> parameters) {
-        super(STERE, ellipsoid, parameters);
+        super(CASS, ellipsoid, parameters);
         lon0 = getCentralMeridian();
         lat0 = getLatitudeOfOrigin();
         FE = getFalseEasting();
@@ -149,7 +149,7 @@ public class CassiniSoldner extends Projection {
      */
     @Override
     public CoordinateOperation inverse() throws NonInvertibleOperationException {
-        return new ObliqueStereographicAlternative(ellipsoid, parameters) {
+        return new CassiniSoldner(ellipsoid, parameters) {
 
             @Override
             public double[] transform(double[] coord) throws CoordinateDimensionException {

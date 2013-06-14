@@ -86,7 +86,7 @@ public class TransverseMercator extends Projection {
     }
 
     /**
-     * Transform coord using a Lambert Conformal Conic projection. Input coord
+     * Transform coord using a Transverse Mercator projection. Input coord
      * is supposed to be a geographic latitude / longitude coordinate in
      * radians.
      *

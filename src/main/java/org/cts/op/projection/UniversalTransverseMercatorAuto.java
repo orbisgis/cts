@@ -59,8 +59,8 @@ public class UniversalTransverseMercatorAuto extends Projection {
     
     /**
      * Create a new Universal Transverse Mercator Projection corresponding to
-     * the <code>Ellipsoid</code> and the list of parameters given in argument
-     * and initialize common parameters lat0 and other parameters
+     * the <code>Ellipsoid</code> given in argument and a default set of
+     * parameters and initialize common parameters lat0 and other parameters
      * useful for the projection.
      * 
      * @param ellipsoid ellipsoid used to define the projection.
@@ -81,7 +81,7 @@ public class UniversalTransverseMercatorAuto extends Projection {
     }
     
    /**
-    * Transform coord using a Lambert Conformal Conic projection.
+    * Transform coord using a Universal Transverse Mercator projection.
     * Input coord is supposed to be a geographic latitude / longitude
     * coordinate in radians.
     * @param coord coordinate to transform
