@@ -183,7 +183,11 @@ public class GeodeticDatum extends AbstractDatum {
         super(identifier, extent, origin, epoch);
         this.ellipsoid = ellipsoid;
         this.primeMeridian = primeMeridian;
-        datums.put(identifier, this);
+        this.registerDatum();
+    }
+    
+    private void registerDatum() {
+        datums.put(getIdentifier(), this);
     }
 
     /**

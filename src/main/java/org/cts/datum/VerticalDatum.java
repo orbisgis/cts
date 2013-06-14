@@ -68,7 +68,7 @@ public class VerticalDatum extends AbstractDatum {
     public VerticalDatum(String name) {
         super(new Identifier(VerticalDatum.class, name),
                 GeographicExtent.WORLD, null, null);
-        datums.put(getIdentifier(), this);
+        this.registerDatum();
         //addCoordinateOperation(WGS84VD, altitude2EllipsoidalHeight);
     }
 
@@ -83,8 +83,12 @@ public class VerticalDatum extends AbstractDatum {
     public VerticalDatum(Identifier identifier, GeographicExtent extent,
             String origin, String epoch) {
         super(identifier, extent, origin, epoch);
-        datums.put(identifier, this);
+        this.registerDatum();
         //addCoordinateOperation(WGS84VD, altitude2EllipsoidalHeight);
+    }
+    
+    private void registerDatum() {
+        datums.put(getIdentifier(), this);
     }
 
     /**

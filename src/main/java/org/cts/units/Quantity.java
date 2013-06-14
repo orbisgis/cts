@@ -82,7 +82,16 @@ public interface Quantity {
 
                 @Override
                 public boolean equals(Object o) {
+                    if (!(o instanceof Quantity)) {
+                        return false;
+                    }
                     return toString().equalsIgnoreCase(o.toString());
+                }
+
+                @Override
+                public int hashCode() {
+                    int hash = 5;
+                    return hash;
                 }
             };
         }

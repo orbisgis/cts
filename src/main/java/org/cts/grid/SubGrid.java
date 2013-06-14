@@ -29,13 +29,14 @@ public class SubGrid implements Cloneable, Serializable {
     private float[] lonShift;
     private float[] latAccuracy;
     private float[] lonAccuracy;
-    private RandomAccessFile raf;
+    private final RandomAccessFile raf;
     private long subGridOffset;
     boolean bigEndian;
     private SubGrid[] subGrid;
 
     public SubGrid(InputStream in, boolean bigEndian, boolean loadAccuracy)
             throws IOException {
+        this.raf = null;
         byte[] b8 = new byte[8];
         byte[] b4 = new byte[4];
         in.read(b8);
@@ -296,7 +297,7 @@ public class SubGrid implements Cloneable, Serializable {
     }
 
     public String getDetails() {
-        StringBuffer buf = new StringBuffer("Sub Grid : ");
+        StringBuilder buf = new StringBuilder("Sub Grid : ");
         buf.append(this.subGridName);
         buf.append("\nParent   : ");
         buf.append(this.parentSubGridName);
@@ -326,13 +327,13 @@ public class SubGrid implements Cloneable, Serializable {
         SubGrid clone = null;
         try {
             clone = (SubGrid) super.clone();
-        } catch (CloneNotSupportedException cnse) {
-        }
-        if (this.subGrid != null) {
-            clone.subGrid = new SubGrid[this.subGrid.length];
-            for (int i = 0; i < this.subGrid.length; i++) {
-                clone.subGrid[i] = ((SubGrid) this.subGrid[i].clone());
+            if (this.subGrid != null) {
+                clone.subGrid = new SubGrid[this.subGrid.length];
+                for (int i = 0; i < this.subGrid.length; i++) {
+                    clone.subGrid[i] = ((SubGrid) this.subGrid[i].clone());
+                }
             }
+        } catch (CloneNotSupportedException cnse) {
         }
         return clone;
     }

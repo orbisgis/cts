@@ -51,7 +51,6 @@ import org.cts.units.Unit;
 import java.util.HashMap;
 import java.util.Map;
 import org.cts.grid.GridShift;
-import org.cts.op.CoordinateOperationSequence;
 import org.cts.op.transformation.NTv2GridShiftTransformation;
 
 /**

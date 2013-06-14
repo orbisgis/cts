@@ -59,7 +59,7 @@ import org.cts.op.AbstractCoordinateOperation;
 abstract public class Helmert7ParameterTransformation extends AbstractCoordinateOperation implements GeoTransformation {
 
     // Transformation parameters in meters and radians
-    protected final double tx, ty, tz, rx, ry, rz, scale, precision;
+    protected final double tx, ty, tz, rx, ry, rz, scale;
 
     /**
      * Transform coord values
@@ -140,6 +140,19 @@ abstract public class Helmert7ParameterTransformation extends AbstractCoordinate
         } else {
             return false;
         }
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 71 * hash + (int) (Double.doubleToLongBits(this.tx) ^ (Double.doubleToLongBits(this.tx) >>> 32));
+        hash = 71 * hash + (int) (Double.doubleToLongBits(this.ty) ^ (Double.doubleToLongBits(this.ty) >>> 32));
+        hash = 71 * hash + (int) (Double.doubleToLongBits(this.tz) ^ (Double.doubleToLongBits(this.tz) >>> 32));
+        hash = 71 * hash + (int) (Double.doubleToLongBits(this.rx) ^ (Double.doubleToLongBits(this.rx) >>> 32));
+        hash = 71 * hash + (int) (Double.doubleToLongBits(this.ry) ^ (Double.doubleToLongBits(this.ry) >>> 32));
+        hash = 71 * hash + (int) (Double.doubleToLongBits(this.rz) ^ (Double.doubleToLongBits(this.rz) >>> 32));
+        hash = 71 * hash + (int) (Double.doubleToLongBits(this.scale) ^ (Double.doubleToLongBits(this.scale) >>> 32));
+        return hash;
     }
 
     @Override

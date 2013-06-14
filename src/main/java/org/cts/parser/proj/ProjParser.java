@@ -63,9 +63,7 @@ public class ProjParser {
                         args = readRegistry(reader, crsCode, regexPattern);
 
                 } finally {
-                        if (reader != null) {
                                 reader.close();
-                        }
                 }
                 return args;
         }
@@ -117,7 +115,7 @@ public class ProjParser {
                                         }
                                 }
                                 // found requested CRS?
-                                if (crsID.equals(nameOfCRS)) {
+                                if (nameOfCRS.equals(crsID)) {
                                     if (!v.containsKey(ProjKeyParameters.title)&&crsName!=null) {
                                         v.put(ProjKeyParameters.title, crsName);
                                     }

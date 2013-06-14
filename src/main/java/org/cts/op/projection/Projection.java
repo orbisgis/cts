@@ -33,8 +33,8 @@ package org.cts.op.projection;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import org.cts.Ellipsoid;
 import org.cts.Identifier;
 import org.cts.Parameter;
@@ -61,8 +61,8 @@ public abstract class Projection extends AbstractCoordinateOperation {
         new Parameter(Parameter.SCALE_FACTOR, new Measure(0, Unit.UNIT)),
         new Parameter(Parameter.LATITUDE_OF_ORIGIN, new Measure(0, Unit.DEGREE))};
 
-    public static Hashtable<String, Measure> getDefaultParameters() {
-        Hashtable<String, Measure> parameters = new Hashtable<String, Measure>();
+    public static ConcurrentHashMap<String, Measure> getDefaultParameters() {
+        ConcurrentHashMap<String, Measure> parameters = new ConcurrentHashMap<String, Measure>();
         for (Parameter param : DEFAULT_PARAMETERS) {
             parameters.put(param.getName(), param.getMeasure());
         }
@@ -246,13 +246,22 @@ public abstract class Projection extends AbstractCoordinateOperation {
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        }
-        Projection proj = (Projection) o;
-        if (this.toString() != null) {
-            if (toString().equals(proj.toString())) {
-                return true;
+        } else if (o instanceof Projection) {
+            Projection proj = (Projection) o;
+            if (this.toString() != null) {
+                if (toString().equals(proj.toString())) {
+                    return true;
+                }
             }
         }
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 73 * hash + (this.ellipsoid != null ? this.ellipsoid.hashCode() : 0);
+        hash = 73 * hash + (this.parameters != null ? this.parameters.hashCode() : 0);
+        return hash;
     }
 }
