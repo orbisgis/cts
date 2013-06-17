@@ -238,7 +238,7 @@ public final class PrjMatcher {
 
                 if (ll.size() > 2) {
                     List<PrjElement> els = matchNode(ll.get(2), ProjKeyParameters.towgs84, false);
-                    if (ll == null) {
+                    if (els != null) {
                         StringBuilder b = new StringBuilder();
                         b.append(getNumber(els.get(0)));
                         for (int i = 1; i < els.size(); i++) {
@@ -309,7 +309,7 @@ public final class PrjMatcher {
     }
 
     private List<PrjElement> matchNode(PrjElement e, String name, boolean strict) {
-        if (e instanceof PrjElement) {
+        if (e instanceof PrjNodeElement) {
             PrjNodeElement n = (PrjNodeElement) e;
             if (n.getName().equalsIgnoreCase(name)) {
                 return n.getChildren();

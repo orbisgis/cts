@@ -181,6 +181,13 @@ public class IdentifiableComponent implements Identifiable {
         }
     }
 
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 59 * hash + (this.identifier != null ? this.identifier.hashCode() : 0);
+        return hash;
+    }
+
     /**
      * Returns a String representation of this identifier.
      */

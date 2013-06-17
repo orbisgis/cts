@@ -271,4 +271,11 @@ public class PrimeMeridian extends IdentifiableComponent {
         }
         return false;
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 41 * hash + (int) (Double.doubleToLongBits(this.ddLongitude) ^ (Double.doubleToLongBits(this.ddLongitude) >>> 32));
+        return hash;
+    }
 }

@@ -762,4 +762,12 @@ public class Ellipsoid extends IdentifiableComponent {
         }
         return false;
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 97 * hash + (int) (Double.doubleToLongBits(this.a) ^ (Double.doubleToLongBits(this.a) >>> 32));
+        hash = 97 * hash + (int) (Double.doubleToLongBits(this.b) ^ (Double.doubleToLongBits(this.b) >>> 32));
+        return hash;
+    }
 }

@@ -83,7 +83,7 @@ public class ProjParser {
         private Map<String, String> readRegistry(BufferedReader br, String nameOfCRS, String regex) throws IOException {
                 String line;
                 //TODO : It will be great in the future to use this information.
-                String crsName;
+                String crsName=null;
                 while (null != (line = br.readLine())) {
                         if (line.startsWith("#")) {
                                 // in the "epsg" file, the crs name can only be read in the
@@ -92,7 +92,7 @@ public class ProjParser {
                         } else if (line.startsWith("<") && line.endsWith(">")) {
                                 String[] tokens = line.split(regex);
                                 Map<String, String> v = new HashMap<String, String>();
-                                String crsID = null;
+                                String crsID;
                                 boolean crsFounded = true;
                                 for (String token : tokens) {
                                         if (token.startsWith("<") && token.endsWith(">")
@@ -100,6 +100,7 @@ public class ProjParser {
                                                 crsID = token.substring(1, token.length() - 1);
                                                 if (!crsID.toLowerCase().equals(nameOfCRS.toLowerCase())) {
                                                         crsFounded = false;
+                                                        crsName = null;
                                                         break;
                                                 }
                                         } else if (token.equals("<>")) {
@@ -119,6 +120,9 @@ public class ProjParser {
                                 }
                                 // found requested CRS?
                                 if (crsFounded) {
+                                    if (!v.containsKey(ProjKeyParameters.title)&&crsName!=null) {
+                                        v.put(ProjKeyParameters.title, crsName);
+                                    }
                                         return v;
                                 }
                         }

@@ -131,6 +131,14 @@ public final class Complex extends Number {
 		return false;
 	}
 
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 83 * hash + (int) (Double.doubleToLongBits(this.re) ^ (Double.doubleToLongBits(this.re) >>> 32));
+        hash = 83 * hash + (int) (Double.doubleToLongBits(this.im) ^ (Double.doubleToLongBits(this.im) >>> 32));
+        return hash;
+    }
+
 	// added by mmichaud on 2009-01-12
 	public int hashcode() {
 		long lre = Double.doubleToLongBits(re);
@@ -582,6 +590,7 @@ public final class Complex extends Number {
 	/**
 	 * @return string representation of this.
 	 */
+        @Override
 	public String toString() {
 		return "[" + re() + (im() < 0.0 ? " - " : " + ") + Math.abs(im())
 				+ "i]";

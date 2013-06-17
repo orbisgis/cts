@@ -253,13 +253,11 @@ public class BleggGeographicGrid extends GeographicGrid {
 
         dos.writeInt(val[0]);
         dos.writeInt(val[1]);
-        val = null;
         int[] slope = new int[length];
         for (int i = 2; i < nbl * nbc; i++) {
             slope[i] = diff[i] - diff[i - 1];
         }
 
-        diff = null;
         byte[] bytes = new byte[0];
         try {
             for (int i = 0; i < (length - 2) / groupSize; i++) {
