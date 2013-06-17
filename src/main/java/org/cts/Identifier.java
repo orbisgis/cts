@@ -168,14 +168,14 @@ public class Identifier implements Identifiable {
     * (ex. EPSG:27572).
     * @return a String of the form namespace:identifier
     */
-	@Override
+    @Override
     public String getCode() {
-    	// return namespace+":"+id;
-    	//Delete namespace. Consider EPSG code begin by number and IGNF code begin by decimal
-    	//So code = id
-    	//EX: 
-    		//-EPSG : LAMBE
-    		//-IGNF : 27572
+        // return namespace+":"+id;
+        //Delete namespace. Consider EPSG code begin by number and IGNF code begin by decimal
+        //So code = id
+        //EX: 
+        //-EPSG : LAMBE
+        //-IGNF : 27572
         return authorityKey;
     }
 

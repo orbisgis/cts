@@ -85,16 +85,17 @@ public interface Identifiable {
 
 
    /**
-    * Returns the namespace of this identifier as a String.<p>
+    * Returns the authority name of the CRS as a String.(ex : EPSG) <p>
     * The String must follow the syntax of a URI (ex. urn:ogc:def:crs:OGC:1.3).
     * You'll find more on the URI syntax 
     * <a href="http://java.sun.com/javase/6/docs/api/java/net/URI.html">here</a>.
+    * 
     */
     public String getAuthorityName();
 
    /**
-    * Returns this identifier's id (must be unique in this Identifiable's
-    * namespace).
+    * Returns this authority's id (must be unique in this Identifiable's
+    * namespace). (ex : 27572)
     */
     public String getAuthorityKey();
 
