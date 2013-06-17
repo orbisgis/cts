@@ -63,7 +63,9 @@ public class ProjParser {
                         args = readRegistry(reader, crsCode, regexPattern);
 
                 } finally {
+                        if (reader != null) {
                                 reader.close();
+                        }
                 }
                 return args;
         }
@@ -90,13 +92,15 @@ public class ProjParser {
                         } else if (line.startsWith("<") && line.endsWith(">")) {
                                 String[] tokens = line.split(regex);
                                 Map<String, String> v = new HashMap<String, String>();
-                                String crsID = null;
+                                String crsID;
+                                boolean crsFounded = true;
                                 for (String token : tokens) {
                                         if (token.startsWith("<") && token.endsWith(">")
                                                 && token.length() > 2) {
                                                 crsID = token.substring(1, token.length() - 1);
-                                                if (!crsID.equals(nameOfCRS)) {
-                                                    crsName = null;
+                                                if (!crsID.toLowerCase().equals(nameOfCRS.toLowerCase())) {
+                                                        crsFounded = false;
+                                                        crsName = null;
                                                         break;
                                                 }
                                         } else if (token.equals("<>")) {
@@ -115,7 +119,7 @@ public class ProjParser {
                                         }
                                 }
                                 // found requested CRS?
-                                if (nameOfCRS.equals(crsID)) {
+                                if (crsFounded) {
                                     if (!v.containsKey(ProjKeyParameters.title)&&crsName!=null) {
                                         v.put(ProjKeyParameters.title, crsName);
                                     }
