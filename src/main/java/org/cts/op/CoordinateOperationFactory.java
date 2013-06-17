@@ -41,6 +41,7 @@ import org.cts.datum.GeodeticDatum;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.cts.op.transformation.NTv2GridShiftTransformation;
 
 /**
  * CoordinateOperationFactory is a factory used to create
@@ -97,12 +98,90 @@ public final class CoordinateOperationFactory {
             LOG.warn(target.getName() + " has no Geodetic Datum");
             throw new IllegalArgumentException("The target datum must not be null");
         }
+        
+        if (source.getGridTransformation(targetDatum) != null) {
+            return createNadgridsOperationDir(sourceDatum, source, targetDatum, target, source.getGridTransformation(targetDatum));
+        }
+        if (target.getGridTransformation(sourceDatum) != null) {
+            return createNadgridsOperationInv(sourceDatum, source, targetDatum, target, target.getGridTransformation(sourceDatum));
+        }
 
         if (sourceDatum.equals(targetDatum)) {
             return createCoordinateOperations(sourceDatum, source, target);
         } else {
             return createCoordinateOperations(sourceDatum, source, targetDatum, target);
         }
+    }
+    
+    private static List<CoordinateOperation> createNadgridsOperationDir(
+            GeodeticDatum sourceDatum, GeodeticCRS source,
+            GeodeticDatum targetDatum, GeodeticCRS target, CoordinateOperation coordOp) {
+        List<CoordinateOperation> opList = new ArrayList<CoordinateOperation>();
+        try {
+            if (!(coordOp instanceof NTv2GridShiftTransformation)||(sourceDatum.getShortName().equals(((NTv2GridShiftTransformation) coordOp).getFromDatum()))) {
+                opList.add(new CoordinateOperationSequence(
+                        new Identifier(CoordinateOperationSequence.class, source.getName() + " to " + target.getName()),
+                        source.toGeographicCoordinateConverter(),
+                        coordOp,
+                        target.fromGeographicCoordinateConverter()));
+            } else {
+                NTv2GridShiftTransformation gt = (NTv2GridShiftTransformation) coordOp;
+                GeodeticDatum gtSource = GeodeticDatum.getGeodeticDatumFromShortName(gt.getFromDatum());
+                if (sourceDatum.getCoordinateOperations(gtSource).isEmpty()) {
+                    CoordinateOperationSequence opSeq = new CoordinateOperationSequence(
+                            new Identifier(CoordinateOperationSequence.class, sourceDatum.getName() + " to " + gtSource.getName() + " through " + GeodeticDatum.WGS84.getName()),
+                            sourceDatum.getCoordinateOperations(GeodeticDatum.WGS84).get(0),
+                            GeodeticDatum.WGS84.getCoordinateOperations(gtSource).get(0));
+                    sourceDatum.addCoordinateOperation(gtSource, opSeq);
+                }
+                opList.add(new CoordinateOperationSequence(
+                        new Identifier(CoordinateOperationSequence.class, sourceDatum.getName() + " to " + targetDatum.getName() + " through " + gt.getName() + " transformation"),
+                        source.toGeographicCoordinateConverter(),
+                        sourceDatum.getCoordinateOperations(gtSource).get(0),
+                        gt,
+                        target.fromGeographicCoordinateConverter()));
+            }
+        } catch (NonInvertibleOperationException e) {
+            LOG.warn("Operation from " + source.getName() + " to " + target.getName() + " could not be created");
+            LOG.error("CoordinateOperationFactory", e);
+        }
+        return opList;
+    }
+    
+    private static List<CoordinateOperation> createNadgridsOperationInv(
+            GeodeticDatum sourceDatum, GeodeticCRS source,
+            GeodeticDatum targetDatum, GeodeticCRS target, CoordinateOperation coordOp) {
+        List<CoordinateOperation> opList = new ArrayList<CoordinateOperation>();
+        try {
+            if (!(coordOp instanceof NTv2GridShiftTransformation)||sourceDatum.getShortName().equals(((NTv2GridShiftTransformation) coordOp).getFromDatum())) {
+                opList.add(new CoordinateOperationSequence(
+                        new Identifier(CoordinateOperationSequence.class, source.getName() + " to " + target.getName()),
+                        source.toGeographicCoordinateConverter(),
+                        coordOp.inverse(),
+                        target.fromGeographicCoordinateConverter()));
+            } else {
+                NTv2GridShiftTransformation gt = (NTv2GridShiftTransformation) coordOp;
+                GeodeticDatum gtSource = GeodeticDatum.getGeodeticDatumFromShortName(gt.getFromDatum());
+                if (gtSource.getCoordinateOperations(targetDatum).isEmpty()) {
+                    CoordinateOperationSequence opSeq = new CoordinateOperationSequence(
+                            new Identifier(CoordinateOperationSequence.class, gtSource.getName() + " to " + targetDatum.getName() + " through " + GeodeticDatum.WGS84.getName()),
+                            gtSource.getCoordinateOperations(GeodeticDatum.WGS84).get(0),
+                            GeodeticDatum.WGS84.getCoordinateOperations(targetDatum).get(0));
+                    gtSource.addCoordinateOperation(targetDatum, opSeq);
+                    targetDatum.addCoordinateOperation(gtSource, opSeq.inverse());
+                }
+                opList.add(new CoordinateOperationSequence(
+                        new Identifier(CoordinateOperationSequence.class, source.getName() + " to " + target.getName()),
+                        source.toGeographicCoordinateConverter(),
+                        gt.inverse(),
+                        gtSource.getCoordinateOperations(targetDatum).get(0),
+                        target.fromGeographicCoordinateConverter()));
+            }
+        } catch (NonInvertibleOperationException e) {
+            LOG.warn("Operation from " + source.getName() + " to " + target.getName() + " could not be created");
+            LOG.error("CoordinateOperationFactory", e);
+        }
+        return opList;
     }
 
     /**

@@ -97,7 +97,7 @@ public class Unit implements java.io.Serializable {
 	public static final Unit YARD = new Unit(LENGTH, "yard", 0.9144, "yd");
 	public static final Unit UNIT = new Unit(NODIM, "", "");
 	public static final Unit SECOND = new Unit(TIME, "second", "s");
-	public static ArrayList<Unit> units = new ArrayList<Unit>();
+	public static final ArrayList<Unit> units = new ArrayList<Unit>();
 
 	static {
 		units.add(RADIAN);
@@ -192,14 +192,7 @@ public class Unit implements java.io.Serializable {
 		this.scale = scale;
 		this.offset = offset;
 		this.symbol = symbol;
-		Map<String, Unit> unts = map.get(quantity);
-		if (unts == null) {
-			map.put(quantity, new HashMap<String, Unit>());
-		}
-		map.get(quantity).put(symbol, this);
-		if (scale == 1d && offset == 0d) {
-			baseUnits.put(quantity, this);
-		}
+		this.registerUnit();
 	}
 
 	/**
@@ -219,7 +212,11 @@ public class Unit implements java.io.Serializable {
 		this.scale = scale;
 		this.offset = offset;
 		this.symbol = symbol;
-		Map<String, Unit> unts = map.get(quantity);
+                this.registerUnit();
+	}
+        
+        private void registerUnit() {
+            Map<String, Unit> unts = map.get(quantity);
 		if (unts == null) {
 			map.put(quantity, new HashMap<String, Unit>());
 		}
@@ -227,7 +224,7 @@ public class Unit implements java.io.Serializable {
 		if (scale == 1d && offset == 0d) {
 			baseUnits.put(quantity, this);
 		}
-	}
+        }
 
 	public static Unit getUnit(String name) {
 		for (Unit unit : units) {

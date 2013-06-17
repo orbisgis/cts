@@ -31,6 +31,7 @@
  */
 package org.cts.crs;
 
+import java.util.HashMap;
 import org.cts.CoordinateOperation;
 import org.cts.IdentifiableComponent;
 import org.cts.Identifier;
@@ -52,6 +53,8 @@ public abstract class GeodeticCRS extends IdentifiableComponent
         implements CoordinateReferenceSystem {
 
     private GeodeticDatum geodeticDatum;
+    // A map of known grid transformations from this CRS to other CRS
+    private HashMap<GeodeticDatum, CoordinateOperation> nadgridsTransformation = new HashMap<GeodeticDatum, CoordinateOperation>();
 
     @Override
     public Projection getProjection() {
@@ -108,6 +111,20 @@ public abstract class GeodeticCRS extends IdentifiableComponent
      */
     public boolean isValid(double[] coord) {
         return geodeticDatum.getExtent().isInside(coord);
+    }
+    
+    /**
+     * Add a Nadgrids Transformation for this CRS.
+     */
+    public void addGridTransformation(GeodeticDatum gd, CoordinateOperation coordOp) {
+        nadgridsTransformation.put(gd, coordOp);
+    }
+    
+    /**
+     * Return the list of nadgrids transformation defined for this CRS.
+     */
+    public CoordinateOperation getGridTransformation(GeodeticDatum datum) {
+        return nadgridsTransformation.get(datum);
     }
 
     /**
