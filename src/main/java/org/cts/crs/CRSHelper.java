@@ -32,6 +32,7 @@
 package org.cts.crs;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import org.apache.log4j.Logger;
 import org.cts.*;
 import org.cts.cs.Axis;
@@ -333,11 +334,13 @@ public class CRSHelper {
                                 } else {
                                     try {
                                         NTv2GridShiftTransformation gt = new NTv2GridShiftTransformation(
-                                                GridShift.class.getResource(grid).getPath());
+                                                GridShift.class.getResource(grid).toURI().toURL());
                                         gt.setMode(NTv2GridShiftTransformation.SPEED);
                                         gt.loadGridShiftFile();
                                         crs.addGridTransformation(GeodeticDatum.getGeodeticDatumFromShortName(gt.getToDatum()), gt);
                                     } catch (IOException ex) {
+                                        LOGGER.error("Cannot found the nadgrid", ex);
+                                    } catch (URISyntaxException ex) {
                                         LOGGER.error("Cannot found the nadgrid", ex);
                                     }
                                 }

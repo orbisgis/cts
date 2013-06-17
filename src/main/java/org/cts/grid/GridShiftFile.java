@@ -12,300 +12,292 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class GridShiftFile
-  implements Serializable
-{
-  private static final int REC_SIZE = 16;
-  private String overviewHeaderCountId;
-  private int overviewHeaderCount;
-  private int subGridHeaderCount;
-  private int subGridCount;
-  private String shiftType;
-  private String version;
-  private String fromEllipsoid = "";
-  private String toEllipsoid = "";
-  private double fromSemiMajorAxis;
-  private double fromSemiMinorAxis;
-  private double toSemiMajorAxis;
-  private double toSemiMinorAxis;
-  private SubGrid[] topLevelSubGrid;
-  private SubGrid lastSubGrid;
-  private transient RandomAccessFile raf;
+        implements Serializable {
 
-  public void loadGridShiftFile(InputStream in, boolean loadAccuracy)
-    throws IOException
-  {
-    byte[] b8 = new byte[8];
-    boolean bigEndian = true;
-    this.fromEllipsoid = "";
-    this.toEllipsoid = "";
-    this.topLevelSubGrid = null;
-    in.read(b8);
-    this.overviewHeaderCountId = new String(b8);
-    if (!"NUM_OREC".equals(this.overviewHeaderCountId)) {
-      throw new IllegalArgumentException("Input file is not an NTv2 grid shift file");
-    }
-    in.read(b8);
-    this.overviewHeaderCount = Util.getIntBE(b8, 0);
-    if (this.overviewHeaderCount == 11) {
-      bigEndian = true;
-    } else {
-      this.overviewHeaderCount = Util.getIntLE(b8, 0);
-      if (this.overviewHeaderCount == 11)
-        bigEndian = false;
-      else {
-        throw new IllegalArgumentException("Input file is not an NTv2 grid shift file");
-      }
-    }
-    in.read(b8);
-    in.read(b8);
-    this.subGridHeaderCount = Util.getInt(b8, bigEndian);
-    in.read(b8);
-    in.read(b8);
-    this.subGridCount = Util.getInt(b8, bigEndian);
-    SubGrid[] subGrid = new SubGrid[this.subGridCount];
-    in.read(b8);
-    in.read(b8);
-    this.shiftType = new String(b8);
-    in.read(b8);
-    in.read(b8);
-    this.version = new String(b8);
-    in.read(b8);
-    in.read(b8);
-    this.fromEllipsoid = new String(b8);
-    in.read(b8);
-    in.read(b8);
-    this.toEllipsoid = new String(b8);
-    in.read(b8);
-    in.read(b8);
-    this.fromSemiMajorAxis = Util.getDouble(b8, bigEndian);
-    in.read(b8);
-    in.read(b8);
-    this.fromSemiMinorAxis = Util.getDouble(b8, bigEndian);
-    in.read(b8);
-    in.read(b8);
-    this.toSemiMajorAxis = Util.getDouble(b8, bigEndian);
-    in.read(b8);
-    in.read(b8);
-    this.toSemiMinorAxis = Util.getDouble(b8, bigEndian);
+    private static final int REC_SIZE = 16;
+    private String overviewHeaderCountId;
+    private int overviewHeaderCount;
+    private int subGridHeaderCount;
+    private int subGridCount;
+    private String shiftType;
+    private String version;
+    private String fromEllipsoid = "";
+    private String toEllipsoid = "";
+    private double fromSemiMajorAxis;
+    private double fromSemiMinorAxis;
+    private double toSemiMajorAxis;
+    private double toSemiMinorAxis;
+    private SubGrid[] topLevelSubGrid;
+    private SubGrid lastSubGrid;
+    private transient RandomAccessFile raf;
 
-    for (int i = 0; i < this.subGridCount; i++) {
-      subGrid[i] = new SubGrid(in, bigEndian, loadAccuracy);
-    }
-    this.topLevelSubGrid = createSubGridTree(subGrid);
-    this.lastSubGrid = this.topLevelSubGrid[0];
+    public void loadGridShiftFile(InputStream in, boolean loadAccuracy)
+            throws IOException {
+        byte[] b8 = new byte[8];
+        boolean bigEndian = true;
+        this.fromEllipsoid = "";
+        this.toEllipsoid = "";
+        this.topLevelSubGrid = null;
+        in.read(b8);
+        this.overviewHeaderCountId = new String(b8);
+        if (!"NUM_OREC".equals(this.overviewHeaderCountId)) {
+            throw new IllegalArgumentException("Input file is not an NTv2 grid shift file");
+        }
+        in.read(b8);
+        this.overviewHeaderCount = Util.getIntBE(b8, 0);
+        if (this.overviewHeaderCount == 11) {
+            bigEndian = true;
+        } else {
+            this.overviewHeaderCount = Util.getIntLE(b8, 0);
+            if (this.overviewHeaderCount == 11) {
+                bigEndian = false;
+            } else {
+                throw new IllegalArgumentException("Input file is not an NTv2 grid shift file");
+            }
+        }
+        in.read(b8);
+        in.read(b8);
+        this.subGridHeaderCount = Util.getInt(b8, bigEndian);
+        in.read(b8);
+        in.read(b8);
+        this.subGridCount = Util.getInt(b8, bigEndian);
+        SubGrid[] subGrid = new SubGrid[this.subGridCount];
+        in.read(b8);
+        in.read(b8);
+        this.shiftType = new String(b8);
+        in.read(b8);
+        in.read(b8);
+        this.version = new String(b8);
+        in.read(b8);
+        in.read(b8);
+        this.fromEllipsoid = new String(b8);
+        in.read(b8);
+        in.read(b8);
+        this.toEllipsoid = new String(b8);
+        in.read(b8);
+        in.read(b8);
+        this.fromSemiMajorAxis = Util.getDouble(b8, bigEndian);
+        in.read(b8);
+        in.read(b8);
+        this.fromSemiMinorAxis = Util.getDouble(b8, bigEndian);
+        in.read(b8);
+        in.read(b8);
+        this.toSemiMajorAxis = Util.getDouble(b8, bigEndian);
+        in.read(b8);
+        in.read(b8);
+        this.toSemiMinorAxis = Util.getDouble(b8, bigEndian);
 
-    in.close();
-  }
+        for (int i = 0; i < this.subGridCount; i++) {
+            subGrid[i] = new SubGrid(in, bigEndian, loadAccuracy);
+        }
+        this.topLevelSubGrid = createSubGridTree(subGrid);
+        this.lastSubGrid = this.topLevelSubGrid[0];
 
-  public void loadGridShiftFile(RandomAccessFile raf)
-    throws IOException
-  {
-    this.raf = raf;
-    byte[] b8 = new byte[8];
-    boolean bigEndian = true;
-    this.fromEllipsoid = "";
-    this.toEllipsoid = "";
-    this.topLevelSubGrid = null;
-    raf.seek(0L);
-    raf.read(b8);
-    this.overviewHeaderCountId = new String(b8);
-    if (!"NUM_OREC".equals(this.overviewHeaderCountId)) {
-      this.raf = null;
-      throw new IllegalArgumentException("Input file is not an NTv2 grid shift file");
+        in.close();
     }
-    raf.read(b8);
-    this.overviewHeaderCount = Util.getIntBE(b8, 0);
-    if (this.overviewHeaderCount == 11) {
-      bigEndian = true;
-    } else {
-      this.overviewHeaderCount = Util.getIntLE(b8, 0);
-      if (this.overviewHeaderCount == 11) {
-        bigEndian = false;
-      } else {
-        this.raf = null;
-        throw new IllegalArgumentException("Input file is not an NTv2 grid shift file");
-      }
-    }
-    raf.read(b8);
-    raf.read(b8);
-    this.subGridHeaderCount = Util.getInt(b8, bigEndian);
-    raf.read(b8);
-    raf.read(b8);
-    this.subGridCount = Util.getInt(b8, bigEndian);
-    SubGrid[] subGrid = new SubGrid[this.subGridCount];
-    raf.read(b8);
-    raf.read(b8);
-    this.shiftType = new String(b8);
-    raf.read(b8);
-    raf.read(b8);
-    this.version = new String(b8);
-    raf.read(b8);
-    raf.read(b8);
-    this.fromEllipsoid = new String(b8);
-    raf.read(b8);
-    raf.read(b8);
-    this.toEllipsoid = new String(b8);
-    raf.read(b8);
-    raf.read(b8);
-    this.fromSemiMajorAxis = Util.getDouble(b8, bigEndian);
-    raf.read(b8);
-    raf.read(b8);
-    this.fromSemiMinorAxis = Util.getDouble(b8, bigEndian);
-    raf.read(b8);
-    raf.read(b8);
-    this.toSemiMajorAxis = Util.getDouble(b8, bigEndian);
-    raf.read(b8);
-    raf.read(b8);
-    this.toSemiMinorAxis = Util.getDouble(b8, bigEndian);
 
-    long offset = this.overviewHeaderCount * 16;
-    for (int i = 0; i < this.subGridCount; i++) {
-      subGrid[i] = new SubGrid(raf, offset, bigEndian);
-      offset = offset + this.subGridHeaderCount * 16 + subGrid[i].getNodeCount() * 16;
-    }
-    this.topLevelSubGrid = createSubGridTree(subGrid);
-    this.lastSubGrid = this.topLevelSubGrid[0];
-  }
+    public void loadGridShiftFile(RandomAccessFile raf)
+            throws IOException {
+        this.raf = raf;
+        byte[] b8 = new byte[8];
+        boolean bigEndian = true;
+        this.fromEllipsoid = "";
+        this.toEllipsoid = "";
+        this.topLevelSubGrid = null;
+        raf.seek(0L);
+        raf.read(b8);
+        this.overviewHeaderCountId = new String(b8);
+        if (!"NUM_OREC".equals(this.overviewHeaderCountId)) {
+            this.raf = null;
+            throw new IllegalArgumentException("Input file is not an NTv2 grid shift file");
+        }
+        raf.read(b8);
+        this.overviewHeaderCount = Util.getIntBE(b8, 0);
+        if (this.overviewHeaderCount == 11) {
+            bigEndian = true;
+        } else {
+            this.overviewHeaderCount = Util.getIntLE(b8, 0);
+            if (this.overviewHeaderCount == 11) {
+                bigEndian = false;
+            } else {
+                this.raf = null;
+                throw new IllegalArgumentException("Input file is not an NTv2 grid shift file");
+            }
+        }
+        raf.read(b8);
+        raf.read(b8);
+        this.subGridHeaderCount = Util.getInt(b8, bigEndian);
+        raf.read(b8);
+        raf.read(b8);
+        this.subGridCount = Util.getInt(b8, bigEndian);
+        SubGrid[] subGrid = new SubGrid[this.subGridCount];
+        raf.read(b8);
+        raf.read(b8);
+        this.shiftType = new String(b8);
+        raf.read(b8);
+        raf.read(b8);
+        this.version = new String(b8);
+        raf.read(b8);
+        raf.read(b8);
+        this.fromEllipsoid = new String(b8);
+        raf.read(b8);
+        raf.read(b8);
+        this.toEllipsoid = new String(b8);
+        raf.read(b8);
+        raf.read(b8);
+        this.fromSemiMajorAxis = Util.getDouble(b8, bigEndian);
+        raf.read(b8);
+        raf.read(b8);
+        this.fromSemiMinorAxis = Util.getDouble(b8, bigEndian);
+        raf.read(b8);
+        raf.read(b8);
+        this.toSemiMajorAxis = Util.getDouble(b8, bigEndian);
+        raf.read(b8);
+        raf.read(b8);
+        this.toSemiMinorAxis = Util.getDouble(b8, bigEndian);
 
-  private SubGrid[] createSubGridTree(SubGrid[] subGrid)
-  {
-    int topLevelCount = 0;
-    HashMap subGridMap = new HashMap();
-    for (int i = 0; i < subGrid.length; i++) {
-      if (subGrid[i].getParentSubGridName().equalsIgnoreCase("NONE")) {
-        topLevelCount++;
-      }
-      subGridMap.put(subGrid[i].getSubGridName(), new ArrayList());
+        long offset = this.overviewHeaderCount * 16;
+        for (int i = 0; i < this.subGridCount; i++) {
+            subGrid[i] = new SubGrid(raf, offset, bigEndian);
+            offset = offset + this.subGridHeaderCount * 16 + subGrid[i].getNodeCount() * 16;
+        }
+        this.topLevelSubGrid = createSubGridTree(subGrid);
+        this.lastSubGrid = this.topLevelSubGrid[0];
     }
-    SubGrid[] subGridTree = new SubGrid[topLevelCount];
-    topLevelCount = 0;
-    for (int i = 0; i < subGrid.length; i++) {
-      if (subGrid[i].getParentSubGridName().equalsIgnoreCase("NONE")) {
-        subGridTree[(topLevelCount++)] = subGrid[i];
-      } else {
-        ArrayList parent = (ArrayList)subGridMap.get(subGrid[i].getParentSubGridName());
-        parent.add(subGrid[i]);
-      }
-    }
-    SubGrid[] nullArray = new SubGrid[0];
-    for (int i = 0; i < subGrid.length; i++) {
-      ArrayList subSubGrids = (ArrayList)subGridMap.get(subGrid[i].getSubGridName());
-      if (subSubGrids.size() > 0) {
-        SubGrid[] subGridArray = (SubGrid[])subSubGrids.toArray(nullArray);
-        subGrid[i].setSubGridArray(subGridArray);
-      }
-    }
-    return subGridTree;
-  }
 
-  public boolean gridShiftForward(GridShift gs)
-    throws IOException
-  {
-    SubGrid subGrid = this.lastSubGrid.getSubGridForCoord(gs.getLonPositiveWestSeconds(), gs.getLatSeconds());
-    if (subGrid == null) {
-      subGrid = getSubGrid(gs.getLonPositiveWestSeconds(), gs.getLatSeconds());
+    private SubGrid[] createSubGridTree(SubGrid[] subGrid) {
+        int topLevelCount = 0;
+        HashMap subGridMap = new HashMap();
+        for (int i = 0; i < subGrid.length; i++) {
+            if (subGrid[i].getParentSubGridName().equalsIgnoreCase("NONE")) {
+                topLevelCount++;
+            }
+            subGridMap.put(subGrid[i].getSubGridName(), new ArrayList());
+        }
+        SubGrid[] topLevelSubGrid = new SubGrid[topLevelCount];
+        topLevelCount = 0;
+        for (int i = 0; i < subGrid.length; i++) {
+            if (subGrid[i].getParentSubGridName().equalsIgnoreCase("NONE")) {
+                topLevelSubGrid[(topLevelCount++)] = subGrid[i];
+            } else {
+                ArrayList parent = (ArrayList) subGridMap.get(subGrid[i].getParentSubGridName());
+                parent.add(subGrid[i]);
+            }
+        }
+        SubGrid[] nullArray = new SubGrid[0];
+        for (int i = 0; i < subGrid.length; i++) {
+            ArrayList subSubGrids = (ArrayList) subGridMap.get(subGrid[i].getSubGridName());
+            if (subSubGrids.size() > 0) {
+                SubGrid[] subGridArray = (SubGrid[]) subSubGrids.toArray(nullArray);
+                subGrid[i].setSubGridArray(subGridArray);
+            }
+        }
+        return topLevelSubGrid;
     }
-    if (subGrid == null) {
-      return false;
+
+    public boolean gridShiftForward(GridShift gs)
+            throws IOException {
+        SubGrid subGrid = this.lastSubGrid.getSubGridForCoord(gs.getLonPositiveWestSeconds(), gs.getLatSeconds());
+        if (subGrid == null) {
+            subGrid = getSubGrid(gs.getLonPositiveWestSeconds(), gs.getLatSeconds());
+        }
+        if (subGrid == null) {
+            return false;
+        }
+        subGrid.interpolateGridShift(gs);
+        gs.setSubGridName(subGrid.getSubGridName());
+        this.lastSubGrid = subGrid;
+        return true;
     }
-    subGrid.interpolateGridShift(gs);
-    gs.setSubGridName(subGrid.getSubGridName());
-    this.lastSubGrid = subGrid;
-    return true;
-  }
 
-  public boolean gridShiftReverse(GridShift gs)
-    throws IOException
-  {
-    GridShift forwardGs = new GridShift();
-    forwardGs.setLonPositiveWestSeconds(gs.getLonPositiveWestSeconds());
-    forwardGs.setLatSeconds(gs.getLatSeconds());
-    for (int i = 0; i < 4; i++) {
-      if (!gridShiftForward(forwardGs)) {
-        return false;
-      }
-      forwardGs.setLonPositiveWestSeconds(gs.getLonPositiveWestSeconds() - forwardGs.getLonShiftPositiveWestSeconds());
+    public boolean gridShiftReverse(GridShift gs)
+            throws IOException {
+        GridShift forwardGs = new GridShift();
+        forwardGs.setLonPositiveWestSeconds(gs.getLonPositiveWestSeconds());
+        forwardGs.setLatSeconds(gs.getLatSeconds());
+        for (int i = 0; i < 4; i++) {
+            if (!gridShiftForward(forwardGs)) {
+                return false;
+            }
+            forwardGs.setLonPositiveWestSeconds(gs.getLonPositiveWestSeconds() - forwardGs.getLonShiftPositiveWestSeconds());
 
-      forwardGs.setLatSeconds(gs.getLatSeconds() - forwardGs.getLatShiftSeconds());
+            forwardGs.setLatSeconds(gs.getLatSeconds() - forwardGs.getLatShiftSeconds());
+        }
+        gs.setLonShiftPositiveWestSeconds(-forwardGs.getLonShiftPositiveWestSeconds());
+        gs.setLatShiftSeconds(-forwardGs.getLatShiftSeconds());
+        gs.setLonAccuracyAvailable(forwardGs.isLonAccuracyAvailable());
+        if (forwardGs.isLonAccuracyAvailable()) {
+            gs.setLonAccuracySeconds(forwardGs.getLonAccuracySeconds());
+        }
+        gs.setLatAccuracyAvailable(forwardGs.isLatAccuracyAvailable());
+        if (forwardGs.isLatAccuracyAvailable()) {
+            gs.setLatAccuracySeconds(forwardGs.getLatAccuracySeconds());
+        }
+        return true;
     }
-    gs.setLonShiftPositiveWestSeconds(-forwardGs.getLonShiftPositiveWestSeconds());
-    gs.setLatShiftSeconds(-forwardGs.getLatShiftSeconds());
-    gs.setLonAccuracyAvailable(forwardGs.isLonAccuracyAvailable());
-    if (forwardGs.isLonAccuracyAvailable()) {
-      gs.setLonAccuracySeconds(forwardGs.getLonAccuracySeconds());
+
+    private SubGrid getSubGrid(double lon, double lat) {
+        SubGrid sub = null;
+        for (int i = 0; i < this.topLevelSubGrid.length; i++) {
+            sub = this.topLevelSubGrid[i].getSubGridForCoord(lon, lat);
+            if (sub != null) {
+                break;
+            }
+        }
+        return sub;
     }
-    gs.setLatAccuracyAvailable(forwardGs.isLatAccuracyAvailable());
-    if (forwardGs.isLatAccuracyAvailable()) {
-      gs.setLatAccuracySeconds(forwardGs.getLatAccuracySeconds());
+
+    public boolean isLoaded() {
+        return this.topLevelSubGrid != null;
     }
-    return true;
-  }
 
-  private SubGrid getSubGrid(double lon, double lat)
-  {
-    SubGrid sub = null;
-    for (int i = 0; i < this.topLevelSubGrid.length; i++) {
-      sub = this.topLevelSubGrid[i].getSubGridForCoord(lon, lat);
-      if (sub != null) {
-        break;
-      }
+    public void unload() throws IOException {
+        this.topLevelSubGrid = null;
+        if (this.raf != null) {
+            this.raf.close();
+            this.raf = null;
+        }
     }
-    return sub;
-  }
 
-  public boolean isLoaded() {
-    return this.topLevelSubGrid != null;
-  }
-
-  public void unload() throws IOException {
-    this.topLevelSubGrid = null;
-    if (this.raf != null) {
-      this.raf.close();
-      this.raf = null;
+    public String toString() {
+        StringBuffer buf = new StringBuffer("Headers  : ");
+        buf.append(this.overviewHeaderCount);
+        buf.append("\nSub Hdrs : ");
+        buf.append(this.subGridHeaderCount);
+        buf.append("\nSub Grids: ");
+        buf.append(this.subGridCount);
+        buf.append("\nType     : ");
+        buf.append(this.shiftType);
+        buf.append("\nVersion  : ");
+        buf.append(this.version);
+        buf.append("\nFr Ellpsd: ");
+        buf.append(this.fromEllipsoid);
+        buf.append("\nTo Ellpsd: ");
+        buf.append(this.toEllipsoid);
+        buf.append("\nFr Maj Ax: ");
+        buf.append(this.fromSemiMajorAxis);
+        buf.append("\nFr Min Ax: ");
+        buf.append(this.fromSemiMinorAxis);
+        buf.append("\nTo Maj Ax: ");
+        buf.append(this.toSemiMajorAxis);
+        buf.append("\nTo Min Ax: ");
+        buf.append(this.toSemiMinorAxis);
+        return buf.toString();
     }
-  }
 
-  @Override
-  public String toString() {
-    StringBuilder buf = new StringBuilder("Headers  : ");
-    buf.append(this.overviewHeaderCount);
-    buf.append("\nSub Hdrs : ");
-    buf.append(this.subGridHeaderCount);
-    buf.append("\nSub Grids: ");
-    buf.append(this.subGridCount);
-    buf.append("\nType     : ");
-    buf.append(this.shiftType);
-    buf.append("\nVersion  : ");
-    buf.append(this.version);
-    buf.append("\nFr Ellpsd: ");
-    buf.append(this.fromEllipsoid);
-    buf.append("\nTo Ellpsd: ");
-    buf.append(this.toEllipsoid);
-    buf.append("\nFr Maj Ax: ");
-    buf.append(this.fromSemiMajorAxis);
-    buf.append("\nFr Min Ax: ");
-    buf.append(this.fromSemiMinorAxis);
-    buf.append("\nTo Maj Ax: ");
-    buf.append(this.toSemiMajorAxis);
-    buf.append("\nTo Min Ax: ");
-    buf.append(this.toSemiMinorAxis);
-    return buf.toString();
-  }
-
-  public SubGrid[] getSubGridTree()
-  {
-    SubGrid[] clone = new SubGrid[this.topLevelSubGrid.length];
-    for (int i = 0; i < this.topLevelSubGrid.length; i++) {
-      clone[i] = ((SubGrid)this.topLevelSubGrid[i].clone());
+    public SubGrid[] getSubGridTree() {
+        SubGrid[] clone = new SubGrid[this.topLevelSubGrid.length];
+        for (int i = 0; i < this.topLevelSubGrid.length; i++) {
+            clone[i] = ((SubGrid) this.topLevelSubGrid[i].clone());
+        }
+        return clone;
     }
-    return clone;
-  }
 
-  public String getFromEllipsoid() {
-    return this.fromEllipsoid;
-  }
+    public String getFromEllipsoid() {
+        return this.fromEllipsoid;
+    }
 
-  public String getToEllipsoid() {
-    return this.toEllipsoid;
-  }
+    public String getToEllipsoid() {
+        return this.toEllipsoid;
+    }
 }
