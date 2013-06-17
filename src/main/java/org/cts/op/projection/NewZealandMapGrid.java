@@ -36,49 +36,47 @@ import org.cts.CoordinateDimensionException;
 import org.cts.Ellipsoid;
 import org.cts.Identifier;
 import org.cts.units.Measure;
-import static java.lang.Math.*;
 import org.cts.CoordinateOperation;
 import org.cts.NonInvertibleOperationException;
+import org.cts.util.Complex;
 
 /**
- * The Cassini-Soldner Projection (CASS). <p>
+ * The New Zealand Map Grid Projection (NZMG). <p>
  *
  * @author Jules Party
  */
-public class CassiniSoldner extends Projection {
+public class NewZealandMapGrid extends Projection {
 
-    public static final Identifier CASS =
-            new Identifier("EPSG", "9806", "Cassini-Soldner", "CASS");
+    public static final Identifier NZMG =
+            new Identifier("EPSG", "9811", "New Zealand Map Grid", "NZMG");
     protected final double lat0, // the reference latitude
             lon0, // the reference longitude (from the datum prime meridian)
-            M0, // the arc length between the equator and the reference latitude.
-            FE, // x coordinate of the pole
-            FN,   // y coordinate of the pole
-            k0, // scale coefficent for easting
-            e, // eccentricity of the ellipsoid
-            e2; // square eccentricity of the ellipsoid
-    private double PI_2 = PI/2;
+            FE, // false easting
+            FN;   // false northing
+    protected final Complex[] B;
 
     /**
-     * Create a new Cassini-Soldner Projection corresponding to
+     * Create a new New Zealand Map Grid Projection corresponding to
      * the <code>Ellipsoid</code> and the list of parameters given in argument
-     * and initialize common parameters lon0, lat0, FE, FN and other parameters
-     * useful for the projection.
+     * and initialize common parameters lon0, lat0, FE, FN.
      * 
      * @param ellipsoid ellipsoid used to define the projection.
      * @param parameters a map of useful parameters to define the projection.
      */
-    public CassiniSoldner(final Ellipsoid ellipsoid,
+    public NewZealandMapGrid(final Ellipsoid ellipsoid,
             final Map<String, Measure> parameters) {
-        super(CASS, ellipsoid, parameters);
+        super(NZMG, ellipsoid, parameters);
         lon0 = getCentralMeridian();
         lat0 = getLatitudeOfOrigin();
         FE = getFalseEasting();
         FN = getFalseNorthing();
-        e = ellipsoid.getEccentricity();
-        e2 = ellipsoid.getSquareEccentricity();
-        k0 = getScaleFactor();
-        M0 = ellipsoid.arcFromLat(lat0);
+        B = new Complex[7];
+        B[1] = new Complex(0.7557853228);
+        B[2] = new Complex(0.249204646, 0.003371507);
+        B[3] = new Complex(-0.001541739, 0.041058560);
+        B[4] = new Complex(-0.10162907, 0.01727609);
+        B[5] = new Complex(-0.26623489, -0.36249218);
+        B[6] = new Complex(-0.6870983, -1.1651967);
     }
 
     /**
@@ -88,7 +86,7 @@ public class CassiniSoldner extends Projection {
      */
     @Override
     public Surface getSurface() {
-        return Projection.Surface.CYLINDRICAL;
+        return Projection.Surface.PSEUDOCONICAL;
     }
 
     /**
@@ -98,7 +96,7 @@ public class CassiniSoldner extends Projection {
      */
     @Override
     public Property getProperty() {
-        return Projection.Property.APHYLACTIC;
+        return Projection.Property.CONFORMAL;
     }
 
     /**
@@ -112,10 +110,11 @@ public class CassiniSoldner extends Projection {
     }
 
     /**
-     * Transform coord using the Cassini-Soldner Projection. Input coord is supposed to
-     * be a geographic latitude / longitude coordinate in radians.
-     * Algorithm based on the OGP's Guidance Note Number 7 Part 2 :
-     * <http://www.epsg.org/guides/G7-2.html>
+     * Transform coord using the New Zealand Map Grid Projection. Input
+     * coord is supposed to be a geographic latitude / longitude coordinate in
+     * radians. Algorithm based on the USGS professional paper 1395,
+     * "Map Projection - A Working Manual" by John P. Snyder :
+     * <http://pubs.er.usgs.gov/publication/pp1395>
      *
      * @param coord coordinate to transform
      * @throws CoordinateDimensionException if <code>coord</code> length is not
@@ -123,45 +122,48 @@ public class CassiniSoldner extends Projection {
      */
     @Override
     public double[] transform(double[] coord) throws CoordinateDimensionException {
-        double lon = coord[1];
-        double lat = coord[0];
-        double A = (lon-lon0)*cos(lat);
-        double A2 = A*A;
-        double A4 = A2*A2;
-        double T = pow(tan(lat), 2);
-        double C = e2*pow(cos(lat), 2)/(1-e2);
-        double v = ellipsoid.transverseRadiusOfCurvature(lat);
-        double M = ellipsoid.arcFromLat(lat);
-        double dE = v*A*(1-T*A2/6-(8*(1+C)-T)*T*A4/120);
-        double dN = M - M0 + v*tan(lat)*(A2/2+(5-T+6*C)*A4/24);
-        coord[0] = FE + dE;
-        coord[1] = FN + dN;
+        double lambda = coord[1] -lon0;
+        double isoPhi = ellipsoid.isometricLatitude(coord[0])-ellipsoid.isometricLatitude(lat0);
+        Complex zeta = new Complex(isoPhi, lambda);
+        Complex origin = new Complex(FN, FE);
+        Complex z = B[6].axpb(zeta, B[5]).axpb(zeta, B[4]).axpb(zeta, B[3]).axpb(zeta, B[2]).axpb(zeta, B[1]).times(zeta).times(ellipsoid.getSemiMajorAxis());
+        Complex coordi = origin.plus(z);
+        coord[0] = coordi.im();
+        coord[1] = coordi.re();
         return coord;
     }
     
     /**
-     * Creates the inverse operation for Cassini-Soldner Projection.
+     * Creates the inverse operation for New Zealand Map Grid Projection.
      * Input coord is supposed to be a projected easting / northing coordinate in meters.
-     * Algorithm based on the OGP's Guidance Note Number 7 Part 2 :
-     * <http://www.epsg.org/guides/G7-2.html>
+     * Algorithm based on the USGS professional paper 1395,
+     * "Map Projection - A Working Manual" by John P. Snyder :
+     * <http://pubs.er.usgs.gov/publication/pp1395>
      * 
      * @param coord coordinate to transform
      */
     @Override
     public CoordinateOperation inverse() throws NonInvertibleOperationException {
-        return new CassiniSoldner(ellipsoid, parameters) {
-
+        return new NewZealandMapGrid(ellipsoid, parameters) {
             @Override
             public double[] transform(double[] coord) throws CoordinateDimensionException {
-                double M1 = M0 + coord[1]-FN;
-                double lat1 = ellipsoid.latFromArc(M1);
-                double T1 = pow(tan(lat1), 2);
-                double v1 = ellipsoid.transverseRadiusOfCurvature(lat1);
-                double rho1 = ellipsoid.meridionalRadiusOfCurvature(lat1);
-                double D = (coord[0]-FE)/v1;
-                double D2 = D*D;
-                coord[1] = lon0 + D*(1 - T1*D2/3 + (1+3*T1)*T1*D2*D2/15)/cos(lat1);
-                coord[0] = lat1 - v1*tan(lat1)/rho1*D2/2*(1-(1+3*T1)*D2/12);
+                Complex z = (new Complex(coord[1] - FN, coord[0] - FE)).divideBy(new Complex(ellipsoid.getSemiMajorAxis()));
+                Complex[] b = new Complex[7];
+                b[1] = new Complex(1.3231270439);
+                b[2] = new Complex(-0.577245789, -0.007809598);
+                b[3] = new Complex(0.508307513, -0.112208952);
+                b[4] = new Complex(-0.15094762, 0.18200602);
+                b[5] = new Complex(1.01418179, 1.64497696);
+                b[6] = new Complex(1.9660549, 2.5127645);
+                Complex zeta = b[6].axpb(z, b[5]).axpb(z, b[4]).axpb(z, b[3]).axpb(z, b[2]).axpb(z, b[1]).times(z);
+                zeta = (B[6].times(5).axpb(zeta, B[5].times(4)).axpb(zeta, B[4].times(3)).axpb(zeta, B[3].times(2)).axpb(zeta, B[2]).times(zeta).axpb(zeta, z))
+                        .divideBy(B[6].times(6).axpb(zeta, B[5].times(5)).axpb(zeta, B[4].times(4)).axpb(zeta, B[3].times(3)).axpb(zeta, B[2].times(2)).axpb(zeta, B[1]));
+                zeta = (B[6].times(5).axpb(zeta, B[5].times(4)).axpb(zeta, B[4].times(3)).axpb(zeta, B[3].times(2)).axpb(zeta, B[2]).times(zeta).axpb(zeta, z))
+                        .divideBy(B[6].times(6).axpb(zeta, B[5].times(5)).axpb(zeta, B[4].times(4)).axpb(zeta, B[3].times(3)).axpb(zeta, B[2].times(2)).axpb(zeta, B[1]));
+                double lon = zeta.im();
+                double isoLat = zeta.re();
+                coord[0] = ellipsoid.latitude(isoLat+ellipsoid.isometricLatitude(lat0));
+                coord[1] = lon0 + lon;
                 return coord;
             }
         };

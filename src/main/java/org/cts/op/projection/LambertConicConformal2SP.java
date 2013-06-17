@@ -110,7 +110,7 @@ public class LambertConicConformal2SP extends Projection {
     }
 
     /**
-     * LambertConicConformal1SP factory to create a LambertConicConformal1SP
+     * LambertConicConformal2SP factory to create a LambertConicConformal2SP
      * projection from a latitude of origin and a central meridian in degrees, a
      * scale factor and false coordinates in meters.
      *
@@ -132,7 +132,7 @@ public class LambertConicConformal2SP extends Projection {
     }
 
     /**
-     * LambertConicConformal1SP factory to create a LambertConicConformal1SP
+     * LambertConicConformal2SP factory to create a LambertConicConformal2SP
      * projection from a latitude of origin, a central meridian and false
      * coordinates in any unit.
      *
