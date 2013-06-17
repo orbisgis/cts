@@ -41,44 +41,38 @@ import org.cts.CoordinateOperation;
 import org.cts.NonInvertibleOperationException;
 
 /**
- * The Cassini-Soldner Projection (CASS). <p>
+ * The Miller Cylindrical Projection (MILL). <p>
  *
  * @author Jules Party
  */
-public class CassiniSoldner extends Projection {
+public class MillerCylindrical extends Projection {
 
-    public static final Identifier CASS =
-            new Identifier("EPSG", "9806", "Cassini-Soldner", "CASS");
+    public static final Identifier MILL =
+            new Identifier("EPSG", "9818", "Miller Cylindrical", "MILL");
     protected final double lat0, // the reference latitude
             lon0, // the reference longitude (from the datum prime meridian)
-            M0, // the arc length between the equator and the reference latitude.
-            FE, // x coordinate of the pole
-            FN,   // y coordinate of the pole
-            k0, // scale coefficent for easting
-            e, // eccentricity of the ellipsoid
-            e2; // square eccentricity of the ellipsoid
-    private double PI_2 = PI/2;
+            FE, // false easting
+            FN,   // false northing
+            n; // projection expnent
 
     /**
-     * Create a new Cassini-Soldner Projection corresponding to
+     * Create a new Miller Cylindrical Projection corresponding to
      * the <code>Ellipsoid</code> and the list of parameters given in argument
-     * and initialize common parameters lon0, lat0, FE, FN and other parameters
-     * useful for the projection.
+     * and initialize common parameters lon0, lat0, FE, FN.
      * 
      * @param ellipsoid ellipsoid used to define the projection.
      * @param parameters a map of useful parameters to define the projection.
      */
-    public CassiniSoldner(final Ellipsoid ellipsoid,
+    public MillerCylindrical(final Ellipsoid ellipsoid,
             final Map<String, Measure> parameters) {
-        super(CASS, ellipsoid, parameters);
+        super(MILL, ellipsoid, parameters);
         lon0 = getCentralMeridian();
         lat0 = getLatitudeOfOrigin();
         FE = getFalseEasting();
         FN = getFalseNorthing();
-        e = ellipsoid.getEccentricity();
-        e2 = ellipsoid.getSquareEccentricity();
-        k0 = getScaleFactor();
-        M0 = ellipsoid.arcFromLat(lat0);
+        double k0 = getScaleFactor();
+        double a = getSemiMajorAxis();
+        n = k0 * a;
     }
 
     /**
@@ -88,7 +82,7 @@ public class CassiniSoldner extends Projection {
      */
     @Override
     public Surface getSurface() {
-        return Projection.Surface.CYLINDRICAL;
+        return Projection.Surface.PSEUDOCONICAL;
     }
 
     /**
@@ -112,10 +106,11 @@ public class CassiniSoldner extends Projection {
     }
 
     /**
-     * Transform coord using the Cassini-Soldner Projection. Input coord is supposed to
-     * be a geographic latitude / longitude coordinate in radians.
-     * Algorithm based on the OGP's Guidance Note Number 7 Part 2 :
-     * <http://www.epsg.org/guides/G7-2.html>
+     * Transform coord using the Miller Cylindrical Projection. Input
+     * coord is supposed to be a geographic latitude / longitude coordinate in
+     * radians. Algorithm based on the USGS professional paper 1395,
+     * "Map Projection - A Working Manual" by John P. Snyder :
+     * <http://pubs.er.usgs.gov/publication/pp1395>
      *
      * @param coord coordinate to transform
      * @throws CoordinateDimensionException if <code>coord</code> length is not
@@ -124,44 +119,37 @@ public class CassiniSoldner extends Projection {
     @Override
     public double[] transform(double[] coord) throws CoordinateDimensionException {
         double lon = coord[1];
-        double lat = coord[0];
-        double A = (lon-lon0)*cos(lat);
-        double A2 = A*A;
-        double A4 = A2*A2;
-        double T = pow(tan(lat), 2);
-        double C = e2*pow(cos(lat), 2)/(1-e2);
-        double v = ellipsoid.transverseRadiusOfCurvature(lat);
-        double M = ellipsoid.arcFromLat(lat);
-        double dE = v*A*(1-T*A2/6-(8*(1+C)-T)*T*A4/120);
-        double dN = M - M0 + v*tan(lat)*(A2/2+(5-T+6*C)*A4/24);
-        coord[0] = FE + dE;
-        coord[1] = FN + dN;
+        double lat = abs(coord[0]) > PI * 85 / 180 ? PI * 85 / 180 : coord[0];
+        double E = n * (lon - lon0);
+        double N = n * ellipsoid.isometricLatitude(lat*0.8)/0.8;
+        coord[0] = FE + E;
+        coord[1] = FN + N;
         return coord;
     }
     
     /**
-     * Creates the inverse operation for Cassini-Soldner Projection.
+     * Creates the inverse operation for Miller Cylindrical Projection.
      * Input coord is supposed to be a projected easting / northing coordinate in meters.
-     * Algorithm based on the OGP's Guidance Note Number 7 Part 2 :
-     * <http://www.epsg.org/guides/G7-2.html>
+     * Algorithm based on the USGS professional paper 1395,
+     * "Map Projection - A Working Manual" by John P. Snyder :
+     * <http://pubs.er.usgs.gov/publication/pp1395>
      * 
      * @param coord coordinate to transform
      */
     @Override
     public CoordinateOperation inverse() throws NonInvertibleOperationException {
-        return new CassiniSoldner(ellipsoid, parameters) {
+        return new MillerCylindrical(ellipsoid, parameters) {
 
             @Override
             public double[] transform(double[] coord) throws CoordinateDimensionException {
-                double M1 = M0 + coord[1]-FN;
-                double lat1 = ellipsoid.latFromArc(M1);
-                double T1 = pow(tan(lat1), 2);
-                double v1 = ellipsoid.transverseRadiusOfCurvature(lat1);
-                double rho1 = ellipsoid.meridionalRadiusOfCurvature(lat1);
-                double D = (coord[0]-FE)/v1;
-                double D2 = D*D;
-                coord[1] = lon0 + D*(1 - T1*D2/3 + (1+3*T1)*T1*D2*D2/15)/cos(lat1);
-                coord[0] = lat1 - v1*tan(lat1)/rho1*D2/2*(1-(1+3*T1)*D2/12);
+                double t = exp(0.8*(FN-coord[1])/n);
+                double ki = PI/2 - 2 * atan(t);
+                double lat = ki;
+                for (int i =1;i<5;i++) {
+                    lat+= ellipsoid.getInverseMercatorCoeff()[i]*sin(2*i*ki);
+                }
+                coord[1] = (coord[0]-FE)/n + lon0;
+                coord[0] = lat/0.8;
                 return coord;
             }
         };

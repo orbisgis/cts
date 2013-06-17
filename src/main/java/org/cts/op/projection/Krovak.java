@@ -41,47 +41,52 @@ import org.cts.CoordinateOperation;
 import org.cts.NonInvertibleOperationException;
 
 /**
- * The Lambert Azimuthal Equal Area Projection (LAEA). <p>
+ * The Krovak (North Orientated) Projection (KROVAK). <p>
  *
  * @author Jules Party
  */
-public class LambertAzimuthalEqualArea extends Projection {
+public class Krovak extends Projection {
 
-    public static final Identifier LAEA =
-            new Identifier("EPSG", "9820", "Lambert Azimuthal Equal Area", "LAEA");
-    protected final double lat0, // the reference latitude
-            lon0, // the reference longitude (from the datum prime meridian)
+    public static final Identifier KROVAK =
+            new Identifier("EPSG", "1041", "Krovak (North Orientated)", "KROVAK");
+    protected final double lon0, // the reference longitude (from the datum prime meridian)
             FE, // false easting
             FN,   // false northing
-            beta0, // the authalic latitude corresponding to lat0
-            qp, // a constant of the projection
-            D, // another constant of the projection
-            Rq; // another constant of the projection
+            alphac, // rotation in plane of meridian of origin of the conformal coordinates
+            latp, // latitude of pseudo-standard parallel
+            B, // a constant of the projection
+            t0, // a constant of the projection
+            n, // a constant of the projection
+            r0; // a constant of the projection
 
     /**
-     * Create a new Lambert Azimuthal Equal Area Projection corresponding to
+     * Create a new Krovak (North Orientated) Projection corresponding to
      * the <code>Ellipsoid</code> and the list of parameters given in argument
-     * and initialize common parameters lon0, lat0, FE, FN and other parameters
-     * useful for the projection.
+     * and initialize common parameters lon0, FE, FN and other useful parameters.
      * 
      * @param ellipsoid ellipsoid used to define the projection.
      * @param parameters a map of useful parameters to define the projection.
      */
-    public LambertAzimuthalEqualArea(final Ellipsoid ellipsoid,
+    public Krovak(final Ellipsoid ellipsoid,
             final Map<String, Measure> parameters) {
-        super(LAEA, ellipsoid, parameters);
+        super(KROVAK, ellipsoid, parameters);
         lon0 = getCentralMeridian();
-        lat0 = getLatitudeOfOrigin();
+        double lat0 = getLatitudeOfOrigin();
         FE = getFalseEasting();
         FN = getFalseNorthing();
-        double e = ellipsoid.getEccentricity();
+        alphac = getAzimuthOfInitialLine();
+        double kp = getScaleFactor();
+        latp = 78.5*PI/180;
+        double a = ellipsoid.getSemiMajorAxis();
         double e2 = ellipsoid.getSquareEccentricity();
-        qp = 1 - (1-e2)/2/e*log((1-e)/(1+e));
-        double esin0 = e*sin(lat0);
-        double q0 = (1-e2)*(sin(lat0)/(1-esin0*esin0) - log((1-esin0)/(1+esin0))/2/e);
-        beta0 = asin(q0/qp);
-        Rq = ellipsoid.getSemiMajorAxis()*pow(qp/2, 0.5);
-        D = ellipsoid.getSemiMajorAxis()*cos(lat0)/sqrt(1-esin0*esin0)/Rq/cos(beta0);
+        double e = ellipsoid.getEccentricity();
+        double sin0 = sin(lat0);
+        double A = a*sqrt(1-e2)/(1-e2*sin0*sin0);
+        B = sqrt(1+e2/(1-e2)*pow(cos(lat0), 4));
+        double gamma0 = asin(sin0/B);
+        t0 = tan ((PI/2+gamma0)/2)*pow(pow((1+e*sin0)/(1-e*sin0), e/2)/tan((PI/2+lat0)/2), B);
+        n =sin(latp);
+        r0 = kp*A/tan(latp);
     }
 
     /**
@@ -91,7 +96,7 @@ public class LambertAzimuthalEqualArea extends Projection {
      */
     @Override
     public Surface getSurface() {
-        return Projection.Surface.CYLINDRICAL;
+        return Projection.Surface.CONICAL;
     }
 
     /**
@@ -111,11 +116,11 @@ public class LambertAzimuthalEqualArea extends Projection {
      */
     @Override
     public Orientation getOrientation() {
-        return Projection.Orientation.TANGENT;
+        return Projection.Orientation.SECANT;
     }
 
     /**
-     * Transform coord using the Lambert Azimuthal Equal Area Projection. Input
+     * Transform coord using the Krovak (North Orientated) Projection. Input
      * coord is supposed to be a geographic latitude / longitude coordinate in
      * radians. Algorithm based on the OGP's Guidance Note Number 7 Part 2 :
      * <http://www.epsg.org/guides/G7-2.html>
@@ -126,19 +131,25 @@ public class LambertAzimuthalEqualArea extends Projection {
      */
     @Override
     public double[] transform(double[] coord) throws CoordinateDimensionException {
+        double lat = coord[0];
+        double lon = coord[1];
         double e = ellipsoid.getEccentricity();
-        double e2 = ellipsoid.getSquareEccentricity();
-        double esin = e*sin(coord[0]);
-        double q = (1-e2)*(sin(coord[0])/(1-esin*esin) - log((1-esin)/(1+esin))/2/e);
-        double beta = asin(q/qp);
-        double B = Rq*sqrt(2/(1 + sin(beta0)*sin(beta) + cos(beta0)*cos(beta)*cos(coord[1]-lon0)));
-        coord[0] = FE + B*D*cos(beta)*sin(coord[1]-lon0);
-        coord[1] = FN + B/D*(cos(beta0)*sin(beta) - sin(beta0)*cos(beta)*cos(coord[1]-lon0));
+        double esin = e*sin(lat);
+        double U = 2*(atan(t0*pow(tan((PI/2+lat)/2)/pow((1+esin)/(1-esin), e/2), B))-PI/4);
+        double V = B*(lon0-lon);
+        double T = asin(cos(alphac)*sin(U)+sin(alphac)*cos(U)*cos(V));
+        double sinD = cos(U)*sin(V)/cos(T);
+        double cosD = (cos(alphac)*sin(T)-sin(U))/sin(alphac)/cos(T);
+        double D = atan2(sinD, cosD);
+        double theta = n*D;
+        double r = r0*pow(tan((latp+PI/2)/2)/tan((T+PI/2)/2), n);
+        coord[0] = FE - r*sin(theta);
+        coord[1] = FN - r*cos(theta);
         return coord;
     }
     
     /**
-     * Creates the inverse operation for Lambert Azimuthal Equal Area Projection.
+     * Creates the inverse operation for Krovak (North Orientated) Projection.
      * Input coord is supposed to be a projected easting / northing coordinate in meters.
      * Algorithm based on the OGP's Guidance Note Number 7 Part 2 :
      * <http://www.epsg.org/guides/G7-2.html>
@@ -147,22 +158,32 @@ public class LambertAzimuthalEqualArea extends Projection {
      */
     @Override
     public CoordinateOperation inverse() throws NonInvertibleOperationException {
-        return new LambertAzimuthalEqualArea(ellipsoid, parameters) {
-
+        return new Krovak(ellipsoid, parameters) {
             @Override
             public double[] transform(double[] coord) throws CoordinateDimensionException {
-                double e = ellipsoid.getEccentricity();
-                double e2 = ellipsoid.getSquareEccentricity();
-                double e4 = e2*e2;
-                double e6 = e4*e2;
-                double x = (coord[0]-FE)/D;
-                double y = (coord[1]-FN)*D;
-                double rho = sqrt(x*x+y*y);
-                double C = 2*asin(rho/2/Rq);
-                double betap = asin(cos(C)*sin(beta0) + y*sin(C)*cos(beta0)/rho);
-                coord[0] = betap + (e2/3 + 31/180*e4 +517/5040*e6)*sin(2*betap)
-                        + (23/360*e4 + 251/3780*e6)*sin(4*betap) + 761/45360*e6*sin(6*betap);
-                coord[1] = lon0 + atan(x*sin(C)/(rho*cos(beta0)*cos(C)-y*sin(beta0)*sin(C)));
+                double Xp = -coord[1] + FN;
+                double Yp = -coord[0] + FE;
+                double r = sqrt(Xp * Xp + Yp * Yp);
+                double theta = atan(Yp / Xp);
+                double D = theta / sin(latp);
+                double T = 2 * (atan(pow(r0 / r, 1 / n) * tan((latp + PI / 2) / 2)) - PI / 4);
+                double U = asin(cos(alphac) * sin(T) - sin(alphac) * cos(T) * cos(D));
+                double V = asin(cos(T) * sin(D) / cos(U));
+                double oldLat = 1E30;
+                double lat = U;
+                final int MAXITER = 10;
+                double e =ellipsoid.getEccentricity();
+                int iter = 0;
+                while (++iter < MAXITER && Math.abs(lat - oldLat) > 1E-15) {
+                    oldLat = lat;
+                    lat = 2 * (atan(pow(tan((U+PI/2)/2)/t0, 1/B)*pow((1+e*sin(lat))/(1-e*sin(lat)), e/2)) - PI / 4);
+                }
+                if (iter == MAXITER) {
+                    throw new ArithmeticException("The inverse method diverges");
+                }
+                double lon = lon0 - V/B;
+                coord[0] = lat;
+                coord[1] = lon;
                 return coord;
             }
         };

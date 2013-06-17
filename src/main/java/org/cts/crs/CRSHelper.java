@@ -509,6 +509,12 @@ public class CRSHelper {
                     return new Polyconic(ell, map);
                 } else if (projectionName.equalsIgnoreCase(ProjValueParameters.CEA)) {
                     return new CylindricalEqualArea(ell, map);
+                } else if (projectionName.equalsIgnoreCase(ProjValueParameters.MILL)) {
+                    return new MillerCylindrical(ell, map);
+                } else if (projectionName.equalsIgnoreCase(ProjValueParameters.KROVAK)) {
+                    return new Krovak(ell, map);
+                }  else if (projectionName.equalsIgnoreCase(ProjValueParameters.NZMG)) {
+                    return new NewZealandMapGrid(ell, map);
                 } else {
                         throw new RuntimeException("Cannot create the projection " + projectionName);
                 }

@@ -42,7 +42,7 @@ import org.cts.crs.GeodeticCRS;
 import org.cts.crs.ProjectedCRS;
 import org.cts.datum.GeodeticDatum;
 import org.cts.op.projection.CylindricalEqualArea;
-import org.cts.op.projection.Polyconic;
+import org.cts.op.projection.MillerCylindrical;
 import org.cts.registry.Registry;
 import org.cts.registry.RegistryManager;
 import org.cts.units.Measure;
@@ -103,5 +103,28 @@ public class SpecialCoordinateTransformTest extends BaseCoordinateTransformTest 
         double tolerance = 1E-1;
         assertTrue(checkEquals2D("CEA dir--> ", result, pointDest, tolerance));
         assertTrue(checkEquals2D("CEA inv--> ", check, pointSource, tolerance));
+    }
+    
+    @Test
+    public void testMillerCylindrical() throws Exception {
+        Map<String, Measure> map = new HashMap<String, Measure>();
+        map.put(Parameter.CENTRAL_MERIDIAN, new Measure(0, Unit.DEGREE));
+        map.put(Parameter.LATITUDE_OF_ORIGIN, new Measure(0, Unit.DEGREE));
+        map.put(Parameter.FALSE_EASTING, new Measure(0, Unit.METER));
+        map.put(Parameter.FALSE_NORTHING, new Measure(0, Unit.METER));
+        map.put(Parameter.SCALE_FACTOR, new Measure(1, Unit.UNIT));
+        MillerCylindrical proj = new MillerCylindrical(Ellipsoid.createEllipsoidFromSemiMinorAxis(1, 1), map);
+        double PI = Math.PI;
+        double[] pointSource = new double[]{50, -75, 0};
+        double[] result = new double[]{50 * PI / 180, -75 * PI / 180, 0};
+        result = proj.transform(result);
+        double[] pointDest = new double[]{-1.3089969, 0.9536371, 0};
+        double[] check = new double[]{-1.3089969, 0.9536371, 0};
+        check = proj.inverse().transform(check);
+        check[0] = check[0] * 180 / PI;
+        check[1] = check[1] * 180 / PI;
+        double tolerance = 1E-1;
+        assertTrue(checkEquals2D("MILL dir--> ", result, pointDest, tolerance));
+        assertTrue(checkEquals2D("MILL inv--> ", check, pointSource, tolerance));
     }
 }

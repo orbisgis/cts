@@ -62,7 +62,7 @@ public class SwissObliqueMercator extends Projection {
             R; // Radius of the projection sphere
 
     /**
-     * Create a new Oblique Stereographic Alternative Projection corresponding to
+     * Create a new Swiss Oblique Stereographic Alternative Projection corresponding to
      * the <code>Ellipsoid</code> and the list of parameters given in argument
      * and initialize common parameters FE, FN and other parameters
      * useful for the projection.
