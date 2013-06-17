@@ -509,6 +509,8 @@ public class CRSHelper {
                     return new CylindricalEqualArea(ell, map);
                 } else if (projectionName.equalsIgnoreCase(ProjValueParameters.MILL)) {
                     return new MillerCylindrical(ell, map);
+                } else if (projectionName.equalsIgnoreCase(ProjValueParameters.KROVAK)) {
+                    return new Krovak(ell, map);
                 } else {
                         throw new RuntimeException("Cannot create the projection " + projectionName);
                 }
