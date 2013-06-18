@@ -167,12 +167,10 @@ public class Identifier implements Identifiable {
     @Override
     public String getCode() {
         // return namespace+":"+id;
-        //Delete namespace. Consider EPSG code begin by number and IGNF code begin by decimal
-        //So code = id
         //EX: 
         //-EPSG : LAMBE
         //-IGNF : 27572
-        return authorityKey;
+        return authorityName+":"+authorityKey;
     }
 
    /**
@@ -264,14 +262,14 @@ public class Identifier implements Identifiable {
         if (object instanceof Identifier) {
             Identifier other = (Identifier)object;
             // Test equality between this code and object's code
-            if (getCode().equals(other.getCode())) {
+            if (getAuthorityKey().equals(other.getAuthorityKey())) {
                 return true;
             }
             // If not equal, test equality between this aliases and
             // the other object aliases
             for (Identifiable id1 : getAliases()) {
                 for (Identifiable id2 : other.getAliases()) {
-                    if (id1.getCode().equals(id2.getCode())) {
+                    if (id1.getAuthorityKey().equals(id2.getAuthorityKey())) {
                         return true;
                     }
                 }
