@@ -78,10 +78,6 @@ public class Identifier implements Identifiable {
 
     // Aliases
     private List<Identifiable> aliases;
-    
-    
-    
-    
 
    /**
     * Creates a complete identifier.

@@ -34,7 +34,7 @@ public class CRSIdentifierTest {
 
     @Test
     public void testEPSG4326Name() throws Exception {
-        assertTrue(crsf.getCRS("EPSG:4326").getName().equals("EPSG:4326"));
+        assertTrue(crsf.getCRS("EPSG:4326").getName().equals("WGS 84"));
     }
 
     @Test
@@ -55,6 +55,6 @@ public class CRSIdentifierTest {
 
     @Test
     public void testEPSG27572Name() throws Exception {
-        assertTrue(crsf.getCRS("EPSG:27572").getName().equals("EPSG:27572"));
+        assertTrue(crsf.getCRS("EPSG:27572").getName().equals("NTF (Paris) / Lambert zone II"));
     }
 }
