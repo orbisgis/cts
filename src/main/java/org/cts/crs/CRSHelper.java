@@ -139,6 +139,7 @@ public class CRSHelper {
                 CoordinateOperation op;
                 String towgs84Parameters = param.get(ProjKeyParameters.towgs84);
                 if (null == towgs84Parameters) {
+                        gd.setDefaultToWGS84Operation(Identity.IDENTITY);
                         return;
                 }
                 double[] bwp = new double[7];
@@ -314,7 +315,6 @@ public class CRSHelper {
                     GeodeticDatum gd = new GeodeticDatum(pm, ell);
                     setDefaultWGS84Parameters(gd, param);
                     gd = gd.checkExistingGeodeticDatum();
-                    //setNadgrids(gd, param);
                     return gd;
                 }
             }
