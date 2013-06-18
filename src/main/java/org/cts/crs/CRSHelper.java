@@ -4,11 +4,11 @@
 * and parameter sets. 
 * Its main focus are simplicity, flexibility, interoperability, in this order.
 *
-* This library has been originaled developed by Michael Michaud under the JGeod
+* This library has been originally developed by Michaël Michaud under the JGeod
 * name. It has been renamed CTS in 2009 and shared to the community from 
 * the Atelier SIG code repository.
 * 
-* Since them, CTS is supported by the Atelier SIG team in collaboration with Michael 
+* Since them, CTS is supported by the Atelier SIG team in collaboration with Michaël 
 * Michaud.
 * The new CTS has been funded  by the French Agence Nationale de la Recherche 
 * (ANR) under contract ANR-08-VILL-0005-01 and the regional council 
@@ -32,6 +32,7 @@
 package org.cts.crs;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import org.apache.log4j.Logger;
 import org.cts.*;
 import org.cts.cs.Axis;
@@ -50,9 +51,7 @@ import org.cts.units.Unit;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
 import org.cts.grid.GridShift;
-import org.cts.op.CoordinateOperationSequence;
 import org.cts.op.transformation.NTv2GridShiftTransformation;
 
 /**
@@ -60,7 +59,7 @@ import org.cts.op.transformation.NTv2GridShiftTransformation;
  * between the model (CRS/Datum/Ellipsoid/Projection...) and the parsers
  * which create CRS from a file or from a stream. CRSHelper is in-between,
  * no more a file, but not yet a model.
- * @author Michaël Michaud, Erwan Bocher
+ * @author Michaël Michaud, Erwan Bocher, Jules Party
  */
 public class CRSHelper {
 
@@ -72,11 +71,7 @@ public class CRSHelper {
          */
         public static CoordinateReferenceSystem createCoordinateReferenceSystem(Identifier identifier, Map<String, String> parameters) {
 
-                //Name of the projection
-                String name = parameters.get(ProjKeyParameters.title);
-
                 //Get the datum
-
                 GeodeticDatum geodeticDatum = getDatum(parameters);
 
                 if (geodeticDatum == null) {
@@ -84,6 +79,8 @@ public class CRSHelper {
                                 + "CoordinateReferenceSystem");
                         return null;
                 }
+                
+                GeodeticCRS crs;
 
                 String sproj = parameters.get(ProjKeyParameters.proj);
                 String sunit = parameters.get(ProjKeyParameters.units);
@@ -103,7 +100,7 @@ public class CRSHelper {
                         CoordinateSystem cs = new CoordinateSystem(new Axis[]{Axis.X,
                                         Axis.Y, Axis.Z}, new Unit[]{unit, unit, unit});
 
-                        return new GeocentricCRS(identifier, geodeticDatum,
+                        crs = new GeocentricCRS(identifier, geodeticDatum,
                                 cs);
                 } else if (sproj.equals(ProjValueParameters.LONGLAT)) {
                         Unit unit = Unit.DEGREE;
@@ -114,19 +111,22 @@ public class CRSHelper {
                         CoordinateSystem cs = new CoordinateSystem(new Axis[]{
                                         Axis.LONGITUDE, Axis.LATITUDE, Axis.HEIGHT}, new Unit[]{
                                         unit, unit, Unit.METER});
-                        return new Geographic3DCRS(identifier, geodeticDatum,
+                        crs = new Geographic3DCRS(identifier, geodeticDatum,
                                 cs);
                 } else {
                         Projection proj = getProjection(sproj, geodeticDatum.getEllipsoid(),
                                 parameters);
                         if (null != proj) {
-                                return new ProjectedCRS(identifier,
+                                crs = new ProjectedCRS(identifier,
                                         geodeticDatum, proj);
                         } else {
                                 LOGGER.warn("Unknown projection : " + sproj);
                                 return null;
                         }
                 }
+                
+                setNadgrids(crs, parameters);
+                return crs;
         }
 
         /**
@@ -296,15 +296,15 @@ public class CRSHelper {
         public static GeodeticDatum getDatum(Map<String, String> param) {
                 String datumName = param.get(ProjKeyParameters.datum);
                 if (null != datumName) {
-                        if (datumName.equals(GeodeticDatum.WGS84.getShortName())) {
+                        if (datumName.equalsIgnoreCase(GeodeticDatum.WGS84.getShortName())) {
                                 return GeodeticDatum.WGS84;
-                        } else if (datumName.equals(GeodeticDatum.ED50.getName())) {
+                        } else if (datumName.equalsIgnoreCase(GeodeticDatum.ED50.getShortName())) {
                                 return GeodeticDatum.ED50;
-                        } else if (datumName.equals(GeodeticDatum.NTF.getName())) {
+                        } else if (datumName.equalsIgnoreCase(GeodeticDatum.NTF.getShortName())) {
                                 return GeodeticDatum.NTF;
-                        } else if (datumName.equals(GeodeticDatum.NTF_PARIS.getName())) {
+                        } else if (datumName.equalsIgnoreCase(GeodeticDatum.NTF_PARIS.getShortName())) {
                                 return GeodeticDatum.NTF_PARIS;
-                        } else if (datumName.equals(GeodeticDatum.RGF93.getName())) {
+                        } else if (datumName.equalsIgnoreCase(GeodeticDatum.RGF93.getShortName())) {
                                 return GeodeticDatum.RGF93;
                         }
                } else {
@@ -314,67 +314,38 @@ public class CRSHelper {
                     GeodeticDatum gd = new GeodeticDatum(pm, ell);
                     setDefaultWGS84Parameters(gd, param);
                     gd = gd.checkExistingGeodeticDatum();
-                    
-                    String nadgrids = param.get(ProjKeyParameters.nadgrids);
+                    //setNadgrids(gd, param);
+                    return gd;
+                }
+            }
+            return null;
+        }
+        
+        private static void setNadgrids(GeodeticCRS crs, Map<String, String> param) {
+            String nadgrids = param.get(ProjKeyParameters.nadgrids);
                     if (nadgrids != null) {
                         String[] grids = nadgrids.split(",");
                         for (String grid : grids) {
                             if (!grid.equals("null")) {
                                 LOGGER.warn("A grid has been founded.");
                                 if (grid.equals("@null")) {
-                                    gd.addCoordinateOperation(GeodeticDatum.WGS84, Identity.IDENTITY);
-                                    GeodeticDatum.WGS84.addCoordinateOperation(gd, Identity.IDENTITY);
+                                    crs.getDatum().addCoordinateOperation(GeodeticDatum.WGS84, Identity.IDENTITY);
+                                    GeodeticDatum.WGS84.addCoordinateOperation(crs.getDatum(), Identity.IDENTITY);
                                 } else {
                                     try {
                                         NTv2GridShiftTransformation gt = new NTv2GridShiftTransformation(
-                                                GridShift.class.getResource(grid).getPath());
+                                                GridShift.class.getResource(grid).toURI().toURL());
                                         gt.setMode(NTv2GridShiftTransformation.SPEED);
-                                        gt.loadGridShiftFile();
-                                        GeodeticDatum gtSource = GeodeticDatum.getGeodeticDatumFromShortName(gt.getFromDatum());
-                                        GeodeticDatum gtTarget = GeodeticDatum.getGeodeticDatumFromShortName(gt.getToDatum());
-                                        if (gtSource == null || gtTarget == null) {
-                                            LOGGER.warn("At least one of the geodetic datum bound by the grid transformation "+grid+" is not recognized.");
-                                        }
-                                        else {
-                                            if (gd.getShortName().equals(gt.getFromDatum())) {
-                                                gd.addCoordinateOperation(gtTarget, gt);
-                                                try {
-                                                    gtTarget.addCoordinateOperation(gd, gt.inverse());
-                                                } catch (NonInvertibleOperationException ex) {
-                                                    LOGGER.warn("The grid transformation "+grid+" is not inversible.");
-                                                }
-                                            }
-                                            else {
-                                                if (gd.getCoordinateOperations(gtSource).isEmpty()) {
-                                                    CoordinateOperationSequence opList = new CoordinateOperationSequence(
-                                                            new Identifier(CoordinateOperationSequence.class, gd.getName() + " to " + gtSource.getName() + " through " + GeodeticDatum.WGS84.getName()),
-                                                            gd.getCoordinateOperations(GeodeticDatum.WGS84).get(0),
-                                                            GeodeticDatum.WGS84.getCoordinateOperations(gtSource).get(0));
-                                                    gd.addCoordinateOperation(gtSource, opList);
-                                                }
-                                                CoordinateOperationSequence opList1 = new CoordinateOperationSequence(
-                                                        new Identifier(CoordinateOperationSequence.class, gd.getName() + " to " + gtTarget.getName() + " through " + grid + " transformation"),
-                                                        gd.getCoordinateOperations(gtSource).get(0), gt);
-                                                gd.addCoordinateOperation(gtTarget, opList1);
-                                                try {
-                                                    gtTarget.addCoordinateOperation(gd, opList1.inverse());
-                                                } catch (NonInvertibleOperationException ex) {
-                                                    LOGGER.warn("The grid transformation "+grid+" is not inversible.");
-                                                }
-                                            }
-                                        }
+                                        crs.addGridTransformation(GeodeticDatum.getGeodeticDatumFromShortName(gt.getToDatum()), gt);
                                     } catch (IOException ex) {
-                                        java.util.logging.Logger.getLogger(CRSHelper.class.getName()).log(Level.SEVERE, null, ex);
+                                        LOGGER.error("Cannot found the nadgrid", ex);
+                                    } catch (URISyntaxException ex) {
+                                        LOGGER.error("Cannot found the nadgrid", ex);
                                     }
                                 }
                             }
                         }
                     }
-                    return gd;
-                }
-
-            }
-            return null;
         }
 
         /**
@@ -414,6 +385,12 @@ public class CRSHelper {
                                 return Ellipsoid.BESSEL1841;
                         } else if (ellipsoidName.equals("krass")) {
                                 return Ellipsoid.KRASSOWSKI;
+                        } else if (ellipsoidName.equals("evrstSS")) {
+                                return Ellipsoid.EVERESTSS;
+                        } else if (ellipsoidName.equals("GRS67")) {
+                                return Ellipsoid.GRS67;
+                        } else if (ellipsoidName.equals("aust_SA")) {
+                                return Ellipsoid.AustSA;
                         } else {
                                 LOGGER.warn(ellipsoidName + " return default ellipsoid WGS84");
                                 return Ellipsoid.WGS84;
@@ -457,7 +434,11 @@ public class CRSHelper {
                 String slat_0 = param.get("lat_0");
                 String slat_1 = param.get("lat_1");
                 String slat_2 = param.get("lat_2");
+                String slat_ts = param.get("lat_ts");
                 String slon_0 = param.get("lon_0");
+                String slonc = param.get("lonc");
+                String salpha = param.get("alpha");
+                String sgamma = param.get("gamma");
                 String sk = param.get("k");
                 String sk_0 = param.get("k_0");
                 String sx_0 = param.get("x_0");
@@ -465,7 +446,10 @@ public class CRSHelper {
                 double lat_0 = slat_0 != null ? Double.parseDouble(slat_0) : 0.;
                 double lat_1 = slat_1 != null ? Double.parseDouble(slat_1) : 0.;
                 double lat_2 = slat_2 != null ? Double.parseDouble(slat_2) : 0.;
-                double lon_0 = slon_0 != null ? Double.parseDouble(slon_0) : 0.;
+                double lat_ts = slat_ts != null ? Double.parseDouble(slat_ts) : 0.;
+                double lon_0 = slon_0 != null ? Double.parseDouble(slon_0) : slonc != null ? Double.parseDouble(slonc) : 0.;
+                double alpha = salpha != null ? Double.parseDouble(salpha) : 0.;
+                double gamma = sgamma != null ? Double.parseDouble(sgamma) : 0.;
                 if (sk!=null && sk_0!=null) {
                     if (!sk.equals(sk_0)) {
                         LOGGER.warn("Two different scales factor at origin are defined, the one chosen for the projection is k_0");
@@ -479,6 +463,9 @@ public class CRSHelper {
                 map.put(Parameter.LATITUDE_OF_ORIGIN, new Measure(lat_0, Unit.DEGREE));
                 map.put(Parameter.STANDARD_PARALLEL_1, new Measure(lat_1, Unit.DEGREE));
                 map.put(Parameter.STANDARD_PARALLEL_2, new Measure(lat_2, Unit.DEGREE));
+                map.put(Parameter.LATITUDE_OF_TRUE_SCALE, new Measure(lat_ts, Unit.DEGREE));
+                map.put(Parameter.AZIMUTH_OF_INITIAL_LINE, new Measure(alpha, Unit.DEGREE));
+                map.put(Parameter.ANGLE_RECTIFIED_TO_OBLIQUE, new Measure(gamma, Unit.DEGREE));
                 map.put(Parameter.SCALE_FACTOR, new Measure(k_0, Unit.UNIT));
                 map.put(Parameter.FALSE_EASTING, new Measure(x_0, Unit.METER));
                 map.put(Parameter.FALSE_NORTHING, new Measure(y_0, Unit.METER));
@@ -502,6 +489,32 @@ public class CRSHelper {
                         return new UniversalTransverseMercator(ell, map);
                 } else if (projectionName.equalsIgnoreCase(ProjValueParameters.MERC)) {
                     return new Mercator1SP(ell, map);
+                } else if (projectionName.equalsIgnoreCase(ProjValueParameters.EQC)) {
+                    return new EquidistantCylindrical(ell, map);
+                } else if (projectionName.equalsIgnoreCase(ProjValueParameters.STERE)) {
+                    return new Stereographic(ell, map);
+                } else if (projectionName.equalsIgnoreCase(ProjValueParameters.STEREA)) {
+                    return new ObliqueStereographicAlternative(ell, map);
+                } else if (projectionName.equalsIgnoreCase(ProjValueParameters.CASS)) {
+                    return new CassiniSoldner(ell, map);
+                } else if (projectionName.equalsIgnoreCase(ProjValueParameters.OMERC)) {
+                    return new ObliqueMercator(ell, map);
+                } else if (projectionName.equalsIgnoreCase(ProjValueParameters.SOMERC)) {
+                    return new SwissObliqueMercator(ell, map);
+                } else if (projectionName.equalsIgnoreCase(ProjValueParameters.AEA)) {
+                    return new AlbersEqualArea(ell, map);
+                } else if (projectionName.equalsIgnoreCase(ProjValueParameters.LAEA)) {
+                    return new LambertAzimuthalEqualArea(ell, map);
+                } else if (projectionName.equalsIgnoreCase(ProjValueParameters.POLY)) {
+                    return new Polyconic(ell, map);
+                } else if (projectionName.equalsIgnoreCase(ProjValueParameters.CEA)) {
+                    return new CylindricalEqualArea(ell, map);
+                } else if (projectionName.equalsIgnoreCase(ProjValueParameters.MILL)) {
+                    return new MillerCylindrical(ell, map);
+                } else if (projectionName.equalsIgnoreCase(ProjValueParameters.KROVAK)) {
+                    return new Krovak(ell, map);
+                }  else if (projectionName.equalsIgnoreCase(ProjValueParameters.NZMG)) {
+                    return new NewZealandMapGrid(ell, map);
                 } else {
                         throw new RuntimeException("Cannot create the projection " + projectionName);
                 }

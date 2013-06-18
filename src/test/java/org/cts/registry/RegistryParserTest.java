@@ -4,11 +4,11 @@
  * and parameter sets. 
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
- * This library has been originaled developed by Michael Michaud under the JGeod
+ * This library has been originally developed by Michaël Michaud under the JGeod
  * name. It has been renamed CTS in 2009 and shared to the community from 
  * the Atelier SIG code repository.
  * 
- * Since them, CTS is supported by the Atelier SIG team in collaboration with Michael 
+ * Since them, CTS is supported by the Atelier SIG team in collaboration with Michaël 
  * Michaud.
  * The new CTS has been funded  by the French Agence Nationale de la Recherche 
  * (ANR) under contract ANR-08-VILL-0005-01 and the regional council 
@@ -141,6 +141,13 @@ public class RegistryParserTest {
                 assertTrue(parameters.get(ProjKeyParameters.ellps).equals("GRS80"));
                 assertTrue(parameters.get(ProjKeyParameters.datum).equals("NAD83"));
                 assertTrue(parameters.get(ProjKeyParameters.to_meter).equals("0.3048006096012192"));
-
-        }      
+        }        
+        
+        @Test
+        public void testRegisteryCaseInsensitive () {
+                Map<String, String>  parameters = getParameters("IGnF","AmSt63");
+                assertTrue(parameters!=null);
+                parameters = getParameters("EPsg","4326");
+                assertTrue(parameters!=null);
+        }
 }

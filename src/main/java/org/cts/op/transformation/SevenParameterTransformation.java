@@ -4,11 +4,11 @@
  * and parameter sets. 
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
- * This library has been originaled developed by Michael Michaud under the JGeod
+ * This library has been originally developed by Michaël Michaud under the JGeod
  * name. It has been renamed CTS in 2009 and shared to the community from 
  * the Atelier SIG code repository.
  * 
- * Since them, CTS is supported by the Atelier SIG team in collaboration with Michael 
+ * Since them, CTS is supported by the Atelier SIG team in collaboration with Michaël 
  * Michaud.
  * The new CTS has been funded  by the French Agence Nationale de la Recherche 
  * (ANR) under contract ANR-08-VILL-0005-01 and the regional council 
@@ -94,7 +94,7 @@ public class SevenParameterTransformation extends AbstractCoordinateOperation im
     private final static Identifier idCFR = new Identifier("EPSG", "9607", "Frame Rotation (lin.)", "Coordinate Frame rotation (linearized)");
     private final static Identifier idSinCFR = new Identifier(SevenParameterTransformation.class, "Coordinate Frame rotation");
     private final static Identifier idT = new Identifier("EPSG", "9603", "Geocentric translation", "Translation");
-    private final double tx, ty, tz, rx, ry, rz, scale, precision;
+    private final double tx, ty, tz, rx, ry, rz, scale;
     private final int rotationConvention;
     private final boolean linearized;
 

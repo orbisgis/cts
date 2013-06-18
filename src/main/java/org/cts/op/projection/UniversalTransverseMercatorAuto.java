@@ -4,11 +4,11 @@
  * and parameter sets. 
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
- * This library has been originaled developed by Michael Michaud under the JGeod
+ * This library has been originally developed by Michaël Michaud under the JGeod
  * name. It has been renamed CTS in 2009 and shared to the community from 
  * the Atelier SIG code repository.
  * 
- * Since them, CTS is supported by the Atelier SIG team in collaboration with Michael 
+ * Since them, CTS is supported by the Atelier SIG team in collaboration with Michaël 
  * Michaud.
  * The new CTS has been funded  by the French Agence Nationale de la Recherche 
  * (ANR) under contract ANR-08-VILL-0005-01 and the regional council 
@@ -57,6 +57,15 @@ public class UniversalTransverseMercatorAuto extends Projection {
         
     protected final double[] dircoeff, invcoeff;
     
+    /**
+     * Create a new Universal Transverse Mercator Projection corresponding to
+     * the <code>Ellipsoid</code> given in argument and a default set of
+     * parameters and initialize common parameters lat0 and other parameters
+     * useful for the projection.
+     * 
+     * @param ellipsoid ellipsoid used to define the projection.
+     * @param parameters a map of useful parameters to define the projection.
+     */
     public UniversalTransverseMercatorAuto(final Ellipsoid ellipsoid,
             final Map<String,Measure> parameters) {
         super(UTM, ellipsoid, parameters);
@@ -72,7 +81,7 @@ public class UniversalTransverseMercatorAuto extends Projection {
     }
     
    /**
-    * Transform coord using a Lambert Conformal Conic projection.
+    * Transform coord using a Universal Transverse Mercator projection.
     * Input coord is supposed to be a geographic latitude / longitude
     * coordinate in radians.
     * @param coord coordinate to transform

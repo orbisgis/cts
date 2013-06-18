@@ -4,11 +4,11 @@
  * and parameter sets. 
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
- * This library has been originaled developed by Michael Michaud under the JGeod
+ * This library has been originally developed by Michaël Michaud under the JGeod
  * name. It has been renamed CTS in 2009 and shared to the community from 
  * the Atelier SIG code repository.
  * 
- * Since them, CTS is supported by the Atelier SIG team in collaboration with Michael 
+ * Since them, CTS is supported by the Atelier SIG team in collaboration with Michaël 
  * Michaud.
  * The new CTS has been funded  by the French Agence Nationale de la Recherche 
  * (ANR) under contract ANR-08-VILL-0005-01 and the regional council 
@@ -83,7 +83,7 @@ public class ProjParser {
         private Map<String, String> readRegistry(BufferedReader br, String nameOfCRS, String regex) throws IOException {
                 String line;
                 //TODO : It will be great in the future to use this information.
-                String crsName;
+                String crsName=null;
                 while (null != (line = br.readLine())) {
                         if (line.startsWith("#")) {
                                 // in the "epsg" file, the crs name can only be read in the
@@ -92,12 +92,15 @@ public class ProjParser {
                         } else if (line.startsWith("<") && line.endsWith(">")) {
                                 String[] tokens = line.split(regex);
                                 Map<String, String> v = new HashMap<String, String>();
-                                String crsID = null;
+                                String crsID;
+                                boolean crsFounded = true;
                                 for (String token : tokens) {
                                         if (token.startsWith("<") && token.endsWith(">")
                                                 && token.length() > 2) {
                                                 crsID = token.substring(1, token.length() - 1);
-                                                if (!crsID.equals(nameOfCRS)) {
+                                                if (!crsID.toLowerCase().equals(nameOfCRS.toLowerCase())) {
+                                                        crsFounded = false;
+                                                        crsName = null;
                                                         break;
                                                 }
                                         } else if (token.equals("<>")) {
@@ -116,7 +119,10 @@ public class ProjParser {
                                         }
                                 }
                                 // found requested CRS?
-                                if (crsID.equals(nameOfCRS)) {
+                                if (crsFounded) {
+                                    if (!v.containsKey(ProjKeyParameters.title)&&crsName!=null) {
+                                        v.put(ProjKeyParameters.title, crsName);
+                                    }
                                         return v;
                                 }
                         }

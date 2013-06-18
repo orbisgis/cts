@@ -4,11 +4,11 @@
  * and parameter sets. 
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
- * This library has been originaled developed by Michael Michaud under the JGeod
+ * This library has been originally developed by Michaël Michaud under the JGeod
  * name. It has been renamed CTS in 2009 and shared to the community from 
  * the Atelier SIG code repository.
  * 
- * Since them, CTS is supported by the Atelier SIG team in collaboration with Michael 
+ * Since them, CTS is supported by the Atelier SIG team in collaboration with Michaël 
  * Michaud.
  * The new CTS has been funded  by the French Agence Nationale de la Recherche 
  * (ANR) under contract ANR-08-VILL-0005-01 and the regional council 
@@ -33,8 +33,7 @@ package org.cts.op.transformation.grids;
 
 import java.io.BufferedInputStream;
 import java.io.InputStream;
-import java.text.DecimalFormat;
-import java.util.Hashtable;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.StringTokenizer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -100,7 +99,7 @@ public class IGNGeographicGrid extends GeographicGrid {
         double xmin, xmax, ymin, ymax;
         String interpolationMode;
         String precisionUnit;
-        Hashtable precisionCodes = new Hashtable();
+        ConcurrentHashMap precisionCodes = new ConcurrentHashMap();
         String ignFile;
         
         if (zip) {
@@ -205,12 +204,12 @@ public class IGNGeographicGrid extends GeographicGrid {
         else {throw new Exception("Missing interpolation mode : " + gr2);}
         // Forth line decoder
         stt = new StringTokenizer(gr3, " \t");
-        if (stt.hasMoreTokens()) {token = stt.nextToken();}
+        if (stt.hasMoreTokens()) {stt.nextToken();}
         else {throw new Exception("Missing information in line : " + gr3);}
-        if (stt.hasMoreTokens()) {token = stt.nextToken();}
+        if (stt.hasMoreTokens()) {stt.nextToken();}
         else {throw new Exception("Missing information in line : " + gr3);}
         if (stt.hasMoreTokens()) {
-            token = stt.nextToken();
+            stt.nextToken();
             precisionUnit = stt.nextToken();
         }
         else {throw new Exception("Missing precision unit in line : " + gr3);}

@@ -4,11 +4,11 @@
  * and parameter sets. 
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
- * This library has been originaled developed by Michael Michaud under the JGeod
+ * This library has been originally developed by Michaël Michaud under the JGeod
  * name. It has been renamed CTS in 2009 and shared to the community from 
  * the Atelier SIG code repository.
  * 
- * Since them, CTS is supported by the Atelier SIG team in collaboration with Michael 
+ * Since them, CTS is supported by the Atelier SIG team in collaboration with Michaël 
  * Michaud.
  * The new CTS has been funded  by the French Agence Nationale de la Recherche 
  * (ANR) under contract ANR-08-VILL-0005-01 and the regional council 
@@ -31,6 +31,7 @@
  */
 package org.cts.crs;
 
+import java.util.HashMap;
 import org.cts.CoordinateOperation;
 import org.cts.IdentifiableComponent;
 import org.cts.Identifier;
@@ -52,6 +53,8 @@ public abstract class GeodeticCRS extends IdentifiableComponent
         implements CoordinateReferenceSystem {
 
     private GeodeticDatum geodeticDatum;
+    // A map of known grid transformations from this CRS to other CRS
+    private HashMap<GeodeticDatum, CoordinateOperation> nadgridsTransformation = new HashMap<GeodeticDatum, CoordinateOperation>();
 
     @Override
     public Projection getProjection() {
@@ -108,6 +111,20 @@ public abstract class GeodeticCRS extends IdentifiableComponent
      */
     public boolean isValid(double[] coord) {
         return geodeticDatum.getExtent().isInside(coord);
+    }
+    
+    /**
+     * Add a Nadgrids Transformation for this CRS.
+     */
+    public void addGridTransformation(GeodeticDatum gd, CoordinateOperation coordOp) {
+        nadgridsTransformation.put(gd, coordOp);
+    }
+    
+    /**
+     * Return the list of nadgrids transformation defined for this CRS.
+     */
+    public CoordinateOperation getGridTransformation(GeodeticDatum datum) {
+        return nadgridsTransformation.get(datum);
     }
 
     /**

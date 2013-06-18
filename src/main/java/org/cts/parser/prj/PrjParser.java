@@ -4,11 +4,11 @@
  * and parameter sets. 
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
- * This library has been originaled developed by Michael Michaud under the JGeod
+ * This library has been originally developed by Michaël Michaud under the JGeod
  * name. It has been renamed CTS in 2009 and shared to the community from 
  * the Atelier SIG code repository.
  * 
- * Since them, CTS is supported by the Atelier SIG team in collaboration with Michael 
+ * Since them, CTS is supported by the Atelier SIG team in collaboration with Michaël 
  * Michaud.
  * The new CTS has been funded  by the French Agence Nationale de la Recherche 
  * (ANR) under contract ANR-08-VILL-0005-01 and the regional council 
@@ -43,19 +43,17 @@ import org.cts.crs.CoordinateReferenceSystem;
 /**
  * Parser for PRJ / WKT (OGC & ESRI) String.
  *
- * This very simple parser works in tree steps: 
- * 1. it parses the PRJ String and produces an abstract tree, without 
- * any assumptions on it being a valid OGC WKT String. 
- * 2. it walks the tree looking for the values needed for
- * transformation into a proj4 description string. 
- * 3. the proj4 description string is passed to the 
- * {@link org.jproj.parser.Proj4Parser } that builds the
+ * This very simple parser works in tree steps: 1. it parses the PRJ String and
+ * produces an abstract tree, without any assumptions on it being a valid OGC
+ * WKT String. 2. it walks the tree looking for the values needed for
+ * transformation into a proj4 description string. 3. the proj4 description
+ * string is passed to the {@link org.jproj.parser.Proj4Parser } that builds the
  * CRS.
  *
  * @author Antoine Gourlay, Erwan Bocher
  */
 public class PrjParser {
-
+             
     /**
      * Creates a new parser.
      *
@@ -74,13 +72,7 @@ public class PrjParser {
      */
     public CoordinateReferenceSystem parse(String prjString) {
         Map<String, String> prjParameters = getParameters(prjString);
-        String name = prjParameters.remove("name");
-        String refName = prjParameters.remove("refname");
-        if (refName == null) {
-            refName = name;
-        }
-        String geogCS = prjParameters.remove("geogcs");
-
+        String name = prjParameters.remove("name");        
         return CRSHelper.createCoordinateReferenceSystem(new Identifier(name, name, name), prjParameters);
     }
 

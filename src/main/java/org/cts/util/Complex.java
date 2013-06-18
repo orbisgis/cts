@@ -4,11 +4,11 @@
  * and parameter sets. 
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
- * This library has been originaled developed by Michael Michaud under the JGeod
+ * This library has been originally developed by Michaël Michaud under the JGeod
  * name. It has been renamed CTS in 2009 and shared to the community from 
  * the Atelier SIG code repository.
  * 
- * Since them, CTS is supported by the Atelier SIG team in collaboration with Michael 
+ * Since them, CTS is supported by the Atelier SIG team in collaboration with Michaël 
  * Michaud.
  * The new CTS has been funded  by the French Agence Nationale de la Recherche 
  * (ANR) under contract ANR-08-VILL-0005-01 and the regional council 
@@ -130,6 +130,14 @@ public final class Complex extends Number {
 		}
 		return false;
 	}
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 83 * hash + (int) (Double.doubleToLongBits(this.re) ^ (Double.doubleToLongBits(this.re) >>> 32));
+        hash = 83 * hash + (int) (Double.doubleToLongBits(this.im) ^ (Double.doubleToLongBits(this.im) >>> 32));
+        return hash;
+    }
 
 	// added by mmichaud on 2009-01-12
 	public int hashcode() {
@@ -582,6 +590,7 @@ public final class Complex extends Number {
 	/**
 	 * @return string representation of this.
 	 */
+        @Override
 	public String toString() {
 		return "[" + re() + (im() < 0.0 ? " - " : " + ") + Math.abs(im())
 				+ "i]";

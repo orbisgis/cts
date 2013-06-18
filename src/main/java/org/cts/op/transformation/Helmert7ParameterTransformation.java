@@ -4,11 +4,11 @@
  * and parameter sets. 
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
- * This library has been originaled developed by Michael Michaud under the JGeod
+ * This library has been originally developed by Michaël Michaud under the JGeod
  * name. It has been renamed CTS in 2009 and shared to the community from 
  * the Atelier SIG code repository.
  * 
- * Since them, CTS is supported by the Atelier SIG team in collaboration with Michael 
+ * Since them, CTS is supported by the Atelier SIG team in collaboration with Michaël 
  * Michaud.
  * The new CTS has been funded  by the French Agence Nationale de la Recherche 
  * (ANR) under contract ANR-08-VILL-0005-01 and the regional council 
@@ -59,7 +59,7 @@ import org.cts.op.AbstractCoordinateOperation;
 abstract public class Helmert7ParameterTransformation extends AbstractCoordinateOperation implements GeoTransformation {
 
     // Transformation parameters in meters and radians
-    protected final double tx, ty, tz, rx, ry, rz, scale, precision;
+    protected final double tx, ty, tz, rx, ry, rz, scale;
 
     /**
      * Transform coord values
@@ -140,6 +140,19 @@ abstract public class Helmert7ParameterTransformation extends AbstractCoordinate
         } else {
             return false;
         }
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 71 * hash + (int) (Double.doubleToLongBits(this.tx) ^ (Double.doubleToLongBits(this.tx) >>> 32));
+        hash = 71 * hash + (int) (Double.doubleToLongBits(this.ty) ^ (Double.doubleToLongBits(this.ty) >>> 32));
+        hash = 71 * hash + (int) (Double.doubleToLongBits(this.tz) ^ (Double.doubleToLongBits(this.tz) >>> 32));
+        hash = 71 * hash + (int) (Double.doubleToLongBits(this.rx) ^ (Double.doubleToLongBits(this.rx) >>> 32));
+        hash = 71 * hash + (int) (Double.doubleToLongBits(this.ry) ^ (Double.doubleToLongBits(this.ry) >>> 32));
+        hash = 71 * hash + (int) (Double.doubleToLongBits(this.rz) ^ (Double.doubleToLongBits(this.rz) >>> 32));
+        hash = 71 * hash + (int) (Double.doubleToLongBits(this.scale) ^ (Double.doubleToLongBits(this.scale) >>> 32));
+        return hash;
     }
 
     @Override

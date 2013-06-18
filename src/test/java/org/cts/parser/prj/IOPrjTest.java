@@ -4,11 +4,11 @@
  * and parameter sets. 
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
- * This library has been originaled developed by Michael Michaud under the JGeod
+ * This library has been originaly developed by Michaël Michaud under the JGeod
  * name. It has been renamed CTS in 2009 and shared to the community from 
  * the Atelier SIG code repository.
  * 
- * Since them, CTS is supported by the Atelier SIG team in collaboration with Michael 
+ * Since them, CTS is supported by the Atelier SIG team in collaboration with Michaël 
  * Michaud.
  * The new CTS has been funded  by the French Agence Nationale de la Recherche 
  * (ANR) under contract ANR-08-VILL-0005-01 and the regional council 
@@ -29,19 +29,29 @@
  *
  * For more information, please consult: <https://github.com/irstv/cts/>
  */
-package org.cts;
+package org.cts.parser.prj;
+
+import java.io.File;
+import org.cts.CRSFactory;
+import org.cts.crs.CoordinateReferenceSystem;
+import static org.junit.Assert.*;
+import org.junit.Test;
 
 /**
+ * This class is used to test the prj reader and writer.
  *
- * A CRS authority to match ogc spatial reference system identifier
- * 
- * @author Erwan Bocher
- *
+ * @author ebocher
  */
-@Deprecated
-public class CRSAuthority extends AbstractAuthority {
+public class IOPrjTest {
 
-    public CRSAuthority(Identifier rootIdentifier) {
-        super(rootIdentifier.getName(), Integer.valueOf(rootIdentifier.getAuthorityKey()));
+    CRSFactory crsf = new CRSFactory();
+
+    //This test has been added to fix the prj parser.
+    //It doesn't work due to a bad datum identification
+    @Test
+    public void readPrjNTF_Lambert_II_etendu() throws Exception {
+        String filePath = IOPrjTest.class.getResource("NTF_Lambert_II_etendu.prj").toURI().getPath();
+        CoordinateReferenceSystem crs = crsf.createFromPrj(new File(filePath));
+        assertNotNull(crs);
     }
 }
