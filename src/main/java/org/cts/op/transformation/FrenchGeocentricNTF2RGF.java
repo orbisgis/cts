@@ -121,12 +121,10 @@ public class FrenchGeocentricNTF2RGF extends AbstractCoordinateOperation {
             throw new CoordinateDimensionException(coord, 3);
         }
         // Creates a temporary coord to find the final translation parameters
-        double[] coordi = coord.clone();
-        //System.out.println("   " + java.util.Arrays.toString(coordi));
+        double[] coordi = coord.clone();        
 
         // Translation using mean parameters (precision = +/- 5 m)
         coordi = NTF2WGS84.transform(coordi);
-        //System.out.println("   " + java.util.Arrays.toString(coordi));
 
         // Find a rough position on GRS 80
         coordi = GEOC2GEOG.transform(coordi);
@@ -151,7 +149,6 @@ public class FrenchGeocentricNTF2RGF extends AbstractCoordinateOperation {
         coord[0] = tx + coord[0];
         coord[1] = ty + coord[1];
         coord[2] = tz + coord[2];
-        //System.out.println("   " + java.util.Arrays.toString(coord));
         return coord;
     }
 

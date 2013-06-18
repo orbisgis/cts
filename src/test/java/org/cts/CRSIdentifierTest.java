@@ -27,7 +27,7 @@ public class CRSIdentifierTest {
     }
 
     //Disable this test because the javadoc is not coherent
-    //@Test
+    @Test
     public void testEPSG4326Code() throws Exception {
         assertTrue(crsf.getCRS("EPSG:4326").getCode().equals("EPSG:4326"));
     }
@@ -48,7 +48,7 @@ public class CRSIdentifierTest {
     }
 
     //Disable this test because the javadoc is not coherent
-    //@Test
+    @Test
     public void testEPSG27572Code() throws Exception {
         assertTrue(crsf.getCRS("EPSG:27572").getCode().equals("EPSG:27572"));
     }

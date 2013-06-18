@@ -131,26 +131,10 @@ public class CoordinateOperationSequence extends AbstractCoordinateOperation {
             throws IllegalCoordinateException {
         for (CoordinateOperation op : sequence) {
             coord = op.transform(coord);
-            //System.out.println(Arrays.toString(coord));
         }
         return coord;
     }
-
-    /**
-     * Apply the inverse transformation to coord
-     *
-     * @param coord the coord to transform
-     */
-    /*
-     * public void inverseTransform(double[] coord) throws
-     * CoordinateDimensionException, NonInvertibleOperationException { try { for
-     * (int i=sequence.length-1 ; i >=0 ; i--)
-     * sequence[i].inverseTransform(coord);
-     * System.out.println(java.util.Arrays.toString(coord)); }
-     * catch(CoordinateDimensionException e) {throw e;}
-     * catch(NonInvertibleOperationException e) {throw e;} catch(Exception e)
-     * {e.printStackTrace();} }
-     */
+    
     /**
      * Creates the inverse CoordinateOperation.
      */
