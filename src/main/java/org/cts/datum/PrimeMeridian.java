@@ -259,7 +259,7 @@ public class PrimeMeridian extends IdentifiableComponent {
         if (other instanceof PrimeMeridian) {
             PrimeMeridian pm = (PrimeMeridian) other;
             // if prime meridian codes or names are equals, return true
-            if (getCode().equals(pm.getCode())
+            if (getAuthorityKey().equals(pm.getAuthorityKey())
                     || getName().equalsIgnoreCase(pm.getName())) {
                 return true;
             }
