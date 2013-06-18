@@ -68,8 +68,8 @@ public class CRSFactory {
     }
 
     /**
-     * Return a @CoordinateReferenceSystem according an authority and srid ie :
-     * EPSG:4326 or IGNF:LAMB
+     * Return a @CoordinateReferenceSystem according an authority and a srid ie :
+     * EPSG:4326 or IGNF:LAMBE
      *
      * @param authorityAndSrid
      * @return
