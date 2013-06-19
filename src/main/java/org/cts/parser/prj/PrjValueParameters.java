@@ -38,10 +38,21 @@ import java.util.HashMap;
  * @author Erwan Bocher, Jules Party
  */
 public class PrjValueParameters {
-    
+    /**
+     * A map linking the name of parameters used in PRJ file to the name used in CTS.
+     */
     public static final HashMap<String, String> PARAMNAMES = new HashMap<String, String>();
+    
+    /**
+     * A map linking the name of projections used in PRJ file to the short name used in CTS.
+     */
     public static final HashMap<String, String> PROJNAMES = new HashMap<String, String>();
+    
+    /**
+     * A map linking the name of datums used in PRJ file to the short name used in CTS.
+     */
     public static final HashMap<String, String> DATUMNAMES = new HashMap<String, String>();
+    
     static {
         PARAMNAMES.put("centralmeridian", "lon_0");
         PARAMNAMES.put("falseeasting", "x_0");
