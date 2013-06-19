@@ -29,45 +29,30 @@
  *
  * For more information, please consult: <https://github.com/irstv/cts/>
  */
-package org.cts.registry;
+package org.cts;
 
-import java.io.IOException;
-import java.util.Map;
-import java.util.Set;
+import org.cts.crs.CoordinateReferenceSystem;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
- * This class parse the nad27 file available in the resources package. It returns
- * the coresponding parameters to a code specified in the registry file.
  *
  * @author Erwan Bocher
  */
-public class Nad27Registry extends AbstractProjRegistry {
-
-    String NAD27_REGEX = "\\s+";
-
-    @Override
-    public String getRegistryName() {
-        return "nad27";
+public class CRSFactoryTest {
+    
+    public CRSFactory cRSFactory = new CRSFactory();
+    
+    //@Test waiting the leac projection
+    public void testCRSFroomLAMBEDeprecated(){
+        String prj = "PROJCS[\"NTF (Paris) / France II (deprecated)\",GEOGCS[\"NTF (Paris)\","
+                 + "DATUM[\"Nouvelle_Triangulation_Francaise_Paris\",SPHEROID[\"Clarke 1880 (IGN)\",6378249.2,293.4660212936269,AUTHORITY[\"EPSG\",\"7011\"]],TOWGS84[-168,-60,320,0,0,0,0],AUTHORITY[\"EPSG\",\"6807\"]],"
+                 + "PRIMEM[\"Paris\",2.33722917,AUTHORITY[\"EPSG\",\"8903\"]],UNIT[\"grad\",0.01570796326794897,AUTHORITY[\"EPSG\",\"9105\"]],AUTHORITY[\"EPSG\",\"4807\"]],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],"
+                 + "PROJECTION[\"Lambert_Conformal_Conic_1SP\"],PARAMETER[\"latitude_of_origin\",52],PARAMETER[\"central_meridian\",0],PARAMETER[\"scale_factor\",0.99987742],PARAMETER[\"false_easting\",600000],PARAMETER[\"false_northing\",2200000],AUTHORITY[\"EPSG\",\"27582\"],"
+                 + "AXIS[\"X\",EAST],AXIS[\"Y\",NORTH]]";
+        CoordinateReferenceSystem crs = cRSFactory.createFromPrj(prj);
+        assertNotNull(crs);
+        assertTrue(crs.getName().equals("NTF (Paris) / France II (deprecated)"));
     }
-
-    @Override
-    public Map<String, String> getParameters(String code) {
-        try {
-            Map<String, String> crsParameters = projParser.readParameters(code, "\\s+");
-            return crsParameters;
-        } catch (IOException ex) {
-            LOGGER.error("Cannot load the NAD27 registry", ex);
-        }
-        return null;
-    }
-
-    @Override
-    public Set<String> getSupportedCodes() {
-        try {
-            return projParser.getSupportedCodes(NAD27_REGEX);
-        } catch (IOException ex) {
-            LOGGER.error("Cannot load the NAD27 registry", ex);
-        }
-        return null;
-    }
+    
 }

@@ -36,7 +36,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import org.cts.registry.Registry;
 
 /**
@@ -45,101 +47,140 @@ import org.cts.registry.Registry;
  */
 public class ProjParser {
 
-        private final Registry registry;
+    private final Registry registry;
 
-        public ProjParser(Registry registry) {
-                this.registry = registry;
+    public ProjParser(Registry registry) {
+        this.registry = registry;
+    }
+
+    public Map<String, String> readParameters(String crsCode, String regexPattern)
+            throws IOException {
+        InputStream inStr = Registry.class.getResourceAsStream(registry.getRegistryName());
+        if (inStr == null) {
+            throw new IllegalStateException("Unable to access CRS file: " + registry.getRegistryName());
         }
+        BufferedReader reader = new BufferedReader(new InputStreamReader(inStr));
+        Map<String, String> args;
+        try {
+            args = readRegistry(reader, crsCode, regexPattern);
 
-        public Map<String, String> readParameters(String crsCode, String regexPattern)
-                throws IOException {                
-                InputStream inStr = Registry.class.getResourceAsStream(registry.getRegistryName());
-                if (inStr == null) {
-                        throw new IllegalStateException("Unable to access CRS file: " + registry.getRegistryName());
-                }
-                BufferedReader reader = new BufferedReader(new InputStreamReader(inStr));
-                Map<String, String>  args;
-                try {
-                        args = readRegistry(reader, crsCode, regexPattern);
+        } finally {
+            if (reader != null) {
+                reader.close();
+            }
+        }
+        return args;
+    }
 
-                } finally {
-                        if (reader != null) {
-                                reader.close();
+    /**
+     * Read all parameters from the registry
+     *
+     * @param br
+     * @param nameOfCRS
+     * @param regex the pattern used to split the line that describes the
+     * coordinate system
+     * @return
+     * @throws IOException
+     */
+    private Map<String, String> readRegistry(BufferedReader br, String nameOfCRS, String regex) throws IOException {
+        String line;
+        //TODO : It will be great in the future to use this information.
+        String crsName = null;
+        while (null != (line = br.readLine())) {
+            if (line.startsWith("#")) {
+                // in the "epsg" file, the crs name can only be read in the
+                // comment line preceding the projection definition
+                crsName = line.substring(1).trim();
+            } else if (line.startsWith("<") && line.endsWith(">")) {
+                String[] tokens = line.split(regex);
+                Map<String, String> v = new HashMap<String, String>();
+                String crsID;
+                boolean crsFounded = true;
+                for (String token : tokens) {
+                    if (token.startsWith("<") && token.endsWith(">")
+                            && token.length() > 2) {
+                        crsID = token.substring(1, token.length() - 1);
+                        if (!crsID.toLowerCase().equals(nameOfCRS.toLowerCase())) {
+                            crsFounded = false;
+                            crsName = null;
+                            break;
                         }
-                }
-                return args;
-        }
-
-        /**
-         * Read all parameters from the registry
-         *
-         * @param br
-         * @param nameOfCRS
-         * @param regex the pattern used to split the line that describes the
-         * coordinate system
-         * @return
-         * @throws IOException
-         */
-        private Map<String, String> readRegistry(BufferedReader br, String nameOfCRS, String regex) throws IOException {
-                String line;
-                //TODO : It will be great in the future to use this information.
-                String crsName=null;
-                while (null != (line = br.readLine())) {
-                        if (line.startsWith("#")) {
-                                // in the "epsg" file, the crs name can only be read in the
-                                // comment line preceding the projection definition
-                                crsName = line.substring(1).trim();
-                        } else if (line.startsWith("<") && line.endsWith(">")) {
-                                String[] tokens = line.split(regex);
-                                Map<String, String> v = new HashMap<String, String>();
-                                String crsID;
-                                boolean crsFounded = true;
-                                for (String token : tokens) {
-                                        if (token.startsWith("<") && token.endsWith(">")
-                                                && token.length() > 2) {
-                                                crsID = token.substring(1, token.length() - 1);
-                                                if (!crsID.toLowerCase().equals(nameOfCRS.toLowerCase())) {
-                                                        crsFounded = false;
-                                                        crsName = null;
-                                                        break;
-                                                }
-                                        } else if (token.equals("<>")) {
-                                                break;
-                                        } else {
-                                                String[] keyValue = token.split("=");
-                                                if (keyValue.length == 2) {                                                        
-                                                        String key = formatKey(keyValue[0]);                                                         
-                                                        ProjKeyParameters.checkUnsupported(key);
-                                                        v.put(key, keyValue[1]);
-                                                } else {
-                                                        String key = formatKey(token);
-                                                        ProjKeyParameters.checkUnsupported(key);
-                                                        v.put(key, null);
-                                                }
-                                        }
-                                }
-                                // found requested CRS?
-                                if (crsFounded) {
-                                    if (!v.containsKey(ProjKeyParameters.title)&&crsName!=null) {
-                                        v.put(ProjKeyParameters.title, crsName);
-                                    }
-                                        return v;
-                                }
+                    } else if (token.equals("<>")) {
+                        break;
+                    } else {
+                        String[] keyValue = token.split("=");
+                        if (keyValue.length == 2) {
+                            String key = formatKey(keyValue[0]);
+                            ProjKeyParameters.checkUnsupported(key);
+                            v.put(key, keyValue[1]);
+                        } else {
+                            String key = formatKey(token);
+                            ProjKeyParameters.checkUnsupported(key);
+                            v.put(key, null);
                         }
+                    }
                 }
-                return null;
-        }
-        
-        /**
-         * Remove + char if exists
-         * @param key
-         * @return 
-         */
-        private static String formatKey(String key) {
-                String formatKey = key;
-                if (key.startsWith("+")) {
-                        formatKey = key.substring(1);
+                // found requested CRS?
+                if (crsFounded) {
+                    if (!v.containsKey(ProjKeyParameters.title) && crsName != null) {
+                        v.put(ProjKeyParameters.title, crsName);
+                    }
+                    return v;
                 }
-                return formatKey;
+            }
         }
+        return null;
+    }
+
+    /**
+     * Remove + char if exists
+     *
+     * @param key
+     * @return
+     */
+    private static String formatKey(String key) {
+        String formatKey = key;
+        if (key.startsWith("+")) {
+            formatKey = key.substring(1);
+        }
+        return formatKey;
+    }
+
+    /**
+     * Return the list of all codes defined by this registry
+     *
+     * @param regex pattern
+     * @return
+     */
+    public Set<String> getSupportedCodes(String regex) throws IOException {
+        InputStream inStr = Registry.class.getResourceAsStream(registry.getRegistryName());
+        if (inStr == null) {
+            throw new IllegalStateException("Unable to access CRS file: " + registry.getRegistryName());
+        }
+        BufferedReader br = new BufferedReader(new InputStreamReader(inStr));
+        try {
+            Set<String> codes = new HashSet<String>();
+            String line;
+            while (null != (line = br.readLine())) {
+                if (line.startsWith("#")) {
+                } else if (line.startsWith("<") && line.endsWith(">")) {
+                    String[] tokens = line.split(regex);
+                    for (String token : tokens) {
+                        if (token.startsWith("<") && token.endsWith(">")
+                                && token.length() > 2) {
+                            codes.add(token.substring(1, token.length() - 1));
+                        } else if (token.equals("<>")) {
+                            break;
+                        } else {
+                        }
+                    }
+                }
+            }
+            return codes;
+        } finally {
+            if (br != null) {
+                br.close();
+            }
+        }
+    }
 }

@@ -40,7 +40,7 @@ import org.cts.parser.proj.ProjParser;
  */
 public abstract class AbstractProjRegistry implements Registry {
 
-    static final Logger LOGGER = Logger.getLogger(org.cts.registry.AbstractProjRegistry.class);
+    public Logger LOGGER = Logger.getLogger(org.cts.registry.AbstractProjRegistry.class);
     protected final ProjParser projParser;
 
     public AbstractProjRegistry() {

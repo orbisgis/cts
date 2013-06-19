@@ -88,10 +88,9 @@ public class UniversalTransverseMercatorAuto extends Projection {
     * @throws CoordinateDimensionException if <code>coord</code> length is not
     * compatible with this <code>CoordinateOperation</code>.
     */
-	@Override
+    @Override
     public double[] transform(double[] coord) throws CoordinateDimensionException {
         int zone = getZone(coord);
-        //System.out.println("fuseau " + zone);
         double lon0 = (6*zone-183)*Math.PI/180;
         double y0   = coord[0] >= 0 ? 0 : 10000000;
         double ys   = y0 - n * ellipsoid.curvilinearAbscissa(lat0); // = y0
