@@ -36,13 +36,14 @@ import org.apache.log4j.Logger;
 
 /**
  * This class manages all supported registry.
+ * It permits to declare a custom registry or remove one.
  *
  * @author Erwan Bocher
  */
 public final class RegistryManager {
 
     static final Logger LOGGER = Logger.getLogger(RegistryManager.class);
-    private final Map<String, Class<? extends AbstractProjRegistry>> registries = new HashMap<String, Class<? extends AbstractProjRegistry>>();
+    private final Map<String, Class<? extends Registry>> registries = new HashMap<String, Class<? extends Registry>>();
     private final List<RegistryManagerListener> listeners = new ArrayList<RegistryManagerListener>();
 
     public RegistryManager() {
@@ -72,11 +73,11 @@ public final class RegistryManager {
         return listeners.remove(listener);
     }
 
-    public void addRegistry(Class<? extends AbstractProjRegistry> registryClass) {
+    public void addRegistry(Class<? extends Registry> registryClass) {
         addRegistry(registryClass, false);
     }
 
-    public void addRegistry(Class<? extends AbstractProjRegistry> registryClass, boolean replace) {
+    public void addRegistry(Class<? extends Registry> registryClass, boolean replace) {
         LOGGER.trace("Adding a new registry " + registryClass.getName());
         Registry registry;
         try {
@@ -92,7 +93,7 @@ public final class RegistryManager {
         addRegistry(registryName, registryClass, replace);
     }
 
-    public void addRegistry(String functionName, Class<? extends AbstractProjRegistry> functionClass, boolean replace) {
+    public void addRegistry(String functionName, Class<? extends Registry> functionClass, boolean replace) {
         if (!replace && registries.containsKey(functionName)) {
             throw new IllegalArgumentException("Registry " + functionName
                     + " already exists");
