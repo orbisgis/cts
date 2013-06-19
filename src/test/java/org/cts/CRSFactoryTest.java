@@ -31,57 +31,28 @@
  */
 package org.cts;
 
+import org.cts.crs.CoordinateReferenceSystem;
 import org.junit.Test;
-
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  *
- * @author ebocher
+ * @author Erwan Bocher
  */
-public class CRSIdentifierTest {
-
-    CRSFactory crsf = new CRSFactory();
-
-    @Test
-    public void testEPSG4326AuthorityName() throws Exception {
-        assertTrue(crsf.getCRS("EPSG:4326").getAuthorityName().equals("EPSG"));
+public class CRSFactoryTest {
+    
+    public CRSFactory cRSFactory = new CRSFactory();
+    
+    //@Test waiting the leac projection
+    public void testCRSFroomLAMBEDeprecated(){
+        String prj = "PROJCS[\"NTF (Paris) / France II (deprecated)\",GEOGCS[\"NTF (Paris)\","
+                 + "DATUM[\"Nouvelle_Triangulation_Francaise_Paris\",SPHEROID[\"Clarke 1880 (IGN)\",6378249.2,293.4660212936269,AUTHORITY[\"EPSG\",\"7011\"]],TOWGS84[-168,-60,320,0,0,0,0],AUTHORITY[\"EPSG\",\"6807\"]],"
+                 + "PRIMEM[\"Paris\",2.33722917,AUTHORITY[\"EPSG\",\"8903\"]],UNIT[\"grad\",0.01570796326794897,AUTHORITY[\"EPSG\",\"9105\"]],AUTHORITY[\"EPSG\",\"4807\"]],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],"
+                 + "PROJECTION[\"Lambert_Conformal_Conic_1SP\"],PARAMETER[\"latitude_of_origin\",52],PARAMETER[\"central_meridian\",0],PARAMETER[\"scale_factor\",0.99987742],PARAMETER[\"false_easting\",600000],PARAMETER[\"false_northing\",2200000],AUTHORITY[\"EPSG\",\"27582\"],"
+                 + "AXIS[\"X\",EAST],AXIS[\"Y\",NORTH]]";
+        CoordinateReferenceSystem crs = cRSFactory.createFromPrj(prj);
+        assertNotNull(crs);
+        assertTrue(crs.getName().equals("NTF (Paris) / France II (deprecated)"));
     }
-
-    @Test
-    public void testEPSG4326AuthorityKey() throws Exception {
-        assertTrue(crsf.getCRS("EPSG:4326").getAuthorityKey().equals("4326"));
-    }
-
-    //Disable this test because the javadoc is not coherent
-    @Test
-    public void testEPSG4326Code() throws Exception {
-        assertTrue(crsf.getCRS("EPSG:4326").getCode().equals("EPSG:4326"));
-    }
-
-    @Test
-    public void testEPSG4326Name() throws Exception {
-        assertTrue(crsf.getCRS("EPSG:4326").getName().equals("WGS 84"));
-    }
-
-    @Test
-    public void testEPSG27572AuthorityName() throws Exception {
-        assertTrue(crsf.getCRS("EPSG:27572").getAuthorityName().equals("EPSG"));
-    }
-
-    @Test
-    public void testEPSG27572AuthorityKey() throws Exception {
-        assertTrue(crsf.getCRS("EPSG:27572").getAuthorityKey().equals("27572"));
-    }
-
-    //Disable this test because the javadoc is not coherent
-    @Test
-    public void testEPSG27572Code() throws Exception {
-        assertTrue(crsf.getCRS("EPSG:27572").getCode().equals("EPSG:27572"));
-    }
-
-    @Test
-    public void testEPSG27572Name() throws Exception {
-        assertTrue(crsf.getCRS("EPSG:27572").getName().equals("NTF (Paris) / Lambert zone II"));
-    }
+    
 }
