@@ -51,7 +51,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 /**
- *This class contains tests that uses CRS not present in registries and thus needing
+ * This class contains tests that uses CRS not present in registries and thus needing
  * a special treatment.
  * 
  * @author Jules Party
