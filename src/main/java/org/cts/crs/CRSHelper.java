@@ -51,7 +51,6 @@ import org.cts.units.Unit;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.cts.grid.GridShift;
 import org.cts.op.transformation.NTv2GridShiftTransformation;
 
 /**
@@ -333,8 +332,9 @@ public class CRSHelper {
                                     GeodeticDatum.WGS84.addCoordinateOperation(crs.getDatum(), Identity.IDENTITY);
                                 } else {
                                     try {
-                                        NTv2GridShiftTransformation gt = new NTv2GridShiftTransformation(
-                                                GridShift.class.getResource(grid).toURI().toURL());
+                                        //NTv2GridShiftTransformation gt = new NTv2GridShiftTransformation(
+                                        //        GridShift.class.getResource(grid).toURI().toURL());
+                                        NTv2GridShiftTransformation gt = NTv2GridShiftTransformation.createNTv2GridShiftTransformation(grid);
                                         gt.setMode(NTv2GridShiftTransformation.SPEED);
                                         crs.addGridTransformation(GeodeticDatum.getGeodeticDatumFromShortName(gt.getToDatum()), gt);
                                     } catch (IOException ex) {
