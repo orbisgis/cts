@@ -58,6 +58,7 @@ public class ProjValueParameters {
     public static String MERC = "merc";
     public static String NZMG = "nzmg";
     public static String UTM = "utm";
+    public static String LEAC = "leac";
     //Unit values
     public static String M = "m";
 }

@@ -513,8 +513,24 @@ public class CRSHelper {
                     return new MillerCylindrical(ell, map);
                 } else if (projectionName.equalsIgnoreCase(ProjValueParameters.KROVAK)) {
                     return new Krovak(ell, map);
-                }  else if (projectionName.equalsIgnoreCase(ProjValueParameters.NZMG)) {
+                } else if (projectionName.equalsIgnoreCase(ProjValueParameters.NZMG)) {
                     return new NewZealandMapGrid(ell, map);
+                } else if (projectionName.equalsIgnoreCase(ProjValueParameters.GSTMERC)) {
+                    return new GaussSchreiberTransverseMercator(ell, map);
+                } else if (projectionName.equalsIgnoreCase(ProjValueParameters.LEAC)) {
+                    // LEAC stand for LambertEqualAreaConic
+                    // It is similar to AlbersEqualArea except that one of the two standard parallels is at the pole (north of south)
+                    // See <http://www.georeference.org/doc/albers_conical_equal_area.htm>
+                    if (map.containsKey(ProjKeyParameters.south)) {
+                        map.put(ProjKeyParameters.lat_2, new Measure(-90, Unit.DEGREE));
+                    } else {
+                        map.put(ProjKeyParameters.lat_2, new Measure(90, Unit.DEGREE));
+                    }
+                    // The other standard parallel is the equator by default
+                    if (!map.containsKey(ProjKeyParameters.lat_1)) {
+                        map.put(ProjKeyParameters.lat_1, new Measure(0, Unit.DEGREE));
+                    }
+                    return new AlbersEqualArea(ell, map);
                 } else {
                         throw new RuntimeException("Cannot create the projection " + projectionName);
                 }

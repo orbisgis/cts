@@ -32,47 +32,55 @@
 package org.cts.op.projection;
 
 import java.util.Map;
+import static java.lang.Math.*;
 import org.cts.CoordinateDimensionException;
 import org.cts.Ellipsoid;
 import org.cts.Identifier;
 import org.cts.units.Measure;
-import static java.lang.Math.*;
 import org.cts.CoordinateOperation;
 import org.cts.NonInvertibleOperationException;
 
 /**
- * The Miller Cylindrical Projection (MILL). <p>
+ * The Gauss Schreiber Transverse Mercator (GSTMERC). <p>
  *
  * @author Jules Party
  */
-public class MillerCylindrical extends Projection {
+public class GaussSchreiberTransverseMercator extends Projection {
 
-    public static final Identifier MILL =
-            new Identifier("EPSG", "9818", "Miller Cylindrical", "MILL");
-    protected final double lat0, // the reference latitude
-            lon0, // the reference longitude (from the datum prime meridian)
-            FE, // false easting
-            FN,   // false northing
-            n; // projection expnent
+    public static final Identifier GSTMERC =
+            new Identifier("IGNF", "REUN47GAUSSL", "Gauss Schreiber Transverse Mercator (aka Gauss Laborde Réunion", "GSTMERC");
+    protected final double lon0, // the reference longitude (from the datum prime meridian)
+            latc, // latitude of the origin on the medium sphere
+            c, // constant of the projection
+            n1, // exponent of the ellipsoid to sphere projection
+            n2, // radius of the medium sphere
+            xs, // x coordinate of the pole
+            ys;   // y coordinate of the pole
 
     /**
-     * Create a new Miller Cylindrical Projection corresponding to
+     * Create a new Gauss Schreiber Transverse Mercator Projection corresponding to
      * the <code>Ellipsoid</code> and the list of parameters given in argument
-     * and initialize common parameters lon0, lat0, FE, FN.
+     * and initialize common parameters lon0 and other parameters
+     * useful for the projection.
      * 
      * @param ellipsoid ellipsoid used to define the projection.
      * @param parameters a map of useful parameters to define the projection.
      */
-    public MillerCylindrical(final Ellipsoid ellipsoid,
+    public GaussSchreiberTransverseMercator(final Ellipsoid ellipsoid,
             final Map<String, Measure> parameters) {
-        super(MILL, ellipsoid, parameters);
+        super(GSTMERC, ellipsoid, parameters);
         lon0 = getCentralMeridian();
-        lat0 = getLatitudeOfOrigin();
-        FE = getFalseEasting();
-        FN = getFalseNorthing();
+        double lat0 = getLatitudeOfOrigin();
+        double FE = getFalseEasting();
+        double FN = getFalseNorthing();
         double k0 = getScaleFactor();
-        double a = getSemiMajorAxis();
-        n = k0 * a;
+        double e2 = ellipsoid.getSquareEccentricity();
+        n1 = sqrt(1+e2/(1-e2)*pow(cos(lat0), 4));
+        latc = asin(sin(lat0)/n1);
+        c = Ellipsoid.SPHERE.isometricLatitude(latc) - n1*ellipsoid.isometricLatitude(lat0);
+        n2 = k0*ellipsoid.getSemiMajorAxis()*sqrt(1-e2)/(1-e2*sin(lat0)*sin(lat0));
+        xs = FE;
+        ys = FN - n2 * latc;
     }
 
     /**
@@ -102,15 +110,14 @@ public class MillerCylindrical extends Projection {
      */
     @Override
     public Orientation getOrientation() {
-        return Projection.Orientation.TANGENT;
+        return Projection.Orientation.TRANSVERSE;
     }
 
     /**
-     * Transform coord using the Miller Cylindrical Projection. Input
+     * Transform coord using the Gauss Schreiber Transverse Mercator Projection. Input
      * coord is supposed to be a geographic latitude / longitude coordinate in
-     * radians. Algorithm based on the USGS professional paper 1395,
-     * "Map Projection - A Working Manual" by John P. Snyder :
-     * <http://pubs.er.usgs.gov/publication/pp1395>
+     * radians. Algorithm based on the OGP's Guidance Note Number 7 Part 2 :
+     * <http://www.epsg.org/guides/G7-2.html>
      *
      * @param coord coordinate to transform
      * @throws CoordinateDimensionException if <code>coord</code> length is not
@@ -118,38 +125,30 @@ public class MillerCylindrical extends Projection {
      */
     @Override
     public double[] transform(double[] coord) throws CoordinateDimensionException {
-        double lon = coord[1];
-        double lat = abs(coord[0]) > PI * 85 / 180 ? PI * 85 / 180 : coord[0];
-        double E = n * (lon - lon0);
-        double N = n * ellipsoid.isometricLatitude(lat*0.8)/0.8;
-        coord[0] = FE + E;
-        coord[1] = FN + N;
+        double Lambda = n1*(coord[1]-lon0);
+        double isoLats = c + n1*ellipsoid.isometricLatitude(coord[0]);
+        coord[0] = xs + n2 * Ellipsoid.SPHERE.isometricLatitude(asin(sin(Lambda)/cosh(isoLats)));
+        coord[1] = ys + n2 * atan(sinh(isoLats)/cos(Lambda));
         return coord;
     }
     
     /**
-     * Creates the inverse operation for Miller Cylindrical Projection.
+     * Creates the inverse operation for Gauss Schreiber Transverse Mercator Projection.
      * Input coord is supposed to be a projected easting / northing coordinate in meters.
-     * Algorithm based on the USGS professional paper 1395,
-     * "Map Projection - A Working Manual" by John P. Snyder :
-     * <http://pubs.er.usgs.gov/publication/pp1395>
+     * Algorithm based on the OGP's Guidance Note Number 7 Part 2 :
+     * <http://www.epsg.org/guides/G7-2.html>
      * 
      * @param coord coordinate to transform
      */
     @Override
     public CoordinateOperation inverse() throws NonInvertibleOperationException {
-        return new MillerCylindrical(ellipsoid, parameters) {
-
+        return new GaussSchreiberTransverseMercator(ellipsoid, parameters) {
             @Override
             public double[] transform(double[] coord) throws CoordinateDimensionException {
-                double t = exp(0.8*(FN-coord[1])/n);
-                double ki = PI/2 - 2 * atan(t);
-                double lat = ki;
-                for (int i =1;i<5;i++) {
-                    lat+= ellipsoid.getInverseMercatorCoeff()[i]*sin(2*i*ki);
-                }
-                coord[1] = (coord[0]-FE)/n + lon0;
-                coord[0] = lat/0.8;
+                double Lambda = atan(sinh((coord[0]-xs)/n2)/cos((coord[1]-ys)/n2));
+                double isoLats = Ellipsoid.SPHERE.isometricLatitude(asin(sin((coord[1]-ys)/n2)/cosh((coord[0]-xs)/n2)));
+                coord[0] = ellipsoid.latitude((isoLats-c)/n1);
+                coord[1] = lon0 + Lambda/n1;
                 return coord;
             }
         };
