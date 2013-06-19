@@ -513,9 +513,11 @@ public class CRSHelper {
                     return new MillerCylindrical(ell, map);
                 } else if (projectionName.equalsIgnoreCase(ProjValueParameters.KROVAK)) {
                     return new Krovak(ell, map);
-                }  else if (projectionName.equalsIgnoreCase(ProjValueParameters.NZMG)) {
+                } else if (projectionName.equalsIgnoreCase(ProjValueParameters.NZMG)) {
                     return new NewZealandMapGrid(ell, map);
-                }   else if (projectionName.equalsIgnoreCase(ProjValueParameters.LEAC)) {
+                } else if (projectionName.equalsIgnoreCase(ProjValueParameters.GSTMERC)) {
+                    return new GaussSchreiberTransverseMercator(ell, map);
+                } else if (projectionName.equalsIgnoreCase(ProjValueParameters.LEAC)) {
                     // LEAC stand for LambertEqualAreaConic
                     // It is similar to AlbersEqualArea except that one of the two standard parallels is at the pole (north of south)
                     // See <http://www.georeference.org/doc/albers_conical_equal_area.htm>

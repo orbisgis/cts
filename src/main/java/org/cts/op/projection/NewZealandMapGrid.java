@@ -58,7 +58,8 @@ public class NewZealandMapGrid extends Projection {
     /**
      * Create a new New Zealand Map Grid Projection corresponding to
      * the <code>Ellipsoid</code> and the list of parameters given in argument
-     * and initialize common parameters lon0, lat0, FE, FN.
+     * and initialize common parameters lon0, lat0, FE, FN and other parameters
+     * useful for the projection.
      * 
      * @param ellipsoid ellipsoid used to define the projection.
      * @param parameters a map of useful parameters to define the projection.
@@ -86,7 +87,7 @@ public class NewZealandMapGrid extends Projection {
      */
     @Override
     public Surface getSurface() {
-        return Projection.Surface.PSEUDOCONICAL;
+        return Projection.Surface.MISCELLANEOUS;
     }
 
     /**
