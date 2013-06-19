@@ -35,21 +35,27 @@ import java.util.*;
 import org.apache.log4j.Logger;
 
 /**
- * This class manages all supported registry.
+ * This class manages all supported registry. It permits to declare a custom
+ * registry or remove one.
  *
  * @author Erwan Bocher
  */
 public final class RegistryManager {
 
     static final Logger LOGGER = Logger.getLogger(RegistryManager.class);
-    private final Map<String, Class<? extends AbstractProjRegistry>> registries = new HashMap<String, Class<? extends AbstractProjRegistry>>();
+    private final Map<String, Class<? extends Registry>> registries = new HashMap<String, Class<? extends Registry>>();
     private final List<RegistryManagerListener> listeners = new ArrayList<RegistryManagerListener>();
+    
 
+    /**
+     * Create a registry manager filled with all internal registries
+     */
     public RegistryManager() {
         addRegistry(IGNFRegistry.class);
         addRegistry(EPSGRegistry.class);
         addRegistry(ESRIRegistry.class);
         addRegistry(Nad27Registry.class);
+        addRegistry(Nad83Registry.class);
     }
 
     /**
@@ -72,11 +78,23 @@ public final class RegistryManager {
         return listeners.remove(listener);
     }
 
-    public void addRegistry(Class<? extends AbstractProjRegistry> registryClass) {
+    /**
+     * Declare a registry to the {@code RegistryManager}
+     *
+     * @param registryClass
+     */
+    public void addRegistry(Class<? extends Registry> registryClass) {
         addRegistry(registryClass, false);
     }
 
-    public void addRegistry(Class<? extends AbstractProjRegistry> registryClass, boolean replace) {
+    /**
+     * Declare a registry to the {@code RegistryManager} An existing registry
+     * can be replaced by a new one.
+     *
+     * @param registryClass
+     * @param replace
+     */
+    public void addRegistry(Class<? extends Registry> registryClass, boolean replace) {
         LOGGER.trace("Adding a new registry " + registryClass.getName());
         Registry registry;
         try {
@@ -92,7 +110,15 @@ public final class RegistryManager {
         addRegistry(registryName, registryClass, replace);
     }
 
-    public void addRegistry(String functionName, Class<? extends AbstractProjRegistry> functionClass, boolean replace) {
+    /**
+     * Declare a registry to the {@code RegistryManager} An existing registry
+     * can be replaced by a new one.
+     *
+     * @param functionName
+     * @param functionClass
+     * @param replace
+     */
+    public void addRegistry(String functionName, Class<? extends Registry> functionClass, boolean replace) {
         if (!replace && registries.containsKey(functionName)) {
             throw new IllegalArgumentException("Registry " + functionName
                     + " already exists");
@@ -102,6 +128,11 @@ public final class RegistryManager {
         fireRegistryAdded(functionName);
     }
 
+    /**
+     * Listener to inform that a registry has been added.
+     *
+     * @param functionName
+     */
     private void fireRegistryAdded(String functionName) {
         for (RegistryManagerListener listener : listeners) {
             listener.registryAdded(functionName);
