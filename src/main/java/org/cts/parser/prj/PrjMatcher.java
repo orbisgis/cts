@@ -31,7 +31,6 @@
  */
 package org.cts.parser.prj;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +40,7 @@ import org.cts.parser.proj.ProjValueParameters;
 
 /**
  * This class is used to get values from parameter in the prj file.
- * @author Antoine Gourlay, Erwan Bocher
+ * @author Antoine Gourlay, Erwan Bocher, Jules Party
  */
 public final class PrjMatcher {
 
@@ -227,9 +226,9 @@ public final class PrjMatcher {
             found = true;
         }
         if (!found) {
-            int k = Arrays.binarySearch(PrjValueParameters.LONGDATUMNAMES, datum.toLowerCase());
-            if (k >= 0) {
-                params.put(ProjKeyParameters.datum, PrjValueParameters.SHORTDATUMNAMES[k]);
+            String datm = PrjValueParameters.DATUMNAMES.get(datum.toLowerCase());
+            if (datm!=null) {
+                params.put(ProjKeyParameters.datum, datm);
             } else {
                 List<PrjElement> nn = matchNode(ll.get(1), PrjKeyParameters.SPHEROID);
                 //parseString(nn.get(0), "ellps");
@@ -259,9 +258,9 @@ public final class PrjMatcher {
     private void parseProjection(List<PrjElement> ll) {
         String proj = getString(ll.get(0));
         proj = proj.replaceAll("[^a-zA-Z0-9]", "");
-        int i = Arrays.binarySearch(PrjValueParameters.LONGPROJNAMES, proj.toLowerCase());
-        if (i >= 0) {
-            params.put(ProjKeyParameters.proj, PrjValueParameters.SHORTPROJNAMES[i]);
+        String prj = PrjValueParameters.PROJNAMES.get(proj.toLowerCase());
+        if (prj!=null) {
+            params.put(ProjKeyParameters.proj, prj);
         }
     }
 
@@ -278,9 +277,9 @@ public final class PrjMatcher {
     private void parseParameter(List<PrjElement> ll) {
         String param = getString(ll.get(0));
         param = param.replaceAll("[^a-zA-Z0-9]", "");
-        int i = Arrays.binarySearch(PrjValueParameters.LONGPARAMNAMES, param.toLowerCase());
-        if (i >= 0) {
-            parseNumber(ll.get(1), PrjValueParameters.SHORTPARAMNAMES[i]);
+        String parm = PrjValueParameters.PARAMNAMES.get(param.toLowerCase());
+        if (parm!=null) {
+            parseNumber(ll.get(1), parm);
         }
     }
 

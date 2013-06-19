@@ -31,226 +31,118 @@
  */
 package org.cts.parser.prj;
 
+import java.util.HashMap;
+
 /**
  * A class to manage all values used to fill a PRJ file
- * @author Erwan Bocher
+ * @author Erwan Bocher, Jules Party
  */
 public class PrjValueParameters {
-
-    public static final String[] LONGPARAMNAMES = {
-        "centralmeridian",
-        "falseeasting",
-        "falsenorthing",
-        "latitudeoforigin",
-        "scalefactor",
-        "standardparallel1",
-        "standardparallel2"
-    };
-    public static final String[] SHORTPARAMNAMES = {
-        "lon_0",
-        "x_0",
-        "y_0",
-        "lat_0",
-        "k_0",
-        "lat_1",
-        "lat_2"
-    };
-    public static final String[] LONGPROJNAMES = {
-        "airy",
-        "aitoff",
-        "albers" + "equal" + "area",
-        "august" + "epicycloidal",
-        "azimuthal" + "equidistant",
-        "bipolar" + "conic" + "of" + "western" + "hemisphere",
-        "boggs" + "eumorphic",
-        "bonne",
-        "cassini",
-        "central" + "cylindrical",
-        "collignon",
-        "craster" + "parabolic",
-        "denoyer" + "semi" + "elliptical",
-        "eckert" + "i",
-        "eckert" + "ii",
-        "eckert" + "iv",
-        "eckert" + "v",
-        "eckert" + "vi",
-        "equidistant" + "conic",
-        "equidistant" + "cylindrical",
-        "euler",
-        "fahey",
-        "foucaut",
-        "foucaut" + "sinusoidal",
-        "gall",
-        "gnomonic",
-        "goode" + "homolosine",
-        "hammer" + "eckert" + "greifendorff",
-        "hatano" + "asymmetrical" + "equal" + "area",
-        "kavraisky" + "v",
-        "lagrange",
-        "lambert" + "azimuthal" + "equal" + "area",
-        "lambert" + "conformal" + "conic",
-        "lambert" + "conformal" + "conic" + "1sp",
-        "lambert" + "conformal" + "conic" + "2sp",
-        "lambert" + "equal" + "area" + "conic",
-        "landsat",
-        "larrivee",
-        "laskowski",
-        "latlong",
-        "longlat",
-        "loximuthal",
-        "mcbryde" + "thomas" + "flat" + "polar" + "parabolic",
-        "mcbryde" + "thomas" + "flat" + "polar" + "quartic",
-        "mcbryde" + "thomas" + "flat" + "pole" + "sine" + "2",
-        "mercator",
-        "mercator" + "1sp",
-        "miller" + "cylindrical",
-        "mollweide",
-        "murdoch" + "i",
-        "murdoch" + "ii",
-        "murdoch" + "iii",
-        "near" + "sided" + "perspective",
-        "nell",
-        "nicolosi" + "globular",
-        "oblique" + "mercator",
-        "oblique" + "stereographic" + "alternative",
-        "orthographic",
-        "perspective" + "conic",
-        "polyconic",
-        "putnins" + "p2",
-        "putnins" + "p4",
-        "putnins" + "p5",
-        "putnins" + "p5p",
-        "quartic" + "authalic",
-        "robinson",
-        "rectangular" + "polyconic",
-        "sinusoidal",
-        "stereographic",
-        "swiss" + "oblique" + "mercator",
-        "transverse" + "central" + "cylindrical",
-        "transverse" + "cylindrical" + "equal" + "area",
-        "transverse" + "mercator",
-        "universal" + "transverse" + "mercator",
-        "urmaev" + "flat" + "polar" + "sinusoidal",
-        "van" + "der" + "grinten",
-        "vitkovsky" + "i",
-        "wagner" + "i",
-        "wagner" + "ii",
-        "wagner" + "iii",
-        "wagner" + "iv",
-        "wagner" + "v",
-        "wagner" + "vii",
-        "werenskiold" + "i",
-        "winkel" + "tripel"
-    };
-    public static final String[] SHORTPROJNAMES = {
-        "airy",
-        "aitoff",
-        "aea",
-        "august",
-        "aeqd",
-        "bipc",
-        "boggs",
-        "bonne",
-        "cass",
-        "cc",
-        "collg",
-        "crast",
-        "denoy",
-        "eck1",
-        "eck2",
-        "eck4",
-        "eck5",
-        "eck6",
-        "eqdc",
-        "eqc",
-        "euler",
-        "fahey",
-        "fouc",
-        "fouc_s",
-        "gall",
-        "gnom",
-        "goode",
-        "hammer",
-        "hatano",
-        "kav5",
-        "lagrng",
-        "laea",
-        "lcc",
-        "lcc",
-        "lcc",
-        "leac",
-        "lsat",
-        "larr",
-        "lask",
-        "latlong",
-        "longlat",
-        "loxim",
-        "mbtfpp",
-        "mbtfpq",
-        "mbt_fps",
-        "merc",
-        "merc",
-        "mill",
-        "moll",
-        "murd1",
-        "murd2",
-        "murd3",
-        "nsper",
-        "nell",
-        "nicol",
-        "omerc",
-        "sterea",
-        "ortho",
-        "pconic",
-        "poly",
-        "putp2",
-        "putp4p",
-        "putp5",
-        "putp5p",
-        "qua_aut",
-        "robin",
-        "rpoly",
-        "sinu",
-        "stere",
-        "somerc",
-        "tcc",
-        "tcea",
-        "tmerc",
-        "utm",
-        "urmfps",
-        "vandg",
-        "vitk1",
-        "wag1",
-        "wag2",
-        "wag3",
-        "wag4",
-        "wag5",
-        "wag7",
-        "weren",
-        "wintri"
-    };
-    public static final String[] LONGDATUMNAMES = new String[]{
-        "airy1830",
-        "carthage1934tunisia",
-        "dntf",
-        "greekgeodeticreferencesystem1987",
-        "ireland1965",
-        "newzealandgeodeticdatum1949",
-        "northamericandatum1927",
-        "northamericandatum1983",
-        "nouvelletriangulationfrancaiseparis",
-        "potsdamrauenberg1950dhdn"
-    };
-    public static final String[] SHORTDATUMNAMES = new String[]{
-        "osgb36",
-        "carthage",
-        "ntf",
-        "ggrs87",
-        "ire65",
-        "nzgd49",
-        "nad27",
-        "nad83",
-        "ntf",
-        "potsdam"
-    };
+    
+    public static final HashMap<String, String> PARAMNAMES = new HashMap<String, String>();
+    public static final HashMap<String, String> PROJNAMES = new HashMap<String, String>();
+    public static final HashMap<String, String> DATUMNAMES = new HashMap<String, String>();
+    static {
+        PARAMNAMES.put("centralmeridian", "lon_0");
+        PARAMNAMES.put("falseeasting", "x_0");
+        PARAMNAMES.put("falsenorthing", "y_0");
+        PARAMNAMES.put("latitudeoforigin", "lat_0");
+        PARAMNAMES.put("scalefactor", "k_0");
+        PARAMNAMES.put("standardparallel1", "lat_1");
+        PARAMNAMES.put("standardparallel2", "lat_2");
+        PROJNAMES.put("airy", "airy");
+        PROJNAMES.put("aitoff", "aitoff");
+        PROJNAMES.put("albers" + "equal" + "area", "aea");
+        PROJNAMES.put("august" + "epicycloidal", "august");
+        PROJNAMES.put("bipolar" + "conic" + "of" + "western" + "hemisphere", "aeqd");
+        PROJNAMES.put("boggs" + "eumorphic", "bipc");
+        PROJNAMES.put("bonne", "bonne");
+        PROJNAMES.put("cassini", "cass");
+        PROJNAMES.put("central" + "cylindrical", "cc");
+        PROJNAMES.put("collignon", "collg");
+        PROJNAMES.put("craster" + "parabolic", "crast");
+        PROJNAMES.put("denoyer" + "semi" + "elliptical", "denoy");
+        PROJNAMES.put("eckert" + "i", "eck1");
+        PROJNAMES.put("eckert" + "ii", "eck2");
+        PROJNAMES.put("eckert" + "iv", "eck4");
+        PROJNAMES.put("eckert" + "v", "eck5");
+        PROJNAMES.put("eckert" + "vi", "eck6");
+        PROJNAMES.put("equidistant" + "conic", "eqdc");
+        PROJNAMES.put("equidistant" + "cylindrical", "eqc");
+        PROJNAMES.put("euler", "euler");
+        PROJNAMES.put("fahey", "fahey");
+        PROJNAMES.put("foucaut", "fouc");
+        PROJNAMES.put("foucaut" + "sinusoidal", "fouc_s");
+        PROJNAMES.put("gall", "gall");
+        PROJNAMES.put("gnomonic", "gnom");
+        PROJNAMES.put("goode" + "homolosine", "goode");
+        PROJNAMES.put("hammer" + "eckert" + "greifendorff", "hammer");
+        PROJNAMES.put("hatano" + "asymmetrical" + "equal" + "area", "hatano");
+        PROJNAMES.put("kavraisky" + "v","kav5");
+        PROJNAMES.put("lagrange", "lagrng");
+        PROJNAMES.put("lambert" + "azimuthal" + "equal" + "area", "laea");
+        PROJNAMES.put("lambert" + "conformal" + "conic", "lcc");
+        PROJNAMES.put("lambert" + "conformal" + "conic" + "1sp", "lcc");
+        PROJNAMES.put("lambert" + "conformal" + "conic" + "2sp", "lcc");
+        PROJNAMES.put("lambert" + "equal" + "area" + "conic", "leac");
+        PROJNAMES.put("landsat", "lsat");
+        PROJNAMES.put("larrivee", "larr");
+        PROJNAMES.put("laskowski", "lask");
+        PROJNAMES.put("latlong", "latlong");
+        PROJNAMES.put("longlat", "longlat");
+        PROJNAMES.put("loximuthal", "loxim");
+        PROJNAMES.put("mcbryde" + "thomas" + "flat" + "polar" + "parabolic", "mbtfpp");
+        PROJNAMES.put("mcbryde" + "thomas" + "flat" + "polar" + "quartic", "mbtfpq");
+        PROJNAMES.put("mcbryde" + "thomas" + "flat" + "pole" + "sine" + "2", "mbt_fps");
+        PROJNAMES.put("mercator", "merc");
+        PROJNAMES.put("mercator" + "1sp", "merc");
+        PROJNAMES.put("miller" + "cylindrical", "mill");
+        PROJNAMES.put("mollweide", "moll");
+        PROJNAMES.put("murdoch" + "i", "murd1");
+        PROJNAMES.put("murdoch" + "ii", "murd2");
+        PROJNAMES.put("murdoch" + "iii", "murd3");
+        PROJNAMES.put("near" + "sided" + "perspective", "nsper");
+        PROJNAMES.put("nell", "nell");
+        PROJNAMES.put("nicolosi" + "globular", "nicol");
+        PROJNAMES.put("oblique" + "mercator", "omerc");
+        PROJNAMES.put("oblique" + "stereographic" + "alternative", "sterea");
+        PROJNAMES.put("orthographic", "ortho");
+        PROJNAMES.put("perspective" + "conic", "pconic");
+        PROJNAMES.put("polyconic", "poly");
+        PROJNAMES.put("putnins" + "p2", "putp2");
+        PROJNAMES.put("putnins" + "p4", "putp4p");
+        PROJNAMES.put("putnins" + "p5", "putp5");
+        PROJNAMES.put("putnins" + "p5p", "putp5p");
+        PROJNAMES.put("quartic" + "authalic", "qua_aut");
+        PROJNAMES.put("robinson", "robin");
+        PROJNAMES.put("rectangular" + "polyconic", "rpoly");
+        PROJNAMES.put("sinusoidal", "sinu");
+        PROJNAMES.put("stereographic", "stere");
+        PROJNAMES.put("swiss" + "oblique" + "mercator", "somerc");
+        PROJNAMES.put("transverse" + "central" + "cylindrical", "tcc");
+        PROJNAMES.put("transverse" + "cylindrical" + "equal" + "area", "tcea");
+        PROJNAMES.put("transverse" + "mercator", "tmerc");
+        PROJNAMES.put("universal" + "transverse" + "mercator", "utm");
+        PROJNAMES.put("urmaev" + "flat" + "polar" + "sinusoidal", "urmfps");
+        PROJNAMES.put("van" + "der" + "grinten", "vandg");
+        PROJNAMES.put("vitkovsky" + "i", "vitk1");
+        PROJNAMES.put("wagner" + "i", "wag1");
+        PROJNAMES.put("wagner" + "ii", "wag2");
+        PROJNAMES.put("wagner" + "iii", "wag3");
+        PROJNAMES.put("wagner" + "iv", "wag4");
+        PROJNAMES.put("wagner" + "v", "wag5");
+        PROJNAMES.put("wagner" + "vii", "wag7");
+        PROJNAMES.put("werenskiold" + "i", "werren");
+        PROJNAMES.put("winkel" + "tripel", "wintri");
+        DATUMNAMES.put("airy1830", "osgb36");
+        DATUMNAMES.put("carthage1934tunisia", "carthage");
+        DATUMNAMES.put("dntf", "ntf");
+        DATUMNAMES.put("greekgeodeticreferencesystem1987", "ggrs87");
+        DATUMNAMES.put("ireland1965", "ire65");
+        DATUMNAMES.put("newzealandgeodeticdatum1949", "nzgd49");
+        DATUMNAMES.put("northamericandatum1927", "nad27");
+        DATUMNAMES.put("northamericandatum1983", "nad83");
+        DATUMNAMES.put("nouvelletriangulationfrancaiseparis", "ntf");
+        DATUMNAMES.put("potsdamrauenberg1950dhdn", "potsdam");
+    }
 }
