@@ -294,12 +294,12 @@ public class GeodeticDatum extends AbstractDatum {
                     new LongitudeRotation(targetDatum.getPrimeMeridian().getLongitudeFromGreenwichInRadians() - primeMeridian.getLongitudeFromGreenwichInRadians())));
         } // Third case : geocentric transformation is null and ellipsoid are
         // the same but prime meridians are not the same
-        else if (toWGS84 == Identity.IDENTITY
+        else if (toOtherDatum == Identity.IDENTITY
                 && !primeMeridian.equals(targetDatum.getPrimeMeridian())) {
             this.addCoordinateOperation(targetDatum, new LongitudeRotation(primeMeridian.getLongitudeFromGreenwichInRadians() - targetDatum.getPrimeMeridian().getLongitudeFromGreenwichInRadians()));
             targetDatum.addCoordinateOperation(this, new LongitudeRotation(targetDatum.getPrimeMeridian().getLongitudeFromGreenwichInRadians() - primeMeridian.getLongitudeFromGreenwichInRadians()));
         } // Fourth case : this datum and WGS84 are equivalent
-        else if (toWGS84 == Identity.IDENTITY) {
+        else if (toOtherDatum == Identity.IDENTITY) {
             this.addCoordinateOperation(targetDatum, Identity.IDENTITY);
             targetDatum.addCoordinateOperation(this, Identity.IDENTITY);
         }
