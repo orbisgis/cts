@@ -44,10 +44,10 @@ public class CTSTestCase {
 
     public boolean checkEquals(String test, double o1, double o2, double tol) {
         if (Math.abs(o1 - o2) <= tol) {
-            System.out.println("TRUE : " + test + " " + o1 + " = " + o2 + " <= " + tol);
+            LOGGER.debug("TRUE : " + test + " " + o1 + " = " + o2 + " <= " + tol);
             return true;
         } else {
-            System.out.println("FALSE : " + test + " " + Math.abs(o1 - o2) + " > " + tol);
+            LOGGER.debug("FALSE : " + test + " " + Math.abs(o1 - o2) + " > " + tol);
             return false;
         }
     }
@@ -68,11 +68,11 @@ public class CTSTestCase {
             dd += (c2[i] - c1[i]) * (c2[i] - c1[i]);
         }
         if (dd < tol * tol) {
-            System.out.println("TRUE : From " + test + " Result point : " + Arrays.toString(c1) + " = expected point : "
+            LOGGER.debug("TRUE : From " + test + " Result point : " + Arrays.toString(c1) + " = expected point : "
                     + Arrays.toString(c2) + " < " + tol);
             return true;
         } else {
-            System.out.println("FALSE : From " + test + " Result point : " + Arrays.toString(c1) + " compare to expected point : "
+            LOGGER.debug("FALSE : From " + test + " Result point : " + Arrays.toString(c1) + " compare to expected point : "
                     + Arrays.toString(c2) + " = " + Math.sqrt(dd));
             return false;
         }
@@ -95,11 +95,11 @@ public class CTSTestCase {
         double delta = Math.max(dx, dy);
         boolean isInTol = delta <= tolerance;
         if (isInTol) {
-            System.out.println("TRUE : From " + test + " Result point : " + Arrays.toString(c1) + " = expected point : "
+            LOGGER.debug("TRUE : From " + test + " Result point : " + Arrays.toString(c1) + " = expected point : "
                     + Arrays.toString(c2) + " <= " + tolerance);
             return true;
         } else {
-            System.out.println("FALSE : From " + test + " Result point : " + Arrays.toString(c1) + " compare to expected point : "
+            LOGGER.debug("FALSE : From " + test + " Result point : " + Arrays.toString(c1) + " compare to expected point : "
                     + Arrays.toString(c2) + " = " + (tolerance - delta));
             return false;
         }

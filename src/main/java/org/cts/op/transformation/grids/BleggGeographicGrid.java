@@ -146,7 +146,6 @@ public class BleggGeographicGrid extends GeographicGrid {
                 // fullfilled even if more data is available !!)
                 dis.readFully(bb);
                 pos += bb.length;
-                // System.out.println(" (" + Arrays.toString(bb) + ")");
                 NBitArray bitArray = new NBitArray(n, groupSize);
                 bitArray.setBytes(bb);
                 for (int i = 0; i < groupSize; i++) {

@@ -42,15 +42,19 @@ import java.io.*;
 import java.nio.charset.Charset;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
- * This factory is in charge of creating new {@link org.cts.crs.CoordinateReferenceSystem}s
- * from an authority name and a code.
- * <p>Creation of the {@link org.cts.crs.CoordinateReferenceSystem} from a text file
- * will be delegated to one of RegistryManager's registries. If RegistryManager don't
- * know the authority of the CRS, an exception is returned.</p>
+ * This factory is in charge of creating new
+ * {@link org.cts.crs.CoordinateReferenceSystem}s from an authority name and a
+ * code.
+ * <p>Creation of the {@link org.cts.crs.CoordinateReferenceSystem} from a text
+ * file will be delegated to one of RegistryManager's registries. If
+ * RegistryManager don't know the authority of the CRS, an exception is
+ * returned.</p>
  * <p>This class also manages a Cache which return
- * {@link org.cts.crs.CoordinateReferenceSystem}s which have already been parsed.</p>
+ * {@link org.cts.crs.CoordinateReferenceSystem}s which have already been
+ * parsed.</p>
  *
  * @TODO authorityAndSrid is the same as Identifier.getCode()
  *
@@ -68,7 +72,9 @@ public class CRSFactory {
     }
 
     /**
-     * Return a @CoordinateReferenceSystem according an authority and a srid ie :
+     * Return a
+     *
+     * @CoordinateReferenceSystem according an authority and a srid ie :
      * EPSG:4326 or IGNF:LAMBE
      *
      * @param authorityAndSrid
@@ -149,16 +155,16 @@ public class CRSFactory {
 
         return createFromPrj(b.toString());
     }
-    
+
     /**
      * Creates a {@link CoordinateReferenceSystem} defined by an OGC WKT String
      * (PRJ).
-     * 
+     *
      * @param stream
      * @return
-     * @throws IOException 
+     * @throws IOException
      */
-    public CoordinateReferenceSystem createFromPrj(InputStream stream) throws IOException{
+    public CoordinateReferenceSystem createFromPrj(InputStream stream) throws IOException {
         return createFromPrj(stream, Charset.defaultCharset());
     }
 
@@ -181,8 +187,16 @@ public class CRSFactory {
                 i.close();
             }
         }
-
         return crs;
+    }
+
+    /**
+     * Return a list of supported codes according an registryName
+     * @param registeryName
+     * @return 
+     */
+    public Set<String> getSupportedCodes(String registryName) {        
+        return getRegistryManager().getRegistry(registryName).getSupportedCodes();
     }
 
     /**

@@ -33,14 +33,17 @@ package org.cts.registry;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Set;
 
 /**
+ * This class parse the epsg file available in the resources package. It returns
+ * the coresponding parameters to a code specified in the registry file.
  *
  * @author Erwan Bocher
  */
 public class EPSGRegistry extends AbstractProjRegistry implements Registry {
+
+    String EPSG_REGEX = "\\s+|<>";
 
     @Override
     public String getRegistryName() {
@@ -50,10 +53,20 @@ public class EPSGRegistry extends AbstractProjRegistry implements Registry {
     @Override
     public Map<String, String> getParameters(String code) {
         try {
-            Map<String, String> crsParameters = projParser.readParameters(code, "\\s+|<>");
+            Map<String, String> crsParameters = projParser.readParameters(code, EPSG_REGEX);
             return crsParameters;
         } catch (IOException ex) {
-            Logger.getLogger(IGNFRegistry.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error("Cannot load the EPSG registry", ex);
+        }
+        return null;
+    }
+
+    @Override
+    public Set<String> getSupportedCodes() {
+        try {
+            return projParser.getSupportedCodes(EPSG_REGEX);
+        } catch (IOException ex) {
+            LOGGER.error("Cannot load the EPSG registry", ex);
         }
         return null;
     }

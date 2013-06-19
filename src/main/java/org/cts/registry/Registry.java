@@ -32,6 +32,7 @@
 package org.cts.registry;
 
 import java.util.Map;
+import java.util.Set;
 
 /**
  *
@@ -50,4 +51,10 @@ public interface Registry {
      * @return
      */
     public Map<String, String> getParameters(String code);
+
+    /**
+     * Return all supported codes for this registry
+     * @return 
+     */
+    public Set<String> getSupportedCodes();
 }

@@ -33,14 +33,17 @@ package org.cts.registry;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Set;
 
 /**
+ * This class parse the ignf file available in the resources package. It returns
+ * the coresponding parameters to a code specified in the registry file.
  *
  * @author Erwan Bocher
  */
 public class IGNFRegistry extends AbstractProjRegistry {
+
+    String IGNF_REGEX = "[ ]\\+|\\s<>";
 
     @Override
     public String getRegistryName() {
@@ -50,11 +53,20 @@ public class IGNFRegistry extends AbstractProjRegistry {
     @Override
     public Map<String, String> getParameters(String code) {
         try {
-            Map<String, String> crsParameters = projParser.readParameters(code, "[ ]\\+|\\s<>");
-
+            Map<String, String> crsParameters = projParser.readParameters(code, IGNF_REGEX);
             return crsParameters;
         } catch (IOException ex) {
-            Logger.getLogger(IGNFRegistry.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error("Cannot load the IGNF registry", ex);
+        }
+        return null;
+    }
+
+    @Override
+    public Set<String> getSupportedCodes() {
+        try {
+            return projParser.getSupportedCodes(IGNF_REGEX);
+        } catch (IOException ex) {
+            LOGGER.error("Cannot load the IGNF registry", ex);
         }
         return null;
     }

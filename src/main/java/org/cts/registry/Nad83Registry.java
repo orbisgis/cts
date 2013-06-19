@@ -33,14 +33,17 @@ package org.cts.registry;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Set;
 
 /**
+ * This class parse the nad83 file available in the resources package. It
+ * returns the coresponding parameters to a code specified in the registry file.
  *
  * @author Erwan Bocher
  */
 public class Nad83Registry extends AbstractProjRegistry {
+
+    String NAD83_REGEX = "\\s+";
 
     @Override
     public String getRegistryName() {
@@ -50,11 +53,20 @@ public class Nad83Registry extends AbstractProjRegistry {
     @Override
     public Map<String, String> getParameters(String code) {
         try {
-            Map<String, String> crsParameters = projParser.readParameters(code, "\\s+");
-
+            Map<String, String> crsParameters = projParser.readParameters(code, NAD83_REGEX);
             return crsParameters;
         } catch (IOException ex) {
-            Logger.getLogger(IGNFRegistry.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error("Cannot load the NAD83 registry", ex);
+        }
+        return null;
+    }
+
+    @Override
+    public Set<String> getSupportedCodes() {
+        try {
+            return projParser.getSupportedCodes(NAD83_REGEX);
+        } catch (IOException ex) {
+            LOGGER.error("Cannot load the NAD83 registry", ex);
         }
         return null;
     }
