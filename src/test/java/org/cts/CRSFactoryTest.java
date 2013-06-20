@@ -56,7 +56,7 @@ public class CRSFactoryTest {
     }
     
     
-    //@Test waitin a fix on authority identification 
+    @Test
     public void testOGC_WKT_27572_CRS(){
         String prj = "PROJCS[\"NTF (Paris) / Lambert zone II\",GEOGCS[\"NTF (Paris)\","
                 + "DATUM[\"Nouvelle_Triangulation_Francaise_Paris\","
@@ -73,7 +73,7 @@ public class CRSFactoryTest {
         CoordinateReferenceSystem crs = cRSFactory.createFromPrj(prj);
         assertNotNull(crs);
         assertTrue(crs.getAuthorityName().equals("EPSG"));
-        assertTrue(crs.getAuthorityName().equals("27572"));
+        assertTrue(crs.getAuthorityKey().equals("27572"));
     }
     
 }
