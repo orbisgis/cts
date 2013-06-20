@@ -43,8 +43,8 @@ public class CRSFactoryTest {
     
     public CRSFactory cRSFactory = new CRSFactory();
     
-    //@Test waiting the leac projection
-    public void testCRSFroomLAMBEDeprecated(){
+    @Test 
+    public void testCRSFromLAMBEDeprecated(){
         String prj = "PROJCS[\"NTF (Paris) / France II (deprecated)\",GEOGCS[\"NTF (Paris)\","
                  + "DATUM[\"Nouvelle_Triangulation_Francaise_Paris\",SPHEROID[\"Clarke 1880 (IGN)\",6378249.2,293.4660212936269,AUTHORITY[\"EPSG\",\"7011\"]],TOWGS84[-168,-60,320,0,0,0,0],AUTHORITY[\"EPSG\",\"6807\"]],"
                  + "PRIMEM[\"Paris\",2.33722917,AUTHORITY[\"EPSG\",\"8903\"]],UNIT[\"grad\",0.01570796326794897,AUTHORITY[\"EPSG\",\"9105\"]],AUTHORITY[\"EPSG\",\"4807\"]],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],"
@@ -53,6 +53,27 @@ public class CRSFactoryTest {
         CoordinateReferenceSystem crs = cRSFactory.createFromPrj(prj);
         assertNotNull(crs);
         assertTrue(crs.getName().equals("NTF (Paris) / France II (deprecated)"));
+    }
+    
+    
+    //@Test waitin a fix on authority identification 
+    public void testOGC_WKT_27572_CRS(){
+        String prj = "PROJCS[\"NTF (Paris) / Lambert zone II\",GEOGCS[\"NTF (Paris)\","
+                + "DATUM[\"Nouvelle_Triangulation_Francaise_Paris\","
+                + "SPHEROID[\"Clarke 1880 (IGN)\",6378249.2,293.4660212936269,"
+                + "AUTHORITY[\"EPSG\",\"7011\"]],TOWGS84[-168,-60,320,0,0,0,0],"
+                + "AUTHORITY[\"EPSG\",\"6807\"]],PRIMEM[\"Paris\",2.33722917,"
+                + "AUTHORITY[\"EPSG\",\"8903\"]],UNIT[\"grad\",0.01570796326794897,"
+                + "AUTHORITY[\"EPSG\",\"9105\"]],AUTHORITY[\"EPSG\",\"4807\"]],UNIT[\"metre\",1,"
+                + "AUTHORITY[\"EPSG\",\"9001\"]],PROJECTION[\"Lambert_Conformal_Conic_1SP\"],"
+                + "PARAMETER[\"latitude_of_origin\",52],PARAMETER[\"central_meridian\",0],"
+                + "PARAMETER[\"scale_factor\",0.99987742],PARAMETER[\"false_easting\",600000],"
+                + "PARAMETER[\"false_northing\",2200000],"
+                + "AUTHORITY[\"EPSG\",\"27572\"],AXIS[\"X\",EAST],AXIS[\"Y\",NORTH]]";
+        CoordinateReferenceSystem crs = cRSFactory.createFromPrj(prj);
+        assertNotNull(crs);
+        assertTrue(crs.getAuthorityName().equals("EPSG"));
+        assertTrue(crs.getAuthorityName().equals("27572"));
     }
     
 }
