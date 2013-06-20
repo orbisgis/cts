@@ -72,8 +72,16 @@ public class PrjParser {
      */
     public CoordinateReferenceSystem parse(String prjString) {
         Map<String, String> prjParameters = getParameters(prjString);
-        String name = prjParameters.remove("name");        
-        return CRSHelper.createCoordinateReferenceSystem(new Identifier(name, name, name), prjParameters);
+        String name = prjParameters.remove("name");
+        String refname = prjParameters.remove("refname");
+        CoordinateReferenceSystem crs;
+        if (refname!=null) {
+            String[] authorityNameWithKey = refname.split(":");
+            crs = CRSHelper.createCoordinateReferenceSystem(new Identifier(authorityNameWithKey[0], authorityNameWithKey[1], name), prjParameters);
+        } else {
+            crs = CRSHelper.createCoordinateReferenceSystem(new Identifier(name, name, name), prjParameters);
+        }
+        return crs;
     }
 
     /**
