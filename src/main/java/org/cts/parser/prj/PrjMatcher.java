@@ -330,7 +330,7 @@ public final class PrjMatcher {
     private void parseString(PrjElement e, String name) {
         if (e instanceof PrjStringElement) {
             PrjStringElement s = (PrjStringElement) e;
-            params.put(name, s.getValue());
+            params.put(name, s.getValue().trim());
         } else {
             throw new PrjParserException("Failed to parse PRJ. Found '" + e + "', expected PrjStringElement with " + name + " in it.");
         }
@@ -339,7 +339,7 @@ public final class PrjMatcher {
     private String getString(PrjElement e) {
         if (e instanceof PrjStringElement) {
             PrjStringElement s = (PrjStringElement) e;
-            return s.getValue();
+            return s.getValue().trim();
         }
         throw new PrjParserException("Failed to parse PRJ. Found '" + e + "', expected some PrjStringElement.");
     }
