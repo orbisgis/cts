@@ -237,9 +237,11 @@ public class CRSHelper {
                                         gt.setMode(NTv2GridShiftTransformation.SPEED);
                                         crs.addGridTransformation(GeodeticDatum.datumFromName.get(gt.getToDatum()), gt);
                                     } catch (IOException ex) {
-                                        LOGGER.error("Cannot found the nadgrid", ex);
+                                        LOGGER.error("Cannot found the nadgrid "+grid+".", ex);
                                     } catch (URISyntaxException ex) {
-                                        LOGGER.error("Cannot found the nadgrid", ex);
+                                        LOGGER.error("Cannot found the nadgrid "+grid+".", ex);
+                                    } catch (NullPointerException ex) {
+                                        LOGGER.error("Cannot found the nadgrid "+grid+".", ex);
                                     }
                                 }
                             }

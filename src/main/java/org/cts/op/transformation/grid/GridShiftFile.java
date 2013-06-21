@@ -174,11 +174,11 @@ public class GridShiftFile
             }
             subGridMap.put(subGrid[i].getSubGridName(), new ArrayList());
         }
-        SubGrid[] topLevelSubGrid = new SubGrid[topLevelCount];
+        SubGrid[] topLevelSubGridTemp = new SubGrid[topLevelCount];
         topLevelCount = 0;
         for (int i = 0; i < subGrid.length; i++) {
             if (subGrid[i].getParentSubGridName().equalsIgnoreCase("NONE")) {
-                topLevelSubGrid[(topLevelCount++)] = subGrid[i];
+                topLevelSubGridTemp[(topLevelCount++)] = subGrid[i];
             } else {
                 ArrayList parent = (ArrayList) subGridMap.get(subGrid[i].getParentSubGridName());
                 parent.add(subGrid[i]);
@@ -192,7 +192,7 @@ public class GridShiftFile
                 subGrid[i].setSubGridArray(subGridArray);
             }
         }
-        return topLevelSubGrid;
+        return topLevelSubGridTemp;
     }
 
     public boolean gridShiftForward(GridShift gs)
@@ -259,8 +259,9 @@ public class GridShiftFile
         }
     }
 
+    @Override
     public String toString() {
-        StringBuffer buf = new StringBuffer("Headers  : ");
+        StringBuilder buf = new StringBuilder("Headers  : ");
         buf.append(this.overviewHeaderCount);
         buf.append("\nSub Hdrs : ");
         buf.append(this.subGridHeaderCount);
