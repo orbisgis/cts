@@ -58,6 +58,11 @@ public class PrjValueParameters {
      */
     public static final HashMap<String, String> ELLIPSOIDNAMES = new HashMap<String, String>();
     
+    /**
+     * A map linking the name of prime meridians used in PRJ file to the short name used in CTS.
+     */
+    public static final HashMap<String, String> PRIMEMERIDIANNAMES = new HashMap<String, String>();
+    
     static {
         PARAMNAMES.put("centralmeridian", "lon_0");
         PARAMNAMES.put("falseeasting", "x_0");
@@ -193,5 +198,18 @@ public class PrjValueParameters {
         ELLIPSOIDNAMES.put("nwl9d", "wgs66");
         ELLIPSOIDNAMES.put("wgs72", "wgs72");
         ELLIPSOIDNAMES.put("wgs84", "wgs84");
+        PRIMEMERIDIANNAMES.put("greenwich", "greenwich");
+        PRIMEMERIDIANNAMES.put("paris", "paris");
+        PRIMEMERIDIANNAMES.put("lisbon", "lisbon");
+        PRIMEMERIDIANNAMES.put("bogota", "bogota");
+        PRIMEMERIDIANNAMES.put("madrid", "madrid");
+        PRIMEMERIDIANNAMES.put("rome", "rome");
+        PRIMEMERIDIANNAMES.put("bern", "bern");
+        PRIMEMERIDIANNAMES.put("jakarta", "jakarta");
+        PRIMEMERIDIANNAMES.put("ferro", "ferro");
+        PRIMEMERIDIANNAMES.put("brussels", "brussels");
+        PRIMEMERIDIANNAMES.put("stockholm", "stockholm");
+        PRIMEMERIDIANNAMES.put("athens", "athens");
+        PRIMEMERIDIANNAMES.put("oslo", "oslo");
     }
 }

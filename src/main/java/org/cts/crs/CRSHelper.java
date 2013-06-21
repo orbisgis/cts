@@ -175,37 +175,13 @@ public class CRSHelper {
          */
         public static PrimeMeridian getPrimeMeridian(Map<String, String> param) {
                 String pmName = param.get(ProjKeyParameters.pm);
+                PrimeMeridian pm;
                 if (null != pmName) {
-                        if (pmName.equals("greenwich")) {
-                                return PrimeMeridian.GREENWICH;
-                        } else if (pmName.equals("paris")) {
-                                return PrimeMeridian.PARIS;
-                        } else if (pmName.equals("lisbon")) {
-                                return PrimeMeridian.LISBON;
-                        } else if (pmName.equals("bogota")) {
-                                return PrimeMeridian.BOGOTA;
-                        } else if (pmName.equals("madrid")) {
-                                return PrimeMeridian.MADRID;
-                        } else if (pmName.equals("rome")) {
-                                return PrimeMeridian.ROME;
-                        } else if (pmName.equals("bern")) {
-                                return PrimeMeridian.BERN;
-                        } else if (pmName.equals("jakarta")) {
-                                return PrimeMeridian.JAKARTA;
-                        } else if (pmName.equals("ferro")) {
-                                return PrimeMeridian.FERRO;
-                        } else if (pmName.equals("brussels")) {
-                                return PrimeMeridian.BRUSSELS;
-                        } else if (pmName.equals("stockholm")) {
-                                return PrimeMeridian.STOCKHOLM;
-                        } else if (pmName.equals("athens")) {
-                                return PrimeMeridian.ATHENS;
-                        } else if (pmName.equals("oslo")) {
-                                return PrimeMeridian.OSLO;
-                        } else {
+                    pm = PrimeMeridian.primeMeridianFromName.get(pmName.toLowerCase());
+                    if (pm==null) {
                                 try {
                                         double pmdd = Double.parseDouble(pmName);
-                                        return PrimeMeridian.createPrimeMeridianFromDDLongitude(
+                                        pm = PrimeMeridian.createPrimeMeridianFromDDLongitude(
                                                 new Identifier(PrimeMeridian.class,
                                                 Identifiable.UNKNOWN), pmdd);
                                 } catch (NumberFormatException ex) {
@@ -214,56 +190,9 @@ public class CRSHelper {
                                 }
                         }
                 } else {
-                        return PrimeMeridian.GREENWICH;
+                        pm = PrimeMeridian.GREENWICH;
                 }
-        }
-
-        /**
-         * Returns true is the {@link org.cts.datum.PrimeMeridian} is supported
-         *
-         * @param pmName the PrimeMeridian to check
-         * @return true if pmName is a supported {@link org.cts.datum.PrimeMeridian}
-         */
-        public static boolean isPrimeMeridianSupported(String pmName) {
-                if (null != pmName) {
-                        if (pmName.equals("greenwich")) {
-                                return true;
-                        } else if (pmName.equals("paris")) {
-                                return true;
-                        } else if (pmName.equals("lisbon")) {
-                                return true;
-                        } else if (pmName.equals("bogota")) {
-                                return true;
-                        } else if (pmName.equals("madrid")) {
-                                return true;
-                        } else if (pmName.equals("rome")) {
-                                return true;
-                        } else if (pmName.equals("bern")) {
-                                return true;
-                        } else if (pmName.equals("jakarta")) {
-                                return true;
-                        } else if (pmName.equals("ferro")) {
-                                return true;
-                        } else if (pmName.equals("brussels")) {
-                                return true;
-                        } else if (pmName.equals("stockholm")) {
-                                return true;
-                        } else if (pmName.equals("athens")) {
-                                return true;
-                        } else if (pmName.equals("oslo")) {
-                                return true;
-                        } else {
-                                try {
-                                        Double.parseDouble(pmName);
-                                        return true;
-                                } catch (NumberFormatException ex) {
-                                        LOGGER.error(pmName + " prime meridian is not supported");
-                                        return false;
-                                }
-                        }
-                } else {
-                        return true;
-                }
+                return pm;
         }
 
         /**

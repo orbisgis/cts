@@ -144,12 +144,6 @@ public final class PrjMatcher {
             params.put(PrjKeyParameters.REFNAME, auth + ':' + code);
         }
 
-        String pm = params.get(ProjKeyParameters.pm);
-        boolean pmSupported = CRSHelper.isPrimeMeridianSupported(pm.toLowerCase());
-        if (pmSupported) {
-            params.put(ProjKeyParameters.pm, pm.toLowerCase());
-        }
-
         // no projection specified usually means longlat
         if (!params.containsKey(ProjKeyParameters.proj)) {
             params.put(ProjKeyParameters.proj, ProjValueParameters.LONGLAT);
@@ -272,9 +266,10 @@ public final class PrjMatcher {
 
     private void parsePrimeM(List<PrjElement> ll) {
         String pm = getString(ll.get(0));
-        boolean pmval = CRSHelper.isPrimeMeridianSupported(pm.toLowerCase());
-        if (pmval) {
-            params.put(ProjKeyParameters.pm, pm.toLowerCase());
+        pm = pm.replaceAll("[^a-zA-Z0-9]", "");
+        String prm = PrjValueParameters.PRIMEMERIDIANNAMES.get(pm.toLowerCase());
+        if (prm != null) {
+            params.put(ProjKeyParameters.pm, prm);
         } else {
             parseNumber(ll.get(1), ProjKeyParameters.pm);
         }
