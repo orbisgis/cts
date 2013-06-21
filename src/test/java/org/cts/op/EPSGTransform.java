@@ -47,29 +47,29 @@ import org.junit.Test;
 public class EPSGTransform extends BaseCoordinateTransformTest {
 
     @Test
-    public void testFrenchEPSGCodeFrom4326To27582() throws CRSException, IllegalCoordinateException {
+    public void testFrenchEPSGCodeFrom4326To27582() throws Exception {
         String csNameSrc = "EPSG:4326"; //Input EPSG
         double[] pointSource = new double[]{2.114551393, 50.345609791, 0};
         String csNameDest = "EPSG:27582";  //Target EPSG lambert 2 etendu france
         double[] pointDest = new double[]{584173.736, 2594514.828, 0};
         double tolerance = 10E-7;
-        CoordinateReferenceSystem inputCRS = createCRS(csNameSrc);
+        CoordinateReferenceSystem inputCRS = cRSFactory.getCRS(csNameSrc);
         System.out.println(PrjWriter.crsToWKT(inputCRS));
-        CoordinateReferenceSystem outputCRS = createCRS(csNameDest);
+        CoordinateReferenceSystem outputCRS = cRSFactory.getCRS(csNameDest);
         verbose=true;
         double[] result = transform((GeodeticCRS) inputCRS, (GeodeticCRS) outputCRS, pointSource);
         assertTrue(checkEquals2D("EPSG:4326 to EPSG:27582 ", result, pointDest, tolerance));
     }
 
     @Test
-    public void testFrenchEPSGCodeFrom27582To4326() throws CRSException, IllegalCoordinateException {
+    public void testFrenchEPSGCodeFrom27582To4326() throws Exception {
         String csNameSrc = "EPSG:27582"; //Input EPSG
         double[] pointSource = new double[]{584173.736, 2594514.828, 0};
         String csNameDest = "EPSG:4326";  //Target EPSG 
         double[] pointDest = new double[]{2.114551393, 50.345609791, 0};
         double tolerance = 0.0001;
-        CoordinateReferenceSystem inputCRS = createCRS(csNameSrc);
-        CoordinateReferenceSystem outputCRS = createCRS(csNameDest);
+        CoordinateReferenceSystem inputCRS = cRSFactory.getCRS(csNameSrc);
+        CoordinateReferenceSystem outputCRS = cRSFactory.getCRS(csNameDest);
         verbose=true;
         double[] result = transform((GeodeticCRS) inputCRS, (GeodeticCRS) outputCRS, pointSource);
         assertTrue(checkEquals2D("EPSG:27582 to EPSG:4326", result, pointDest, tolerance));

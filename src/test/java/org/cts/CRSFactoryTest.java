@@ -39,9 +39,7 @@ import static org.junit.Assert.*;
  *
  * @author Erwan Bocher
  */
-public class CRSFactoryTest {
-    
-    public CRSFactory cRSFactory = new CRSFactory();
+public class CRSFactoryTest extends CTSTestCase{
     
     @Test 
     public void testCRSFromLAMBEDeprecated(){

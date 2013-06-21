@@ -43,7 +43,6 @@ public class EllipsoidTest extends CTSTestCase {
     
     @Test
     public void testEllipsoidConstruction() {
-        LOGGER.info("Ellipsoid Construction");
         Ellipsoid e1 = createEllipsoidFromSemiMinorAxis(
             new Identifier("Test", "0001", "Construction from Semi-minor axis"),
             6380000.0, 6350000.0);

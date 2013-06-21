@@ -33,6 +33,7 @@ package org.cts.parser.prj;
 
 import java.io.File;
 import org.cts.CRSFactory;
+import org.cts.CTSTestCase;
 import org.cts.crs.CoordinateReferenceSystem;
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -42,16 +43,13 @@ import org.junit.Test;
  *
  * @author ebocher
  */
-public class IOPrjTest {
+public class IOPrjTest extends CTSTestCase{
 
-    CRSFactory crsf = new CRSFactory();
 
-    //This test has been added to fix the prj parser.
-    //It doesn't work due to a bad datum identification
     @Test
     public void readPrjNTF_Lambert_II_etendu() throws Exception {
         String filePath = IOPrjTest.class.getResource("NTF_Lambert_II_etendu.prj").toURI().getPath();
-        CoordinateReferenceSystem crs = crsf.createFromPrj(new File(filePath));
+        CoordinateReferenceSystem crs = cRSFactory.createFromPrj(new File(filePath));
         assertNotNull(crs);
     }
 }

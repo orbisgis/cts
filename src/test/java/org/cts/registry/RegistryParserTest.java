@@ -32,23 +32,17 @@
 package org.cts.registry;
 
 import java.util.Map;
+import org.cts.CTSTestCase;
 import org.cts.parser.proj.ProjKeyParameters;
 import static org.junit.Assert.assertTrue;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
  *
  * @author Erwan Bocher
  */
-public class RegistryParserTest {
-
-        private RegistryManager registryManager;
-
-        @Before
-        public void setUp() {
-                registryManager = new RegistryManager();
-        }
+public class RegistryParserTest extends CTSTestCase{
+        
 
         @Test
         public void testEPSG() {
@@ -91,7 +85,7 @@ public class RegistryParserTest {
          * @return
          */
         public Map<String, String> getParameters(String registry, String code) {
-                Map<String, String> parameters = registryManager.getRegistry(registry).getParameters(code);
+                Map<String, String> parameters = cRSFactory.getRegistryManager().getRegistry(registry).getParameters(code);
                 return parameters;
         }
         
