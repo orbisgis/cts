@@ -126,7 +126,7 @@ public final class CoordinateOperationFactory {
                         target.fromGeographicCoordinateConverter()));
             } else {
                 NTv2GridShiftTransformation gt = (NTv2GridShiftTransformation) coordOp;
-                GeodeticDatum gtSource = GeodeticDatum.getGeodeticDatumFromShortName(gt.getFromDatum());
+                GeodeticDatum gtSource = GeodeticDatum.datumFromName.get(gt.getFromDatum());
                 if (sourceDatum.getCoordinateOperations(gtSource).isEmpty()) {
                     CoordinateOperationSequence opSeq = new CoordinateOperationSequence(
                             new Identifier(CoordinateOperationSequence.class, sourceDatum.getName() + " to " + gtSource.getName() + " through " + GeodeticDatum.WGS84.getName()),
@@ -161,7 +161,7 @@ public final class CoordinateOperationFactory {
                         target.fromGeographicCoordinateConverter()));
             } else {
                 NTv2GridShiftTransformation gt = (NTv2GridShiftTransformation) coordOp;
-                GeodeticDatum gtSource = GeodeticDatum.getGeodeticDatumFromShortName(gt.getFromDatum());
+                GeodeticDatum gtSource = GeodeticDatum.datumFromName.get(gt.getFromDatum());
                 if (gtSource.getCoordinateOperations(targetDatum).isEmpty()) {
                     CoordinateOperationSequence opSeq = new CoordinateOperationSequence(
                             new Identifier(CoordinateOperationSequence.class, gtSource.getName() + " to " + targetDatum.getName() + " through " + GeodeticDatum.WGS84.getName()),

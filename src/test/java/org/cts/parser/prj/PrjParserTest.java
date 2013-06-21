@@ -132,11 +132,10 @@ public class PrjParserTest {
         assertEquals(p.get("proj"), "lcc");
         assertEquals(p.get("units"), "m");
         assertEquals(p.get("pm"), "greenwich");
-        assertEquals(Double.parseDouble(p.get("a")), 6378137.0, 0);
+        assertEquals(p.get("datum"), "rgf93");
         assertEquals(Double.parseDouble(p.get("lon_0")), 3.0, 0);
         assertEquals(Double.parseDouble(p.get("x_0")), 700000.0, 0);
         assertEquals(Double.parseDouble(p.get("y_0")), 6600000.0, 0);
-        assertEquals(Double.parseDouble(p.get("rf")), 298.257222101, 0);
         assertEquals(Double.parseDouble(p.get("lat_1")), 44.0, 0);
         assertEquals(Double.parseDouble(p.get("lat_0")), 46.5, 0);
         assertEquals(Double.parseDouble(p.get("lat_2")), 49.0, 0);

@@ -238,10 +238,10 @@ public class NTv2GridShiftTransformation extends AbstractCoordinateOperation {
     }
 
     public String getFromDatum() {
-        return gsf.getFromEllipsoid().trim();
+        return gsf.getFromEllipsoid().trim().toLowerCase();
     }
 
     public String getToDatum() {
-        return gsf.getToEllipsoid().trim();
+        return gsf.getToEllipsoid().trim().toLowerCase();
     }
 }

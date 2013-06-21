@@ -34,7 +34,6 @@ package org.cts.parser.prj;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.cts.crs.CRSHelper;
 import org.cts.parser.proj.ProjKeyParameters;
 import org.cts.parser.proj.ProjValueParameters;
 
@@ -214,12 +213,6 @@ public final class PrjMatcher {
     private void parseDatum(List<PrjElement> ll) {
         String datum = getString(ll.get(0));
         datum = datum.replaceAll("[^a-zA-Z0-9]", "");
-        boolean found = false;
-        if (CRSHelper.isDatumSupported(datum)) {
-            params.put(ProjKeyParameters.datum, datum);
-            found = true;
-        }
-        if (!found) {
             String datm = PrjValueParameters.DATUMNAMES.get(datum.toLowerCase());
             if (datm!=null) {
                 params.put(ProjKeyParameters.datum, datm);
@@ -247,7 +240,6 @@ public final class PrjMatcher {
                     }
                 }
             }
-        }
     }
 
     private void parseUnit(List<PrjElement> ll) {

@@ -196,57 +196,23 @@ public class CRSHelper {
         }
 
         /**
-         * Returns true if the {@link org.cts.datum.GeodeticDatum} with this name is supported.
-         * TODO : add other datum
-         *
-         * @param datumName name of the GeodeticDatum to check
-         * @return true if datumName is supported
-         */
-        public static boolean isDatumSupported(String datumName) {
-                if (null != datumName) {
-                        if (datumName.equals(GeodeticDatum.WGS84.getName())) {
-                                return true;
-                        } else if (datumName.equals(GeodeticDatum.ED50.getName())) {
-                                return true;
-                        } else if (datumName.equals(GeodeticDatum.NTF.getName())) {
-                                return true;
-                        } else if (datumName.equals(GeodeticDatum.NTF_PARIS.getName())) {
-                                return true;
-                        } else if (datumName.equals(GeodeticDatum.RGF93.getName())) {
-                                return true;
-                        }
-                }
-                return false;
-        }
-
-        /**
          * Returns a {@link GeodeticDatum} from a map of parameters.
          */
         public static GeodeticDatum getDatum(Map<String, String> param) {
                 String datumName = param.get(ProjKeyParameters.datum);
+                GeodeticDatum gd = null;
                 if (null != datumName) {
-                        if (datumName.equalsIgnoreCase(GeodeticDatum.WGS84.getShortName())) {
-                                return GeodeticDatum.WGS84;
-                        } else if (datumName.equalsIgnoreCase(GeodeticDatum.ED50.getShortName())) {
-                                return GeodeticDatum.ED50;
-                        } else if (datumName.equalsIgnoreCase(GeodeticDatum.NTF.getShortName())) {
-                                return GeodeticDatum.NTF;
-                        } else if (datumName.equalsIgnoreCase(GeodeticDatum.NTF_PARIS.getShortName())) {
-                                return GeodeticDatum.NTF_PARIS;
-                        } else if (datumName.equalsIgnoreCase(GeodeticDatum.RGF93.getShortName())) {
-                                return GeodeticDatum.RGF93;
-                        }
+                    gd = GeodeticDatum.datumFromName.get(datumName.toLowerCase());
                } else {
                 Ellipsoid ell = getEllipsoid(param);
                 PrimeMeridian pm = getPrimeMeridian(param);
                 if (null != pm && null != ell) {
-                    GeodeticDatum gd = new GeodeticDatum(pm, ell);
+                    gd = new GeodeticDatum(pm, ell);
                     setDefaultWGS84Parameters(gd, param);
                     gd = gd.checkExistingGeodeticDatum();
-                    return gd;
                 }
             }
-            return null;
+            return gd;
         }
         
         private static void setNadgrids(GeodeticCRS crs, Map<String, String> param) {
@@ -261,11 +227,9 @@ public class CRSHelper {
                                     GeodeticDatum.WGS84.addCoordinateOperation(crs.getDatum(), Identity.IDENTITY);
                                 } else {
                                     try {
-                                        //NTv2GridShiftTransformation gt = new NTv2GridShiftTransformation(
-                                        //        GridShift.class.getResource(grid).toURI().toURL());
                                         NTv2GridShiftTransformation gt = NTv2GridShiftTransformation.createNTv2GridShiftTransformation(grid);
                                         gt.setMode(NTv2GridShiftTransformation.SPEED);
-                                        crs.addGridTransformation(GeodeticDatum.getGeodeticDatumFromShortName(gt.getToDatum()), gt);
+                                        crs.addGridTransformation(GeodeticDatum.datumFromName.get(gt.getToDatum()), gt);
                                     } catch (IOException ex) {
                                         LOGGER.error("Cannot found the nadgrid", ex);
                                     } catch (URISyntaxException ex) {
