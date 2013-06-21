@@ -362,40 +362,8 @@ public class CRSHelper {
                 String datum = param.get(ProjKeyParameters.datum);
 
                 if (null != ellipsoidName) {
-                        if (ellipsoidName.equals("GRS80")) {
-                                return Ellipsoid.GRS80;
-                        } else if (ellipsoidName.equals("WGS_1984") || (ellipsoidName.equals("WGS 84"))) {
-                                return Ellipsoid.WGS84;
-                        } else if (ellipsoidName.equals("International_1924") || ellipsoidName.equals("intl")) {
-                                return Ellipsoid.INTERNATIONAL1924;
-                        } else if (ellipsoidName.equals("clrk66")) {
-                                return Ellipsoid.CLARKE1866;
-                        } else if (ellipsoidName.equals("clrk80")) {
-                                return Ellipsoid.CLARKE1880ARC;
-                        } else if (ellipsoidName.equals("Clarke_1880_IGN")
-                                || ellipsoidName.equals("Clarke 1880 (IGN)")
-                                || ellipsoidName.equals("Clarke_1880")) {
-                                return Ellipsoid.CLARKE1880IGN;
-                        } else if (ellipsoidName.equals("Clarke_1880_RGS")
-                                || ellipsoidName.equals("Clarke 1880 (RGS)")) {
-                                return Ellipsoid.CLARKE1880RGS;
-                        } else if (ellipsoidName.equals("sphere")) {
-                                return Ellipsoid.SPHERE;
-                        } else if (ellipsoidName.equals("bessel")) {
-                                return Ellipsoid.BESSEL1841;
-                        } else if (ellipsoidName.equals("krass")) {
-                                return Ellipsoid.KRASSOWSKI;
-                        } else if (ellipsoidName.equals("evrstSS")) {
-                                return Ellipsoid.EVERESTSS;
-                        } else if (ellipsoidName.equals("GRS67")) {
-                                return Ellipsoid.GRS67;
-                        } else if (ellipsoidName.equals("aust_SA")) {
-                                return Ellipsoid.AustSA;
-                        } else {
-                                LOGGER.warn(ellipsoidName + " return default ellipsoid WGS84");
-                                return Ellipsoid.WGS84;
-                        }
-
+                    ellipsoidName = ellipsoidName.replaceAll("[^a-zA-Z0-9]", "");
+                    return Ellipsoid.ellipsoidFromName.get(ellipsoidName.toLowerCase());
                 } else if (null != a && (null != b || null != rf)) {
                         double a_ = Double.parseDouble(a);
                         if (null != b) {

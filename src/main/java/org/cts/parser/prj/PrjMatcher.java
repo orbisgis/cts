@@ -231,9 +231,15 @@ public final class PrjMatcher {
                 params.put(ProjKeyParameters.datum, datm);
             } else {
                 List<PrjElement> nn = matchNode(ll.get(1), PrjKeyParameters.SPHEROID);
-                //parseString(nn.get(0), "ellps");
+                String ellps = getString(nn.get(0));
+                ellps = ellps.replaceAll("[^a-zA-Z0-9]", "");
+                String elps = PrjValueParameters.ELLIPSOIDNAMES.get(ellps.toLowerCase());
+            if (elps!=null) {
+                params.put(ProjKeyParameters.ellps, elps);
+            } else {
                 parseNumber(nn.get(1), ProjKeyParameters.a);
                 parseNumber(nn.get(2), ProjKeyParameters.rf);
+            }
 
                 if (ll.size() > 2) {
                     List<PrjElement> els = matchNode(ll.get(2), ProjKeyParameters.towgs84, false);

@@ -53,6 +53,11 @@ public class PrjValueParameters {
      */
     public static final HashMap<String, String> DATUMNAMES = new HashMap<String, String>();
     
+    /**
+     * A map linking the name of ellipsoids used in PRJ file to the short name used in CTS.
+     */
+    public static final HashMap<String, String> ELLIPSOIDNAMES = new HashMap<String, String>();
+    
     static {
         PARAMNAMES.put("centralmeridian", "lon_0");
         PARAMNAMES.put("falseeasting", "x_0");
@@ -155,5 +160,38 @@ public class PrjValueParameters {
         DATUMNAMES.put("northamericandatum1983", "nad83");
         DATUMNAMES.put("nouvelletriangulationfrancaiseparis", "ntf");
         DATUMNAMES.put("potsdamrauenberg1950dhdn", "potsdam");
+        ELLIPSOIDNAMES.put("airy", "airy");
+        ELLIPSOIDNAMES.put("airy1830", "airy");
+        ELLIPSOIDNAMES.put("austsa", "austsa");
+        ELLIPSOIDNAMES.put("grs1967modified", "austsa");
+        ELLIPSOIDNAMES.put("grs1967sad69", "austsa");
+        ELLIPSOIDNAMES.put("bessel", "bessel");
+        ELLIPSOIDNAMES.put("bessel1841", "bessel");
+        ELLIPSOIDNAMES.put("bessnam", "bessnam");
+        ELLIPSOIDNAMES.put("besselnamibiaglm", "bessnam");
+        ELLIPSOIDNAMES.put("clrk66", "clrk66");
+        ELLIPSOIDNAMES.put("clarke1866", "clrk66");
+        ELLIPSOIDNAMES.put("clrk80", "clrk80");
+        ELLIPSOIDNAMES.put("clarke1880rgs", "clrk80");
+        ELLIPSOIDNAMES.put("Clarke1880IGN", "clrk80ign");
+        ELLIPSOIDNAMES.put("Clarke1880Arc", "clrk80arc");
+        ELLIPSOIDNAMES.put("evrstss", "evrstss");
+        ELLIPSOIDNAMES.put("everest18301967definition", "evrstss");
+        ELLIPSOIDNAMES.put("grs67", "grs67");
+        ELLIPSOIDNAMES.put("grs1967", "grs67");
+        ELLIPSOIDNAMES.put("grs80", "grs80");
+        ELLIPSOIDNAMES.put("grs1980", "grs80");
+        ELLIPSOIDNAMES.put("helmert", "helmert");
+        ELLIPSOIDNAMES.put("helmert1906", "helmert");
+        ELLIPSOIDNAMES.put("intl", "intl");
+        ELLIPSOIDNAMES.put("international1924", "intl");
+        ELLIPSOIDNAMES.put("modairy", "airymod");
+        ELLIPSOIDNAMES.put("airymodified1849", "airymod");
+        ELLIPSOIDNAMES.put("krass", "krass");
+        ELLIPSOIDNAMES.put("krassowsky1940", "krass");
+        ELLIPSOIDNAMES.put("wgs66", "wgs66");
+        ELLIPSOIDNAMES.put("nwl9d", "wgs66");
+        ELLIPSOIDNAMES.put("wgs72", "wgs72");
+        ELLIPSOIDNAMES.put("wgs84", "wgs84");
     }
 }
