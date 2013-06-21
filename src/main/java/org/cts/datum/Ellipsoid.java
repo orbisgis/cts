@@ -29,7 +29,7 @@
  *
  * For more information, please consult: <https://github.com/irstv/cts/>
  */
-package org.cts;
+package org.cts.datum;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.atan;
@@ -40,6 +40,9 @@ import static java.lang.Math.sin;
 import static java.lang.Math.sqrt;
 import static java.lang.Math.tan;
 import java.util.HashMap;
+import org.cts.Identifiable;
+import org.cts.IdentifiableComponent;
+import org.cts.Identifier;
 
 /**
  * An ellipsoid is a mathematical surface used to describe the Earth surface.<p>

@@ -15,7 +15,7 @@
  */
 package org.cts.parser.prj;
 
-import org.cts.CoordinateOperation;
+import org.cts.op.CoordinateOperation;
 import org.cts.Parameter;
 import org.cts.crs.CoordinateReferenceSystem;
 import org.cts.crs.Geographic2DCRS;

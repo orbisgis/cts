@@ -31,9 +31,9 @@
  */
 package org.cts.crs;
 
-import org.cts.CoordinateOperation;
+import org.cts.op.CoordinateOperation;
 import org.cts.Identifier;
-import org.cts.NonInvertibleOperationException;
+import org.cts.op.NonInvertibleOperationException;
 import org.cts.units.Unit;
 import org.cts.cs.Axis;
 import org.cts.cs.CoordinateSystem;

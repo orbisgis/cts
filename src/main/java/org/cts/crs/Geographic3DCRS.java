@@ -31,7 +31,7 @@
  */
 package org.cts.crs;
 
-import org.cts.CoordinateOperation;
+import org.cts.op.CoordinateOperation;
 import org.cts.Identifier;
 import org.cts.cs.Axis;
 import org.cts.cs.CoordinateSystem;

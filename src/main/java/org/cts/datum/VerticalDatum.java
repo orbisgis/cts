@@ -34,8 +34,7 @@ package org.cts.datum;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import org.cts.CoordinateOperation;
-import org.cts.Ellipsoid;
+import org.cts.op.CoordinateOperation;
 import org.cts.Identifier;
 import org.cts.cs.GeographicExtent;
 

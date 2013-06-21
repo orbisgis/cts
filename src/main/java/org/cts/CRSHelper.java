@@ -29,12 +29,13 @@
 *
 * For more information, please consult: <https://github.com/irstv/cts/>
 */
-package org.cts.crs;
+package org.cts;
 
+import org.cts.op.CoordinateOperation;
+import org.cts.datum.Ellipsoid;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import org.apache.log4j.Logger;
-import org.cts.*;
 import org.cts.cs.Axis;
 import org.cts.cs.CoordinateSystem;
 import org.cts.datum.GeodeticDatum;
@@ -51,6 +52,11 @@ import org.cts.units.Unit;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.cts.crs.CoordinateReferenceSystem;
+import org.cts.crs.GeocentricCRS;
+import org.cts.crs.GeodeticCRS;
+import org.cts.crs.Geographic3DCRS;
+import org.cts.crs.ProjectedCRS;
 import org.cts.op.transformation.NTv2GridShiftTransformation;
 
 /**

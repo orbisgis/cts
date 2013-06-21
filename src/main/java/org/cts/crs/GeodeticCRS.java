@@ -32,10 +32,10 @@
 package org.cts.crs;
 
 import java.util.HashMap;
-import org.cts.CoordinateOperation;
+import org.cts.op.CoordinateOperation;
 import org.cts.IdentifiableComponent;
 import org.cts.Identifier;
-import org.cts.NonInvertibleOperationException;
+import org.cts.op.NonInvertibleOperationException;
 import org.cts.cs.CoordinateSystem;
 import org.cts.datum.GeodeticDatum;
 import org.cts.op.projection.Projection;

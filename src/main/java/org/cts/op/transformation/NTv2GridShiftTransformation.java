@@ -31,6 +31,8 @@
  */
 package org.cts.op.transformation;
 
+import org.cts.op.NonInvertibleOperationException;
+import org.cts.op.CoordinateOperation;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -42,8 +44,8 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import org.apache.log4j.Logger;
 import org.cts.*;
-import org.cts.grid.GridShift;
-import org.cts.grid.GridShiftFile;
+import org.cts.op.transformation.grid.GridShift;
+import org.cts.op.transformation.grid.GridShiftFile;
 import org.cts.op.AbstractCoordinateOperation;
 
 /**

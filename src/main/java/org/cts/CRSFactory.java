@@ -32,7 +32,6 @@
 package org.cts;
 
 import org.cts.crs.CRSException;
-import org.cts.crs.CRSHelper;
 import org.cts.crs.CoordinateReferenceSystem;
 import org.cts.parser.prj.PrjParser;
 import org.cts.registry.Registry;

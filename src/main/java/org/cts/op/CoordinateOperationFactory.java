@@ -32,9 +32,7 @@
 package org.cts.op;
 
 import org.apache.log4j.Logger;
-import org.cts.CoordinateOperation;
 import org.cts.Identifier;
-import org.cts.NonInvertibleOperationException;
 import org.cts.crs.*;
 import org.cts.datum.Datum;
 import org.cts.datum.GeodeticDatum;

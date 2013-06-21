@@ -31,10 +31,8 @@
  */
 package org.cts.op;
 
-import org.cts.CoordinateOperation;
 import org.cts.Identifier;
 import org.cts.IllegalCoordinateException;
-import org.cts.NonInvertibleOperationException;
 
 /**
  * The identity transformation.<p> This transformation doesn't do anything.

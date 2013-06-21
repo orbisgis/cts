@@ -32,10 +32,8 @@
 package org.cts.op;
 
 import org.cts.CoordinateDimensionException;
-import org.cts.CoordinateOperation;
 import org.cts.Identifier;
 import org.cts.IllegalCoordinateException;
-import org.cts.NonInvertibleOperationException;
 
 /**
  * A class to switch to values in a double array.

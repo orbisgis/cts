@@ -31,6 +31,8 @@
  */
 package org.cts.datum;
 
+import org.cts.op.NonInvertibleOperationException;
+import org.cts.op.CoordinateOperation;
 import org.cts.*;
 import org.cts.cs.GeographicExtent;
 import org.cts.op.*;
