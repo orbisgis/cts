@@ -134,7 +134,23 @@ public class CRSFactory {
      */
     public CoordinateReferenceSystem createFromPrj(String prjString) {
         PrjParser p = new PrjParser();
-        return p.parse(prjString);
+        Map<String, String> prjParameters = p.getParameters(prjString);
+        String name = prjParameters.remove("name");
+        String refname = prjParameters.remove("refname");
+        CoordinateReferenceSystem crs;
+        if (refname != null) {
+            crs = CRSPOOL.get(refname);
+            if (crs == null) {
+                String[] authorityNameWithKey = refname.split(":");
+                crs = CRSHelper.createCoordinateReferenceSystem(new Identifier(authorityNameWithKey[0], authorityNameWithKey[1], name), prjParameters);
+            }
+            if (crs != null) {
+                CRSPOOL.put(refname, crs);
+            }
+        } else {
+            crs = CRSHelper.createCoordinateReferenceSystem(new Identifier(name, name, name), prjParameters);
+        }
+        return crs;
     }
 
     /**
