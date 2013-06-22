@@ -36,8 +36,8 @@ import java.util.List;
 /**
  * Identifiable is the interface implemented by geodetic objects issued from
  * registries (like the epsg database).<p>
- * {@link fr.cts.datum.Datum}s, {@link Ellipsoid} and
- * {@link fr.cts.crs.CoordinateReferenceSystem}s are Identifiable
+ * {@link org.cts.datum.Datum}s, {@link Ellipsoid} and
+ * {@link org.cts.crs.CoordinateReferenceSystem}s are Identifiable
  * objects.<p>
  * Well known geodetic databases are :
  * <ul>
