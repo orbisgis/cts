@@ -241,8 +241,8 @@ public class Ellipsoid extends IdentifiableComponent {
     }
 
     /**
-     * Return the square eccentricity of this ellipsoid (fr : carr� de
-     * l'excentricit�).
+     * Return the square eccentricity of this ellipsoid (fr : carré de
+     * l'excentricité).
      */
     public double getSquareEccentricity() {
         return e2;
@@ -250,7 +250,7 @@ public class Ellipsoid extends IdentifiableComponent {
 
     /**
      * Return the second eccentricity ((a-b)/b) of this ellipsoid (fr : seconde
-     * excentricit�).
+     * excentricité).
      */
     public double getSecondEccentricitySquared() {
         return e2 / (1.0 - e2);
@@ -650,7 +650,7 @@ public class Ellipsoid extends IdentifiableComponent {
 
     /**
      * Computes the geographic latitude from the isometric latitude (fr : calcul
-     * de la latitude geographique � partir de la latitude isometrique).<p>
+     * de la latitude géographique à partir de la latitude isométrique).<p>
      * Geographic latitude of a point P located on the surface of the ellipsoid
      * is the angle between the perpendicular to the ellipsoid surface at P and
      * the equatorial plan.<p> Isometric latitude is a function of geographic
@@ -661,7 +661,7 @@ public class Ellipsoid extends IdentifiableComponent {
      * href="http://www.ign.fr/rubrique.asp?rbr_id=1700&lng_id=FR#68096">
      * IGN</a> ALG0002
      *
-     * @param isoLatitude latitude isometrique
+     * @param isoLatitude isometric latitude
      * @param epsilon value controlling the stop condition of this convergent
      * sequence. Use 1E-10 for a precision of about 0.6 mm, 1E-11 for a
      * precision of about 0.06 mm and 1E-12 for a preciison of about 0.006 mm
@@ -684,10 +684,10 @@ public class Ellipsoid extends IdentifiableComponent {
     /**
      * Computes geographic latitude from isometric latitude. The process stops
      * as soon as the result reaches a pecision of 1.0E-11.<p> fr : Calcul la
-     * latitude g�ographique d'un point P � partir de sa latitude
-     * isom�trique.<p> La latitude g�ographique est d�finie comme �tant la
+     * latitude géographique d'un point P à partir de sa latitude
+     * isométrique.<p> La latitude géographique est définie comme étant la
      * limite d'une suite convergente. Le calcul de cette suite est interrompu
-     * lorsque la diff�rence entre deux termes cons�cutifs est plus petit que
+     * lorsque la différence entre deux termes consécutifs est plus petit que
      * 1E-11 (soit environ 0.006 mm).
      *
      * @param isoLatitude isometric latitude
@@ -715,7 +715,7 @@ public class Ellipsoid extends IdentifiableComponent {
     }
 
     /**
-     * @return a string representtaion of this ellipsoid.
+     * @return a string representation of this ellipsoid.
      */
     @Override
     public String toString() {
