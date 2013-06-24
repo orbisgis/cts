@@ -32,6 +32,7 @@
 package org.cts.parser.prj;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A class to manage all values used to fill a PRJ file
@@ -41,27 +42,27 @@ public class PrjValueParameters {
     /**
      * A map linking the name of parameters used in PRJ file to the name used in CTS.
      */
-    public static final HashMap<String, String> PARAMNAMES = new HashMap<String, String>();
+    public static final Map<String, String> PARAMNAMES = new HashMap<String, String>();
     
     /**
      * A map linking the name of projections used in PRJ file to the short name used in CTS.
      */
-    public static final HashMap<String, String> PROJNAMES = new HashMap<String, String>();
+    public static final Map<String, String> PROJNAMES = new HashMap<String, String>();
     
     /**
      * A map linking the name of datums used in PRJ file to the short name used in CTS.
      */
-    public static final HashMap<String, String> DATUMNAMES = new HashMap<String, String>();
+    public static final Map<String, String> DATUMNAMES = new HashMap<String, String>();
     
     /**
      * A map linking the name of ellipsoids used in PRJ file to the short name used in CTS.
      */
-    public static final HashMap<String, String> ELLIPSOIDNAMES = new HashMap<String, String>();
+    public static final Map<String, String> ELLIPSOIDNAMES = new HashMap<String, String>();
     
     /**
      * A map linking the name of prime meridians used in PRJ file to the short name used in CTS.
      */
-    public static final HashMap<String, String> PRIMEMERIDIANNAMES = new HashMap<String, String>();
+    public static final Map<String, String> PRIMEMERIDIANNAMES = new HashMap<String, String>();
     
     static {
         PARAMNAMES.put("centralmeridian", "lon_0");

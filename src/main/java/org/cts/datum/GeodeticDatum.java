@@ -68,7 +68,7 @@ public class GeodeticDatum extends AbstractDatum {
      * recognize it in CTS.
      * 
      */
-    public static final HashMap<String, GeodeticDatum> datumFromName = new HashMap<String, GeodeticDatum>();
+    public static final Map<String, GeodeticDatum> datumFromName = new HashMap<String, GeodeticDatum>();
 
     private final PrimeMeridian primeMeridian;
 

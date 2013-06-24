@@ -33,6 +33,7 @@ package org.cts.crs;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.cts.op.CoordinateOperation;
 import org.cts.IdentifiableComponent;
 import org.cts.Identifier;
@@ -55,9 +56,9 @@ public abstract class GeodeticCRS extends IdentifiableComponent
 
     private GeodeticDatum geodeticDatum;
     // A map of known grid transformations from this CRS, the key of the map is the target datum of the nadgrid.
-    private HashMap<GeodeticDatum, CoordinateOperation> nadgridsTransformation = new HashMap<GeodeticDatum, CoordinateOperation>();
+    private Map<GeodeticDatum, CoordinateOperation> nadgridsTransformation = new HashMap<GeodeticDatum, CoordinateOperation>();
     // A map of known transformations from this CRS to other CRS
-    private HashMap<CoordinateReferenceSystem, List<CoordinateOperation>> crsTransformation = new HashMap<CoordinateReferenceSystem, List<CoordinateOperation>>();
+    private Map<CoordinateReferenceSystem, List<CoordinateOperation>> crsTransformation = new HashMap<CoordinateReferenceSystem, List<CoordinateOperation>>();
 
     @Override
     public Projection getProjection() {

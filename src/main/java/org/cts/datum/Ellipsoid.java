@@ -40,6 +40,7 @@ import static java.lang.Math.sin;
 import static java.lang.Math.sqrt;
 import static java.lang.Math.tan;
 import java.util.HashMap;
+import java.util.Map;
 import org.cts.Identifiable;
 import org.cts.IdentifiableComponent;
 import org.cts.Identifier;
@@ -211,7 +212,7 @@ public class Ellipsoid extends IdentifiableComponent {
      * recognize it in CTS.
      * 
      */
-    public static final HashMap<String, Ellipsoid> ellipsoidFromName = new HashMap<String, Ellipsoid>();
+    public static final Map<String, Ellipsoid> ellipsoidFromName = new HashMap<String, Ellipsoid>();
     
     static {
         ellipsoidFromName.put("airy", AIRY);

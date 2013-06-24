@@ -32,6 +32,7 @@
 package org.cts.datum;
 
 import java.util.HashMap;
+import java.util.Map;
 import org.cts.IdentifiableComponent;
 import org.cts.Identifier;
 import org.cts.util.AngleFormat;
@@ -88,7 +89,7 @@ public class PrimeMeridian extends IdentifiableComponent {
      * recognize it in CTS.
      * 
      */
-    public static final HashMap<String, PrimeMeridian> primeMeridianFromName = new HashMap<String, PrimeMeridian>();
+    public static final Map<String, PrimeMeridian> primeMeridianFromName = new HashMap<String, PrimeMeridian>();
     static {
         primeMeridianFromName.put("greenwich", PrimeMeridian.GREENWICH);
         primeMeridianFromName.put("paris", PrimeMeridian.PARIS);
