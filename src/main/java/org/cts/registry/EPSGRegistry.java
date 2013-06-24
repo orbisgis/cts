@@ -34,6 +34,7 @@ package org.cts.registry;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 /**
  * This class parse the epsg file available in the resources package. It returns
@@ -43,7 +44,7 @@ import java.util.Set;
  */
 public class EPSGRegistry extends AbstractProjRegistry implements Registry {
 
-    String EPSG_REGEX = "\\s+|<>";
+    static final Pattern EPSG_REGEX = Pattern.compile("\\s+|<>");
 
     @Override
     public String getRegistryName() {

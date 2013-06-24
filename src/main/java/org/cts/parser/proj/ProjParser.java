@@ -39,6 +39,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 import org.cts.registry.Registry;
 
 /**
@@ -53,7 +54,7 @@ public class ProjParser {
         this.registry = registry;
     }
 
-    public Map<String, String> readParameters(String crsCode, String regexPattern)
+    public Map<String, String> readParameters(String crsCode, Pattern regexPattern)
             throws IOException {
         InputStream inStr = Registry.class.getResourceAsStream(registry.getRegistryName());
         if (inStr == null) {
@@ -80,9 +81,8 @@ public class ProjParser {
      * @return
      * @throws IOException
      */
-    private Map<String, String> readRegistry(BufferedReader br, String nameOfCRS, String regex) throws IOException {
+    private Map<String, String> readRegistry(BufferedReader br, String nameOfCRS, Pattern regex) throws IOException {
         String line;
-        //TODO : It will be great in the future to use this information.
         String crsName = null;
         while (null != (line = br.readLine())) {
             if (line.startsWith("#")) {
@@ -90,16 +90,16 @@ public class ProjParser {
                 // comment line preceding the projection definition
                 crsName = line.substring(1).trim();
             } else if (line.startsWith("<") && line.endsWith(">")) {
-                String[] tokens = line.split(regex);
+                String[] tokens = regex.split(line);
                 Map<String, String> v = new HashMap<String, String>();
                 String crsID;
-                boolean crsFounded = true;
+                boolean crsFound = true;
                 for (String token : tokens) {
                     if (token.startsWith("<") && token.endsWith(">")
                             && token.length() > 2) {
                         crsID = token.substring(1, token.length() - 1);
-                        if (!crsID.toLowerCase().equals(nameOfCRS.toLowerCase())) {
-                            crsFounded = false;
+                        if (!crsID.equalsIgnoreCase(nameOfCRS)) {
+                            crsFound = false;
                             crsName = null;
                             break;
                         }
@@ -119,7 +119,7 @@ public class ProjParser {
                     }
                 }
                 // found requested CRS?
-                if (crsFounded) {
+                if (crsFound) {
                     if (!v.containsKey(ProjKeyParameters.title) && crsName != null) {
                         v.put(ProjKeyParameters.title, crsName);
                     }
@@ -150,7 +150,7 @@ public class ProjParser {
      * @param regex pattern
      * @return
      */
-    public Set<String> getSupportedCodes(String regex) throws IOException {
+    public Set<String> getSupportedCodes(Pattern regex) throws IOException {
         InputStream inStr = Registry.class.getResourceAsStream(registry.getRegistryName());
         if (inStr == null) {
             throw new IllegalStateException("Unable to access CRS file: " + registry.getRegistryName());
@@ -162,7 +162,7 @@ public class ProjParser {
             while (null != (line = br.readLine())) {
                 if (line.startsWith("#")) {
                 } else if (line.startsWith("<") && line.endsWith(">")) {
-                    String[] tokens = line.split(regex);
+                    String[] tokens = regex.split(line);
                     for (String token : tokens) {
                         if (token.startsWith("<") && token.endsWith(">")
                                 && token.length() > 2) {
