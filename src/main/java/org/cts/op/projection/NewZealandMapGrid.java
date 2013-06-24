@@ -56,11 +56,11 @@ public class NewZealandMapGrid extends Projection {
     protected final Complex[] B;
 
     /**
-     * Create a new New Zealand Map Grid Projection corresponding to
-     * the <code>Ellipsoid</code> and the list of parameters given in argument
-     * and initialize common parameters lon0, lat0, FE, FN and other parameters
+     * Create a new New Zealand Map Grid Projection corresponding to the
+     * <code>Ellipsoid</code> and the list of parameters given in argument and
+     * initialize common parameters lon0, lat0, FE, FN and other parameters
      * useful for the projection.
-     * 
+     *
      * @param ellipsoid ellipsoid used to define the projection.
      * @param parameters a map of useful parameters to define the projection.
      */
@@ -111,10 +111,10 @@ public class NewZealandMapGrid extends Projection {
     }
 
     /**
-     * Transform coord using the New Zealand Map Grid Projection. Input
-     * coord is supposed to be a geographic latitude / longitude coordinate in
-     * radians. Algorithm based on the USGS professional paper 1395,
-     * "Map Projection - A Working Manual" by John P. Snyder :
+     * Transform coord using the New Zealand Map Grid Projection. Input coord is
+     * supposed to be a geographic latitude / longitude coordinate in radians.
+     * Algorithm based on the USGS professional paper 1395, "Map Projection - A
+     * Working Manual" by John P. Snyder :
      * <http://pubs.er.usgs.gov/publication/pp1395>
      *
      * @param coord coordinate to transform
@@ -123,8 +123,8 @@ public class NewZealandMapGrid extends Projection {
      */
     @Override
     public double[] transform(double[] coord) throws CoordinateDimensionException {
-        double lambda = coord[1] -lon0;
-        double isoPhi = ellipsoid.isometricLatitude(coord[0])-ellipsoid.isometricLatitude(lat0);
+        double lambda = coord[1] - lon0;
+        double isoPhi = ellipsoid.isometricLatitude(coord[0]) - ellipsoid.isometricLatitude(lat0);
         Complex zeta = new Complex(isoPhi, lambda);
         Complex origin = new Complex(FN, FE);
         Complex z = B[6].axpb(zeta, B[5]).axpb(zeta, B[4]).axpb(zeta, B[3]).axpb(zeta, B[2]).axpb(zeta, B[1]).times(zeta).times(ellipsoid.getSemiMajorAxis());
@@ -133,14 +133,14 @@ public class NewZealandMapGrid extends Projection {
         coord[1] = coordi.re();
         return coord;
     }
-    
+
     /**
-     * Creates the inverse operation for New Zealand Map Grid Projection.
-     * Input coord is supposed to be a projected easting / northing coordinate in meters.
-     * Algorithm based on the USGS professional paper 1395,
-     * "Map Projection - A Working Manual" by John P. Snyder :
+     * Creates the inverse operation for New Zealand Map Grid Projection. Input
+     * coord is supposed to be a projected easting / northing coordinate in
+     * meters. Algorithm based on the USGS professional paper 1395, "Map
+     * Projection - A Working Manual" by John P. Snyder :
      * <http://pubs.er.usgs.gov/publication/pp1395>
-     * 
+     *
      * @param coord coordinate to transform
      */
     @Override
@@ -163,7 +163,7 @@ public class NewZealandMapGrid extends Projection {
                         .divideBy(B[6].times(6).axpb(zeta, B[5].times(5)).axpb(zeta, B[4].times(4)).axpb(zeta, B[3].times(3)).axpb(zeta, B[2].times(2)).axpb(zeta, B[1]));
                 double lon = zeta.im();
                 double isoLat = zeta.re();
-                coord[0] = ellipsoid.latitude(isoLat+ellipsoid.isometricLatitude(lat0));
+                coord[0] = ellipsoid.latitude(isoLat + ellipsoid.isometricLatitude(lat0));
                 coord[1] = lon0 + lon;
                 return coord;
             }

@@ -52,15 +52,15 @@ public class EquidistantCylindrical extends Projection {
     protected final double lat0, // the reference latitude
             lon0, // the reference longitude (from the datum prime meridian)
             FE, // false easting
-            FN,   // false northing
+            FN, // false northing
             C; // constant of the projection
 
     /**
-     * Create a new Equidistant Cylindrical Projection corresponding to
-     * the <code>Ellipsoid</code> and the list of parameters given in argument
-     * and initialize common parameters lon0, lat0, FE, FN and C a constant useful
+     * Create a new Equidistant Cylindrical Projection corresponding to the
+     * <code>Ellipsoid</code> and the list of parameters given in argument and
+     * initialize common parameters lon0, lat0, FE, FN and C a constant useful
      * for the projection.
-     * 
+     *
      * @param ellipsoid ellipsoid used to define the projection.
      * @param parameters a map of useful parameters to define the projection.
      */
@@ -73,8 +73,8 @@ public class EquidistantCylindrical extends Projection {
         FN = getFalseNorthing();
         double lat_ts = getLatitudeOfTrueScale();
         double e2 = ellipsoid.getSquareEccentricity();
-        double k0 = cos(lat_ts)/sqrt(1 - e2*pow(sin(lat_ts),2));
-        C = getSemiMajorAxis()*k0;
+        double k0 = cos(lat_ts) / sqrt(1 - e2 * pow(sin(lat_ts), 2));
+        C = getSemiMajorAxis() * k0;
     }
 
     /**
@@ -109,8 +109,8 @@ public class EquidistantCylindrical extends Projection {
 
     /**
      * Transform coord using the Equidistant Cylindrical Projection. Input coord
-     * is supposed to be a geographic latitude / longitude coordinate in radians.
-     * Algorithm based on the OGP's Guidance Note Number 7 Part 2 :
+     * is supposed to be a geographic latitude / longitude coordinate in
+     * radians. Algorithm based on the OGP's Guidance Note Number 7 Part 2 :
      * <http://www.epsg.org/guides/G7-2.html>
      *
      * @param coord coordinate to transform
@@ -127,23 +127,22 @@ public class EquidistantCylindrical extends Projection {
         coord[1] = FN + N;
         return coord;
     }
-    
+
     /**
      * Creates the inverse operation for Equidistant Cylindrical Projection.
-     * Input coord is supposed to be a projected easting / northing coordinate in meters.
-     * Algorithm based on the OGP's Guidance Note Number 7 Part 2 :
+     * Input coord is supposed to be a projected easting / northing coordinate
+     * in meters. Algorithm based on the OGP's Guidance Note Number 7 Part 2 :
      * <http://www.epsg.org/guides/G7-2.html>
-     * 
+     *
      * @param coord coordinate to transform
      */
     @Override
     public CoordinateOperation inverse() throws NonInvertibleOperationException {
         return new EquidistantCylindrical(ellipsoid, parameters) {
-
             @Override
             public double[] transform(double[] coord) throws CoordinateDimensionException {
-                double lat = ellipsoid.latFromArc(coord[1]-FN);
-                coord[1] = (coord[0]-FE)/C + lon0;
+                double lat = ellipsoid.latFromArc(coord[1] - FN);
+                coord[1] = (coord[0] - FE) / C + lon0;
                 coord[0] = lat;
                 return coord;
             }

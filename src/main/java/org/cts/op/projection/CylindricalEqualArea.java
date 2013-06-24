@@ -52,16 +52,16 @@ public class CylindricalEqualArea extends Projection {
     protected final double lat_ts, // the latitude of true scale
             lon0, // the reference longitude (from the datum prime meridian)
             FE, // false easting
-            FN,   // false northing
+            FN, // false northing
             k0; // scale factor of the projection
-            
 
     /**
-     * Create a new Cylindrical Equal Area (normal case) Projection corresponding to
-     * the <code>Ellipsoid</code> and the list of parameters given in argument
-     * and initialize common parameters lon0, FE, FN and other parameters
-     * useful for the projection.
-     * 
+     * Create a new Cylindrical Equal Area (normal case) Projection
+     * corresponding to the
+     * <code>Ellipsoid</code> and the list of parameters given in argument and
+     * initialize common parameters lon0, FE, FN and other parameters useful for
+     * the projection.
+     *
      * @param ellipsoid ellipsoid used to define the projection.
      * @param parameters a map of useful parameters to define the projection.
      */
@@ -73,7 +73,7 @@ public class CylindricalEqualArea extends Projection {
         FE = getFalseEasting();
         FN = getFalseNorthing();
         double e2 = ellipsoid.getSquareEccentricity();
-        k0 = cos(lat_ts)/sqrt(1-e2*sin(lat_ts)*sin(lat_ts));
+        k0 = cos(lat_ts) / sqrt(1 - e2 * sin(lat_ts) * sin(lat_ts));
     }
 
     /**
@@ -105,23 +105,24 @@ public class CylindricalEqualArea extends Projection {
     public Orientation getOrientation() {
         return Projection.Orientation.SECANT;
     }
+
     /**
      * Calculation of q from the equation (3-12) of Snyder in the USGS
-     * professional paper 1395, "Map Projection - A Working Manual"
-     * by John P. Snyder :
+     * professional paper 1395, "Map Projection - A Working Manual" by John P.
+     * Snyder :
      * <http://pubs.er.usgs.gov/publication/pp1395>
      */
     private double q(double lat) {
         double e = ellipsoid.getEccentricity();
-        double esin = e*sin(lat);
-        return (1-e*e)*(sin(lat)/(1-esin*esin)-log((1-esin)/(1+esin))/2/e);
+        double esin = e * sin(lat);
+        return (1 - e * e) * (sin(lat) / (1 - esin * esin) - log((1 - esin) / (1 + esin)) / 2 / e);
     }
 
     /**
-     * Transform coord using the Cylindrical Equal Area Projection. Input
-     * coord is supposed to be a geographic latitude / longitude coordinate in
-     * radians. Algorithm based on the USGS professional paper 1395,
-     * "Map Projection - A Working Manual" by John P. Snyder :
+     * Transform coord using the Cylindrical Equal Area Projection. Input coord
+     * is supposed to be a geographic latitude / longitude coordinate in
+     * radians. Algorithm based on the USGS professional paper 1395, "Map
+     * Projection - A Working Manual" by John P. Snyder :
      * <http://pubs.er.usgs.gov/publication/pp1395>
      *
      * @param coord coordinate to transform
@@ -132,24 +133,23 @@ public class CylindricalEqualArea extends Projection {
     public double[] transform(double[] coord) throws CoordinateDimensionException {
         double lat = coord[0];
         double a = ellipsoid.getSemiMajorAxis();
-        coord[0] = FE + a*k0*(coord[1]-lon0);
-        coord[1] = FN + a*q(lat)/2/k0;
+        coord[0] = FE + a * k0 * (coord[1] - lon0);
+        coord[1] = FN + a * q(lat) / 2 / k0;
         return coord;
     }
-    
+
     /**
      * Creates the inverse operation for Cylindrical Equal Area Projection.
-     * Input coord is supposed to be a projected easting / northing coordinate in meters.
-     * Algorithm based on the USGS professional paper 1395,
-     * "Map Projection - A Working Manual" by John P. Snyder :
+     * Input coord is supposed to be a projected easting / northing coordinate
+     * in meters. Algorithm based on the USGS professional paper 1395, "Map
+     * Projection - A Working Manual" by John P. Snyder :
      * <http://pubs.er.usgs.gov/publication/pp1395>
-     * 
+     *
      * @param coord coordinate to transform
      */
     @Override
     public CoordinateOperation inverse() throws NonInvertibleOperationException {
         return new CylindricalEqualArea(ellipsoid, parameters) {
-
             @Override
             public double[] transform(double[] coord) throws CoordinateDimensionException {
                 double a = ellipsoid.getSemiMajorAxis();
@@ -175,7 +175,7 @@ public class CylindricalEqualArea extends Projection {
                     }
                     coord[0] = lat;
                 }
-                coord[1] = lon0 + (X-FE)/a/k0;
+                coord[1] = lon0 + (X - FE) / a / k0;
                 return coord;
             }
         };

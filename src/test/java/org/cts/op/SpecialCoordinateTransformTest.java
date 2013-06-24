@@ -51,13 +51,13 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 /**
- * This class contains tests that uses CRS not present in registries and thus needing
- * a special treatment.
- * 
+ * This class contains tests that uses CRS not present in registries and thus
+ * needing a special treatment.
+ *
  * @author Jules Party
  */
 public class SpecialCoordinateTransformTest extends BaseCoordinateTransformTest {
-    
+
     @Test
     public void testPolyconic() throws Exception {
         double csNameSrc_X = -45;
@@ -80,7 +80,7 @@ public class SpecialCoordinateTransformTest extends BaseCoordinateTransformTest 
         //printCRStoWKT(inputCRS);
         //printCRStoWKT(outputCRS);
         assertTrue(checkEquals2D("POLY dir--> " + "EPSG:4674" + " to " + "SIRGAS 2000 / Brazil Polyconic", result, pointDest, tolerance));
-        assertTrue(checkEquals2D("POLY inv--> " + "SIRGAS 2000 / Brazil Polyconic" + " to " +"EPSG:4674", check, pointSource, tolerance));
+        assertTrue(checkEquals2D("POLY inv--> " + "SIRGAS 2000 / Brazil Polyconic" + " to " + "EPSG:4674", check, pointSource, tolerance));
     }
 
     @Test
@@ -104,7 +104,7 @@ public class SpecialCoordinateTransformTest extends BaseCoordinateTransformTest 
         assertTrue(checkEquals2D("CEA dir--> ", result, pointDest, tolerance));
         assertTrue(checkEquals2D("CEA inv--> ", check, pointSource, tolerance));
     }
-    
+
     @Test
     public void testMillerCylindrical() throws Exception {
         Map<String, Measure> map = new HashMap<String, Measure>();

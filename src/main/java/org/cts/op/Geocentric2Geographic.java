@@ -45,20 +45,21 @@ import org.cts.IllegalCoordinateException;
 /**
  * <p>Transform geographic coordinates (latitude, longitude, ellipsoidal height
  * into geocentric coordinates.</p>
- * <p>Geographic coordinates and geocentric coordinates are supposed to use
- * the same reference datum and to be standardized :</p>
+ * <p>Geographic coordinates and geocentric coordinates are supposed to use the
+ * same reference datum and to be standardized :</p>
  * <ul>
  * <li>Geographic coordinates are given in the following order : latitude
  * (radians), longitude (radians from Greenwich) and optionnaly ellipsoidal
  * height (default = 0.0).</li>
- * <li>The center of the geocentric system (center of the mass) is equal to
- * the geographic coordinates reference ellipsoid.</p>
+ * <li>The center of the geocentric system (center of the mass) is equal to the
+ * geographic coordinates reference ellipsoid.</p>
  * <li>Z axis is oriented from origin to North Pole</li>
  * <li>Y axis is oriented from origin to intersection of equator and Greenwich
  * Meridian</li>
  * <li>OXYZ is direct</li>
  * <li>Units = radian, meter (to facilitate transformation operations).</li>
  * </ul>
+ *
  * @author Michaël Michaud
  */
 public class Geocentric2Geographic extends AbstractCoordinateOperation {
@@ -114,9 +115,8 @@ public class Geocentric2Geographic extends AbstractCoordinateOperation {
      * coordinates in the following order : latitude (radians), longitude
      * (radians from Greenwich) and optionnaly ellipsoidal height (if coord
      * contains only 2 double's, height is set to 0).
-     * @throws IllegalCoordinateException if
-     * <code>coord</code> is not compatible with this
-     * <code>CoordinateOperation</code>.
+     * @throws IllegalCoordinateException if <code>coord</code> is not
+     * compatible with this <code>CoordinateOperation</code>.
      */
     @Override
     public double[] transform(double[] coord)

@@ -128,7 +128,7 @@ public class UserDefinedTransform extends BaseCoordinateTransformTest {
         double[] result = LAMBERT1_I.transform(pointSource);
         result = LongitudeRotation.PARIS2GREENWICH.transform(result);
         assertTrue(checkEquals("Lambert I to Geographic in radians", result, new double[]{
-                    0.87266462600, 0.14551209931}, 1E-7));
+            0.87266462600, 0.14551209931}, 1E-7));
     }
 
     @Test
@@ -162,7 +162,7 @@ public class UserDefinedTransform extends BaseCoordinateTransformTest {
         double[] result = LongitudeRotation.GREENWICH2PARIS.transform(pointSource);
         result = LAMBERT1.transform(result);
         checkEquals("From Geographic radians to Lambert 1", result, new double[]{
-                    1029705.083, 272723.849}, 1E-3);
+            1029705.083, 272723.849}, 1E-3);
     }
 
     @Test

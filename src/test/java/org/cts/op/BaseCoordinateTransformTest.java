@@ -83,15 +83,15 @@ public class BaseCoordinateTransformTest extends CTSTestCase {
                 System.out.println(ops.get(0));
             }
             return ops.get(0).transform(new double[]{inputPoint[0], inputPoint[1], inputPoint[2]});
-        }
-        else {
-            return new double[]{0.0d,0.0d,0.0d};
+        } else {
+            return new double[]{0.0d, 0.0d, 0.0d};
         }
     }
 
     /**
      * Display the CRS in a WKT representation
-     * @param crs 
+     *
+     * @param crs
      */
     public void printCRStoWKT(CoordinateReferenceSystem crs) {
         System.out.println(PrjWriter.crsToWKT(crs));

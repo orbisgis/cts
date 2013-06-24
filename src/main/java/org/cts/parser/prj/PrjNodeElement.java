@@ -34,7 +34,7 @@ package org.cts.parser.prj;
 import java.util.List;
 
 /**
- * 
+ *
  * @author Antoine Gourlay
  */
 public class PrjNodeElement extends AbstractPrjElement {

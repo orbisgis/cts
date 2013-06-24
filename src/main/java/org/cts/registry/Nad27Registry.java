@@ -37,8 +37,8 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 /**
- * This class parse the nad27 file available in the resources package. It returns
- * the coresponding parameters to a code specified in the registry file.
+ * This class parse the nad27 file available in the resources package. It
+ * returns the coresponding parameters to a code specified in the registry file.
  *
  * @author Erwan Bocher
  */

@@ -49,9 +49,9 @@ public class CoordinateOperationSequence extends AbstractCoordinateOperation {
     protected static final Logger LOG = Logger.getLogger(CoordinateOperationSequence.class);
 
     /**
-     * Create a CoordinateOperationSequence from an identifier and an array of {@link org.cts.CoordinateOperation}s.
-     * Precision of this sequence is considered as the sum of all single
-     * {@link org.cts.CoordinateOperation}.
+     * Create a CoordinateOperationSequence from an identifier and an array of
+     * {@link org.cts.CoordinateOperation}s. Precision of this sequence is
+     * considered as the sum of all single {@link org.cts.CoordinateOperation}.
      *
      * @param identifier this operation sequence identifier
      * @param sequence an array containing ordered operations to apply to
@@ -67,9 +67,9 @@ public class CoordinateOperationSequence extends AbstractCoordinateOperation {
     }
 
     /**
-     * Create a CoordinateOperationSequence from an identifier and a List of {@link org.cts.CoordinateOperation}s.
-     * Precision of this sequence is considered as the sum of all single
-     * {@link org.cts.CoordinateOperation}.
+     * Create a CoordinateOperationSequence from an identifier and a List of
+     * {@link org.cts.CoordinateOperation}s. Precision of this sequence is
+     * considered as the sum of all single {@link org.cts.CoordinateOperation}.
      *
      * @param identifier this operation sequence identifier
      * @param list a list containing ordered operations to apply to coordinates
@@ -117,12 +117,12 @@ public class CoordinateOperationSequence extends AbstractCoordinateOperation {
     /**
      * Implementation of the transform method for a sequence of transformation.
      * It is important that input coordinate is a 3D coordinate because any of
-     * the coordinate operation of the sequence may be a 3D coordinate of {@link org.cts.CoordinateOperation}s.
+     * the coordinate operation of the sequence may be a 3D coordinate of
+     * {@link org.cts.CoordinateOperation}s.
      *
      * @param coord the 3D coord to transform
-     * @throws IllegalCoordinateException if
-     * <code>coord</code> is not compatible with this
-     * <code>CoordinateOperation</code>.
+     * @throws IllegalCoordinateException if <code>coord</code> is not
+     * compatible with this <code>CoordinateOperation</code>.
      */
     @Override
     public double[] transform(double[] coord)
@@ -132,7 +132,7 @@ public class CoordinateOperationSequence extends AbstractCoordinateOperation {
         }
         return coord;
     }
-    
+
     /**
      * Creates the inverse CoordinateOperation.
      */
@@ -152,7 +152,8 @@ public class CoordinateOperationSequence extends AbstractCoordinateOperation {
 
     /**
      * Return the sequence of the coordinateOperation
-     * @return 
+     *
+     * @return
      */
     CoordinateOperation[] getSequence() {
         return sequence;

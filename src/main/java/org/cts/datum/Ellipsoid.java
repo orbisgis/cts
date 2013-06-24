@@ -134,12 +134,14 @@ public class Ellipsoid extends IdentifiableComponent {
     public static final Ellipsoid EVERESTSS = createEllipsoidFromInverseFlattening(
             new Identifier("EPSG", "7016", "Everest 1830 (1967 Definition)", "evrstSS"), 6377298.556, 300.8017);
     /**
-     * GRS 1967 ellipsoid, used in Australian Geodetic Datum and in South American Datum 1969.
+     * GRS 1967 ellipsoid, used in Australian Geodetic Datum and in South
+     * American Datum 1969.
      */
     public static final Ellipsoid GRS67 = createEllipsoidFromInverseFlattening(
             new Identifier("EPSG", "7036", "GRS 1967", "GRS67"), 6378160, 298.247167427);
     /**
-     * GRS 1967 (SAD 1969) ellipsoid, used in Australian Geodetic Datum and in South American Datum 1969.
+     * GRS 1967 (SAD 1969) ellipsoid, used in Australian Geodetic Datum and in
+     * South American Datum 1969.
      */
     public static final Ellipsoid AustSA = createEllipsoidFromInverseFlattening(
             new Identifier("EPSG", "7050", "GRS 1967 (SAD 1969)", "aust_SA"), 6378160, 298.25);
@@ -173,7 +175,6 @@ public class Ellipsoid extends IdentifiableComponent {
      */
     public static final Ellipsoid WGS72 = createEllipsoidFromInverseFlattening(
             new Identifier("EPSG", "7043", "WGS 72", "WGS72"), 6378135, 298.26);
-    
     private double semiMajorAxis;
     transient SecondParameter secondParameter;
     // Following fields are initialized at construction time
@@ -206,14 +207,13 @@ public class Ellipsoid extends IdentifiableComponent {
     transient private double[] kk;
     //coefficients used by the inverse Mercator projection
     transient private double[] inv_merc_coeff;
-    
     /**
      * ellipsoidFromName associates each ellipsoid to a short string used to
      * recognize it in CTS.
-     * 
+     *
      */
     public static final Map<String, Ellipsoid> ellipsoidFromName = new HashMap<String, Ellipsoid>();
-    
+
     static {
         ellipsoidFromName.put("airy", AIRY);
         ellipsoidFromName.put("austsa", AustSA);
@@ -233,7 +233,7 @@ public class Ellipsoid extends IdentifiableComponent {
         ellipsoidFromName.put("wgs66", WGS66);
         ellipsoidFromName.put("wgs72", WGS72);
         ellipsoidFromName.put("wgs84", WGS84);
-        
+
     }
 
     /**
@@ -348,7 +348,7 @@ public class Ellipsoid extends IdentifiableComponent {
         initKCoeff(max);
         return kk;
     }
-    
+
     /**
      * Get coefficients for the inverse Mercator projection
      */
@@ -370,7 +370,7 @@ public class Ellipsoid extends IdentifiableComponent {
             throws IllegalArgumentException {
         Identifier id = new Identifier(Ellipsoid.class, Identifiable.UNKNOWN);
         Ellipsoid ellps = new Ellipsoid(id, semiMajorAxis,
-                 SecondParameter.InverseFlattening, invFlattening);
+                SecondParameter.InverseFlattening, invFlattening);
         return ellps.checkExistingEllipsoid();
     }
 
@@ -389,7 +389,7 @@ public class Ellipsoid extends IdentifiableComponent {
             double invFlattening)
             throws IllegalArgumentException {
         Ellipsoid ellps = new Ellipsoid(identifier, semiMajorAxis,
-                 SecondParameter.InverseFlattening, invFlattening);
+                SecondParameter.InverseFlattening, invFlattening);
         return ellps.checkExistingEllipsoid();
     }
 
@@ -407,7 +407,7 @@ public class Ellipsoid extends IdentifiableComponent {
             throws IllegalArgumentException {
         Identifier id = new Identifier(Ellipsoid.class, Identifiable.UNKNOWN);
         Ellipsoid ellps = new Ellipsoid(id, semiMajorAxis,
-                 SecondParameter.SemiMinorAxis, semiMinorAxis);
+                SecondParameter.SemiMinorAxis, semiMinorAxis);
         return ellps.checkExistingEllipsoid();
     }
 
@@ -426,7 +426,7 @@ public class Ellipsoid extends IdentifiableComponent {
             double semiMinorAxis)
             throws IllegalArgumentException {
         Ellipsoid ellps = new Ellipsoid(identifier, semiMajorAxis,
-                 SecondParameter.SemiMinorAxis, semiMinorAxis);
+                SecondParameter.SemiMinorAxis, semiMinorAxis);
         return ellps.checkExistingEllipsoid();
     }
 
@@ -444,7 +444,7 @@ public class Ellipsoid extends IdentifiableComponent {
             throws IllegalArgumentException {
         Identifier id = new Identifier(Ellipsoid.class, Identifiable.UNKNOWN);
         Ellipsoid ellps = new Ellipsoid(id, semiMajorAxis,
-                 SecondParameter.Eccentricity, eccentricity);
+                SecondParameter.Eccentricity, eccentricity);
         return ellps.checkExistingEllipsoid();
     }
 
@@ -461,10 +461,10 @@ public class Ellipsoid extends IdentifiableComponent {
             Identifier identifier, double semiMajorAxis, double eccentricity)
             throws IllegalArgumentException {
         Ellipsoid ellps = new Ellipsoid(identifier, semiMajorAxis,
-                 SecondParameter.Eccentricity, eccentricity);
+                SecondParameter.Eccentricity, eccentricity);
         return ellps.checkExistingEllipsoid();
     }
-    
+
     private Ellipsoid checkExistingEllipsoid() {
         if (this.equals(Ellipsoid.GRS80)) {
             return Ellipsoid.GRS80;
@@ -505,7 +505,7 @@ public class Ellipsoid extends IdentifiableComponent {
         } else {
             return this;
         }
-     }
+    }
 
     /**
      * Since version 0&#046;3 : initialization of all the double parameters of
@@ -635,7 +635,7 @@ public class Ellipsoid extends IdentifiableComponent {
      * = new Complex(kk[0],0.0); Complex k = new Complex(1.0,0.0); for(int n = 1
      * ; n < kk.length ; n++) { k = k.times((2.*n)/(2.*n+1.0)).times(cos2);
      * result = result.plus(k.times(kk[n])); } return(result);
-	}
+     }
      */
     /**
      * Computes the meridian arc from equator to point with ellipsoidal latitude
@@ -669,7 +669,6 @@ public class Ellipsoid extends IdentifiableComponent {
         }
         return (Math.atan(Math.tan(beta) / (1. - f)));
     }
-
 
     /**
      * The Meridional Radius of Curvature is the radius of curvature, at a

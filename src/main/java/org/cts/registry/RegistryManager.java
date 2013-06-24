@@ -45,7 +45,6 @@ public final class RegistryManager {
     static final Logger LOGGER = Logger.getLogger(RegistryManager.class);
     private final Map<String, Class<? extends Registry>> registries = new HashMap<String, Class<? extends Registry>>();
     private final List<RegistryManagerListener> listeners = new ArrayList<RegistryManagerListener>();
-    
 
     /**
      * Create a registry manager filled with all internal registries

@@ -45,8 +45,8 @@ import org.cts.op.projection.Projection;
 /**
  * A geodetic {@link org.cts.crs.CoordinateReferenceSystem} is a coordinate
  * system based on a {@link org.cts.datum.GeodeticDatum}, a
- * {@link org.cts.datum.PrimeMeridian} and an {@link org.cts.Ellipsoid}.
- * It is an abstract class including Geographic3D, Geographic2D and Projected
+ * {@link org.cts.datum.PrimeMeridian} and an {@link org.cts.Ellipsoid}. It is
+ * an abstract class including Geographic3D, Geographic2D and Projected
  * CoordinateReferenceSystems.
  *
  * @author Michaël Michaud
@@ -116,30 +116,33 @@ public abstract class GeodeticCRS extends IdentifiableComponent
     public boolean isValid(double[] coord) {
         return geodeticDatum.getExtent().isInside(coord);
     }
-    
+
     /**
-     * Add a Nadgrids Transformation for this CRS to the CRS using the key datum.
+     * Add a Nadgrids Transformation for this CRS to the CRS using the key
+     * datum.
      */
     public void addGridTransformation(GeodeticDatum gd, CoordinateOperation coordOp) {
         nadgridsTransformation.put(gd, coordOp);
     }
-    
+
     /**
-     * Return the list of nadgrids transformation defined for this CRS that used the datum in parameter as target datum.
+     * Return the list of nadgrids transformation defined for this CRS that used
+     * the datum in parameter as target datum.
      */
     public CoordinateOperation getGridTransformation(GeodeticDatum datum) {
         return nadgridsTransformation.get(datum);
     }
-    
+
     /**
      * Add a transformation for this CRS to the CRS in parameter.
      */
     public void addCRSTransformation(CoordinateReferenceSystem crs, List<CoordinateOperation> opList) {
         crsTransformation.put(crs, opList);
     }
-    
+
     /**
-     * Return the list of transformation defined for this CRS to the CRS in parameter.
+     * Return the list of transformation defined for this CRS to the CRS in
+     * parameter.
      */
     public List<CoordinateOperation> getCRSTransformation(CoordinateReferenceSystem crs) {
         return crsTransformation.get(crs);

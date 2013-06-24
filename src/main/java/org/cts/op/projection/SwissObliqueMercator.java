@@ -55,18 +55,19 @@ public class SwissObliqueMercator extends Projection {
             lonc, // longitude of the projection center
             kc, // scale factor on the initial line
             FE, // false easting
-            FN,   // false northing
+            FN, // false northing
             alpha, // relation between longitude on sphere and on ellipsoid
             b0, // latitude of the foundamental point on the sphere
             K, // constant of the latitude formula
             R; // Radius of the projection sphere
 
     /**
-     * Create a new Swiss Oblique Stereographic Alternative Projection corresponding to
-     * the <code>Ellipsoid</code> and the list of parameters given in argument
-     * and initialize common parameters FE, FN and other parameters
-     * useful for the projection.
-     * 
+     * Create a new Swiss Oblique Stereographic Alternative Projection
+     * corresponding to the
+     * <code>Ellipsoid</code> and the list of parameters given in argument and
+     * initialize common parameters FE, FN and other parameters useful for the
+     * projection.
+     *
      * @param ellipsoid ellipsoid used to define the projection.
      * @param parameters a map of useful parameters to define the projection.
      */
@@ -80,11 +81,11 @@ public class SwissObliqueMercator extends Projection {
         kc = getScaleFactor();
         double e = ellipsoid.getEccentricity();
         double e2 = ellipsoid.getSquareEccentricity();
-        double esin = e*sin(latc);
-        alpha = sqrt(1+(e2*pow(cos(latc), 4)/(1-e2)));
-        R = ellipsoid.getSemiMajorAxis()*kc*sqrt(1-e2)/(1-esin*esin);
-        b0 = asin(sin(latc)/alpha);
-        K = log(tan((PI/2+b0)/2)) - alpha*log(tan((PI/2+latc)/2)) + alpha*e/2*log((1+e*sin(latc))/(1-e*sin(latc)));
+        double esin = e * sin(latc);
+        alpha = sqrt(1 + (e2 * pow(cos(latc), 4) / (1 - e2)));
+        R = ellipsoid.getSemiMajorAxis() * kc * sqrt(1 - e2) / (1 - esin * esin);
+        b0 = asin(sin(latc) / alpha);
+        K = log(tan((PI / 2 + b0) / 2)) - alpha * log(tan((PI / 2 + latc) / 2)) + alpha * e / 2 * log((1 + e * sin(latc)) / (1 - e * sin(latc)));
     }
 
     /**
@@ -118,9 +119,10 @@ public class SwissObliqueMercator extends Projection {
     }
 
     /**
-     * Transform coord using the Swiss Oblique Mercator Projection. Input coord is supposed to
-     * be a geographic latitude / longitude coordinate in radians.
-     * Algorithm based on a Swiss Federal Office of Topography document :
+     * Transform coord using the Swiss Oblique Mercator Projection. Input coord
+     * is supposed to be a geographic latitude / longitude coordinate in
+     * radians. Algorithm based on a Swiss Federal Office of Topography document
+     * :
      * <http://www.swisstopo.admin.ch/internet/swisstopo/en/home/topics/survey/sys/refsys/switzerland.parsysrelated1.37696.downloadList.97912.DownloadFile.tmp/swissprojectionen.pdf>
      *
      * @param coord coordinate to transform
@@ -130,57 +132,57 @@ public class SwissObliqueMercator extends Projection {
     @Override
     public double[] transform(double[] coord) throws CoordinateDimensionException {
         double e = ellipsoid.getEccentricity();
-        double S = alpha*log(tan((PI/2+coord[0])/2)) - alpha*e/2*log((1+e*sin(coord[0]))/(1-e*sin(coord[0])))+K;
-        double b = 2*(atan(exp(S))-PI/4);
-        double I = alpha*(coord[1]-lonc);
-        double Ibar = atan(sin(I)/(sin(b0)*tan(b)+cos(b0)*cos(I)));
-        double bbar = asin(cos(b0)*sin(b)-sin(b0)*cos(b)*cos(I));
-        double Y = R*Ibar;
-        double X = R/2*log((1+sin(bbar))/(1-sin(bbar)));
+        double S = alpha * log(tan((PI / 2 + coord[0]) / 2)) - alpha * e / 2 * log((1 + e * sin(coord[0])) / (1 - e * sin(coord[0]))) + K;
+        double b = 2 * (atan(exp(S)) - PI / 4);
+        double I = alpha * (coord[1] - lonc);
+        double Ibar = atan(sin(I) / (sin(b0) * tan(b) + cos(b0) * cos(I)));
+        double bbar = asin(cos(b0) * sin(b) - sin(b0) * cos(b) * cos(I));
+        double Y = R * Ibar;
+        double X = R / 2 * log((1 + sin(bbar)) / (1 - sin(bbar)));
         coord[0] = FE + Y;
         coord[1] = FN + X;
         return coord;
     }
-    
+
     private double findLatSwissObliqueMercator(double b) {
         final int MAXITER = 10;
         double e = ellipsoid.getEccentricity();
         double oldLat = 1E30;
         double S;
-        double lat=b;
-        int iter=0;
-        while (++iter<MAXITER && Math.abs(lat-oldLat)> 1E-15) {
+        double lat = b;
+        int iter = 0;
+        while (++iter < MAXITER && Math.abs(lat - oldLat) > 1E-15) {
             oldLat = lat;
-            S = (log(tan((PI/2+b)/2))-K)/alpha + e*log(tan((PI/2+asin(e*sin(oldLat)))/2));
-            lat = 2*(atan(exp(S))-PI/4);
+            S = (log(tan((PI / 2 + b) / 2)) - K) / alpha + e * log(tan((PI / 2 + asin(e * sin(oldLat))) / 2));
+            lat = 2 * (atan(exp(S)) - PI / 4);
         }
-        if (iter==MAXITER) {
+        if (iter == MAXITER) {
             throw new ArithmeticException("The findLatSwissObliqueMercator method diverges");
         }
         return lat;
     }
-    
+
     /**
      * Creates the inverse operation for Swiss Oblique Mercator Projection.
-     * Input coord is supposed to be a projected easting / northing coordinate in meters.
-     * Algorithm based on a Swiss Federal Office of Topography document:
+     * Input coord is supposed to be a projected easting / northing coordinate
+     * in meters. Algorithm based on a Swiss Federal Office of Topography
+     * document:
      * <http://www.swisstopo.admin.ch/internet/swisstopo/en/home/topics/survey/sys/refsys/switzerland.parsysrelated1.37696.downloadList.97912.DownloadFile.tmp/swissprojectionen.pdf>
-     * 
+     *
      * @param coord coordinate to transform
      */
     @Override
     public CoordinateOperation inverse() throws NonInvertibleOperationException {
         return new SwissObliqueMercator(ellipsoid, parameters) {
-
             @Override
             public double[] transform(double[] coord) throws CoordinateDimensionException {
-                double X = (coord[1]-FN);
-                double Y = (coord[0]-FE);
-                double Ibar = Y/R;
-                double bbar = 2*(atan(exp(X/R))-PI/4);
-                double b = asin(cos(b0)*sin(bbar)+sin(b0)*cos(bbar)*cos(Ibar));
-                double I = atan(sin(Ibar)/(cos(b0)*cos(Ibar)-sin(b0)*tan(bbar)));
-                coord[1] = lonc + I/alpha;
+                double X = (coord[1] - FN);
+                double Y = (coord[0] - FE);
+                double Ibar = Y / R;
+                double bbar = 2 * (atan(exp(X / R)) - PI / 4);
+                double b = asin(cos(b0) * sin(bbar) + sin(b0) * cos(bbar) * cos(Ibar));
+                double I = atan(sin(Ibar) / (cos(b0) * cos(Ibar) - sin(b0) * tan(bbar)));
+                coord[1] = lonc + I / alpha;
                 coord[0] = findLatSwissObliqueMercator(b);
                 return coord;
             }

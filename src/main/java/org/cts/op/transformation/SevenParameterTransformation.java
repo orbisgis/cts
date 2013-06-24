@@ -336,9 +336,8 @@ public class SevenParameterTransformation extends AbstractCoordinateOperation im
      * Transform coord values
      *
      * @param coord the coordinate to transform
-     * @throws IllegalCoordinateException if
-     * <code>coord</code> is not compatible with this
-     * <code>CoordinateOperation</code>.
+     * @throws IllegalCoordinateException if <code>coord</code> is not
+     * compatible with this <code>CoordinateOperation</code>.
      */
     @Override
     public double[] transform(double[] coord) throws IllegalCoordinateException {
@@ -387,7 +386,6 @@ public class SevenParameterTransformation extends AbstractCoordinateOperation im
         // for linearized operation with large rotations
         return new SevenParameterTransformation(tx, ty, tz, rx, ry, rz, scale,
                 rotationConvention, linearized, precision) {
-
             @Override
             public double[] transform(double[] coord) throws IllegalCoordinateException {
                 if (coord.length != 3) {

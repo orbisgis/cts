@@ -45,7 +45,7 @@ import org.cts.op.transformation.GeocentricTranslation;
  * @author Jules Party
  */
 public class GeodeticDatumTest extends CTSTestCase {
-    
+
     @Test
     public void testWGS84() {
         assertTrue("WGS84_geTtoWGS84",
@@ -57,7 +57,7 @@ public class GeodeticDatumTest extends CTSTestCase {
         assertTrue("WGS84_getExtend",
                 WGS84.getExtent().equals(GeographicExtent.WORLD));
     }
-    
+
     @Test
     public void testNTF_PARIS() {
         assertTrue("NTF_PARIS_geTtoWGS84", NTF_PARIS.getToWGS84().equals(
@@ -69,7 +69,7 @@ public class GeodeticDatumTest extends CTSTestCase {
         assertTrue("NTF_PARIS_getExtend",
                 NTF_PARIS.getExtent().equals(GeographicExtent.WORLD));
     }
-    
+
     @Test
     public void testNTF() {
         assertTrue("NTF_geTtoWGS84", NTF.getToWGS84().equals(
@@ -81,7 +81,7 @@ public class GeodeticDatumTest extends CTSTestCase {
         assertTrue("NTF_getExtend",
                 NTF.getExtent().equals(GeographicExtent.WORLD));
     }
-    
+
     @Test
     public void testRGF93() {
         assertTrue("RGF93_geTtoWGS84",
@@ -93,7 +93,7 @@ public class GeodeticDatumTest extends CTSTestCase {
         assertTrue("RGF93_getExtend",
                 RGF93.getExtent().equals(GeographicExtent.WORLD));
     }
-    
+
     @Test
     public void testED50() {
         assertTrue("ED50_geTtoWGS84", ED50.getToWGS84().equals(
@@ -105,7 +105,7 @@ public class GeodeticDatumTest extends CTSTestCase {
         assertTrue("ED50_getExtend",
                 ED50.getExtent().equals(GeographicExtent.WORLD));
     }
-    
+
     @Test
     public void testGetDatum() {
         Identifier id = new Identifier("EPSG", "6171", "Réseau géodésique français 1993", "RGF93");

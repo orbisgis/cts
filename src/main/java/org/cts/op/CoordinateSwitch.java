@@ -49,9 +49,8 @@ public class CoordinateSwitch extends AbstractCoordinateOperation {
      * Change ordinate at pos1 with ordinate at pos2.
      *
      * @param coord is an array containing one, two or three ordinates.
-     * @throws IllegalCoordinateException if
-     * <code>coord</code> is not compatible with this
-     * <code>CoordinateOperation</code>.
+     * @throws IllegalCoordinateException if <code>coord</code> is not
+     * compatible with this <code>CoordinateOperation</code>.
      */
     @Override
     public double[] transform(double[] coord)

@@ -35,14 +35,14 @@ package org.cts.crs;
  *
  * @author Erwan Bocher
  */
-public class CRSException extends Exception{
+public class CRSException extends Exception {
 
-        /**
-         * Build a coordinate reference system exception with a message
-         * @param message 
-         */
-        public CRSException(String message) {
-                super(message);
-        }
-
+    /**
+     * Build a coordinate reference system exception with a message
+     *
+     * @param message
+     */
+    public CRSException(String message) {
+        super(message);
+    }
 }

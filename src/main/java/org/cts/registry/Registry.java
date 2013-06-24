@@ -54,7 +54,8 @@ public interface Registry {
 
     /**
      * Return all supported codes for this registry
-     * @return 
+     *
+     * @return
      */
     public Set<String> getSupportedCodes();
 }

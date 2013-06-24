@@ -58,22 +58,22 @@ public class Geographic3DCRS extends GeodeticCRS {
 
     public static CoordinateSystem LATLONH_RRM_CS = new CoordinateSystem(
             new Axis[]{LATITUDE, LONGITUDE, HEIGHT}, new Unit[]{RADIAN,
-                RADIAN, METER});
+        RADIAN, METER});
     public static CoordinateSystem LONLATH_RRM_CS = new CoordinateSystem(
             new Axis[]{LONGITUDE, LATITUDE, HEIGHT}, new Unit[]{RADIAN,
-                RADIAN, METER});
+        RADIAN, METER});
     public static CoordinateSystem LATLONH_DDM_CS = new CoordinateSystem(
             new Axis[]{LATITUDE, LONGITUDE, HEIGHT}, new Unit[]{DEGREE,
-                DEGREE, METER});
+        DEGREE, METER});
     public static CoordinateSystem LONLATH_DDM_CS = new CoordinateSystem(
             new Axis[]{LONGITUDE, LATITUDE, HEIGHT}, new Unit[]{DEGREE,
-                DEGREE, METER});
+        DEGREE, METER});
     public static CoordinateSystem LATLONH_GGM_CS = new CoordinateSystem(
             new Axis[]{LATITUDE, LONGITUDE, HEIGHT}, new Unit[]{GRAD,
-                GRAD, METER});
+        GRAD, METER});
     public static CoordinateSystem LONLATH_GGM_CS = new CoordinateSystem(
             new Axis[]{LONGITUDE, LATITUDE, HEIGHT}, new Unit[]{GRAD,
-                GRAD, METER});
+        GRAD, METER});
 
     public Geographic3DCRS(Identifier identifier, GeodeticDatum datum,
             CoordinateSystem coordSys) {
@@ -141,5 +141,4 @@ public class Geographic3DCRS extends GeodeticCRS {
         return new CoordinateOperationSequence(new Identifier(
                 CoordinateOperationSequence.class), ops);
     }
-
 }

@@ -77,11 +77,11 @@ public class LambertConicConformal2SP extends Projection {
             ys;   // y coordinate of the pole
 
     /**
-     * Create a new Lambert Conic Conformal 2SP Projection corresponding to
-     * the <code>Ellipsoid</code> and the list of parameters given in argument
-     * and initialize common parameter lon0 and other parameters
-     * useful for the projection.
-     * 
+     * Create a new Lambert Conic Conformal 2SP Projection corresponding to the
+     * <code>Ellipsoid</code> and the list of parameters given in argument and
+     * initialize common parameter lon0 and other parameters useful for the
+     * projection.
+     *
      * @param ellipsoid ellipsoid used to define the projection.
      * @param parameters a map of useful parameters to define the projection.
      */
@@ -166,9 +166,8 @@ public class LambertConicConformal2SP extends Projection {
      * radians.
      *
      * @param coord coordinate to transform
-     * @throws IllegalCoordinateException if
-     * <code>coord</code> is not compatible with this
-     * <code>CoordinateOperation</code>..
+     * @throws IllegalCoordinateException if <code>coord</code> is not
+     * compatible with this <code>CoordinateOperation</code>..
      */
     @Override
     public double[] transform(double[] coord) throws IllegalCoordinateException {
@@ -186,7 +185,6 @@ public class LambertConicConformal2SP extends Projection {
     @Override
     public CoordinateOperation inverse() throws NonInvertibleOperationException {
         return new LambertConicConformal2SP(ellipsoid, parameters) {
-
             @Override
             public double[] transform(double[] coord)
                     throws IllegalCoordinateException {

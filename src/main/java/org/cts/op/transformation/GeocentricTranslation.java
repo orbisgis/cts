@@ -90,9 +90,8 @@ public class GeocentricTranslation extends AbstractCoordinateOperation implement
      * <li>Z' = Z + tz</li> </ul> </p>
      *
      * @param coord coordinate to transform
-     * @throws IllegalCoordinateException if
-     * <code>coord</code> is not compatible with this
-     * <code>CoordinateOperation</code>.
+     * @throws IllegalCoordinateException if <code>coord</code> is not
+     * compatible with this <code>CoordinateOperation</code>.
      */
     @Override
     public double[] transform(double[] coord) throws IllegalCoordinateException {
@@ -149,7 +148,7 @@ public class GeocentricTranslation extends AbstractCoordinateOperation implement
         w.append("]");
         return w.toString();
     }
-    
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -157,7 +156,7 @@ public class GeocentricTranslation extends AbstractCoordinateOperation implement
         }
         if (o instanceof GeocentricTranslation) {
             GeocentricTranslation gt = (GeocentricTranslation) o;
-            return ((this.tx==gt.tx)&&(this.ty==gt.ty)&&(this.tz==gt.tz));
+            return ((this.tx == gt.tx) && (this.ty == gt.ty) && (this.tz == gt.tz));
         }
         return false;
     }

@@ -37,294 +37,305 @@ import java.util.Map;
 import static org.cts.units.Quantity.*;
 
 /**
- * According to wikipedia, a unit of measurement is a standardised quantity of a physical
- * property, used as a factor to express occurring quantities of that property.
- * This interface is not a complete definition of what units are and what one can do with
- * them, but rather a simple definition for conversion purposes as used ni geodesy.
- * See JSR-275 for a complete package.
+ * According to wikipedia, a unit of measurement is a standardised quantity of a
+ * physical property, used as a factor to express occurring quantities of that
+ * property. This interface is not a complete definition of what units are and
+ * what one can do with them, but rather a simple definition for conversion
+ * purposes as used ni geodesy. See JSR-275 for a complete package.
+ *
  * @author Michaël Michaud
  * @version 0.1 (2007-09-10)
  */
 public class Unit implements java.io.Serializable {
 
-	// A table containing tables mapping symbols to unit for each quantity Class
-	private static Map<Quantity, Map<String, Unit>> map =
-		new HashMap<Quantity, Map<String, Unit>>();
-	// A table containing base units for each quantity Class
-	private static Map<Quantity, Unit> baseUnits = new HashMap<Quantity, Unit>();
+    // A table containing tables mapping symbols to unit for each quantity Class
+    private static Map<Quantity, Map<String, Unit>> map =
+            new HashMap<Quantity, Map<String, Unit>>();
+    // A table containing base units for each quantity Class
+    private static Map<Quantity, Unit> baseUnits = new HashMap<Quantity, Unit>();
 
-	/**
-	 * Static method returning a Unit from its symbol and quantity Class.
-	 * @param quantity the Quantity measured by the Unit to be found
-	 * @param symbol the symbol of the Unit to be found
-	 * @return the Unit measuring this quantity and having this symbol
-	 * or null if no Unit has been instanciated with this symbol for this
-	 * quantity until now.
-	 */
-	public static Unit getUnit(Quantity quantity, String symbol) {
-		Map<String, Unit> unts = map.get(quantity);
-		if (unts == null) {
-			return null;
-		}
-		return unts.get(symbol);
-	}
-
-	/**
-	 * Static method returning the base Unit for this quantity Class.
-	 * @param quantity the quantity Class of the Unit to be found
-	 * @return the base Unit for this quantity
-	 */
-	public static Unit getBaseUnit(Quantity quantity) {
-		return baseUnits.get(quantity);
-	}
-	// Units used in Geodetic domain
-	private ArrayList<String> names = new ArrayList<String>();
-
-	public ArrayList<String> getNames() {
-		return names;
-	}
-	public static final Unit RADIAN = new Unit(ANGLE, "radian", "rad");
-	public static final Unit DEGREE = new Unit(ANGLE, "degree", Math.PI / 180d, "\u00B0");
-	public static final Unit ARC_MINUTE = new Unit(ANGLE, "minute", Math.PI / 10800d, "'");
-	public static final Unit ARC_SECOND = new Unit(ANGLE, "second", Math.PI / 648000d, "\"");
-	public static final Unit GRAD = new Unit(ANGLE, "grad", Math.PI / 200d, "g");
-	public static final Unit METER;
-	public static final Unit MILLIMETER = new Unit(LENGTH, "millimeter", 0.001, "mm");
-	public static final Unit CENTIMETER = new Unit(LENGTH, "centimeter", 0.01, "cm");
-	public static final Unit DECIMETER = new Unit(LENGTH, "decimeter", 0.1, "dm");
-	public static final Unit KILOMETER = new Unit(LENGTH, "kilometer", 1000d, "km");
-	public static final Unit FOOT;
-	public static final Unit YARD = new Unit(LENGTH, "yard", 0.9144, "yd");
-	public static final Unit UNIT = new Unit(NODIM, "", "");
-	public static final Unit SECOND = new Unit(TIME, "second", "s");
-	public static final ArrayList<Unit> units = new ArrayList<Unit>();
-
-	static {
-		units.add(RADIAN);
-		units.add(DEGREE);
-		units.add(ARC_MINUTE);
-		units.add(ARC_SECOND);
-		units.add(GRAD);
-
-		ArrayList<String> unitNames = new ArrayList<String>();
-		unitNames.add("meter");
-		unitNames.add("metre");
-		METER = new Unit(LENGTH, unitNames, "m");
-
-
-
-		units.add(METER);
-		units.add(MILLIMETER);
-		units.add(CENTIMETER);
-		units.add(DECIMETER);
-		units.add(KILOMETER);
-
-		unitNames = new ArrayList<String>();
-		unitNames.add("foot");
-		unitNames.add("foot_us");
-		FOOT = new Unit(LENGTH, unitNames, 0.3048, "ft");
-
-		units.add(FOOT);
-		units.add(YARD);
-		units.add(UNIT);
-		units.add(SECOND);
-	}
-
-    private Quantity quantity;
-	private String name;
-	private double scale;
-	private double offset = 0d;  // used for temperature units
-	private String symbol;
-
-	/**
-	 * Creates a base unit for this quantity.
-	 * @param quantity the quantity measured by this unit
-	 * @param name the name of the unit
-	 * @param symbol the symbol representing this unit
-	 */
-	public Unit(Quantity quantity, String name, String symbol) {
-		this(quantity, name, 1d, 0d, symbol);
-	}
-
-	/**
-	 * Creates a base unit for this quantity.
-	 * @param quantity the quantity measured by this unit
-	 * @param name the name of the unit
-	 * @param symbol the symbol representing this unit
-	 */
-	public Unit(Quantity quantity, ArrayList<String> names, String symbol) {
-		this(quantity, names, 1d, 0d, symbol);
-	}
-
-	/**
-	 * Creates a new unit for this quantity.
-	 * @param quantity the quantity measured by this unitDATUM["D_NTF",SPHEROID["Clarke_1880_IGN",6378249.2,293.46602]]
-	 * @param name the name of the unit
-	 * @param scale the scale factor of this unit compared to the base unit
-	 * @param symbol the symbol representing this unit
-	 */
-	public Unit(Quantity quantity, String name, double scale, String symbol) {
-		this(quantity, name, scale, 0d, symbol);
-	}
-
-	/**
-	 * Creates a new unit for this quantity.
-	 * @param quantity the quantity measured by this unitDATUM["D_NTF",SPHEROID["Clarke_1880_IGN",6378249.2,293.46602]]
-	 * @param name the name of the unit
-	 * @param scale the scale factor of this unit compared to the base unit
-	 * @param symbol the symbol representing this unit
-	 */
-	public Unit(Quantity quantity, ArrayList<String> names, double scale, String symbol) {
-		this(quantity, names, scale, 0d, symbol);
-	}
-
-	/**
-	 * Creates a new Unit for the Quantity Q.
-	 * @param quantity the quantity measured by this unit
-	 * @param name the name of the unit
-	 * @param scale the scale factor of this unit compared to the base unit
-	 * @param offset the shift factor of this unit compared to the base unit
-	 * @param symbol the symbol representing this unit
-	 */
-	public Unit(Quantity quantity, String name, double scale, double offset, String symbol) {
-		this.quantity = quantity;
-		this.name = name;
-		this.scale = scale;
-		this.offset = offset;
-		this.symbol = symbol;
-		this.registerUnit();
-	}
-
-	/**
-	 * Creates a new Unit for the Quantity Q.
-	 * @param quantity the quantity measured by this unit
-	 * @param name the name of the unit
-	 * @param scale the scale factor of this unit compared to the base unit
-	 * @param offset the shift factor of this unit compared to the base unit
-	 * @param symbol the symbol representing this unit
-	 */
-	public Unit(Quantity quantity, ArrayList<String> names, double scale, double offset, String symbol) {
-		this.quantity = quantity;
-		this.names = names;
-		if (names != null & names.size() > 0) {
-			this.name = names.get(0);
-		}
-		this.scale = scale;
-		this.offset = offset;
-		this.symbol = symbol;
-                this.registerUnit();
-	}
-        
-        private void registerUnit() {
-            Map<String, Unit> unts = map.get(quantity);
-		if (unts == null) {
-			map.put(quantity, new HashMap<String, Unit>());
-		}
-		map.get(quantity).put(symbol, this);
-		if (scale == 1d && offset == 0d) {
-			baseUnits.put(quantity, this);
-		}
+    /**
+     * Static method returning a Unit from its symbol and quantity Class.
+     *
+     * @param quantity the Quantity measured by the Unit to be found
+     * @param symbol the symbol of the Unit to be found
+     * @return the Unit measuring this quantity and having this symbol or null
+     * if no Unit has been instanciated with this symbol for this quantity until
+     * now.
+     */
+    public static Unit getUnit(Quantity quantity, String symbol) {
+        Map<String, Unit> unts = map.get(quantity);
+        if (unts == null) {
+            return null;
         }
+        return unts.get(symbol);
+    }
 
-	public static Unit getUnit(String name) {
-		for (Unit unit : units) {
-			if (unit.getNames().isEmpty()) {
-				if (unit.getName().toLowerCase().equals(name)) {
-					return unit;
-				}
-			} else {
-				for (String oneName : unit.getNames()) {
-					if (oneName.toLowerCase().equals(name)) {
-						return unit;
-					}
-				}
-			}
-		}
-		return null;
-	}
+    /**
+     * Static method returning the base Unit for this quantity Class.
+     *
+     * @param quantity the quantity Class of the Unit to be found
+     * @return the base Unit for this quantity
+     */
+    public static Unit getBaseUnit(Quantity quantity) {
+        return baseUnits.get(quantity);
+    }
+    // Units used in Geodetic domain
+    private ArrayList<String> names = new ArrayList<String>();
 
-	/**
-	 * Returns the Quantity measured by this Unit.
-	 */
-	public Quantity getQuantity() {
-		return quantity;
-	}
+    public ArrayList<String> getNames() {
+        return names;
+    }
+    public static final Unit RADIAN = new Unit(ANGLE, "radian", "rad");
+    public static final Unit DEGREE = new Unit(ANGLE, "degree", Math.PI / 180d, "\u00B0");
+    public static final Unit ARC_MINUTE = new Unit(ANGLE, "minute", Math.PI / 10800d, "'");
+    public static final Unit ARC_SECOND = new Unit(ANGLE, "second", Math.PI / 648000d, "\"");
+    public static final Unit GRAD = new Unit(ANGLE, "grad", Math.PI / 200d, "g");
+    public static final Unit METER;
+    public static final Unit MILLIMETER = new Unit(LENGTH, "millimeter", 0.001, "mm");
+    public static final Unit CENTIMETER = new Unit(LENGTH, "centimeter", 0.01, "cm");
+    public static final Unit DECIMETER = new Unit(LENGTH, "decimeter", 0.1, "dm");
+    public static final Unit KILOMETER = new Unit(LENGTH, "kilometer", 1000d, "km");
+    public static final Unit FOOT;
+    public static final Unit YARD = new Unit(LENGTH, "yard", 0.9144, "yd");
+    public static final Unit UNIT = new Unit(NODIM, "", "");
+    public static final Unit SECOND = new Unit(TIME, "second", "s");
+    public static final ArrayList<Unit> units = new ArrayList<Unit>();
 
-	/**
-	 * Returns the name of this unit of measure.
-	 */
-	public String getName() {
-		return name;
-	}
+    static {
+        units.add(RADIAN);
+        units.add(DEGREE);
+        units.add(ARC_MINUTE);
+        units.add(ARC_SECOND);
+        units.add(GRAD);
 
-	/**
-	 * Returns the scale of this unit compared to the base unit.
-	 */
-	public double getScale() {
-		return scale;
-	}
+        ArrayList<String> unitNames = new ArrayList<String>();
+        unitNames.add("meter");
+        unitNames.add("metre");
+        METER = new Unit(LENGTH, unitNames, "m");
 
-	/**
-	 * Returns the offset from base unit to this (ex. temperature).
-	 */
-	public double getOffset() {
-		return offset;
-	}
 
-	/**
-	 * Convert a measure from this unit into base unit(s).
-	 */
-	public double toBaseUnit(double measure) {
-		return measure * scale + offset;
-	}
 
-	/**
-	 * Convert a measure from base unit(s) into this unit.
-	 */
-	public double fromBaseUnit(double measure) {
-		return (measure - offset) / scale;
-	}
+        units.add(METER);
+        units.add(MILLIMETER);
+        units.add(CENTIMETER);
+        units.add(DECIMETER);
+        units.add(KILOMETER);
 
-	/**
-	 * Return the preferred symbol to use with this unit.
-	 */
-	public String getSymbol() {
-		return symbol;
-	}
+        unitNames = new ArrayList<String>();
+        unitNames.add("foot");
+        unitNames.add("foot_us");
+        FOOT = new Unit(LENGTH, unitNames, 0.3048, "ft");
 
-	/**
-	 * Set factor or scale
-	 */
-	public void setScale(double scale) {
-		this.scale = scale;
-	}
+        units.add(FOOT);
+        units.add(YARD);
+        units.add(UNIT);
+        units.add(SECOND);
+    }
+    private Quantity quantity;
+    private String name;
+    private double scale;
+    private double offset = 0d;  // used for temperature units
+    private String symbol;
 
-	/**
-	 * Return the base unit for measures of the same quantity.
-	 * If the base unit has not been defined, one default base unit with an
-	 * unknown name and an empty symbol is created.
-	 */
-	public Unit getBaseUnit() {
-		Unit baseUnit = baseUnits.get(quantity);
-		return baseUnits == null ? new Unit(quantity, "unknown", "") : baseUnit;
-	}
+    /**
+     * Creates a base unit for this quantity.
+     *
+     * @param quantity the quantity measured by this unit
+     * @param name the name of the unit
+     * @param symbol the symbol representing this unit
+     */
+    public Unit(Quantity quantity, String name, String symbol) {
+        this(quantity, name, 1d, 0d, symbol);
+    }
 
-	/**
-	 * Is comparable returns true if quantity measured by this unit and
-	 * quantity measured by anotherUnit are equals.
-	 * @param anotherUnit another unit
-	 * @return true if this unit is comparable with anotherUnit
-	 */
-	public boolean isComparable(Unit anotherUnit) {
-		return quantity.equals(anotherUnit.getQuantity());
-	}
+    /**
+     * Creates a base unit for this quantity.
+     *
+     * @param quantity the quantity measured by this unit
+     * @param name the name of the unit
+     * @param symbol the symbol representing this unit
+     */
+    public Unit(Quantity quantity, ArrayList<String> names, String symbol) {
+        this(quantity, names, 1d, 0d, symbol);
+    }
 
-	/**
-	 * String representation of this Unit
-	 */
-	@Override
-	public String toString() {
-		return name + " (" + quantity
-			+ (scale != 1.0 ? " : " + scale + getBaseUnit().getSymbol() : "") + ")";
-	}
+    /**
+     * Creates a new unit for this quantity.
+     *
+     * @param quantity the quantity measured by this
+     * unitDATUM["D_NTF",SPHEROID["Clarke_1880_IGN",6378249.2,293.46602]]
+     * @param name the name of the unit
+     * @param scale the scale factor of this unit compared to the base unit
+     * @param symbol the symbol representing this unit
+     */
+    public Unit(Quantity quantity, String name, double scale, String symbol) {
+        this(quantity, name, scale, 0d, symbol);
+    }
+
+    /**
+     * Creates a new unit for this quantity.
+     *
+     * @param quantity the quantity measured by this
+     * unitDATUM["D_NTF",SPHEROID["Clarke_1880_IGN",6378249.2,293.46602]]
+     * @param name the name of the unit
+     * @param scale the scale factor of this unit compared to the base unit
+     * @param symbol the symbol representing this unit
+     */
+    public Unit(Quantity quantity, ArrayList<String> names, double scale, String symbol) {
+        this(quantity, names, scale, 0d, symbol);
+    }
+
+    /**
+     * Creates a new Unit for the Quantity Q.
+     *
+     * @param quantity the quantity measured by this unit
+     * @param name the name of the unit
+     * @param scale the scale factor of this unit compared to the base unit
+     * @param offset the shift factor of this unit compared to the base unit
+     * @param symbol the symbol representing this unit
+     */
+    public Unit(Quantity quantity, String name, double scale, double offset, String symbol) {
+        this.quantity = quantity;
+        this.name = name;
+        this.scale = scale;
+        this.offset = offset;
+        this.symbol = symbol;
+        this.registerUnit();
+    }
+
+    /**
+     * Creates a new Unit for the Quantity Q.
+     *
+     * @param quantity the quantity measured by this unit
+     * @param name the name of the unit
+     * @param scale the scale factor of this unit compared to the base unit
+     * @param offset the shift factor of this unit compared to the base unit
+     * @param symbol the symbol representing this unit
+     */
+    public Unit(Quantity quantity, ArrayList<String> names, double scale, double offset, String symbol) {
+        this.quantity = quantity;
+        this.names = names;
+        if (names != null & names.size() > 0) {
+            this.name = names.get(0);
+        }
+        this.scale = scale;
+        this.offset = offset;
+        this.symbol = symbol;
+        this.registerUnit();
+    }
+
+    private void registerUnit() {
+        Map<String, Unit> unts = map.get(quantity);
+        if (unts == null) {
+            map.put(quantity, new HashMap<String, Unit>());
+        }
+        map.get(quantity).put(symbol, this);
+        if (scale == 1d && offset == 0d) {
+            baseUnits.put(quantity, this);
+        }
+    }
+
+    public static Unit getUnit(String name) {
+        for (Unit unit : units) {
+            if (unit.getNames().isEmpty()) {
+                if (unit.getName().toLowerCase().equals(name)) {
+                    return unit;
+                }
+            } else {
+                for (String oneName : unit.getNames()) {
+                    if (oneName.toLowerCase().equals(name)) {
+                        return unit;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Returns the Quantity measured by this Unit.
+     */
+    public Quantity getQuantity() {
+        return quantity;
+    }
+
+    /**
+     * Returns the name of this unit of measure.
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Returns the scale of this unit compared to the base unit.
+     */
+    public double getScale() {
+        return scale;
+    }
+
+    /**
+     * Returns the offset from base unit to this (ex. temperature).
+     */
+    public double getOffset() {
+        return offset;
+    }
+
+    /**
+     * Convert a measure from this unit into base unit(s).
+     */
+    public double toBaseUnit(double measure) {
+        return measure * scale + offset;
+    }
+
+    /**
+     * Convert a measure from base unit(s) into this unit.
+     */
+    public double fromBaseUnit(double measure) {
+        return (measure - offset) / scale;
+    }
+
+    /**
+     * Return the preferred symbol to use with this unit.
+     */
+    public String getSymbol() {
+        return symbol;
+    }
+
+    /**
+     * Set factor or scale
+     */
+    public void setScale(double scale) {
+        this.scale = scale;
+    }
+
+    /**
+     * Return the base unit for measures of the same quantity. If the base unit
+     * has not been defined, one default base unit with an unknown name and an
+     * empty symbol is created.
+     */
+    public Unit getBaseUnit() {
+        Unit baseUnit = baseUnits.get(quantity);
+        return baseUnits == null ? new Unit(quantity, "unknown", "") : baseUnit;
+    }
+
+    /**
+     * Is comparable returns true if quantity measured by this unit and quantity
+     * measured by anotherUnit are equals.
+     *
+     * @param anotherUnit another unit
+     * @return true if this unit is comparable with anotherUnit
+     */
+    public boolean isComparable(Unit anotherUnit) {
+        return quantity.equals(anotherUnit.getQuantity());
+    }
+
+    /**
+     * String representation of this Unit
+     */
+    @Override
+    public String toString() {
+        return name + " (" + quantity
+                + (scale != 1.0 ? " : " + scale + getBaseUnit().getSymbol() : "") + ")";
+    }
 }

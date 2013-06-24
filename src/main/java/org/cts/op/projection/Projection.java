@@ -137,14 +137,16 @@ public abstract class Projection extends AbstractCoordinateOperation {
     }
 
     /**
-     * Return the semi-major axis of the ellipsoid used for this projection (fr : demi grand axe).
+     * Return the semi-major axis of the ellipsoid used for this projection (fr
+     * : demi grand axe).
      */
     public double getSemiMajorAxis() {
         return ellipsoid.getSemiMajorAxis();
     }
 
     /**
-     * Return the semi-minor axis of the ellipsoid used for this projection (fr : demi petit axe).
+     * Return the semi-minor axis of the ellipsoid used for this projection (fr
+     * : demi petit axe).
      */
     public double getSemiMinorAxis() {
         return ellipsoid.getSemiMinorAxis();
@@ -165,35 +167,38 @@ public abstract class Projection extends AbstractCoordinateOperation {
     }
 
     /**
-     * Return the the first standard parallel of secant conformal conic projections.
+     * Return the the first standard parallel of secant conformal conic
+     * projections.
      */
     public double getStandardParallel1() {
         return parameters.get(Parameter.STANDARD_PARALLEL_1).getSValue();
     }
 
     /**
-     * Return the the second standard parallel of secant conformal conic projections.
+     * Return the the second standard parallel of secant conformal conic
+     * projections.
      */
     public double getStandardParallel2() {
         return parameters.get(Parameter.STANDARD_PARALLEL_2).getSValue();
     }
-    
+
     /**
      * Return the latitude of true scale of secant projections.
      */
     public double getLatitudeOfTrueScale() {
         return parameters.get(Parameter.LATITUDE_OF_TRUE_SCALE).getSValue();
     }
-     
+
     /**
      * Return the azimuth of the initial line of oblique projections.
      */
     public double getAzimuthOfInitialLine() {
         return parameters.get(Parameter.AZIMUTH_OF_INITIAL_LINE).getSValue();
     }
-     
+
     /**
-     * Return the angle from the rectified grid to the skew (oblique) grid of oblique projections.
+     * Return the angle from the rectified grid to the skew (oblique) grid of
+     * oblique projections.
      */
     public double getAngleRectifiedToOblique() {
         return parameters.get(Parameter.ANGLE_RECTIFIED_TO_OBLIQUE).getSValue();

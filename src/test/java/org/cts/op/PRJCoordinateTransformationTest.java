@@ -40,18 +40,18 @@ import org.junit.Test;
 
 /**
  * This class contains tests that uses PRJ definition for the CRS
- * 
+ *
  * @author Jules Party
  */
 public class PRJCoordinateTransformationTest extends BaseCoordinateTransformTest {
-    
+
     private PrjParser parser;
 
     @Before
     public void setUp() {
         parser = new PrjParser();
     }
-    
+
     @Test
     public void testLAMBEtoLAMB93PRJ() throws Exception {
         //IGN data : POINT (931813.94 1786923.891 2525.68) ID5863
@@ -77,12 +77,12 @@ public class PRJCoordinateTransformationTest extends BaseCoordinateTransformTest
                 + "PARAMETER[\"Latitude_Of_Origin\",46.5],"
                 + "UNIT[\"Meter\",1.0]]";
         CoordinateReferenceSystem outCRS = crsf.createFromPrj(outprj);
-        double[] result = transform((GeodeticCRS) srcCRS, (GeodeticCRS) outCRS, srcPoint);       
+        double[] result = transform((GeodeticCRS) srcCRS, (GeodeticCRS) outCRS, srcPoint);
         assertTrue(checkEquals2D(srcCRS + " to " + outCRS, result, expectedPoint, 1E-2));
         double[] check = transform((GeodeticCRS) outCRS, (GeodeticCRS) srcCRS, expectedPoint);
         assertTrue(checkEquals2D(outCRS + " to " + srcCRS, check, srcPoint, 1E-2));
     }
-    
+
     @Test
     public void testWGS84toLAMB93PRJ() throws Exception {
         //IGN data : POINT (931813.94 1786923.891 2525.68) ID5863
@@ -107,12 +107,12 @@ public class PRJCoordinateTransformationTest extends BaseCoordinateTransformTest
                 + "PARAMETER[\"Latitude_Of_Origin\",46.5],"
                 + "UNIT[\"Meter\",1.0]]";
         CoordinateReferenceSystem outCRS = crsf.createFromPrj(outprj);
-        double[] result = transform((GeodeticCRS) srcCRS, (GeodeticCRS) outCRS, srcPoint);       
+        double[] result = transform((GeodeticCRS) srcCRS, (GeodeticCRS) outCRS, srcPoint);
         assertTrue(checkEquals2D(srcCRS + " to " + outCRS, result, expectedPoint, 10E-2));
         double[] check = transform((GeodeticCRS) outCRS, (GeodeticCRS) srcCRS, expectedPoint);
         assertTrue(checkEquals2D(outCRS + " to " + srcCRS, check, srcPoint, 1E-2));
     }
-    
+
     @Test
     public void testMercatorPRJ() throws Exception {
         //IGN data : POINT (931813.94 1786923.891 2525.68) ID5863
@@ -138,7 +138,7 @@ public class PRJCoordinateTransformationTest extends BaseCoordinateTransformTest
                 + "PARAMETER[\"false_northing\",900000],AUTHORITY[\"EPSG\",\"3002\"],"
                 + "AXIS[\"X\",EAST],AXIS[\"Y\",NORTH]]";
         CoordinateReferenceSystem outCRS = crsf.createFromPrj(outprj);
-        double[] result = transform((GeodeticCRS) srcCRS, (GeodeticCRS) outCRS, srcPoint);       
+        double[] result = transform((GeodeticCRS) srcCRS, (GeodeticCRS) outCRS, srcPoint);
         assertTrue(checkEquals2D(srcCRS + " to " + outCRS, result, expectedPoint, 10E-2));
         double[] check = transform((GeodeticCRS) outCRS, (GeodeticCRS) srcCRS, expectedPoint);
         assertTrue(checkEquals2D(outCRS + " to " + srcCRS, check, srcPoint, 1E-2));

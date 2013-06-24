@@ -62,25 +62,19 @@ import java.util.Map;
 public class GeodeticDatum extends AbstractDatum {
 
     private final static Map<Identifier, GeodeticDatum> datums = new HashMap<Identifier, GeodeticDatum>();
-    
     /**
-     * datumFromName associates each datum to a short string used to
-     * recognize it in CTS.
-     * 
+     * datumFromName associates each datum to a short string used to recognize
+     * it in CTS.
+     *
      */
     public static final Map<String, GeodeticDatum> datumFromName = new HashMap<String, GeodeticDatum>();
-
     private final PrimeMeridian primeMeridian;
-
     private final Ellipsoid ellipsoid;
-
     private CoordinateOperation toWGS84;
-
     public final static GeodeticDatum WGS84 = new GeodeticDatum(new Identifier(
             "EPSG", "6326", "World Geodetic System 1984", "WGS84"),
             PrimeMeridian.GREENWICH, Ellipsoid.WGS84, GeographicExtent.WORLD,
             null, null);
-
     public final static GeodeticDatum NTF_PARIS = new GeodeticDatum(
             new Identifier("EPSG", "6807",
             "Nouvelle Triangulation Française (Paris)", "NTF (Paris)"),
@@ -89,7 +83,6 @@ public class GeodeticDatum extends AbstractDatum {
             GeographicExtent.WORLD,
             "Fundamental point: Pantheon. Latitude: 48 deg 50 min 46.52 sec N; Longitude: 2 deg 20 min 48.67 sec E (of Greenwich).",
             "1895");
-
     public final static GeodeticDatum NTF = new GeodeticDatum(
             new Identifier("EPSG", "6275", "Nouvelle Triangulation Française",
             "NTF"),
@@ -98,12 +91,10 @@ public class GeodeticDatum extends AbstractDatum {
             GeographicExtent.WORLD,
             "Fundamental point: Pantheon. Latitude: 48 deg 50 min 46.522 sec N; Longitude: 2 deg 20 min 48.667 sec E (of Greenwich).",
             "1898");
-
     public final static GeodeticDatum RGF93 = new GeodeticDatum(new Identifier(
             "EPSG", "6171", "Réseau géodésique français 1993", "RGF93"),
             PrimeMeridian.GREENWICH, Ellipsoid.GRS80, GeographicExtent.WORLD,
             "Coincident with ETRS89 at epoch 1993.0", "1993");
-
     public final static GeodeticDatum ED50 = new GeodeticDatum(
             new Identifier("EPSG", "6230", "European Datum 1950", "ED50"),
             PrimeMeridian.GREENWICH,
@@ -121,7 +112,7 @@ public class GeodeticDatum extends AbstractDatum {
                 -60.0, 320.0, 1.0));
         ED50.setDefaultToWGS84Operation(new GeocentricTranslation(-84.0, -97.0,
                 -117.0, 1.0));
-        
+
         datumFromName.put("wgs84", WGS84);
         datumFromName.put("ntfparis", NTF_PARIS);
         datumFromName.put("ntf", NTF);
@@ -173,7 +164,7 @@ public class GeodeticDatum extends AbstractDatum {
         this.primeMeridian = primeMeridian;
         this.registerDatum();
     }
-    
+
     private void registerDatum() {
         datums.put(getIdentifier(), this);
     }
@@ -211,16 +202,16 @@ public class GeodeticDatum extends AbstractDatum {
     /**
      * Set the default transformation to WGS84 in two forms :
      * <p><b>toWGS84 Geocentric transformation</b></p>
-     * <p>toWGS84 is an operation to transform geocentric coordinates
-     * based on this datum to geocentric coordinates based on WGS84 datum,
-     * generally a translation or a SevenParameterTransformation (ex.
-     * Bursa-Wolf).</p>
+     * <p>toWGS84 is an operation to transform geocentric coordinates based on
+     * this datum to geocentric coordinates based on WGS84 datum, generally a
+     * translation or a SevenParameterTransformation (ex. Bursa-Wolf).</p>
      * <p>toWGS84 does not use PrimeMerdian nor ellipsoid parameters.</p>
-     * <p><b>datumTransformations map (direct Geographic3D transformations)</b></p>
+     * <p><b>datumTransformations map (direct Geographic3D
+     * transformations)</b></p>
      * <p>The toWGS84 transformation is also stored in the datumTransformations
      * map, inherited from AbstractDatum, but this time, the operation is not
-     * stored as Geocentric to Geocentric transformation but as a Geographic3D to
-     * Geographic3D transformation.</p>
+     * stored as Geocentric to Geocentric transformation but as a Geographic3D
+     * to Geographic3D transformation.</p>
      * <p>The convention for this transformation is to start from Geographic3D
      * coordinates in radians, to include required longitude rotation, and
      * ellipsoid transformations, and to return GeographicCoordinates in radian.
@@ -234,7 +225,7 @@ public class GeodeticDatum extends AbstractDatum {
         this.toWGS84 = toWGS84;
         this.setToOtherDatumOperation(toWGS84, WGS84);
     }
-    
+
     public final void setToOtherDatumOperation(CoordinateOperation toOtherDatum, GeodeticDatum targetDatum) {
         // First case : toWGS (geocentric transformation) is not null
         if (toOtherDatum != null && toOtherDatum != Identity.IDENTITY) {
@@ -300,11 +291,12 @@ public class GeodeticDatum extends AbstractDatum {
     public CoordinateOperation getToWGS84() {
         return toWGS84;
     }
-    
+
     /**
-     * If the GeodeticDatum is equal to one of the wellknown GeodeticDatum (WGS84, RGF93, NTF, NTF_PARIS and ED50),
-     * the method return this wellknown GeodeticDatumatum.
-     * If there is no such datum, the method return the GeodeticDatum to which the method is applied.
+     * If the GeodeticDatum is equal to one of the wellknown GeodeticDatum
+     * (WGS84, RGF93, NTF, NTF_PARIS and ED50), the method return this wellknown
+     * GeodeticDatum. If there is no such datum, the method return the
+     * GeodeticDatum to which the method is applied.
      */
     public GeodeticDatum checkExistingGeodeticDatum() {
         if (this.equals(WGS84)) {

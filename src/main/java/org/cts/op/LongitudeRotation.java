@@ -70,9 +70,8 @@ public class LongitudeRotation extends AbstractCoordinateOperation {
      * @param coord is an array containing 2 or 3 double representing geographic
      * coordinate in the following order : latitude (radians), longitude
      * (radians from Greenwich) and optionnaly ellipsoidal height.
-     * @throws IllegalCoordinateException if
-     * <code>coord</code> is not compatible with this
-     * <code>CoordinateOperation</code>.
+     * @throws IllegalCoordinateException if <code>coord</code> is not
+     * compatible with this <code>CoordinateOperation</code>.
      */
     @Override
     public double[] transform(double[] coord) throws IllegalCoordinateException {
@@ -91,7 +90,7 @@ public class LongitudeRotation extends AbstractCoordinateOperation {
      * CoordinateDimensionException, NonInvertibleOperationException { if (coord
      * == null || coord.length<2) throw new CoordinateDimensionException(coord,
      * 2); coord[1] = coord[1] - rotationAngle;
-	}
+     }
      */
     /**
      * Creates the inverse CoordinateOperation.

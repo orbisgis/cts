@@ -61,11 +61,11 @@ public class TransverseMercator extends Projection {
     protected final double[] dircoeff, invcoeff;
 
     /**
-     * Create a new Transverse Mercator Projection corresponding to
-     * the <code>Ellipsoid</code> and the list of parameters given in argument
-     * and initialize common parameters lon0, lat0 and other parameters
-     * useful for the projection.
-     * 
+     * Create a new Transverse Mercator Projection corresponding to the
+     * <code>Ellipsoid</code> and the list of parameters given in argument and
+     * initialize common parameters lon0, lat0 and other parameters useful for
+     * the projection.
+     *
      * @param ellipsoid ellipsoid used to define the projection.
      * @param parameters a map of useful parameters to define the projection.
      */
@@ -86,14 +86,12 @@ public class TransverseMercator extends Projection {
     }
 
     /**
-     * Transform coord using a Transverse Mercator projection. Input coord
-     * is supposed to be a geographic latitude / longitude coordinate in
-     * radians.
+     * Transform coord using a Transverse Mercator projection. Input coord is
+     * supposed to be a geographic latitude / longitude coordinate in radians.
      *
      * @param coord coordinate to transform
-     * @throws CoordinateDimensionException if
-     * <code>coord</code> length is not compatible with this
-     * <code>CoordinateOperation</code>.
+     * @throws CoordinateDimensionException if <code>coord</code> length is not
+     * compatible with this <code>CoordinateOperation</code>.
      */
     @Override
     public double[] transform(double[] coord) throws CoordinateDimensionException {
@@ -117,7 +115,6 @@ public class TransverseMercator extends Projection {
     @Override
     public CoordinateOperation inverse() throws NonInvertibleOperationException {
         return new TransverseMercator(ellipsoid, parameters) {
-
             @Override
             public double[] transform(double[] coord) throws CoordinateDimensionException {
                 Complex z = new Complex((coord[1] - ys) / (n * invcoeff[0]),

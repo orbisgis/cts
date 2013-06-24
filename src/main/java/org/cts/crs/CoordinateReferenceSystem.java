@@ -37,9 +37,10 @@ import org.cts.datum.Datum;
 import org.cts.op.projection.Projection;
 
 /**
- * A coordinate system which is related to the real world by a {@link org.cts.datum.Datum}
- * (ISO/DIS 19111). <p> A point in the real world may have different coordinates,
- * depending on the <code>CoordinateReferenceSystem</code> used. The different types of
+ * A coordinate system which is related to the real world by a
+ * {@link org.cts.datum.Datum} (ISO/DIS 19111). <p> A point in the real world
+ * may have different coordinates, depending on the
+ * <code>CoordinateReferenceSystem</code> used. The different types of
  * CoordinateReferenceSystem defined by <a href="http://www.epsg.org/"> EPSG</a>
  * are : </p> <ul> <li>Geocentric coordinate reference system</li>
  * <li>Geographic 3D coordinate reference system</li> <li>Geographic 2D
@@ -78,5 +79,4 @@ public interface CoordinateReferenceSystem extends Identifiable {
     public Datum getDatum();
 
     public Projection getProjection();
-
 }

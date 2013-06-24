@@ -69,13 +69,15 @@ public class NTv2GridShiftTransformation extends AbstractCoordinateOperation {
     private int mode = 1;
     private URL grid_file;
     private GridShiftFile gsf;
-    
+
     /**
-     * Create a NTv2GridShiftTransformation from the name of the file that defined it.
-     * 
-     * @param ntv2_gridName the name of the file that defined the wanted grid transformation (for instance : ntf_r93.gsb).
+     * Create a NTv2GridShiftTransformation from the name of the file that
+     * defined it.
+     *
+     * @param ntv2_gridName the name of the file that defined the wanted grid
+     * transformation (for instance : ntf_r93.gsb).
      * @throws URISyntaxException
-     * @throws MalformedURLException 
+     * @throws MalformedURLException
      */
     public static NTv2GridShiftTransformation createNTv2GridShiftTransformation(String ntv2_gridName) throws URISyntaxException, MalformedURLException, NullPointerException {
         return new NTv2GridShiftTransformation(GridShift.class.getResource(ntv2_gridName).toURI().toURL());

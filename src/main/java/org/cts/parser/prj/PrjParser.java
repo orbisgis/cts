@@ -50,7 +50,7 @@ import java.util.Map;
  * @author Antoine Gourlay, Erwan Bocher
  */
 public class PrjParser {
-             
+
     /**
      * Creates a new parser.
      *

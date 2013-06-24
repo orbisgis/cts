@@ -61,8 +61,6 @@ import static org.cts.units.Unit.METER;
  */
 public class GeocentricCRS extends GeodeticCRS {
 
-    //private CRSAuthority crsAuthority;
-
     public boolean hasProjection() {
         return false;
     }
@@ -130,5 +128,4 @@ public class GeocentricCRS extends GeodeticCRS {
         return new CoordinateOperationSequence(new Identifier(
                 CoordinateOperationSequence.class), ops);
     }
-
 }

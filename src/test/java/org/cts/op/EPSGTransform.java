@@ -55,7 +55,7 @@ public class EPSGTransform extends BaseCoordinateTransformTest {
         CoordinateReferenceSystem inputCRS = createCRS(csNameSrc);
         System.out.println(PrjWriter.crsToWKT(inputCRS));
         CoordinateReferenceSystem outputCRS = createCRS(csNameDest);
-        verbose=true;
+        verbose = true;
         double[] result = transform((GeodeticCRS) inputCRS, (GeodeticCRS) outputCRS, pointSource);
         assertTrue(checkEquals2D("EPSG:4326 to EPSG:27582 ", result, pointDest, tolerance));
     }
@@ -69,7 +69,7 @@ public class EPSGTransform extends BaseCoordinateTransformTest {
         double tolerance = 0.0001;
         CoordinateReferenceSystem inputCRS = createCRS(csNameSrc);
         CoordinateReferenceSystem outputCRS = createCRS(csNameDest);
-        verbose=true;
+        verbose = true;
         double[] result = transform((GeodeticCRS) inputCRS, (GeodeticCRS) outputCRS, pointSource);
         assertTrue(checkEquals2D("EPSG:27582 to EPSG:4326", result, pointDest, tolerance));
     }

@@ -52,17 +52,18 @@ import static org.cts.cs.Axis.NORTHING;
 import static org.cts.units.Unit.METER;
 
 /**
- * A Projected {@link org.cts.crs.CoordinateReferenceSystem} is a CoordinateReferenceSystem
- * based on a GeodeticDatum and a Projection operation.
+ * A Projected {@link org.cts.crs.CoordinateReferenceSystem} is a
+ * CoordinateReferenceSystem based on a GeodeticDatum and a Projection
+ * operation.
  *
  * @author Michaël Michaud
  */
 public class ProjectedCRS extends GeodeticCRS {
 
     public static CoordinateSystem EN_CS = new CoordinateSystem(new Axis[]{
-                EASTING, NORTHING}, new Unit[]{METER, METER});
+        EASTING, NORTHING}, new Unit[]{METER, METER});
     public static CoordinateSystem NE_CS = new CoordinateSystem(new Axis[]{
-                NORTHING, EASTING}, new Unit[]{METER, METER});
+        NORTHING, EASTING}, new Unit[]{METER, METER});
     private Projection projection;
     private Unit angularUnit;
 
@@ -75,7 +76,7 @@ public class ProjectedCRS extends GeodeticCRS {
     public ProjectedCRS(Identifier identifier, GeodeticDatum datum,
             Projection projection, Unit unit, Unit angularUnit) {
         super(identifier, datum, new CoordinateSystem(new Axis[]{EASTING,
-                    NORTHING}, new Unit[]{unit, unit}));
+            NORTHING}, new Unit[]{unit, unit}));
         this.projection = projection;
         this.angularUnit = angularUnit;
     }
@@ -151,5 +152,4 @@ public class ProjectedCRS extends GeodeticCRS {
     public Unit getAngularUnit() {
         return angularUnit;
     }
-
 }

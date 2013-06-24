@@ -39,9 +39,10 @@ import org.cts.cs.Axis;
 import org.cts.cs.CoordinateSystem;
 
 /**
- * A compound CoordinateReferenceSystem is a {@link org.cts.crs.CoordinateReferenceSystem}
- * composed of two distinct CoordinateReferenceSystem : a {@link org.cts.crs.GeodeticCRS}
- * for 2D horizontal coordinates and a {@link org.cts.crs.VerticalCRS} for the z
+ * A compound CoordinateReferenceSystem is a
+ * {@link org.cts.crs.CoordinateReferenceSystem} composed by two distinct
+ * CoordinateReferenceSystem : a {@link org.cts.crs.GeodeticCRS} for 2D
+ * horizontal coordinates and a {@link org.cts.crs.VerticalCRS} for the z
  * coordinate.
  *
  * @author Michaël Michaud
@@ -58,11 +59,11 @@ public abstract class CompoundCRS extends GeodeticCRS {
             VerticalCRS verticalCRS) {
         super(identifier, horizontalCRS.getDatum(), new CoordinateSystem(
                 new Axis[]{horizontalCRS.getCoordinateSystem().getAxis(0),
-                        horizontalCRS.getCoordinateSystem().getAxis(1),
-                    verticalCRS.getCoordinateSystem().getAxis(0)},
+            horizontalCRS.getCoordinateSystem().getAxis(1),
+            verticalCRS.getCoordinateSystem().getAxis(0)},
                 new Unit[]{horizontalCRS.getCoordinateSystem().getUnit(0),
-                        horizontalCRS.getCoordinateSystem().getUnit(1),
-                    verticalCRS.getCoordinateSystem().getUnit(0)}));
+            horizontalCRS.getCoordinateSystem().getUnit(1),
+            verticalCRS.getCoordinateSystem().getUnit(0)}));
         this.verticalCRS = verticalCRS;
     }
 
@@ -89,40 +90,12 @@ public abstract class CompoundCRS extends GeodeticCRS {
     }
 
     /**
-     * Returns the coordinate system of this CoordinateReferenceSystem.
-     */
-    /*
-     * public CoordinateSystem getCoordinateSystem() { return coordinateSystem;
-     * }
-     */
-
-    /**
      * Returns the number of dimensions of the coordinate system.
      */
     @Override
     public int getDimension() {
         return 3;
     }
-
-    /**
-     * Return the {@link fr.michaelm.geo.geodesy.datum.GeodeticDatum}.
-     */
-    /*
-     * public GeodeticDatum getDatum() { return geodeticDatum; }
-     */
-
-    /**
-     * Return whether this coord is a valid coord in this
-     * CoordinateReferenceSystem.
-     *
-     * @param coord standard coordinate for this CoordinateReferenceSystem
-     * datums (ex. decimal degrees for geographic datums and meters for vertical
-     * datums).
-     */
-    /*
-     * public boolean isValid(double[] coord) { return
-     * geodeticDatum.getExtent().isInside(coord); }
-     */
 
     /**
      * Creates a CoordinateOperation object to convert coordinates from this

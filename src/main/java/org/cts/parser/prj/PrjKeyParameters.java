@@ -41,19 +41,15 @@ public class PrjKeyParameters {
     public static final String GEOGCS = "geogcs";
     public static final String UNIT = "unit";
     public static final String PROJECTION = "projection";
-    public static final String PARAMETER ="parameter";
-    public static final String AUTHORITY="authority";
+    public static final String PARAMETER = "parameter";
+    public static final String AUTHORITY = "authority";
     public static final String PROJCS = "projcs";
-    public static final String PRIMEM = "primem";    
-    public static final String SPHEROID="spheroid";
-    
-    
+    public static final String PRIMEM = "primem";
+    public static final String SPHEROID = "spheroid";
     //Internal key parameters used by the parser
-    public static final String UNITVAL="unitval";
-    public static final String NAME ="name";
-    public static final String REFCODE ="refcode";
-    public static final String REFNAME="refname";
-    public static final String REFAUTHORITY="refauthority";
-    
-    
+    public static final String UNITVAL = "unitval";
+    public static final String NAME = "name";
+    public static final String REFCODE = "refcode";
+    public static final String REFNAME = "refname";
+    public static final String REFAUTHORITY = "refauthority";
 }
