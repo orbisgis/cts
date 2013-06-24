@@ -826,7 +826,7 @@ public class Ellipsoid extends IdentifiableComponent {
         if (other instanceof Ellipsoid) {
             Ellipsoid ell = (Ellipsoid) other;
             // if ellipsoid codes are equals, ellipsoids are equals
-            if (getAuthorityKey().equals(ell.getAuthorityKey())) {
+            if (getCode().equals(ell.getCode())) {
                 return true;
             }
             // else if ellipsoid semi-major axis and ellipsoid semi-minor axis
