@@ -31,35 +31,37 @@
  */
 package org.cts;
 
-import org.cts.op.CoordinateOperation;
-import org.cts.datum.Ellipsoid;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import org.apache.log4j.Logger;
-import org.cts.cs.Axis;
-import org.cts.cs.CoordinateSystem;
-import org.cts.datum.GeodeticDatum;
-import org.cts.datum.PrimeMeridian;
-import org.cts.op.Identity;
-import org.cts.op.projection.*;
-import org.cts.op.transformation.GeocentricTranslation;
-import org.cts.op.transformation.SevenParameterTransformation;
-import org.cts.parser.proj.ProjKeyParameters;
-import org.cts.parser.proj.ProjValueParameters;
-import org.cts.units.Measure;
-import org.cts.units.Quantity;
-import org.cts.units.Unit;
-
 import java.util.HashMap;
 import java.util.Map;
+import org.apache.log4j.Logger;
 import org.cts.crs.CoordinateReferenceSystem;
 import org.cts.crs.GeocentricCRS;
 import org.cts.crs.GeodeticCRS;
 import org.cts.crs.Geographic3DCRS;
 import org.cts.crs.ProjectedCRS;
+import org.cts.cs.Axis;
+import org.cts.cs.CoordinateSystem;
+import org.cts.datum.Ellipsoid;
+import org.cts.datum.GeodeticDatum;
+import org.cts.datum.PrimeMeridian;
+import org.cts.op.CoordinateOperation;
+import org.cts.op.Identity;
+import org.cts.op.projection.*;
+import org.cts.op.transformation.GeocentricTranslation;
 import org.cts.op.transformation.NTv2GridShiftTransformation;
+import org.cts.op.transformation.SevenParameterTransformation;
+import org.cts.parser.proj.ProjKeyParameters;
+import org.cts.parser.proj.ProjValueParameters;
+import org.cts.units.*;
 
 /**
+ * This class is used to define a new
+ * {@link org.cts.crs.CoordinateReferenceSystem} from a map of parameters that
+ * is generally obtained by using a parser on a
+ * {@link org.cts.registry.Registry} or on an OGC WKT String.
+ *
  * @TODO Not sure this class is useful here. I'd prefer a clear separation
  * between the model (CRS/Datum/Ellipsoid/Projection...) and the parsers which
  * create CRS from a file or from a stream. CRSHelper is in-between, no more a
@@ -72,7 +74,12 @@ public class CRSHelper {
 
     /**
      * Creates a new {@link org.cts.crs.CoordinateReferenceSystem} with the
-     * given Identifier and parameters.
+     * given {@link org.cts.Identifier} and parameters.
+     *
+     * @param identifier the identifier we want to associate with the desired
+     * CRS
+     * @param parameters the map of parameters defining the properties of the
+     * desired CRS
      */
     public static CoordinateReferenceSystem createCoordinateReferenceSystem(Identifier identifier, Map<String, String> parameters) {
 
@@ -135,11 +142,12 @@ public class CRSHelper {
     }
 
     /**
-     * Set default toWGS84 operation to a {@link org.cts.datum.GeodeticDatum}.
+     * Set default toWGS84 operation to a {@link org.cts.datum.GeodeticDatum},
+     * using {@code towgs84} keyword.
      *
      * @param gd the GeodeticDatum we want to associate default toWGS84
-     * operation with
-     * @param param the toWGS84 parameters to associate to gd
+     * operation with.
+     * @param param the map of parameters defining the properties of a CRS
      */
     public static void setDefaultWGS84Parameters(GeodeticDatum gd, Map<String, String> param) {
         CoordinateOperation op;
@@ -176,11 +184,10 @@ public class CRSHelper {
 
     /**
      * Returns a {@link org.cts.datum.PrimeMeridian} from its name or from its
-     * parameters.
+     * parameters, using {@code pm} keyword. By default, it returns Greenwich
+     * prime meridian if no meridian is defined in {@code param}.
      *
-     * @param param parameters including a {@link org.cts.datum.PrimeMeridian}
-     * definition
-     * @return a {@link org.cts.datum.PrimeMeridian}
+     * @param param the map of parameters defining the properties of a CRS
      */
     public static PrimeMeridian getPrimeMeridian(Map<String, String> param) {
         String pmName = param.get(ProjKeyParameters.pm);
@@ -205,7 +212,14 @@ public class CRSHelper {
     }
 
     /**
-     * Returns a {@link GeodeticDatum} from a map of parameters.
+     * Returns a {@link GeodeticDatum} from a map of parameters. Try first to
+     * obtain the {@link GeodeticDatum} from its name using {@code datum}
+     * keyword. Then if {@code param} does not contain {@code datum}
+     * keyword or if the name is not recognized, it uses
+     * {@code getEllipsoid}, {@code getPrimeMeridian} and
+     * {@code setDefaultWGS84Parameters} methods to define the
+     * {@link GeodeticDatum}.
+     * @param param the map of parameters defining the properties of a CRS
      */
     public static GeodeticDatum getDatum(Map<String, String> param) {
         String datumName = param.get(ProjKeyParameters.datum);
@@ -224,6 +238,14 @@ public class CRSHelper {
         return gd;
     }
 
+    /**
+     * Set nadgrids operation used by the
+     * {@link org.cts.crs.CoordinateReferenceSystem}.
+     *
+     * @param crs the CRS defined by {@code param} we want to associate nadgrids
+     * operation with
+     * @param param the map of parameters defining the properties of a CRS
+     */
     private static void setNadgrids(GeodeticCRS crs, Map<String, String> param) {
         String nadgrids = param.get(ProjKeyParameters.nadgrids);
         if (nadgrids != null) {
@@ -253,10 +275,14 @@ public class CRSHelper {
     }
 
     /**
-     * Returns an Ellipsoid from its name or from its parameter.
+     * Returns a {@link Ellipsoid} from a map of parameters. Try first to obtain
+     * the {@link Ellipsoid} from its name using {@code ellps} keyword. Then if
+     * {@code param} does not contain {@code ellps} keyword or if the name is
+     * not recognized, it tries to obtain it from parameters {@code a} and
+     * {@code b} or {@code rf}, last it tries to get the {@link Ellipsoid}
+     * associated with a known {@link org.cts.datum.Datum}.
      *
-     * Try first to find a known ellipsoid then to create an ellipsoid from its
-     * parameter then to get the ellipsoid associated with a known datum
+     * @param param the map of parameters defining the properties of a CRS
      */
     public static Ellipsoid getEllipsoid(Map<String, String> param) {
         String ellipsoidName = param.get(ProjKeyParameters.ellps);
@@ -294,12 +320,11 @@ public class CRSHelper {
 
     /**
      * Creates a {@link org.cts.op.projection.Projection} from a projection
-     * type, an ellipsoid and a map of parameters.
+     * type (ie lcc, tmerc), an ellipsoid and a map of parameters.
      *
      * @param projectionName name of the projection type
-     * @param ell ellipsoid to use
-     * @param param parameters of this projection
-     * @return a Projection
+     * @param ell ellipsoid used in the projection
+     * @param param the map of parameters defining the properties of a CRS
      */
     public static Projection getProjection(String projectionName, Ellipsoid ell,
             Map<String, String> param) {

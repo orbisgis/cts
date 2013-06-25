@@ -49,8 +49,10 @@ import java.util.List;
  */
 public class Identifier implements Identifiable {
 
-    // unique integer generated to identify a LOCAL object
-    // LOCAL refers to a namespace defined in the Identiable interface
+    /**
+     * Unique integer generated to identify a LOCAL object.
+     * LOCAL refers to a namespace defined in the Identiable interface.
+     */
     private static int localId = 0;
 
     /**
@@ -60,17 +62,29 @@ public class Identifier implements Identifiable {
     public static int getNewId() {
         return localId++;
     }
-    // Mandatory attribute (default = LOCAL)
+    /**
+     * Mandatory attribute (default = LOCAL).
+     */
     private String authorityName;
-    // Mandatory attribute (getNewId can generate local unique ID)
+    /**
+     * Mandatory attribute (getNewId can generate local unique ID).
+     */
     private String authorityKey;
-    // Complete name, sometimes called description
+    /**
+     * Complete name, sometimes called description.
+     */
     private String name;
-    // Short name used for user interface
+    /**
+     * Short name used for user interface.
+     */
     private String shortName;
-    // Remarks
+    /**
+     * Remarks.
+     */
     private String remarks;
-    // Aliases
+    /**
+     * Aliases.
+     */
     private List<Identifiable> aliases;
 
     /**
@@ -80,7 +94,7 @@ public class Identifier implements Identifiable {
      * @param authorityKey unique key in the namespace
      * @param name name or description
      * @param shortName short name used for user interfaces
-     * @param remarks
+     * @param remarks remarks containing additionnal information on the object
      * @param aliases synonyms of this Identifiable
      */
     public Identifier(String authorityName, String authorityKey, String name,
@@ -194,6 +208,8 @@ public class Identifier implements Identifiable {
      * Change the short string used to identify unambiguously the object. A
      * short name should have less than 16 characters whenever possible, and
      * should never exceed 48 characters.
+     * 
+     * @param shortName the new short name for the Identifier
      */
     @Override
     public void setShortName(String shortName) {
@@ -209,7 +225,9 @@ public class Identifier implements Identifiable {
     }
 
     /**
-     * Change the remarks.
+     * Change the remarks. Be careful, this method will delete former remarks.
+     *
+     * @param remarks the new remarks on this identifier
      */
     @Override
     public void setRemarks(String remarks) {
@@ -218,6 +236,8 @@ public class Identifier implements Identifiable {
 
     /**
      * Add remarks.
+     * 
+     * @param new_remark the remark to add to the Identifier's remarks
      */
     @Override
     public void addRemark(String new_remark) {
@@ -249,7 +269,7 @@ public class Identifier implements Identifiable {
      * Returns true if object is equals to this. Test equality between codes
      * (namespace + id), then between aliases.
      *
-     * @param object
+     * @param object The object to compare this Identifier against
      */
     @Override
     public boolean equals(Object object) {
@@ -286,6 +306,9 @@ public class Identifier implements Identifiable {
         }
     }
 
+    /**
+     * Returns the hash code for this Identifier.
+     */
     @Override
     public int hashCode() {
         int hash = 7;
@@ -295,7 +318,7 @@ public class Identifier implements Identifiable {
     }
 
     /**
-     * @return a String representation of this identifier.
+     * Returns a String representation of this identifier.
      */
     @Override
     public String toString() {

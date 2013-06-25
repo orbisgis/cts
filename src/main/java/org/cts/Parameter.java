@@ -80,15 +80,28 @@ public class Parameter {
     private String name;
     private Measure measure;
 
+    /**
+     * Creates a new Parameters defined by his name and his measure.
+     *
+     * @param name the name of the new parameter (ex : latitude, false northing)
+     * @param measure the measure in which the parameter is expressed (ex :
+     * degrees, meters)
+     */
     public Parameter(String name, Measure measure) {
         this.name = name;
         this.measure = measure;
     }
 
+    /**
+     * Returns the name of this Parameter.
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Returns the measure in which this Parameter is expressed.
+     */
     public Measure getMeasure() {
         return measure;
     }

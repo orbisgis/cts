@@ -31,26 +31,33 @@
  */
 package org.cts;
 
+import java.io.*;
+import java.nio.charset.Charset;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
 import org.cts.crs.CRSException;
 import org.cts.crs.CoordinateReferenceSystem;
 import org.cts.parser.prj.PrjParser;
 import org.cts.registry.Registry;
 import org.cts.registry.RegistryManager;
 
-import java.io.*;
-import java.nio.charset.Charset;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
-
 /**
  * This factory is in charge of creating new
- * {@link org.cts.crs.CoordinateReferenceSystem}s from an authority name and a
- * code.
- * <p>Creation of the {@link org.cts.crs.CoordinateReferenceSystem} from a text
- * file will be delegated to one of RegistryManager's registries. If
- * RegistryManager don't know the authority of the CRS, an exception is
- * returned.</p>
+ * {@link org.cts.crs.CoordinateReferenceSystem}s. It can do so by two way :
+ * <ul>
+ * <li> 1. From an authority name and a code.</li>
+ * <li> 2. From a OGC WKT String (PRJ) (that can be read from a file).</li>
+ * </ul>
+ * <p>Case 1 :</p>
+ * <ul>Creation of the {@link org.cts.crs.CoordinateReferenceSystem} from a text
+ * file will be delegated to one of {@link org.cts.registry.RegistryManager}'s
+ * registries. If {@link org.cts.registry.RegistryManager} don't know the
+ * authority of the CRS, an exception is returned.</ul>
+ * <p>Case 2 :</p>
+ * <ul>Creation of the {@link org.cts.crs.CoordinateReferenceSystem} from a OGC
+ * WKT String (PRJ) will be delegated to the
+ * {@link org.cts.parser.prj.PrjParser}.</ul>
  * <p>This class also manages a Cache which return
  * {@link org.cts.crs.CoordinateReferenceSystem}s which have already been
  * parsed.</p>
@@ -71,13 +78,11 @@ public class CRSFactory {
     }
 
     /**
-     * Return a
+     * Return a {@link org.cts.crs.CoordinateReferenceSystem} cooresponding to
+     * an authority and a srid.
      *
-     * @CoordinateReferenceSystem according an authority and a srid ie :
-     * EPSG:4326 or IGNF:LAMBE
-     *
-     * @param authorityAndSrid
-     * @return
+     * @param authorityAndSrid the code of the desired CRS (for instance
+     * EPSG:4326 or IGNF:LAMBE)
      * @throws CRSException
      */
     public CoordinateReferenceSystem getCRS(String authorityAndSrid) throws CRSException {
@@ -99,19 +104,19 @@ public class CRSFactory {
     }
 
     /**
-     * Return the registry manager
+     * Return the {@link org.cts.registry.RegistryManager} used in CTS.
      *
-     * @return
      */
     public RegistryManager getRegistryManager() {
         return registryManager;
     }
 
     /**
-     * Check if the registry name of the crsCode is supported.
+     * Check if the registry name (ie EPSG, IGNF...) of the crsCode is
+     * supported.
      *
-     * @param crsCode
-     * @return
+     * @param crsCode ie <code>authorityName:authorityKey</code> (ex
+     * : <code>EPSG:4326</code> or <code>IGNF:LAMBE</code>)
      */
     public boolean isRegistrySupported(String crsCode) {
         int p = crsCode.indexOf(':');
@@ -128,8 +133,7 @@ public class CRSFactory {
      * Creates a {@link CoordinateReferenceSystem} defined by an OGC WKT String
      * (PRJ).
      *
-     * @param prjString the PRJ String
-     * @return a {@link CoordinateReferenceSystem}
+     * @param prjString the OGC WKT String defining the CRS
      */
     public CoordinateReferenceSystem createFromPrj(String prjString) {
         PrjParser p = new PrjParser();
@@ -156,9 +160,8 @@ public class CRSFactory {
      * Creates a {@link CoordinateReferenceSystem} defined by an OGC WKT String
      * (PRJ).
      *
-     * @param stream
-     * @param encoding
-     * @return a {@link CoordinateReferenceSystem}
+     * @param stream the input stream of bytes defining the OGC WKT String
+     * @param encoding the charset used to read the input stream
      * @throws IOException
      */
     public CoordinateReferenceSystem createFromPrj(InputStream stream, Charset encoding) throws IOException {
@@ -175,8 +178,7 @@ public class CRSFactory {
      * Creates a {@link CoordinateReferenceSystem} defined by an OGC WKT String
      * (PRJ).
      *
-     * @param stream
-     * @return
+     * @param stream the input stream of bytes defining the OGC WKT String
      * @throws IOException
      */
     public CoordinateReferenceSystem createFromPrj(InputStream stream) throws IOException {
@@ -187,8 +189,7 @@ public class CRSFactory {
      * Creates a {@link CoordinateReferenceSystem} defined by an OGC WKT String
      * (PRJ).
      *
-     * @param file
-     * @return a {@link CoordinateReferenceSystem}
+     * @param file containing the OGC WKT String that defined the desired CRS
      * @throws IOException if there is a problem reading the file
      */
     public CoordinateReferenceSystem createFromPrj(File file) throws IOException {
@@ -206,10 +207,9 @@ public class CRSFactory {
     }
 
     /**
-     * Return a list of supported codes according an registryName
+     * Return a list of supported codes according an registryName.
      *
-     * @param registryName
-     * @return
+     * @param registryName (ex : EPSG, IGNF, ESRI)
      */
     public Set<String> getSupportedCodes(String registryName) {
         return getRegistryManager().getRegistry(registryName).getSupportedCodes();

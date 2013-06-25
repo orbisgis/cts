@@ -117,6 +117,8 @@ public interface Identifiable {
      * Change the short name for this Identifiable. A short name should have
      * less than 16 characters whenever possible, and should never exceed 48
      * characters.
+     * 
+     * @param shortName the short name to give to the identifiable
      */
     public void setShortName(String shortName);
 
@@ -127,11 +129,15 @@ public interface Identifiable {
 
     /**
      * Change the remarks.
+     * 
+     * @param remarks the new remarks of the identifiable
      */
     public void setRemarks(String remarks);
 
     /**
      * Add remarks.
+     * 
+     * @param new_remark the remark to add
      */
     public void addRemark(String new_remark);
 
