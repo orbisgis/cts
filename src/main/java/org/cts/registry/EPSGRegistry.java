@@ -32,6 +32,7 @@
 package org.cts.registry;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Map;
 import java.util.Set;
 
@@ -51,23 +52,21 @@ public class EPSGRegistry extends AbstractProjRegistry implements Registry {
     }
 
     @Override
-    public Map<String, String> getParameters(String code) {
+    public Map<String, String> getParameters(String code) throws RegistryException{
         try {
             Map<String, String> crsParameters = projParser.readParameters(code, EPSG_REGEX);
             return crsParameters;
         } catch (IOException ex) {
-            LOGGER.error("Cannot load the EPSG registry", ex);
+            throw new RegistryException("Cannot load the EPSG registry", ex);
         }
-        return null;
     }
 
     @Override
-    public Set<String> getSupportedCodes() {
+    public Set<String> getSupportedCodes() throws RegistryException {
         try {
             return projParser.getSupportedCodes(EPSG_REGEX);
         } catch (IOException ex) {
-            LOGGER.error("Cannot load the EPSG registry", ex);
+            throw new RegistryException("Cannot load the EPSG registry", ex);
         }
-        return null;
     }
 }

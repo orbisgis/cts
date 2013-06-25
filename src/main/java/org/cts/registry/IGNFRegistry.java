@@ -51,23 +51,21 @@ public class IGNFRegistry extends AbstractProjRegistry {
     }
 
     @Override
-    public Map<String, String> getParameters(String code) {
+    public Map<String, String> getParameters(String code) throws RegistryException{
         try {
             Map<String, String> crsParameters = projParser.readParameters(code, IGNF_REGEX);
             return crsParameters;
         } catch (IOException ex) {
-            LOGGER.error("Cannot load the IGNF registry", ex);
+            throw new RegistryException("Cannot load the IGNF registry", ex);
         }
-        return null;
     }
 
     @Override
-    public Set<String> getSupportedCodes() {
+    public Set<String> getSupportedCodes() throws RegistryException {
         try {
             return projParser.getSupportedCodes(IGNF_REGEX);
         } catch (IOException ex) {
-            LOGGER.error("Cannot load the IGNF registry", ex);
+            throw new RegistryException("Cannot load the IGNF registry", ex);
         }
-        return null;
     }
 }

@@ -37,7 +37,20 @@ package org.cts.registry;
  */
 public class RegistryException extends Exception {
 
+    /**
+     * Build an registryExcepetion from a message
+     * @param message 
+     */
     public RegistryException(String message) {
         super(message);
+    }
+
+    /**
+     * Build an registryExcepetion from a message and an exception
+     * @param message
+     * @param ex 
+     */
+    public RegistryException(String message, Exception ex) {
+        super(message, ex);
     }
 }

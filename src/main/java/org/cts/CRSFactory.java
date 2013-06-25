@@ -209,7 +209,7 @@ public class CRSFactory {
      * @param registeryName
      * @return
      */
-    public Set<String> getSupportedCodes(String registryName) {
+    public Set<String> getSupportedCodes(String registryName) throws RegistryException {
         return getRegistryManager().getRegistry(registryName).getSupportedCodes();
     }
 
