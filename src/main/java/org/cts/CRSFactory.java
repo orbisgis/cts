@@ -192,7 +192,7 @@ public class CRSFactory {
 
     /**
      * Return a list of supported codes according an registryName
-     * @param registeryName
+     * @param registryName
      * @return 
      */
     public Set<String> getSupportedCodes(String registryName) {        
