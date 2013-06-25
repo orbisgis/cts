@@ -205,9 +205,8 @@ public class CRSFactory {
 
     /**
      * Return a list of supported codes according an registryName
-     *
-     * @param registeryName
-     * @return
+     * @param registryName
+     * @return 
      */
     public Set<String> getSupportedCodes(String registryName) throws RegistryException {
         return getRegistryManager().getRegistry(registryName).getSupportedCodes();

@@ -36,15 +36,15 @@ import org.cts.Identifier;
 import org.cts.util.AngleFormat;
 
 /**
- * PrimeMeridian.<p> fr : Actuellement, le m�ridien d'origine de la plupart des
- * syt�mes g�od�siques est voisin du m�ridien de Greenwich, qui passe par
- * l'observatoire de Greenwich, en Angleterre. Jusqu'au d�but du XXe si�cle,
- * diff�rents pays utilis�rent d'autres m�ridiens d'origine comme le m�ridien de
- * Paris en France, le m�ridien de Berlin en Allemagne, le m�ridien de Tol�de en
- * Espagne ou le m�ridien d'Uppsala en Su�de. Certaines cartes nautiques
- * utilisaient le m�ridien de Ferro, correspondant � l'�le d'El Hierro dans
+ * PrimeMeridian.<p> fr : Actuellement, le méridien d'origine de la plupart des
+ * sytèmes géodésiques est voisin du méridien de Greenwich, qui passe par
+ * l'observatoire de Greenwich, en Angleterre. Jusqu'au début du XXe siècle,
+ * différents pays utilisèrent d'autres méridiens d'origine comme le méridien de
+ * Paris en France, le méridien de Berlin en Allemagne, le méridien de Tolède en
+ * Espagne ou le méridien d'Uppsala en Suède. Certaines cartes nautiques
+ * utilisaient le méridien de Ferro, correspondant à l'île d'El Hierro dans
  * l'archipel des Canaries, afin d'obtenir une longitude positive pour toutes
- * les terres europ�ennes.<p> Taken from <a
+ * les terres européennes.<p> Taken from <a
  * href="http://fr.wikipedia.org/wiki/M%C3%A9ridien">wikipedia</a>
  *
  * @author Michaël Michaud, Erwan Bocher
@@ -86,7 +86,7 @@ public class PrimeMeridian extends IdentifiableComponent {
      * Creates a new
      * <code>PrimeMeridian</code>.
      *
-     * @param name.
+     * @param name name ofthe PrimeMeridian
      * @param ddLongitude the longitude of the Prime Meridian from Greenwich in
      * decimal degrees.
      */
@@ -99,7 +99,7 @@ public class PrimeMeridian extends IdentifiableComponent {
      * Creates a new
      * <code>PrimeMeridian</code>.
      *
-     * @param identifier.
+     * @param identifier identifier if the PrimeMeridian
      * @param ddLongitude the longitude of the Prime Meridian from Greenwich in
      * decimal degrees.
      */
