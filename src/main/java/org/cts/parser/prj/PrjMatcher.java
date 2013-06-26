@@ -126,11 +126,22 @@ public final class PrjMatcher {
         }
 
         // clean up params
-        String unit = params.remove(PrjKeyParameters.UNITVAL);
-        if (unit == null || Double.valueOf(unit) - 1.0 < TOL) {
+        String unit = params.remove(PrjKeyParameters.UNIT);
+        String unitval = params.remove(PrjKeyParameters.UNITVAL);
+        if (unitval == null || Math.abs(Double.valueOf(unitval) - 1.0) < TOL) {
             params.put(ProjKeyParameters.units, ProjValueParameters.M);
-        } else {
-            params.put(ProjKeyParameters.to_meter, unit);
+        } else if (!unit.equals("degree")) {
+            params.put(ProjKeyParameters.to_meter, unitval);
+            String x0 = params.remove(ProjKeyParameters.x_0);
+            if (x0 != null) {
+                x0 = Double.toString(Double.valueOf(x0) * Double.valueOf(unitval));
+                params.put(ProjKeyParameters.x_0, x0);
+            }
+            String y0 = params.remove(ProjKeyParameters.y_0);
+            if (y0 != null) {
+                y0 = Double.toString(Double.valueOf(y0) * Double.valueOf(unitval));
+                params.put(ProjKeyParameters.y_0, y0);
+            }
         }
         // authority, if present
         String auth = params.remove(PrjKeyParameters.REFAUTHORITY);
@@ -236,7 +247,9 @@ public final class PrjMatcher {
     }
 
     private void parseUnit(List<PrjElement> ll) {
-        //parseString(ll.get(0), "unit");
+        String unit = getString(ll.get(0));
+        unit = unit.replaceAll("[^a-zA-Z0-9]", "").toLowerCase();
+        params.put(PrjKeyParameters.UNIT, unit);
         parseNumber(ll.get(1), PrjKeyParameters.UNITVAL);
     }
 

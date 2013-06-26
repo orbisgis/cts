@@ -141,7 +141,7 @@ public class ProjectedCRS extends GeodeticCRS {
             ops.add(CoordinateSwitch.SWITCH_LAT_LON);
         }
         // Unit conversion
-        if (getCoordinateSystem().getAxis(0) != EASTING) {
+        if (getCoordinateSystem().getUnit(0) != Unit.METER) {
             ops.add(UnitConversion.createUnitConverter(Unit.METER,
                     getCoordinateSystem().getUnit(0)));
         }

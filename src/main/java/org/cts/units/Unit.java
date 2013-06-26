@@ -96,7 +96,8 @@ public class Unit implements java.io.Serializable {
     public static final Unit CENTIMETER = new Unit(LENGTH, "centimeter", 0.01, "cm");
     public static final Unit DECIMETER = new Unit(LENGTH, "decimeter", 0.1, "dm");
     public static final Unit KILOMETER = new Unit(LENGTH, "kilometer", 1000d, "km");
-    public static final Unit FOOT;
+    public static final Unit FOOT = new Unit(LENGTH, "foot", 0.3048, "ft");
+    public static final Unit USFOOT = new Unit(LENGTH, "foot_us", 1200/3937, "us-ft");
     public static final Unit YARD = new Unit(LENGTH, "yard", 0.9144, "yd");
     public static final Unit UNIT = new Unit(NODIM, "", "");
     public static final Unit SECOND = new Unit(TIME, "second", "s");
@@ -121,13 +122,8 @@ public class Unit implements java.io.Serializable {
         units.add(CENTIMETER);
         units.add(DECIMETER);
         units.add(KILOMETER);
-
-        unitNames = new ArrayList<String>();
-        unitNames.add("foot");
-        unitNames.add("foot_us");
-        FOOT = new Unit(LENGTH, unitNames, 0.3048, "ft");
-
         units.add(FOOT);
+        units.add(USFOOT);
         units.add(YARD);
         units.add(UNIT);
         units.add(SECOND);

@@ -83,6 +83,7 @@ public class PrjValueParameters {
         PROJNAMES.put("boggs" + "eumorphic", "bipc");
         PROJNAMES.put("bonne", "bonne");
         PROJNAMES.put("cassini", "cass");
+        PROJNAMES.put("cassini"+"soldner", "cass");
         PROJNAMES.put("central" + "cylindrical", "cc");
         PROJNAMES.put("collignon", "collg");
         PROJNAMES.put("craster" + "parabolic", "crast");

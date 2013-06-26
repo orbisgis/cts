@@ -105,32 +105,33 @@ public class CRSHelper {
         //It's not a projected CRS
         if (sproj.equals(ProjValueParameters.GEOCENT)) {
             Unit unit = Unit.METER;
-            if (stometer != null) {
-                unit = new Unit(Quantity.LENGTH, "", Double.parseDouble(sunit),
+            if (sunit != null) {
+                unit = Unit.getUnit(Quantity.LENGTH, sunit);
+            } else if (stometer != null) {
+                unit = new Unit(Quantity.LENGTH, "", Double.parseDouble(stometer),
                         "");
             }
             CoordinateSystem cs = new CoordinateSystem(new Axis[]{Axis.X,
                 Axis.Y, Axis.Z}, new Unit[]{unit, unit, unit});
 
-            crs = new GeocentricCRS(identifier, geodeticDatum,
-                    cs);
+            crs = new GeocentricCRS(identifier, geodeticDatum, cs);
         } else if (sproj.equals(ProjValueParameters.LONGLAT)) {
-            Unit unit = Unit.DEGREE;
-            if (stometer != null) {
-                unit = new Unit(Quantity.LENGTH, "", Double.parseDouble(sunit),
-                        "");
-            }
             CoordinateSystem cs = new CoordinateSystem(new Axis[]{
                 Axis.LONGITUDE, Axis.LATITUDE, Axis.HEIGHT}, new Unit[]{
-                unit, unit, Unit.METER});
-            crs = new Geographic3DCRS(identifier, geodeticDatum,
-                    cs);
+                Unit.DEGREE, Unit.DEGREE, Unit.METER});
+            crs = new Geographic3DCRS(identifier, geodeticDatum, cs);
         } else {
             Projection proj = getProjection(sproj, geodeticDatum.getEllipsoid(),
                     parameters);
             if (null != proj) {
-                crs = new ProjectedCRS(identifier,
-                        geodeticDatum, proj);
+                Unit unit = Unit.METER;
+                if (sunit!=null) {
+                    unit = Unit.getUnit(Quantity.LENGTH, sunit);
+                } else if (stometer != null) {
+                unit = new Unit(Quantity.LENGTH, "", Double.parseDouble(stometer),
+                        "");
+                }
+                crs = new ProjectedCRS(identifier, geodeticDatum, proj, unit, Unit.DEGREE);
             } else {
                 LOGGER.warn("Unknown projection : " + sproj);
                 return null;

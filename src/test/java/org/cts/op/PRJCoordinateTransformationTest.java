@@ -143,4 +143,47 @@ public class PRJCoordinateTransformationTest extends BaseCoordinateTransformTest
         double[] check = transform((GeodeticCRS) outCRS, (GeodeticCRS) srcCRS, expectedPoint);
         assertTrue(checkEquals2D(outCRS + " to " + srcCRS, check, srcPoint, 1E-2));
     }
+    
+    @Test
+    public void testUnitsInPRJ() throws Exception {
+        double[] srcPoint = new double[]{-62, 10, 0};
+        double[] expectedPoint = new double[]{66644.94, 82536.22, 0};
+        String srcprj = "GEOGCS[\"Trinidad 1903\",\n"
+                + "    DATUM[\"Trinidad_1903\",\n"
+                + "        SPHEROID[\"Clarke 1858\",6378293.645208759,294.2606763692654,\n"
+                + "            AUTHORITY[\"EPSG\",\"7007\"]],\n"
+                + "        AUTHORITY[\"EPSG\",\"6302\"]],\n"
+                + "    PRIMEM[\"Greenwich\",0,\n"
+                + "        AUTHORITY[\"EPSG\",\"8901\"]],\n"
+                + "    UNIT[\"degree\",0.01745329251994328,\n"
+                + "        AUTHORITY[\"EPSG\",\"9122\"]],\n"
+                + "    AUTHORITY[\"EPSG\",\"4302\"]]";
+        CoordinateReferenceSystem srcCRS = crsf.createFromPrj(srcprj);
+        String outprj = "PROJCS[\"Trinidad 1903 / Trinidad Grid\",\n"
+                + "    GEOGCS[\"Trinidad 1903\",\n"
+                + "        DATUM[\"Trinidad_1903\",\n"
+                + "            SPHEROID[\"Clarke 1858\",6378293.645208759,294.2606763692654,\n"
+                + "                AUTHORITY[\"EPSG\",\"7007\"]],\n"
+                + "            AUTHORITY[\"EPSG\",\"6302\"]],\n"
+                + "        PRIMEM[\"Greenwich\",0,\n"
+                + "            AUTHORITY[\"EPSG\",\"8901\"]],\n"
+                + "        UNIT[\"degree\",0.01745329251994328,\n"
+                + "            AUTHORITY[\"EPSG\",\"9122\"]],\n"
+                + "        AUTHORITY[\"EPSG\",\"4302\"]],\n"
+                + "    UNIT[\"Clarke's link\",0.201166195164,\n"
+                + "        AUTHORITY[\"EPSG\",\"9039\"]],\n"
+                + "    PROJECTION[\"Cassini_Soldner\"],\n"
+                + "    PARAMETER[\"latitude_of_origin\",10.44166666666667],\n"
+                + "    PARAMETER[\"central_meridian\",-61.33333333333334],\n"
+                + "    PARAMETER[\"false_easting\",430000],\n"
+                + "    PARAMETER[\"false_northing\",325000],\n"
+                + "    AUTHORITY[\"EPSG\",\"30200\"],\n"
+                + "    AXIS[\"Easting\",EAST],\n"
+                + "    AXIS[\"Northing\",NORTH]]";
+        CoordinateReferenceSystem outCRS = crsf.createFromPrj(outprj);
+        double[] result = transform((GeodeticCRS) srcCRS, (GeodeticCRS) outCRS, srcPoint);
+        assertTrue(checkEquals2D(srcCRS + " to " + outCRS, result, expectedPoint, 10E-2));
+        double[] check = transform((GeodeticCRS) outCRS, (GeodeticCRS) srcCRS, expectedPoint);
+        assertTrue(checkEquals2D(outCRS + " to " + srcCRS, check, srcPoint, 1E-2));
+    }
 }
