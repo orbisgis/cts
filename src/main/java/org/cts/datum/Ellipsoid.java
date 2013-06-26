@@ -39,8 +39,10 @@ import static java.lang.Math.pow;
 import static java.lang.Math.sin;
 import static java.lang.Math.sqrt;
 import static java.lang.Math.tan;
+
 import java.util.HashMap;
 import java.util.Map;
+
 import org.cts.Identifiable;
 import org.cts.IdentifiableComponent;
 import org.cts.Identifier;
@@ -65,12 +67,18 @@ import org.cts.Identifier;
  */
 public class Ellipsoid extends IdentifiableComponent {
 
+    /**
+     * The second parameter use to create the ellipsoid, this parameter can be
+     * the inverse flattening, the semi-minor axis or the eccentricity.
+     */
     public static enum SecondParameter {
 
         InverseFlattening, SemiMinorAxis, Eccentricity
     };
+    /**
+     * The double value of PI/2.
+     */
     private static final double PI_2 = Math.PI / 2.;
-    private static final double PI_4 = Math.PI / 4.;
     /**
      * Perfect SPHERE
      */
@@ -175,37 +183,59 @@ public class Ellipsoid extends IdentifiableComponent {
      */
     public static final Ellipsoid WGS72 = createEllipsoidFromInverseFlattening(
             new Identifier("EPSG", "7043", "WGS 72", "WGS72"), 6378135, 298.26);
-    private double semiMajorAxis;
-    transient SecondParameter secondParameter;
-    // Following fields are initialized at construction time
-    // They are transient because they don't need to be serialized
-    // NOTE : if those fields were directly initialized in the constructor,
-    // they could be declared final.
-    // semi-major axis
-    transient private double a;
-    // semi-minor axis
-    transient private double b;
-    // flattening
-    transient private double f;
-    // inverse flattening
-    transient private double invf;
-    // eccentricity
-    transient private double e;
-    // square eccentricity
-    transient private double e2;
-    // second square eccentricity
-    transient private double eprime2;
-    // coefficients used to compute the meridian arc length
+    /**
+     * The SecondParameters used to create this Ellipsoid.
+     */
+    final SecondParameter secondParameter;
+    /**
+     * The semi-major axis of this Ellipsoid.
+     */
+    final private double a;
+    /**
+     * The semi-minor axis of this Ellipsoid.
+     */
+    final private double b;
+    /**
+     * The flattening of this Ellipsoid.
+     */
+    final private double f;
+    /**
+     * The inverse flattening of this Ellipsoid.
+     */
+    final private double invf;
+    /**
+     * The eccentricity of this Ellipsoid.
+     */
+    final private double e;
+    /**
+     * The square eccentricity of this Ellipsoid.
+     */
+    final private double e2;
+    /**
+     * The second square eccentricity of this Ellipsoid.
+     */
+    final private double eprime2;
+    /**
+     * The coefficients used to compute the meridian arc length.
+     */
     transient private double[] arc_coeff;
-    // coefficients used to compute the meridian arc length from the latitude
+    /**
+     * The coefficients for the direct UTM projection.
+     */
     transient private double[] dir_utm_coeff;
-    // coefficients used to compute the latitude from the meridian arc length
+    /**
+     * The coefficients for the inverse UTM projection.
+     */
     transient private double[] inv_utm_coeff;
-    // coefficients used to compute meridian arc length from/to latitude
-    // this second method is taken from http://www.ngs.noaa.gov/gps-toolbox/Hehl
-    // It makes it possible to choose the precision of the result
+    /**
+     * The coefficients used to compute meridian arc length from/to latitude
+     * this second method is taken from <a href="http://www.ngs.noaa.gov/gps-toolbox/Hehl"> here </a>.
+     * It makes it possible to choose the precision of the result.
+     */
     transient private double[] kk;
-    //coefficients used by the inverse Mercator projection
+    /**
+     * The coefficients for the inverse Mercator projection.
+     */
     transient private double[] inv_merc_coeff;
     /**
      * ellipsoidFromName associates each ellipsoid to a short string used to
@@ -251,28 +281,45 @@ public class Ellipsoid extends IdentifiableComponent {
             SecondParameter secondParameter,
             double secondParameterValue) throws IllegalArgumentException {
         super(identifier);
-        this.semiMajorAxis = semiMajorAxis;
+        this.a = semiMajorAxis;
         this.secondParameter = secondParameter;
         switch (secondParameter) {
             case InverseFlattening:
                 this.invf = secondParameterValue;
+                this.f = 1.0 / this.invf;
+                this.b = this.a - this.a / this.invf;
+                this.e2 = (2.0 - 1.0 / this.invf) / this.invf;
+                this.e = sqrt(this.e2);
                 break;
             case SemiMinorAxis:
                 this.b = secondParameterValue;
+                this.f = 1.0 - this.b / this.a;
+                invf = a / (a - b);
+                this.e2 = 1.0 - ((this.b * this.b) / (this.a * this.a));
+                this.e = sqrt((this.a * this.a - this.b * this.b) / (this.a * this.a));
                 break;
             case Eccentricity:
                 this.e = secondParameterValue;
+                this.e2 = this.e * this.e;
+                this.b = this.a * sqrt(1.0 - this.e2);
+                this.f = 1.0 - sqrt(1.0 - this.e2);
+                invf = 1.0 / (1.0 - sqrt(1.0 - e2));
                 break;
             default:
+                this.b = this.a;
+                this.f = 0.0;
+                this.invf = Double.POSITIVE_INFINITY;
+                this.e = 0.0;
+                this.e2 = 0.0;
         }
-        initDoubleParameters();
+        eprime2 = e2 / (1.0 - e2);
     }
 
     /**
      * Return the semi-major axis of this ellipsoid (fr : demi grand axe).
      */
     public double getSemiMajorAxis() {
-        return semiMajorAxis;
+        return a;
     }
 
     /**
@@ -321,28 +368,37 @@ public class Ellipsoid extends IdentifiableComponent {
     }
 
     /**
-     * Get coefficients for the meridian arc length
+     * Get coefficients for the meridian arc length.
      */
     public double[] getArcCoeff() {
+        if (arc_coeff == null) {
+            initMeridianArcCoefficients();
+        }
         return arc_coeff;
     }
 
     /**
-     * Get coefficients for the direct UTM projection
+     * Get coefficients for the direct UTM projection.
      */
     public double[] getDirectUTMCoeff() {
+        if (dir_utm_coeff == null) {
+            initDirectUTMCoefficients();
+        }
         return dir_utm_coeff;
     }
 
     /**
-     * Get coefficients for the inverse UTM projection
+     * Get coefficients for the inverse UTM projection.
      */
     public double[] getInverseUTMCoeff() {
+        if (inv_utm_coeff == null) {
+            initInverseUTMCoefficients();
+        }
         return inv_utm_coeff;
     }
 
     /**
-     * Get k coefficients computed with an iterative method
+     * Get k coefficients computed with an iterative method.
      */
     public double[] getKCoeff(int max) {
         initKCoeff(max);
@@ -350,9 +406,12 @@ public class Ellipsoid extends IdentifiableComponent {
     }
 
     /**
-     * Get coefficients for the inverse Mercator projection
+     * Get coefficients for the inverse Mercator projection.
      */
     public double[] getInverseMercatorCoeff() {
+        if (inv_merc_coeff == null) {
+            initInverseMercatorCoefficients();
+        }
         return inv_merc_coeff;
     }
 
@@ -465,6 +524,13 @@ public class Ellipsoid extends IdentifiableComponent {
         return ellps.checkExistingEllipsoid();
     }
 
+    /**
+     * Check if
+     * <code>this</code> is equals to one of the predefined Ellipsoid
+     * (GRS80, WGS84,&hellip;). Return the predifined Ellipsoid that matches if
+     * exists, otherwise return
+     * <code>this</code>.
+     */
     private Ellipsoid checkExistingEllipsoid() {
         if (this.equals(Ellipsoid.GRS80)) {
             return Ellipsoid.GRS80;
@@ -508,41 +574,8 @@ public class Ellipsoid extends IdentifiableComponent {
     }
 
     /**
-     * Since version 0&#046;3 : initialization of all the double parameters of
-     * the ellipsoid. NOTE : It could be good to initialize directly these
-     * parameters in the constructor so that they can be declared final.
+     * Initialize the coefficients for the meridian arc length.
      */
-    private void initDoubleParameters() {
-        a = semiMajorAxis;
-        switch (secondParameter) {
-            case InverseFlattening:
-                f = 1.0 / invf;
-                b = a - a / invf;
-                e2 = (2.0 - 1.0 / invf) / invf;
-                e = sqrt(e2);
-                break;
-            case SemiMinorAxis:
-                f = 1.0 - b / a;
-                invf = a / (a - b);
-                e2 = 1.0 - ((b * b) / (a * a));
-                e = sqrt((a * a - b * b) / (a * a));
-                break;
-            case Eccentricity:
-                e2 = e * e;
-                b = a * sqrt(1.0 - e2);
-                f = 1.0 - sqrt(1.0 - e2);
-                invf = 1.0 / (1.0 - sqrt(1.0 - e2));
-                break;
-            default:
-                f = 0.0;
-                invf = Double.POSITIVE_INFINITY;
-                e = 0.0;
-                e2 = 0.0;
-        }
-        eprime2 = e2 / (1.0 - e2);
-        initMeridianArcCoefficients();
-    }
-
     private void initMeridianArcCoefficients() {
         double e4 = e2 * e2;
         double e6 = e4 * e2;
@@ -553,18 +586,45 @@ public class Ellipsoid extends IdentifiableComponent {
         arc_coeff[2] = e4 * 15 / 256 + e6 * 45 / 1024 + e8 * 525 / 16384;
         arc_coeff[3] = -e6 * 35 / 3072 - e8 * 175 / 12288;
         arc_coeff[4] = e8 * 315 / 131072;
+    }
+    
+    /**
+     * Initialize the coefficients for the direct UTM projection.
+     */
+    private void initDirectUTMCoefficients() {
+        double e4 = e2 * e2;
+        double e6 = e4 * e2;
+        double e8 = e4 * e4;
         dir_utm_coeff = new double[5];
         dir_utm_coeff[0] = 1.0 - e2 * 1 / 4 - e4 * 3 / 64 - e6 * 5 / 256 - e8 * 175 / 16384;
         dir_utm_coeff[1] = e2 * 1 / 8 - e4 * 1 / 96 - e6 * 9 / 1024 - e8 * 901 / 184320;
         dir_utm_coeff[2] = e4 * 13 / 768 + e6 * 17 / 5120 - e8 * 311 / 737280;
         dir_utm_coeff[3] = e6 * 61 / 15360 + e8 * 899 / 430080;
         dir_utm_coeff[4] = e8 * 49561 / 41287680;
+    }
+    
+    /**
+     * Initialize the coefficients for the inverse UTM projection.
+     */
+    private void initInverseUTMCoefficients() {
+        double e4 = e2 * e2;
+        double e6 = e4 * e2;
+        double e8 = e4 * e4;
         inv_utm_coeff = new double[5];
         inv_utm_coeff[0] = 1.0 - e2 * 1 / 4 - e4 * 3 / 64 - e6 * 5 / 256 - e8 * 175 / 16384;
         inv_utm_coeff[1] = e2 * 1 / 8 + e4 * 1 / 48 + e6 * 7 / 2048 + e8 * 1 / 61440;
         inv_utm_coeff[2] = e4 * 1 / 768 + e6 * 3 / 1280 + e8 * 559 / 368640;
         inv_utm_coeff[3] = e6 * 17 / 30720 + e8 * 283 / 430080;
         inv_utm_coeff[4] = e8 * 4397 / 41287680;
+    }
+    
+    /**
+     * Initialize the coefficients for the inverse Mercator projection.
+     */
+    private void initInverseMercatorCoefficients() {
+        double e4 = e2 * e2;
+        double e6 = e4 * e2;
+        double e8 = e4 * e4;
         inv_merc_coeff = new double[5];
         inv_merc_coeff[0] = 1.0;
         inv_merc_coeff[1] = e2 * 1 / 2 + e4 * 5 / 24 + e6 * 1 / 12 + e8 * 13 / 360;
@@ -600,7 +660,7 @@ public class Ellipsoid extends IdentifiableComponent {
     }
 
     /**
-     * @return the first coefficient of series expansion
+     * Return the first coefficient of series expansion.
      */
     private double k1() {
         if (kk == null) {
@@ -610,7 +670,7 @@ public class Ellipsoid extends IdentifiableComponent {
     }
 
     /**
-     * @return the second coefficient of series expansion
+     * Return the second coefficient of series expansion
      */
     private double k2(double beta_rad) {
         if (kk == null) {
@@ -627,17 +687,6 @@ public class Ellipsoid extends IdentifiableComponent {
     }
 
     /**
-     * @return the complex second coefficient of series expansion
-     */
-    /*
-     * public Complex koeff2(Complex beta) { if (kk==null) initKCoeff(5);
-     * Complex cos2 = Complex.cos(beta).times(Complex.cos(beta)); Complex result
-     * = new Complex(kk[0],0.0); Complex k = new Complex(1.0,0.0); for(int n = 1
-     * ; n < kk.length ; n++) { k = k.times((2.*n)/(2.*n+1.0)).times(cos2);
-     * result = result.plus(k.times(kk[n])); } return(result);
-     }
-     */
-    /**
      * Computes the meridian arc from equator to point with ellipsoidal latitude
      * phi.
      *
@@ -650,7 +699,7 @@ public class Ellipsoid extends IdentifiableComponent {
     }
 
     /**
-     * computes the ellipsoidal latitude from meridian arc length.
+     * Computes the ellipsoidal latitude from meridian arc length.
      *
      * @param s the meridian arc length in meters
      * @return the ellipsoidal latitude
@@ -720,12 +769,12 @@ public class Ellipsoid extends IdentifiableComponent {
      */
     public final double isometricLatitude(double latitude) {
         double esinlat = e * sin(latitude);
-        return log(tan(PI_4 + latitude / 2) * pow((1 - esinlat) / (1 + esinlat), e / 2));
+        return log(tan((PI_2 + latitude) / 2) * pow((1 - esinlat) / (1 + esinlat), e / 2));
     }
 
     /**
      * Computes the geographic latitude from the isometric latitude (fr : calcul
-     * de la latitude géographique à partir de la latitude isométrique).<p>
+     * de la latitude géographique à partir de la latitude isometrique).<p>
      * Geographic latitude of a point P located on the surface of the ellipsoid
      * is the angle between the perpendicular to the ellipsoid surface at P and
      * the equatorial plan.<p> Isometric latitude is a function of geographic
@@ -736,7 +785,7 @@ public class Ellipsoid extends IdentifiableComponent {
      * href="http://www.ign.fr/rubrique.asp?rbr_id=1700&lng_id=FR#68096">
      * IGN</a> ALG0002
      *
-     * @param isoLatitude isometric latitude
+     * @param isoLatitude latitude isometrique
      * @param epsilon value controlling the stop condition of this convergent
      * sequence. Use 1E-10 for a precision of about 0.6 mm, 1E-11 for a
      * precision of about 0.06 mm and 1E-12 for a preciison of about 0.006 mm
@@ -782,6 +831,9 @@ public class Ellipsoid extends IdentifiableComponent {
      * @return the curvilinear abscissa of this latitude on the meridian arc
      */
     public double curvilinearAbscissa(double latitude) {
+        if (arc_coeff==null) {
+            initMeridianArcCoefficients();
+        }
         return arc_coeff[0] * latitude
                 + arc_coeff[1] * sin(2 * latitude)
                 + arc_coeff[2] * sin(4 * latitude)
@@ -790,12 +842,12 @@ public class Ellipsoid extends IdentifiableComponent {
     }
 
     /**
-     * @return a string representation of this ellipsoid.
+     * Return a string representtaion of this ellipsoid.
      */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(getIdentifier().toString());
-        sb.append(" (Semi-major axis = ").append(semiMajorAxis);
+        sb.append(" (Semi-major axis = ").append(a);
         switch (secondParameter) {
             case SemiMinorAxis:
                 sb.append(" | ").append("Semi-minor axis = ").append(b).append(")");
@@ -813,9 +865,11 @@ public class Ellipsoid extends IdentifiableComponent {
     }
 
     /**
-     * Returns true if this Ellipoid can be considered as equals to another one.
-     * Ellipsoid equals method is based on a comparison of the object dimensions
-     * with a sensibility of 0.1 mm.
+     * Returns true if this GeodeticDatum can be considered as equals to another
+     * one. Ellipsoid equals method is based on a comparison of the object
+     * dimensions with a sensibility of 0.1 mm.
+     *
+     * @param other the object to compare this Ellipsoid against
      */
     @Override
     public boolean equals(Object other) {
@@ -838,6 +892,9 @@ public class Ellipsoid extends IdentifiableComponent {
         return false;
     }
 
+    /**
+     * Returns the hash code for this Ellipsoid.
+     */
     @Override
     public int hashCode() {
         int hash = 5;

@@ -33,6 +33,7 @@ package org.cts.datum;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import org.cts.IdentifiableComponent;
 import org.cts.Identifier;
 import org.cts.util.AngleFormat;
@@ -53,39 +54,84 @@ import org.cts.util.AngleFormat;
  */
 public class PrimeMeridian extends IdentifiableComponent {
 
+    /**
+     * Greenwich Meridian.
+     */
     public static final PrimeMeridian GREENWICH =
             createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8901", "Greenwich", "Greenwich"), 0.0);
+    /**
+     * Lisbon Meridian.
+     */
     public static final PrimeMeridian LISBON =
             createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8902", "Lisbon", "Lisbon"), -9.0754862);
+    /**
+     * Paris Meridian.
+     */
     public static final PrimeMeridian PARIS =
             createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8903", "Paris", "Paris", "Value adopted by IGN (Paris) in 1936. Equivalent to 2°20'14.025\". Preferred by EPSG to earlier value of 2°20'13.95\" (2.596898 grads) used by RGS London", null), 2.337229167);
+    /**
+     * Bogota Meridian.
+     */
     public static final PrimeMeridian BOGOTA =
             createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8904", "Bogota", "Bogota"), -74.04513);
+    /**
+     * Madrid Meridian.
+     */
     public static final PrimeMeridian MADRID =
             createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8905", "Madrid", "Madrid"), -3.411658);
+    /**
+     * Rome Meridian.
+     */
     public static final PrimeMeridian ROME =
             createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8906", "Rome", "Rome"), 12.27084);
+    /**
+     * Bern Meridian.
+     */
     public static final PrimeMeridian BERN =
             createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8907", "Bern", "Bern", "1895 value. Newer value of 7°26'22.335\" determined in 1938.", null), 7.26225);
+    /**
+     * Jakarta Meridian.
+     */
     public static final PrimeMeridian JAKARTA =
             createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8908", "Jakarta", "Jakarta"), 106.482779);
+    /**
+     * Ferro Meridian.
+     */
     public static final PrimeMeridian FERRO =
             createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8909", "Ferro", "Ferro", "Used in Austria and former Czechoslovakia.", null), -17.4);
+    /**
+     * Brussels Meridian.
+     */
     public static final PrimeMeridian BRUSSELS =
             createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8910", "Brussels", "Brussels"), 4.220471);
+    /**
+     * Stockholm Meridian.
+     */
     public static final PrimeMeridian STOCKHOLM =
             createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8911", "Stockholm"), 18.03298);
+    /**
+     * Athens Meridian.
+     */
     public static final PrimeMeridian ATHENS =
             createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8912", "Athens", "Athens", "Used in Greece for older mapping based on Hatt projection.", null), 23.4258815);
+    /**
+     * Oslo Meridian.
+     */
     public static final PrimeMeridian OSLO =
             createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8913", "Oslo", "Oslo", " Formerly known as Kristiania or Christiania.", null), 10.43225);
+    /**
+     * Paris (Royal Geographic Society) Meridian.
+     */
     public static final PrimeMeridian PARIS_RGS =
             createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8914", "Paris (RGS)", "Paris (RGS)", "Value replaced by IGN (France) in 1936 - see code 8903. Equivalent to 2.596898 grads.", null), 2.201395);
+    /**
+     * The angle formed by this meridian with the international Greenwich
+     * meridian in decimal degrees.
+     */
     private double ddLongitude;
     /**
      * primeMeridianFromName associates each prime meridian to a short string
      * used to recognize it in CTS.
-     *
      */
     public static final Map<String, PrimeMeridian> primeMeridianFromName = new HashMap<String, PrimeMeridian>();
 
@@ -222,6 +268,13 @@ public class PrimeMeridian extends IdentifiableComponent {
         return pm.checkExistingPrimeMeridian();
     }
 
+    /**
+     * Check if
+     * <code>this</code> is equals to one of the predefined PrimeMeridian
+     * (Greenwich, Paris,&hellip;). Return the predifined PrimeMeridian that matches if
+     * exists, otherwise return
+     * <code>this</code>.
+     */
     private PrimeMeridian checkExistingPrimeMeridian() {
         if (this.equals(PrimeMeridian.GREENWICH)) {
             return PrimeMeridian.GREENWICH;
@@ -257,7 +310,7 @@ public class PrimeMeridian extends IdentifiableComponent {
     }
 
     /**
-     * @return a String representation of this <code>PrimeMeridian</code>.
+     * Return a String representation of this <code>PrimeMeridian</code>.
      */
     @Override
     public String toString() {
@@ -291,6 +344,9 @@ public class PrimeMeridian extends IdentifiableComponent {
         return false;
     }
 
+    /**
+     * Returns the hash code for this PrimeMeridian.
+     */
     @Override
     public int hashCode() {
         int hash = 5;

@@ -31,16 +31,14 @@
  */
 package org.cts.datum;
 
-import org.cts.op.NonInvertibleOperationException;
-import org.cts.op.CoordinateOperation;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.cts.*;
 import org.cts.cs.GeographicExtent;
 import org.cts.op.*;
 import org.cts.op.transformation.GeocentricTranslation;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Geodetic Datum or horizontal Datum : a {@link org.cts.datum.Datum} used to
@@ -61,20 +59,38 @@ import java.util.Map;
  */
 public class GeodeticDatum extends AbstractDatum {
 
+    /**
+     * datums is a {@link HashMap} that registered all GeodeticDatums using
+     * their identifiers as key.
+     */
     private final static Map<Identifier, GeodeticDatum> datums = new HashMap<Identifier, GeodeticDatum>();
     /**
      * datumFromName associates each datum to a short string used to recognize
      * it in CTS.
-     *
      */
     public static final Map<String, GeodeticDatum> datumFromName = new HashMap<String, GeodeticDatum>();
+    /**
+     * The PrimeMeridian of this Datum.
+     */
     private final PrimeMeridian primeMeridian;
+    /**
+     * The ellipsoid of this Datum.
+     */
     private final Ellipsoid ellipsoid;
+    /**
+     * The default transformation to WGS84 of this Datum.
+     */
     private CoordinateOperation toWGS84;
+    /**
+     * World Geodetic System 1984.
+     */
     public final static GeodeticDatum WGS84 = new GeodeticDatum(new Identifier(
             "EPSG", "6326", "World Geodetic System 1984", "WGS84"),
             PrimeMeridian.GREENWICH, Ellipsoid.WGS84, GeographicExtent.WORLD,
             null, null);
+    /**
+     * Nouvelle Triangulation Française (Paris).
+     */
     public final static GeodeticDatum NTF_PARIS = new GeodeticDatum(
             new Identifier("EPSG", "6807",
             "Nouvelle Triangulation Française (Paris)", "NTF (Paris)"),
@@ -83,6 +99,9 @@ public class GeodeticDatum extends AbstractDatum {
             GeographicExtent.WORLD,
             "Fundamental point: Pantheon. Latitude: 48 deg 50 min 46.52 sec N; Longitude: 2 deg 20 min 48.67 sec E (of Greenwich).",
             "1895");
+    /**
+     * Nouvelle Triangulation Française.
+     */
     public final static GeodeticDatum NTF = new GeodeticDatum(
             new Identifier("EPSG", "6275", "Nouvelle Triangulation Française",
             "NTF"),
@@ -91,10 +110,16 @@ public class GeodeticDatum extends AbstractDatum {
             GeographicExtent.WORLD,
             "Fundamental point: Pantheon. Latitude: 48 deg 50 min 46.522 sec N; Longitude: 2 deg 20 min 48.667 sec E (of Greenwich).",
             "1898");
+    /**
+     * Réseau géodésique français 1993.
+     */
     public final static GeodeticDatum RGF93 = new GeodeticDatum(new Identifier(
             "EPSG", "6171", "Réseau géodésique français 1993", "RGF93"),
             PrimeMeridian.GREENWICH, Ellipsoid.GRS80, GeographicExtent.WORLD,
             "Coincident with ETRS89 at epoch 1993.0", "1993");
+    /**
+     * European Datum 1950.
+     */
     public final static GeodeticDatum ED50 = new GeodeticDatum(
             new Identifier("EPSG", "6230", "European Datum 1950", "ED50"),
             PrimeMeridian.GREENWICH,
@@ -165,6 +190,9 @@ public class GeodeticDatum extends AbstractDatum {
         this.registerDatum();
     }
 
+    /**
+     * Register a datum in {@link HashMap} {@code datums} using its {@link Identifier} as a key.
+     */
     private void registerDatum() {
         datums.put(getIdentifier(), this);
     }
@@ -186,14 +214,14 @@ public class GeodeticDatum extends AbstractDatum {
     }
 
     /**
-     * Return the PrimeMeridian of this Datum
+     * Return the PrimeMeridian of this Datum.
      */
     public PrimeMeridian getPrimeMeridian() {
         return primeMeridian;
     }
 
     /**
-     * Return the ellipsoid of this Datum
+     * Return the ellipsoid of this Datum.
      */
     public Ellipsoid getEllipsoid() {
         return ellipsoid;
@@ -226,6 +254,27 @@ public class GeodeticDatum extends AbstractDatum {
         this.setToOtherDatumOperation(toWGS84, WGS84);
     }
 
+    /**
+     * Set a transformation to a target Datum.
+     * <p>toOtherDatum is an operation to transform geocentric coordinates based
+     * on this datum to geocentric coordinates based on target datum, generally
+     * a translation or a SevenParameterTransformation (ex. Bursa-Wolf).</p>
+     * <p>toOtherDatum does not use PrimeMerdian nor ellipsoid parameters.</p>
+     * <p>The toOtherDatum transformation is stored in the datumTransformations
+     * map, inherited from AbstractDatum. The operation is not stored as
+     * Geocentric to Geocentric transformation but as a Geographic3D to
+     * Geographic3D transformation.</p>
+     * <p>The convention for this transformation is to start from Geographic3D
+     * coordinates in radians, to include required longitude rotation, and
+     * ellipsoid transformations, and to return GeographicCoordinates in radian.
+     * Advantage is that it makes it possible to use algorithm which do not
+     * involve Geographic to Geocentric transformation like the use of NTv2
+     * grids.</p>
+     *
+     * @param toOtherDatum geocentric transformation from this to targetDatum
+     * @param targetDatum the GeodeticDatum to which the transformation is
+     * defined
+     */
     public final void setToOtherDatumOperation(CoordinateOperation toOtherDatum, GeodeticDatum targetDatum) {
         // First case : toWGS (geocentric transformation) is not null
         if (toOtherDatum != null && toOtherDatum != Identity.IDENTITY) {
@@ -285,7 +334,7 @@ public class GeodeticDatum extends AbstractDatum {
     }
 
     /**
-     * Returns the default transformation to WGS84 of this Datum
+     * Returns the default transformation to WGS84 of this Datum.
      */
     @Override
     public CoordinateOperation getToWGS84() {
@@ -314,6 +363,14 @@ public class GeodeticDatum extends AbstractDatum {
         }
     }
 
+    /**
+     * Returns true if object is equals to
+     * <code>this</code>. Tests equality between identifiers, then tests if the
+     * components of this ProjectedCRS are equals : the toWGS84 transformations,
+     * the {@link Ellipsoid} and the {@link PrimeMeridian}.
+     *
+     * @param object The object to compare this GeodeticDatum against
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -342,6 +399,9 @@ public class GeodeticDatum extends AbstractDatum {
         }
     }
 
+    /**
+     * Returns the hash code for this GeodeticDatum.
+     */
     @Override
     public int hashCode() {
         int hash = 7;

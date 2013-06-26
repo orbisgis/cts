@@ -143,9 +143,10 @@ public abstract class GeodeticCRS extends IdentifiableComponent
     /**
      * Add a Nadgrids Transformation for this CRS to the CRS using the key
      * {@link GeodeticDatum}.
-     * 
-     * @param gd the target geodetic datum of the nadgrid transformation to add
-     * @param coordOp the transformation linking this CRS and the target gd
+     *
+     * @param gd the target GeodeticDatum of the nadgrid transformation to add
+     * @param coordOp the transformation linking this CRS and the
+     * target <code>gd</code>
      */
     public void addGridTransformation(GeodeticDatum gd, CoordinateOperation coordOp) {
         nadgridsTransformation.put(gd, coordOp);

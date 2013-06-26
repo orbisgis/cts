@@ -201,7 +201,7 @@ public class ProjectedCRS extends GeodeticCRS {
      * Returns true if object is equals to
      * <code>this</code>. Tests equality between identifiers, then tests if the
      * components of this ProjectedCRS are equals : the grids transformations,
-     * the {@link GeodeticDatum} the {@link CoordinateSystem} and the
+     * the {@link GeodeticDatum}, the {@link CoordinateSystem} and the
      * {@link Projection}.
      *
      * @param object The object to compare this ProjectedCRS against
