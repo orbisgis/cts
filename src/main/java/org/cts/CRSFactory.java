@@ -73,38 +73,44 @@ public class CRSFactory {
     }
 
     /**
-     * Return a @CoordinateReferenceSystem according an authority and a srid 
-     * ie :
+     * Return a
+     *
+     * @CoordinateReferenceSystem according an authority and a srid ie :
      * EPSG:4326 or IGNF:LAMBE
      *
      * @param authorityAndSrid
      * @return
      * @throws CRSException
      */
-    public CoordinateReferenceSystem getCRS(String authorityAndSrid) throws CRSException, RegistryException {
+    public CoordinateReferenceSystem getCRS(String authorityAndSrid) throws CRSException {
         CoordinateReferenceSystem crs = CRSPOOL.get(authorityAndSrid);
         if (crs == null) {
-            String[] registryNameWithCode = splitRegistryNameAndCode(authorityAndSrid);
-            if (isRegistrySupported(registryNameWithCode[0])) {
-                Registry registry = getRegistryManager().getRegistry(registryNameWithCode[0]);
-                Map<String, String> crsParameters = registry.getParameters(registryNameWithCode[1]);
-                if (crsParameters != null) {
-                    crs = CRSHelper.createCoordinateReferenceSystem(new Identifier(registryNameWithCode[0], registryNameWithCode[1], crsParameters.get("title")), crsParameters);
+            try {
+                String[] registryNameWithCode = splitRegistryNameAndCode(authorityAndSrid);
+                if (isRegistrySupported(registryNameWithCode[0])) {
+                    Registry registry = getRegistryManager().getRegistry(registryNameWithCode[0]);
+                    Map<String, String> crsParameters = registry.getParameters(registryNameWithCode[1]);
+                    if (crsParameters != null) {
+                        crs = CRSHelper.createCoordinateReferenceSystem(new Identifier(registryNameWithCode[0], registryNameWithCode[1], crsParameters.get("title")), crsParameters);
+                    }
+                    if (crs != null) {
+                        CRSPOOL.put(authorityAndSrid, crs);
+                    }
                 }
-                if (crs != null) {
-                    CRSPOOL.put(authorityAndSrid, crs);
-                }
+            } catch (RegistryException ex) {
+                throw new CRSException("Cannot create the CRS", ex);
             }
         }
         return crs;
     }
 
     /**
-     * Return the registry name and the code base on the pattern name:code
-     * ed : epsg:4326 returns epsg;4326
+     * Return the registry name and the code base on the pattern name:code ed :
+     * epsg:4326 returns epsg;4326
+     *
      * @param authorityAndSrid
      * @return
-     * @throws RegistryException 
+     * @throws RegistryException
      */
     public String[] splitRegistryNameAndCode(String authorityAndSrid) throws RegistryException {
         String[] registryAndCode = authorityAndSrid.split(":");
@@ -205,8 +211,9 @@ public class CRSFactory {
 
     /**
      * Return a list of supported codes according an registryName
+     *
      * @param registryName
-     * @return 
+     * @return
      */
     public Set<String> getSupportedCodes(String registryName) throws RegistryException {
         return getRegistryManager().getRegistry(registryName).getSupportedCodes();
