@@ -40,7 +40,7 @@ public class CRSException extends Exception {
     /**
      * Build a coordinate reference system exception with a message
      *
-     * @param message
+     * @param message precise description of this exception
      */
     public CRSException(String message) {
         super(message);
