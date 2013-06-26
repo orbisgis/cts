@@ -34,17 +34,11 @@ package org.cts.op;
 import java.util.HashMap;
 import java.util.Map;
 import org.cts.datum.Ellipsoid;
-import org.cts.Identifier;
 import org.cts.Parameter;
-import org.cts.CRSHelper;
 import org.cts.crs.CoordinateReferenceSystem;
 import org.cts.crs.GeodeticCRS;
-import org.cts.crs.ProjectedCRS;
-import org.cts.datum.GeodeticDatum;
 import org.cts.op.projection.CylindricalEqualArea;
 import org.cts.op.projection.MillerCylindrical;
-import org.cts.registry.Registry;
-import org.cts.registry.RegistryManager;
 import org.cts.units.Measure;
 import org.cts.units.Unit;
 import static org.junit.Assert.assertTrue;
@@ -66,13 +60,26 @@ public class SpecialCoordinateTransformTest extends BaseCoordinateTransformTest 
         double csNameDest_Y = 10671650.06;
         double tolerance = 0.01;
         CoordinateReferenceSystem inputCRS = createCRS("EPSG:4674");
-        RegistryManager registryManager = new RegistryManager();
-        Registry registry = registryManager.getRegistry("epsg");
-        Map<String, String> crsParameters = registry.getParameters("29101");
-        // The output CRS is the same as the EPSG:29101, but it uses the ellipsoid
-        // GRS80 instead of the ellipsoid aust_SA. 
-        CoordinateReferenceSystem outputCRS = new ProjectedCRS(new Identifier(ProjectedCRS.class, "SIRGAS 2000 / Brazil Polyconic"),
-                (GeodeticDatum) inputCRS.getDatum(), CRSHelper.getProjection("poly", Ellipsoid.GRS80, crsParameters));
+        CoordinateReferenceSystem outputCRS = crsf.createFromPrj(
+                "PROJCS[\"SIRGAS 2000 / Brazil Polyconic\",\n"
+                + "    GEOGCS[\"SIRGAS 2000\",\n"
+                + "        DATUM[\"Sistema_de_Referencia_Geocentrico_para_America_del_Sur_2000\",\n"
+                + "            SPHEROID[\"GRS 1980\",6378137,298.257222101,\n"
+                + "                AUTHORITY[\"EPSG\",\"7019\"]],\n"
+                + "            TOWGS84[0,0,0,0,0,0,0],\n"
+                + "            AUTHORITY[\"EPSG\",\"6674\"]],\n"
+                + "        PRIMEM[\"Greenwich\",0,\n"
+                + "            AUTHORITY[\"EPSG\",\"8901\"]],\n"
+                + "        UNIT[\"degree\",0.01745329251994328,\n"
+                + "            AUTHORITY[\"EPSG\",\"9122\"]],\n"
+                + "        AUTHORITY[\"EPSG\",\"4674\"]],\n"
+                + "    PROJECTION[\"Polyconic\"],\n"
+                + "    PARAMETER[\"latitude_of_origin\",0],\n"
+                + "    PARAMETER[\"central_meridian\",-54],\n"
+                + "    PARAMETER[\"false_easting\",5000000],\n"
+                + "    PARAMETER[\"false_northing\",10000000],\n"
+                + "    UNIT[\"metre\",1,\n"
+                + "        AUTHORITY[\"EPSG\",\"9001\"]]]");
         double[] pointSource = new double[]{csNameSrc_X, csNameSrc_Y, 0};
         double[] result = transform((GeodeticCRS) inputCRS, (GeodeticCRS) outputCRS, pointSource);
         double[] pointDest = new double[]{csNameDest_X, csNameDest_Y, 0};

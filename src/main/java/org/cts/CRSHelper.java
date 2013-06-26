@@ -149,7 +149,7 @@ public class CRSHelper {
      * operation with.
      * @param param the map of parameters defining the properties of a CRS
      */
-    public static void setDefaultWGS84Parameters(GeodeticDatum gd, Map<String, String> param) {
+    private static void setDefaultWGS84Parameters(GeodeticDatum gd, Map<String, String> param) {
         CoordinateOperation op;
         String towgs84Parameters = param.get(ProjKeyParameters.towgs84);
         if (null == towgs84Parameters) {
@@ -189,7 +189,7 @@ public class CRSHelper {
      *
      * @param param the map of parameters defining the properties of a CRS
      */
-    public static PrimeMeridian getPrimeMeridian(Map<String, String> param) {
+    private static PrimeMeridian getPrimeMeridian(Map<String, String> param) {
         String pmName = param.get(ProjKeyParameters.pm);
         PrimeMeridian pm;
         if (null != pmName) {
@@ -219,9 +219,10 @@ public class CRSHelper {
      * {@code getEllipsoid}, {@code getPrimeMeridian} and
      * {@code setDefaultWGS84Parameters} methods to define the
      * {@link GeodeticDatum}.
+     *
      * @param param the map of parameters defining the properties of a CRS
      */
-    public static GeodeticDatum getDatum(Map<String, String> param) {
+    private static GeodeticDatum getDatum(Map<String, String> param) {
         String datumName = param.get(ProjKeyParameters.datum);
         GeodeticDatum gd = null;
         if (null != datumName) {
@@ -284,7 +285,7 @@ public class CRSHelper {
      *
      * @param param the map of parameters defining the properties of a CRS
      */
-    public static Ellipsoid getEllipsoid(Map<String, String> param) {
+    private static Ellipsoid getEllipsoid(Map<String, String> param) {
         String ellipsoidName = param.get(ProjKeyParameters.ellps);
         String a = param.get(ProjKeyParameters.a);
         String b = param.get(ProjKeyParameters.b);
@@ -326,7 +327,7 @@ public class CRSHelper {
      * @param ell ellipsoid used in the projection
      * @param param the map of parameters defining the properties of a CRS
      */
-    public static Projection getProjection(String projectionName, Ellipsoid ell,
+    private static Projection getProjection(String projectionName, Ellipsoid ell,
             Map<String, String> param) {
         String slat_0 = param.get("lat_0");
         String slat_1 = param.get("lat_1");

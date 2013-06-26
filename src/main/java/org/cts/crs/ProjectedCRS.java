@@ -152,4 +152,40 @@ public class ProjectedCRS extends GeodeticCRS {
     public Unit getAngularUnit() {
         return angularUnit;
     }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o instanceof ProjectedCRS) {
+            ProjectedCRS crs = (ProjectedCRS) o;
+            if (getIdentifier().equals(crs.getIdentifier())) {
+                return true;
+            }
+            boolean nadgrids;
+            if (getGridTransformations()== null) {
+                if (crs.getGridTransformations()== null) {
+                    nadgrids = true;
+                } else {
+                    nadgrids = false;
+                }
+            } else {
+                nadgrids = getGridTransformations().equals(crs.getGridTransformations());
+            }
+
+            return getDatum().equals(crs.getDatum()) && getProjection().equals(crs.getProjection())
+                    && getCoordinateSystem().equals(crs.getCoordinateSystem()) && nadgrids;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 97 * hash + (this.projection != null ? this.projection.hashCode() : 0);
+        hash = 97 * hash + (this.angularUnit != null ? this.angularUnit.hashCode() : 0);
+        return hash;
+    }
 }

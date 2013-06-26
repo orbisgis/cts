@@ -126,6 +126,13 @@ public abstract class GeodeticCRS extends IdentifiableComponent
     }
 
     /**
+     * Return the list of nadgrids transformation defined for this CRS.
+     */
+    public Map<GeodeticDatum, CoordinateOperation> getGridTransformations() {
+        return nadgridsTransformation;
+    }
+
+    /**
      * Return the list of nadgrids transformation defined for this CRS that used
      * the datum in parameter as target datum.
      */
