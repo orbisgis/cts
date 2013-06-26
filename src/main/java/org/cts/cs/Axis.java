@@ -41,25 +41,82 @@ package org.cts.cs;
  */
 public enum Axis {
 
-    EASTING("Easting"), // used for planimetric coordinate system
-    NORTHING("Northing"), // used for planimetric coordinate system
-    WESTING("Westing"), // used for planimetric coordinate system
-    SOUTHING("Southing"), // used for planimetric coordinate system
-    x("x"), // used for planimetric coordinate system
-    y("y"), // used for planimetric coordinate system
-    ALTITUDE("Altitude"), // used for vertical/compound system
-    DEPTH("Depth"), // used for bathymetry
-    LATITUDE("Latitude"), // used for geographic coordinate system
-    LONGITUDE("Longitude"), // used for 
-    HEIGHT("Height"), // used for 3D ellipsoidal coordinate system
-    X("X"), // used for 3D cartesian system
-    Y("Y"), // used for 3D cartesian system
-    Z("Z"), // used for 3D cartesian system
+    /**
+     * Easting axis. Used for planimetric coordinate system, generally in pair
+     * with northing.
+     */
+    EASTING("Easting"),
+    /**
+     * Northing axis. Used for planimetric coordinate system, generally in pair
+     * with easting.
+     */
+    NORTHING("Northing"),
+    /**
+     * Westing axis. Used for planimetric coordinate system, generally in pair
+     * with southing.
+     */
+    WESTING("Westing"),
+    /**
+     * Southing axis. Used for planimetric coordinate system, generally in pair
+     * with westing.
+     */
+    SOUTHING("Southing"),
+    /**
+     * x axis. Used for planimetric coordinate system, sometimes used in place
+     * of easting.
+     */
+    x("x"),
+    /**
+     * y axis. Used for planimetric coordinate system, sometimes used in place
+     * of northing.
+     */
+    y("y"),
+    /**
+     * Altitude axis. Used for vertical/compound system.
+     */
+    ALTITUDE("Altitude"),
+    /**
+     * Depth axis. Used for bathymetry.
+     */
+    DEPTH("Depth"),
+    /**
+     * Latitude axis. Used for geographic coordinate system, generally in pair
+     * with longitude.
+     */
+    LATITUDE("Latitude"),
+    /**
+     * Longitude axis. Used for geographic coordinate system, generally in pair
+     * with latitude.
+     */
+    LONGITUDE("Longitude"),
+    /**
+     * Height axis. Used for 3D ellipsoidal coordinate system, generally with
+     * latitude and longitude axes.
+     */
+    HEIGHT("Height"),
+    /**
+     * X axis. Used for 3D cartesian system, generally with Y and Z axes.
+     */
+    X("X"),
+    /**
+     * Y axis. Used for 3D cartesian system, generally with X and Z axes.
+     */
+    Y("Y"),
+    /**
+     * Z axis. Used for 3D cartesian system, generally with X and Y axes.
+     */
+    Z("Z"),
+    /**
+     * Time axis. Not supported in CTS yet.
+     */
     TIME("Time");
+    /**
+     * The name of this Axis (X, Y, Z, LONGITUDE, ALTITUDE,&hellip;).
+     */
     private String name;
 
     /**
-     * .
+     * Create a new Axis.
      * @param name name of this new Axis
      */
     private Axis(String name) {
@@ -68,15 +125,13 @@ public enum Axis {
 
     /**
      * Return the name of this Axis (X, Y, Z, LONGITUDE, ALTITUDE,&hellip;).
-     *
-     * @return the name of this axis
      */
     public String getName() {
         return name;
     }
 
     /**
-     * @return a String representation of this Axis
+     * Return a String representation of this Axis.
      */
     @Override
     public String toString() {
