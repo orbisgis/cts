@@ -53,6 +53,9 @@ import static org.cts.units.Unit.METER;
 /**
  * <p> A geocentric CoordinateReferenceSystem is a 3D cartesian coordinate
  * system centered on the Earth center of mass. </p>
+ * <p> Note that the Earth center of mass is not something easily identifiable,
+ * especially before the advent of space geodesy, which partially explains
+ * there are so many datums, and therefore, so many CoordinateReferenceSystems</p>
  *
  * @author Michaël Michaud
  */

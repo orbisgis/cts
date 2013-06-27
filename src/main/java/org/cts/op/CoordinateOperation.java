@@ -38,7 +38,7 @@ import org.cts.IllegalCoordinateException;
  * A CoordinateOperation is an object able to modify values of a coordinate.<p>
  * This is the main interface used to implement geodetic algorithms and perform
  * coordinate conversions or coordinate transformations from one
- * {@link fr.cts.crs.CoordinateReferenceSystem} to another.
+ * {@link org.cts.crs.CoordinateReferenceSystem} to another.
  *
  * @author Michaël Michaud
  */

@@ -40,7 +40,7 @@ import org.cts.cs.CoordinateSystem;
 
 /**
  * A compound CoordinateReferenceSystem is a {@link org.cts.crs.CoordinateReferenceSystem}
- * composed by two distinct CoordinateReferenceSystem : a {@link org.cts.crs.GeodeticCRS}
+ * composed of two distinct CoordinateReferenceSystem : a {@link org.cts.crs.GeodeticCRS}
  * for 2D horizontal coordinates and a {@link org.cts.crs.VerticalCRS} for the z
  * coordinate.
  *
