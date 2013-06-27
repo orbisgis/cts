@@ -31,6 +31,8 @@
  */
 package org.cts.op.transformation;
 
+import org.cts.op.NonInvertibleOperationException;
+import org.cts.op.CoordinateOperation;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -42,8 +44,8 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import org.apache.log4j.Logger;
 import org.cts.*;
-import org.cts.grid.GridShift;
-import org.cts.grid.GridShiftFile;
+import org.cts.op.transformation.grid.GridShift;
+import org.cts.op.transformation.grid.GridShiftFile;
 import org.cts.op.AbstractCoordinateOperation;
 
 /**
@@ -75,7 +77,7 @@ public class NTv2GridShiftTransformation extends AbstractCoordinateOperation {
      * @throws URISyntaxException
      * @throws MalformedURLException 
      */
-    public static NTv2GridShiftTransformation createNTv2GridShiftTransformation(String ntv2_gridName) throws URISyntaxException, MalformedURLException {
+    public static NTv2GridShiftTransformation createNTv2GridShiftTransformation(String ntv2_gridName) throws URISyntaxException, MalformedURLException, NullPointerException {
         return new NTv2GridShiftTransformation(GridShift.class.getResource(ntv2_gridName).toURI().toURL());
     }
 
@@ -238,10 +240,10 @@ public class NTv2GridShiftTransformation extends AbstractCoordinateOperation {
     }
 
     public String getFromDatum() {
-        return gsf.getFromEllipsoid().trim();
+        return gsf.getFromEllipsoid().trim().toLowerCase();
     }
 
     public String getToDatum() {
-        return gsf.getToEllipsoid().trim();
+        return gsf.getToEllipsoid().trim().toLowerCase();
     }
 }

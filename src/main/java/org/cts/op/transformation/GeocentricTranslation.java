@@ -32,10 +32,10 @@
 package org.cts.op.transformation;
 
 import org.cts.CoordinateDimensionException;
-import org.cts.CoordinateOperation;
+import org.cts.op.CoordinateOperation;
 import org.cts.Identifier;
 import org.cts.IllegalCoordinateException;
-import org.cts.NonInvertibleOperationException;
+import org.cts.op.NonInvertibleOperationException;
 import org.cts.op.AbstractCoordinateOperation;
 
 /**

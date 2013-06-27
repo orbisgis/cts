@@ -34,7 +34,6 @@ package org.cts.parser.prj;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.cts.crs.CRSHelper;
 import org.cts.parser.proj.ProjKeyParameters;
 import org.cts.parser.proj.ProjValueParameters;
 
@@ -144,12 +143,6 @@ public final class PrjMatcher {
             params.put(PrjKeyParameters.REFNAME, auth + ':' + code);
         }
 
-        String pm = params.get(ProjKeyParameters.pm);
-        boolean pmSupported = CRSHelper.isPrimeMeridianSupported(pm.toLowerCase());
-        if (pmSupported) {
-            params.put(ProjKeyParameters.pm, pm.toLowerCase());
-        }
-
         // no projection specified usually means longlat
         if (!params.containsKey(ProjKeyParameters.proj)) {
             params.put(ProjKeyParameters.proj, ProjValueParameters.LONGLAT);
@@ -220,20 +213,20 @@ public final class PrjMatcher {
     private void parseDatum(List<PrjElement> ll) {
         String datum = getString(ll.get(0));
         datum = datum.replaceAll("[^a-zA-Z0-9]", "");
-        boolean found = false;
-        if (CRSHelper.isDatumSupported(datum)) {
-            params.put(ProjKeyParameters.datum, datum);
-            found = true;
-        }
-        if (!found) {
             String datm = PrjValueParameters.DATUMNAMES.get(datum.toLowerCase());
             if (datm!=null) {
                 params.put(ProjKeyParameters.datum, datm);
             } else {
                 List<PrjElement> nn = matchNode(ll.get(1), PrjKeyParameters.SPHEROID);
-                //parseString(nn.get(0), "ellps");
+                String ellps = getString(nn.get(0));
+                ellps = ellps.replaceAll("[^a-zA-Z0-9]", "");
+                String elps = PrjValueParameters.ELLIPSOIDNAMES.get(ellps.toLowerCase());
+            if (elps!=null) {
+                params.put(ProjKeyParameters.ellps, elps);
+            } else {
                 parseNumber(nn.get(1), ProjKeyParameters.a);
                 parseNumber(nn.get(2), ProjKeyParameters.rf);
+            }
 
                 if (ll.size() > 2) {
                     List<PrjElement> els = matchNode(ll.get(2), ProjKeyParameters.towgs84, false);
@@ -247,7 +240,6 @@ public final class PrjMatcher {
                     }
                 }
             }
-        }
     }
 
     private void parseUnit(List<PrjElement> ll) {
@@ -266,9 +258,10 @@ public final class PrjMatcher {
 
     private void parsePrimeM(List<PrjElement> ll) {
         String pm = getString(ll.get(0));
-        boolean pmval = CRSHelper.isPrimeMeridianSupported(pm.toLowerCase());
-        if (pmval) {
-            params.put(ProjKeyParameters.pm, pm.toLowerCase());
+        pm = pm.replaceAll("[^a-zA-Z0-9]", "");
+        String prm = PrjValueParameters.PRIMEMERIDIANNAMES.get(pm.toLowerCase());
+        if (prm != null) {
+            params.put(ProjKeyParameters.pm, prm);
         } else {
             parseNumber(ll.get(1), ProjKeyParameters.pm);
         }

@@ -31,8 +31,7 @@
  */
 package org.cts.op;
 
-import org.cts.CoordinateOperation;
-import org.cts.Ellipsoid;
+import org.cts.datum.Ellipsoid;
 import org.cts.Identifier;
 import org.cts.Parameter;
 import org.cts.datum.GeodeticDatum;

@@ -33,12 +33,12 @@ package org.cts.op.projection;
 
 import java.util.Map;
 import org.cts.CoordinateDimensionException;
-import org.cts.Ellipsoid;
+import org.cts.datum.Ellipsoid;
 import org.cts.Identifier;
 import org.cts.units.Measure;
 import static java.lang.Math.*;
-import org.cts.CoordinateOperation;
-import org.cts.NonInvertibleOperationException;
+import org.cts.op.CoordinateOperation;
+import org.cts.op.NonInvertibleOperationException;
 
 /**
  * The Oblique Mercator Projection (OMERC). <p>

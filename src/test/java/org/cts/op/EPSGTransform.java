@@ -35,7 +35,6 @@ import org.cts.IllegalCoordinateException;
 import org.cts.crs.CRSException;
 import org.cts.crs.CoordinateReferenceSystem;
 import org.cts.crs.GeodeticCRS;
-import org.cts.op.BaseCoordinateTransformTest;
 import org.cts.parser.prj.PrjWriter;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;

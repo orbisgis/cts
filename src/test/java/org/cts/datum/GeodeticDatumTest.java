@@ -32,7 +32,6 @@
 package org.cts.datum;
 
 import org.cts.CTSTestCase;
-import org.cts.Ellipsoid;
 import org.cts.Identifier;
 import org.cts.cs.GeographicExtent;
 import static org.junit.Assert.*;

@@ -31,6 +31,9 @@
  */
 package org.cts.op.projection;
 
+import org.cts.op.NonInvertibleOperationException;
+import org.cts.op.CoordinateOperation;
+import org.cts.datum.Ellipsoid;
 import org.cts.*;
 import org.cts.units.Measure;
 import org.cts.util.Complex;
