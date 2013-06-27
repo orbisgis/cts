@@ -31,6 +31,8 @@
  */
 package org.cts.datum;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.cts.IdentifiableComponent;
 import org.cts.Identifier;
 import org.cts.util.AngleFormat;
@@ -47,7 +49,7 @@ import org.cts.util.AngleFormat;
  * les terres européennes.<p> Taken from <a
  * href="http://fr.wikipedia.org/wiki/M%C3%A9ridien">wikipedia</a>
  *
- * @author Michaël Michaud, Erwan Bocher
+ * @author Michaël Michaud, Erwan Bocher, Jules Party
  */
 public class PrimeMeridian extends IdentifiableComponent {
 
@@ -81,6 +83,28 @@ public class PrimeMeridian extends IdentifiableComponent {
     public static final PrimeMeridian PARIS_RGS =
             createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8914", "Paris (RGS)","Paris (RGS)","Value replaced by IGN (France) in 1936 - see code 8903. Equivalent to 2.596898 grads.", null), 2.201395);
     private double ddLongitude;
+    
+    /**
+     * primeMeridianFromName associates each prime meridian to a short string used to
+     * recognize it in CTS.
+     * 
+     */
+    public static final Map<String, PrimeMeridian> primeMeridianFromName = new HashMap<String, PrimeMeridian>();
+    static {
+        primeMeridianFromName.put("greenwich", PrimeMeridian.GREENWICH);
+        primeMeridianFromName.put("paris", PrimeMeridian.PARIS);
+        primeMeridianFromName.put("lisbon", PrimeMeridian.LISBON);
+        primeMeridianFromName.put("bogota", PrimeMeridian.BOGOTA);
+        primeMeridianFromName.put("madrid", PrimeMeridian.MADRID);
+        primeMeridianFromName.put("rome", PrimeMeridian.ROME);
+        primeMeridianFromName.put("bern", PrimeMeridian.BERN);
+        primeMeridianFromName.put("jakarta", PrimeMeridian.JAKARTA);
+        primeMeridianFromName.put("ferro", PrimeMeridian.FERRO);
+        primeMeridianFromName.put("brussels", PrimeMeridian.BRUSSELS);
+        primeMeridianFromName.put("stockholm", PrimeMeridian.STOCKHOLM);
+        primeMeridianFromName.put("athens", PrimeMeridian.ATHENS);
+        primeMeridianFromName.put("oslo", PrimeMeridian.OSLO);
+    }
 
     /**
      * Creates a new

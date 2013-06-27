@@ -31,11 +31,9 @@
  */
 package org.cts.op;
 
-import org.cts.CoordinateOperation;
 import org.cts.IdentifiableComponent;
 import org.cts.Identifier;
 import org.cts.IllegalCoordinateException;
-import org.cts.NonInvertibleOperationException;
 
 /**
  * AbstractCoordinateOperation is a partial implementation of the

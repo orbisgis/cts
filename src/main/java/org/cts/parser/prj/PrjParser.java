@@ -36,10 +36,6 @@ import java.nio.CharBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.cts.Identifier;
-import org.cts.crs.CRSException;
-import org.cts.crs.CRSHelper;
-import org.cts.crs.CoordinateReferenceSystem;
 
 /**
  * Parser for PRJ / WKT (OGC & ESRI) String.
@@ -51,38 +47,15 @@ import org.cts.crs.CoordinateReferenceSystem;
  * string is passed to the {@link org.jproj.parser.Proj4Parser } that builds the
  * CRS.
  *
- * @author Antoine Gourlay, Erwan Bocher
+ * @author Antoine Gourlay, Erwan Bocher, Jules Party
  */
 public class PrjParser {
-             
+
     /**
      * Creates a new parser.
      *
      */
     public PrjParser() {
-    }
-
-    /**
-     * Parses a WKT PRJ String into a set of parameters.
-     *
-     *
-     * @param prjString a WKT string
-     * @return a CRS if it can be build
-     * @throws PrjParserException if the PRJ cannot be parsed into a CRS for any
-     * reason
-     */
-    public CoordinateReferenceSystem parse(String prjString) throws CRSException {
-        Map<String, String> prjParameters = getParameters(prjString);
-        String name = prjParameters.remove("name");
-        String refname = prjParameters.remove("refname");
-        CoordinateReferenceSystem crs;
-        if (refname!=null) {
-            String[] authorityNameWithKey = refname.split(":");
-            crs = CRSHelper.createCoordinateReferenceSystem(new Identifier(authorityNameWithKey[0], authorityNameWithKey[1], name), prjParameters);
-        } else {
-            crs = CRSHelper.createCoordinateReferenceSystem(new Identifier(name, name, name), prjParameters);
-        }
-        return crs;
     }
 
     /**
@@ -95,7 +68,7 @@ public class PrjParser {
      * @throws PrjParserException if the PRJ cannot be parsed into a CRS for any
      * reason
      */
-    public Map<String, String> getParameters(String prjString)  {
+    public Map<String, String> getParameters(String prjString) {
         CharBuffer s = CharBuffer.wrap(prjString);
         PrjElement e;
         try {
@@ -128,7 +101,7 @@ public class PrjParser {
         s.position(start + ll + 1);
 
         if (complexNode) {
-            // parse children and return                
+            // parse children and return
             return new PrjNodeElement(name, parseNodeChildren(s));
         } else {
             s.position(s.position() - 1);

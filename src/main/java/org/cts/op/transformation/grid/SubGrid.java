@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.cts.grid;
+package org.cts.op.transformation.grid;
 
 import java.io.IOException;
 import java.io.InputStream;

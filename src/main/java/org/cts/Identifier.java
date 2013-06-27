@@ -262,14 +262,19 @@ public class Identifier implements Identifiable {
         if (object instanceof Identifier) {
             Identifier other = (Identifier)object;
             // Test equality between this code and object's code
-            if (getAuthorityKey().equals(other.getAuthorityKey())) {
+            if (getCode().equals(other.getCode())) {
                 return true;
             }
             // If not equal, test equality between this aliases and
             // the other object aliases
+            boolean areEquals;
             for (Identifiable id1 : getAliases()) {
+                areEquals = id1.getCode().equals(other.getCode());
+                if (areEquals) return true;
                 for (Identifiable id2 : other.getAliases()) {
-                    if (id1.getAuthorityKey().equals(id2.getAuthorityKey())) {
+                    areEquals = id2.getCode().equals(this.getCode());
+                    if (areEquals) return true;
+                    if (id1.getCode().equals(id2.getCode())) {
                         return true;
                     }
                 }

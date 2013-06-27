@@ -29,11 +29,13 @@
  *
  * For more information, please consult: <https://github.com/irstv/cts/>
  */
-package org.cts;
+package org.cts.datum;
 
+import org.cts.CTSTestCase;
+import org.cts.Identifier;
 import static org.junit.Assert.*;
 import org.junit.Test;
-import static org.cts.Ellipsoid.*;
+import static org.cts.datum.Ellipsoid.*;
 
 /**
  *
@@ -43,6 +45,7 @@ public class EllipsoidTest extends CTSTestCase {
     
     @Test
     public void testEllipsoidConstruction() {
+        LOGGER.info("Ellipsoid Construction");
         Ellipsoid e1 = createEllipsoidFromSemiMinorAxis(
             new Identifier("Test", "0001", "Construction from Semi-minor axis"),
             6380000.0, 6350000.0);

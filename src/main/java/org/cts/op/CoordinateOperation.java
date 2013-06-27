@@ -29,7 +29,10 @@
  *
  * For more information, please consult: <https://github.com/irstv/cts/>
  */
-package org.cts;
+package org.cts.op;
+
+import org.cts.Identifiable;
+import org.cts.IllegalCoordinateException;
 
 /**
  * A CoordinateOperation is an object able to modify values of a coordinate.<p>

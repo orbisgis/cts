@@ -29,7 +29,7 @@
  *
  * For more information, please consult: <https://github.com/irstv/cts/>
  */
-package org.cts;
+package org.cts.datum;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.atan;
@@ -39,6 +39,11 @@ import static java.lang.Math.pow;
 import static java.lang.Math.sin;
 import static java.lang.Math.sqrt;
 import static java.lang.Math.tan;
+import java.util.HashMap;
+import java.util.Map;
+import org.cts.Identifiable;
+import org.cts.IdentifiableComponent;
+import org.cts.Identifier;
 
 /**
  * An ellipsoid is a mathematical surface used to describe the Earth surface.<p>
@@ -127,7 +132,7 @@ public class Ellipsoid extends IdentifiableComponent {
      * Everest 1830 (1967 definition).
      */
     public static final Ellipsoid EVERESTSS = createEllipsoidFromInverseFlattening(
-            new Identifier("EPSG", "4016", "Everest 1830 (1967 Definition)", "evrstSS"), 6377298.556, 300.8017);
+            new Identifier("EPSG", "7016", "Everest 1830 (1967 Definition)", "evrstSS"), 6377298.556, 300.8017);
     /**
      * GRS 1967 ellipsoid, used in Australian Geodetic Datum and in South American Datum 1969.
      */
@@ -138,6 +143,36 @@ public class Ellipsoid extends IdentifiableComponent {
      */
     public static final Ellipsoid AustSA = createEllipsoidFromInverseFlattening(
             new Identifier("EPSG", "7050", "GRS 1967 (SAD 1969)", "aust_SA"), 6378160, 298.25);
+    /**
+     * Airy 1830.
+     */
+    public static final Ellipsoid AIRY = createEllipsoidFromInverseFlattening(
+            new Identifier("EPSG", "7001", "AIRY 1830", "airy"), 6377563.396, 299.3249646);
+    /**
+     * Bessel Namibia (GLM).
+     */
+    public static final Ellipsoid BESSNAM = createEllipsoidFromInverseFlattening(
+            new Identifier("EPSG", "7046", "Bessel Namibia (GLM)", "bess_nam"), 6377483.865280419, 299.1528128);
+    /**
+     * Helmert 1906.
+     */
+    public static final Ellipsoid HELMERT = createEllipsoidFromInverseFlattening(
+            new Identifier("EPSG", "7020", "Helmert 1906", "helmert"), 6378200, 298.3);
+    /**
+     * Airy Modified 1849.
+     */
+    public static final Ellipsoid AIRYMOD = createEllipsoidFromInverseFlattening(
+            new Identifier("EPSG", "7002", "Airy Modified 1849", "mod_airy"), 6377340.189, 299.3249646);
+    /**
+     * WGS 66.
+     */
+    public static final Ellipsoid WGS66 = createEllipsoidFromInverseFlattening(
+            new Identifier("EPSG", "7025", "WGS 66", "WGS66"), 6378145, 298.25);
+    /**
+     * WGS 72.
+     */
+    public static final Ellipsoid WGS72 = createEllipsoidFromInverseFlattening(
+            new Identifier("EPSG", "7043", "WGS 72", "WGS72"), 6378135, 298.26);
     
     private double semiMajorAxis;
     transient SecondParameter secondParameter;
@@ -171,6 +206,35 @@ public class Ellipsoid extends IdentifiableComponent {
     transient private double[] kk;
     //coefficients used by the inverse Mercator projection
     transient private double[] inv_merc_coeff;
+    
+    /**
+     * ellipsoidFromName associates each ellipsoid to a short string used to
+     * recognize it in CTS.
+     * 
+     */
+    public static final Map<String, Ellipsoid> ellipsoidFromName = new HashMap<String, Ellipsoid>();
+    
+    static {
+        ellipsoidFromName.put("airy", AIRY);
+        ellipsoidFromName.put("austsa", AustSA);
+        ellipsoidFromName.put("bessel", BESSEL1841);
+        ellipsoidFromName.put("bessnam", BESSNAM);
+        ellipsoidFromName.put("clrk66", CLARKE1866);
+        ellipsoidFromName.put("clrk80", CLARKE1880RGS);
+        ellipsoidFromName.put("clrk80ign", CLARKE1880IGN);
+        ellipsoidFromName.put("clrk80arc", CLARKE1880ARC);
+        ellipsoidFromName.put("evrstss", EVERESTSS);
+        ellipsoidFromName.put("grs67", GRS67);
+        ellipsoidFromName.put("grs80", GRS80);
+        ellipsoidFromName.put("helmert", HELMERT);
+        ellipsoidFromName.put("intl", INTERNATIONAL1924);
+        ellipsoidFromName.put("airymod", AIRYMOD);
+        ellipsoidFromName.put("krass", KRASSOWSKI);
+        ellipsoidFromName.put("wgs66", WGS66);
+        ellipsoidFromName.put("wgs72", WGS72);
+        ellipsoidFromName.put("wgs84", WGS84);
+        
+    }
 
     /**
      * Create a new Ellipsoid and initialize common parameters : a, b, e, e2, f,
@@ -426,6 +490,18 @@ public class Ellipsoid extends IdentifiableComponent {
             return Ellipsoid.GRS67;
         } else if (this.equals(Ellipsoid.AustSA)) {
             return Ellipsoid.AustSA;
+        } else if (this.equals(Ellipsoid.AIRY)) {
+            return Ellipsoid.AIRY;
+        } else if (this.equals(Ellipsoid.AIRYMOD)) {
+            return Ellipsoid.AIRYMOD;
+        } else if (this.equals(Ellipsoid.BESSNAM)) {
+            return Ellipsoid.BESSNAM;
+        } else if (this.equals(Ellipsoid.HELMERT)) {
+            return Ellipsoid.HELMERT;
+        } else if (this.equals(Ellipsoid.WGS66)) {
+            return Ellipsoid.WGS66;
+        } else if (this.equals(Ellipsoid.WGS72)) {
+            return Ellipsoid.WGS72;
         } else {
             return this;
         }
@@ -751,7 +827,7 @@ public class Ellipsoid extends IdentifiableComponent {
         if (other instanceof Ellipsoid) {
             Ellipsoid ell = (Ellipsoid) other;
             // if ellipsoid codes are equals, ellipsoids are equals
-            if (getAuthorityKey().equals(ell.getAuthorityKey())) {
+            if (getCode().equals(ell.getCode())) {
                 return true;
             }
             // else if ellipsoid semi-major axis and ellipsoid semi-minor axis

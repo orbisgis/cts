@@ -33,10 +33,10 @@ package org.cts.op;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.cts.Ellipsoid;
+import org.cts.datum.Ellipsoid;
 import org.cts.Identifier;
 import org.cts.Parameter;
-import org.cts.crs.CRSHelper;
+import org.cts.CRSHelper;
 import org.cts.crs.CoordinateReferenceSystem;
 import org.cts.crs.GeodeticCRS;
 import org.cts.crs.ProjectedCRS;

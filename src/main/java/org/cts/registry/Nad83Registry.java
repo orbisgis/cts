@@ -34,6 +34,7 @@ package org.cts.registry;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 /**
  * This class parse the nad83 file available in the resources package. It
@@ -43,7 +44,7 @@ import java.util.Set;
  */
 public class Nad83Registry extends AbstractProjRegistry {
 
-    String NAD83_REGEX = "\\s+";
+    static final Pattern NAD83_REGEX = Pattern.compile("\\s+");
 
     @Override
     public String getRegistryName() {

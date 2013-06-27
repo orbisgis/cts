@@ -32,9 +32,7 @@
 package org.cts.op;
 
 import org.apache.log4j.Logger;
-import org.cts.CoordinateOperation;
 import org.cts.Identifier;
-import org.cts.NonInvertibleOperationException;
 import org.cts.crs.*;
 import org.cts.datum.Datum;
 import org.cts.datum.GeodeticDatum;
@@ -87,30 +85,33 @@ public final class CoordinateOperationFactory {
         if (target == null) {
             throw new IllegalArgumentException("The target CRS must not be null");
         }
-
-        GeodeticDatum sourceDatum = source.getDatum();
-        if (sourceDatum == null) {
-            LOG.warn(source.getName() + " has no Geodetic Datum");
-            throw new IllegalArgumentException("The source datum must not be null");
-        }
-        GeodeticDatum targetDatum = target.getDatum();
-        if (targetDatum == null) {
-            LOG.warn(target.getName() + " has no Geodetic Datum");
-            throw new IllegalArgumentException("The target datum must not be null");
-        }
-        
-        if (source.getGridTransformation(targetDatum) != null) {
-            return createNadgridsOperationDir(sourceDatum, source, targetDatum, target, source.getGridTransformation(targetDatum));
-        }
-        if (target.getGridTransformation(sourceDatum) != null) {
-            return createNadgridsOperationInv(sourceDatum, source, targetDatum, target, target.getGridTransformation(sourceDatum));
-        }
-
-        if (sourceDatum.equals(targetDatum)) {
-            return createCoordinateOperations(sourceDatum, source, target);
+        List<CoordinateOperation> opList = source.getCRSTransformation(target);
+        if (opList != null) {
+            return opList;
         } else {
-            return createCoordinateOperations(sourceDatum, source, targetDatum, target);
+            GeodeticDatum sourceDatum = source.getDatum();
+            if (sourceDatum == null) {
+                LOG.warn(source.getName() + " has no Geodetic Datum");
+                throw new IllegalArgumentException("The source datum must not be null");
+            }
+            GeodeticDatum targetDatum = target.getDatum();
+            if (targetDatum == null) {
+                LOG.warn(target.getName() + " has no Geodetic Datum");
+                throw new IllegalArgumentException("The target datum must not be null");
+            }
+
+            if (source.getGridTransformation(targetDatum) != null) {
+                opList = createNadgridsOperationDir(sourceDatum, source, targetDatum, target, source.getGridTransformation(targetDatum));
+            }else if (target.getGridTransformation(sourceDatum) != null) {
+                opList = createNadgridsOperationInv(sourceDatum, source, targetDatum, target, target.getGridTransformation(sourceDatum));
+            } else if (sourceDatum.equals(targetDatum)) {
+                opList = createCoordinateOperations(sourceDatum, source, target);
+            } else {
+                opList = createCoordinateOperations(sourceDatum, source, targetDatum, target);
+            }
+            source.addCRSTransformation(target, opList);
         }
+        return opList;
     }
     
     private static List<CoordinateOperation> createNadgridsOperationDir(
@@ -126,7 +127,7 @@ public final class CoordinateOperationFactory {
                         target.fromGeographicCoordinateConverter()));
             } else {
                 NTv2GridShiftTransformation gt = (NTv2GridShiftTransformation) coordOp;
-                GeodeticDatum gtSource = GeodeticDatum.getGeodeticDatumFromShortName(gt.getFromDatum());
+                GeodeticDatum gtSource = GeodeticDatum.datumFromName.get(gt.getFromDatum());
                 if (sourceDatum.getCoordinateOperations(gtSource).isEmpty()) {
                     CoordinateOperationSequence opSeq = new CoordinateOperationSequence(
                             new Identifier(CoordinateOperationSequence.class, sourceDatum.getName() + " to " + gtSource.getName() + " through " + GeodeticDatum.WGS84.getName()),
@@ -161,7 +162,7 @@ public final class CoordinateOperationFactory {
                         target.fromGeographicCoordinateConverter()));
             } else {
                 NTv2GridShiftTransformation gt = (NTv2GridShiftTransformation) coordOp;
-                GeodeticDatum gtSource = GeodeticDatum.getGeodeticDatumFromShortName(gt.getFromDatum());
+                GeodeticDatum gtSource = GeodeticDatum.datumFromName.get(gt.getFromDatum());
                 if (gtSource.getCoordinateOperations(targetDatum).isEmpty()) {
                     CoordinateOperationSequence opSeq = new CoordinateOperationSequence(
                             new Identifier(CoordinateOperationSequence.class, gtSource.getName() + " to " + targetDatum.getName() + " through " + GeodeticDatum.WGS84.getName()),

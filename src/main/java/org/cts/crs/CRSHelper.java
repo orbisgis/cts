@@ -51,6 +51,8 @@ import org.cts.units.Unit;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.cts.datum.Ellipsoid;
+import org.cts.op.CoordinateOperation;
 import org.cts.op.transformation.NTv2GridShiftTransformation;
 
 /**
@@ -335,7 +337,7 @@ public class CRSHelper {
                             //        GridShift.class.getResource(grid).toURI().toURL());
                             NTv2GridShiftTransformation gt = NTv2GridShiftTransformation.createNTv2GridShiftTransformation(grid);
                             gt.setMode(NTv2GridShiftTransformation.SPEED);
-                            crs.addGridTransformation(GeodeticDatum.getGeodeticDatumFromShortName(gt.getToDatum()), gt);
+                            crs.addGridTransformation(GeodeticDatum.datumFromName.get(gt.getToDatum()), gt);
                         } catch (IOException ex) {
                             LOGGER.error("Cannot found the nadgrid", ex);
                         } catch (URISyntaxException ex) {

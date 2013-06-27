@@ -42,12 +42,12 @@ import static java.lang.Math.tan;
 import java.util.HashMap;
 import java.util.Map;
 import org.cts.CoordinateDimensionException;
-import org.cts.CoordinateOperation;
-import org.cts.Ellipsoid;
+import org.cts.op.CoordinateOperation;
+import org.cts.datum.Ellipsoid;
 import org.cts.Identifier;
 import org.cts.IllegalCoordinateException;
 import org.cts.units.Measure;
-import org.cts.NonInvertibleOperationException;
+import org.cts.op.NonInvertibleOperationException;
 import org.cts.Parameter;
 import org.cts.units.Unit;
 

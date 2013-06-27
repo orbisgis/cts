@@ -34,6 +34,7 @@ package org.cts.registry;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 /**
  * This class parse the esri file available in the resources package. It returns
@@ -43,7 +44,7 @@ import java.util.Set;
  */
 public class ESRIRegistry extends AbstractProjRegistry implements Registry {
 
-    String ESRI_REGEX = "\\s+|no_defs <>";
+    static final Pattern ESRI_REGEX = Pattern.compile("\\s+|no_defs <>");
 
     @Override
     public String getRegistryName() {
