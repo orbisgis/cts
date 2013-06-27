@@ -78,8 +78,8 @@ public class BatchCoordinateTransformTest extends BaseCoordinateTransformTest {
             double csNameDest_X = parseNumber(values[5]);
             double csNameDest_Y = parseNumber(values[6]);
             double tolerance = parseNumber(values[7]);
-            CoordinateReferenceSystem inputCRS = createCRS(csNameSrc);
-            CoordinateReferenceSystem outputCRS = createCRS(csNameDest);
+            CoordinateReferenceSystem inputCRS = cRSFactory.getCRS(csNameSrc);
+            CoordinateReferenceSystem outputCRS = cRSFactory.getCRS(csNameDest);
             double[] pointSource = new double[]{csNameSrc_X, csNameSrc_Y, 0};
             double[] result = transform((GeodeticCRS) inputCRS, (GeodeticCRS) outputCRS, pointSource);
             double[] pointDest = new double[]{csNameDest_X, csNameDest_Y, 0};

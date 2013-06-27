@@ -47,19 +47,9 @@ import java.util.List;
  */
 public class BaseCoordinateTransformTest extends CTSTestCase {
 
-    CRSFactory crsf = new CRSFactory();
+    
     protected boolean verbose = false;
-
-    /**
-     * Return the crs from an authority and a srid ie : EPSG:4326
-     *
-     * @param authorityAndSrid
-     * @return
-     * @throws CRSException
-     */
-    public CoordinateReferenceSystem createCRS(String authorityAndSrid) throws CRSException {
-        return crsf.getCRS(authorityAndSrid);
-    }
+    
 
     /**
      * Transform a point from a CRS to another CRS
@@ -72,12 +62,6 @@ public class BaseCoordinateTransformTest extends CTSTestCase {
      */
     public double[] transform(GeodeticCRS sourceCRS, GeodeticCRS targetCRS, double[] inputPoint) throws IllegalCoordinateException {
         List<CoordinateOperation> ops = CoordinateOperationFactory.createCoordinateOperations(sourceCRS, targetCRS);
-        // No, ops is a list of possible Operation from source to target
-        // you should not create a sequence from this list but pick-up one of the operation
-        //CoordinateOperationSequence coordinateOperationSequence = new CoordinateOperationSequence(
-        //        new Identifier(BaseCoordinateTransformTest.class, "From  "
-        //        + sourceCRS.getCode() + " to "
-        //        + targetCRS.getCode()), ops);
         if (!ops.isEmpty()) {
             if (verbose) {
                 System.out.println(ops.get(0));

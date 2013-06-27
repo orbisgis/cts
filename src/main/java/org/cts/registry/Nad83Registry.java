@@ -52,23 +52,21 @@ public class Nad83Registry extends AbstractProjRegistry {
     }
 
     @Override
-    public Map<String, String> getParameters(String code) {
+    public Map<String, String> getParameters(String code) throws RegistryException{
         try {
             Map<String, String> crsParameters = projParser.readParameters(code, NAD83_REGEX);
             return crsParameters;
         } catch (IOException ex) {
-            LOGGER.error("Cannot load the NAD83 registry", ex);
+            throw new RegistryException("Cannot load the NAD83 registry", ex);
         }
-        return null;
     }
 
     @Override
-    public Set<String> getSupportedCodes() {
+    public Set<String> getSupportedCodes() throws RegistryException{
         try {
             return projParser.getSupportedCodes(NAD83_REGEX);
         } catch (IOException ex) {
-            LOGGER.error("Cannot load the NAD83 registry", ex);
+            throw new RegistryException("Cannot load the NAD83 registry", ex);
         }
-        return null;
     }
 }

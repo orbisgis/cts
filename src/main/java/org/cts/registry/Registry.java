@@ -49,12 +49,15 @@ public interface Registry {
      * Return all parameters need to build a CoordinateReferenceSystem
      *
      * @return
+     * @throws RegistryException
      */
-    public Map<String, String> getParameters(String code);
+    public Map<String, String> getParameters(String code) throws RegistryException;
 
     /**
      * Return all supported codes for this registry
-     * @return 
+     *
+     * @return
+     * @throws RegistryException
      */
-    public Set<String> getSupportedCodes();
+    public Set<String> getSupportedCodes() throws RegistryException;
 }
