@@ -43,19 +43,16 @@ import org.apache.log4j.Logger;
 public final class RegistryManager {
 
     static final Logger LOGGER = Logger.getLogger(RegistryManager.class);
-    private final Map<String, Class<? extends Registry>> registries = new HashMap<String, Class<? extends Registry>>();
+    private final Map<String, Registry> registries = new HashMap<String, Registry>();
     private final List<RegistryManagerListener> listeners = new ArrayList<RegistryManagerListener>();
     
 
     /**
-     * Create a registry manager filled with all internal registries
+     * Create a default registry manager without any declared registry.
+     * To load a registry you must call the {@code addRegistry}
+     * ig : addRegistry(new IGNFRegistry());
      */
     public RegistryManager() {
-        addRegistry(IGNFRegistry.class);
-        addRegistry(EPSGRegistry.class);
-        addRegistry(ESRIRegistry.class);
-        addRegistry(Nad27Registry.class);
-        addRegistry(Nad83Registry.class);
     }
 
     /**
@@ -83,51 +80,29 @@ public final class RegistryManager {
      *
      * @param registryClass
      */
-    public void addRegistry(Class<? extends Registry> registryClass) {
+    public void addRegistry(Registry registryClass) {
         addRegistry(registryClass, false);
     }
 
     /**
-     * Declare a registry to the {@code RegistryManager} An existing registry
-     * can be replaced by a new one.
+     * Declare a registry to the {@code RegistryManager} 
+     * An existing registry can be replaced by a new one.
      *
      * @param registryClass
      * @param replace
      */
-    public void addRegistry(Class<? extends Registry> registryClass, boolean replace) {
-        LOGGER.trace("Adding a new registry " + registryClass.getName());
-        Registry registry;
-        try {
-            registry = registryClass.newInstance();
-        } catch (InstantiationException e) {
-            throw new IllegalArgumentException("Cannot instantiate this registry: "
-                    + registryClass, e);
-        } catch (IllegalAccessException e) {
-            throw new IllegalArgumentException("Cannot instantiate this registry: "
-                    + registryClass, e);
-        }
+    public void addRegistry(Registry registry, boolean replace) {
+        LOGGER.trace("Adding a new registry " + registry.getRegistryName());        
         String registryName = registry.getRegistryName().toLowerCase();
-        addRegistry(registryName, registryClass, replace);
-    }
-
-    /**
-     * Declare a registry to the {@code RegistryManager} An existing registry
-     * can be replaced by a new one.
-     *
-     * @param functionName
-     * @param functionClass
-     * @param replace
-     */
-    public void addRegistry(String functionName, Class<? extends Registry> functionClass, boolean replace) {
-        if (!replace && registries.containsKey(functionName)) {
-            throw new IllegalArgumentException("Registry " + functionName
+        if (!replace && registries.containsKey(registryName)) {
+            throw new IllegalArgumentException("Registry " + registryName
                     + " already exists");
         }
-        registries.put(functionName, functionClass);
-
-        fireRegistryAdded(functionName);
+        registries.put(registryName, registry);
+        fireRegistryAdded(registryName);
     }
 
+    
     /**
      * Listener to inform that a registry has been added.
      *
@@ -161,27 +136,18 @@ public final class RegistryManager {
     }
 
     /**
-     * Return the corresponding registry
+     * Return the corresponding registry based on its name
      *
      * @param string
      * @return
      */
     public Registry getRegistry(String registryName) {
         LOGGER.trace("Getting the registry " + registryName);
-        Class<? extends Registry> registryClass = registries.get(registryName.toLowerCase());
-
-        if (registryClass == null) {
+        Registry registry = registries.get(registryName.toLowerCase());
+        if (registry == null) {
             return null;
         } else {
-            Registry registry;
-            try {
-                registry = registryClass.newInstance();
-                return registry;
-            } catch (InstantiationException e) {
-                throw new RuntimeException(e);
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
+           return registry;
         }
     }
 }

@@ -29,40 +29,28 @@
  *
  * For more information, please consult: <https://github.com/irstv/cts/>
  */
-package org.cts.crs;
+package org.cts.registry;
 
 /**
- *
- * @author Erwan Bocher
+ * A class to return an exception when a registry fail
+ * @author ebocher
  */
-public class CRSException extends Exception {
+public class RegistryException extends Exception {
 
     /**
-     * Build a coordinate reference system exception from a message
-     *
-     * @param message
+     * Build an registryExcepetion from a message
+     * @param message 
      */
-    public CRSException(String message) {
+    public RegistryException(String message) {
         super(message);
     }
 
     /**
-     * Build a coordinate reference system exception based on an exception
-     *
-     * @param Exception
-     */
-    public CRSException(Exception ex) {
-        super(ex);
-    }
-    
-    /**
-     * Build a coordinate reference system exception based on a message and
-     * an exception
-     * 
+     * Build an registryExcepetion from a message and an exception
      * @param message
      * @param ex 
      */
-    public CRSException(String message, Exception ex){
+    public RegistryException(String message, Exception ex) {
         super(message, ex);
     }
 }

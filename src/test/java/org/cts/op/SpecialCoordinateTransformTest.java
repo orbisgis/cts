@@ -65,9 +65,8 @@ public class SpecialCoordinateTransformTest extends BaseCoordinateTransformTest 
         double csNameDest_X = 5996378.71;
         double csNameDest_Y = 10671650.06;
         double tolerance = 0.01;
-        CoordinateReferenceSystem inputCRS = createCRS("EPSG:4674");
-        RegistryManager registryManager = new RegistryManager();
-        Registry registry = registryManager.getRegistry("epsg");
+        CoordinateReferenceSystem inputCRS = cRSFactory.getCRS("EPSG:4674");
+        Registry registry = cRSFactory.getRegistryManager().getRegistry("epsg");
         Map<String, String> crsParameters = registry.getParameters("29101");
         // The output CRS is the same as the EPSG:29101, but it uses the ellipsoid
         // GRS80 instead of the ellipsoid aust_SA. 

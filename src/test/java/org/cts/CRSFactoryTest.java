@@ -31,6 +31,7 @@
  */
 package org.cts;
 
+import org.cts.crs.CRSException;
 import org.cts.crs.CoordinateReferenceSystem;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -39,12 +40,10 @@ import static org.junit.Assert.*;
  *
  * @author Erwan Bocher
  */
-public class CRSFactoryTest {
-    
-    public CRSFactory cRSFactory = new CRSFactory();
+public class CRSFactoryTest extends CTSTestCase{
     
     @Test 
-    public void testCRSFromLAMBEDeprecated(){
+    public void testCRSFromLAMBEDeprecated() throws Exception{
         String prj = "PROJCS[\"NTF (Paris) / France II (deprecated)\",GEOGCS[\"NTF (Paris)\","
                  + "DATUM[\"Nouvelle_Triangulation_Francaise_Paris\",SPHEROID[\"Clarke 1880 (IGN)\",6378249.2,293.4660212936269,AUTHORITY[\"EPSG\",\"7011\"]],TOWGS84[-168,-60,320,0,0,0,0],AUTHORITY[\"EPSG\",\"6807\"]],"
                  + "PRIMEM[\"Paris\",2.33722917,AUTHORITY[\"EPSG\",\"8903\"]],UNIT[\"grad\",0.01570796326794897,AUTHORITY[\"EPSG\",\"9105\"]],AUTHORITY[\"EPSG\",\"4807\"]],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],"
@@ -57,7 +56,7 @@ public class CRSFactoryTest {
     
     
     @Test 
-    public void testCRSFromLAMB93(){
+    public void testCRSFromLAMB93()throws Exception{
         String prj = "PROJCS[\"RGF93_Lambert_93\",GEOGCS[\"GCS_RGF_1993\","
                 + "DATUM[\"D_RGF_1993\",SPHEROID[\"GRS_1980\",6378137.0,298.257222101]],"
                 + "PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],"
@@ -72,7 +71,7 @@ public class CRSFactoryTest {
     
     
     @Test
-    public void testOGC_WKT_27572_CRS(){
+    public void testOGC_WKT_27572_CRS()throws Exception{
         String prj = "PROJCS[\"NTF (Paris) / Lambert zone II\",GEOGCS[\"NTF (Paris)\","
                 + "DATUM[\"Nouvelle_Triangulation_Francaise_Paris\","
                 + "SPHEROID[\"Clarke 1880 (IGN)\",6378249.2,293.4660212936269,"
@@ -92,7 +91,7 @@ public class CRSFactoryTest {
     }
     
     @Test
-    public void testOGC_WKT_27572_CRS_SPACE(){
+    public void testOGC_WKT_27572_CRS_SPACE()throws Exception{
         String prj = "PROJCS[\" NTF (Paris) / Lambert zone II \",GEOGCS[\" NTF (Paris) \","
                 + "DATUM[\" Nouvelle_Triangulation_Francaise_Paris \","
                 + "SPHEROID[\" Clarke 1880 (IGN) \", 6378249.2 , 293.4660212936269 ,"

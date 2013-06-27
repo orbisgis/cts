@@ -51,8 +51,8 @@ public class FrenchProjectionsRobustnessTest extends BaseCoordinateTransformTest
         double[] srcPoint = new double[]{311748.822, 140616.022, 0};
         //IGN data : POINT (360908.932 6576578.199 0)	ID0430
         double[] expectedPoint = new double[]{360908.932, 6576578.199, 0};
-        CoordinateReferenceSystem srcCRS = createCRS("IGNF:LAMB2");
-        CoordinateReferenceSystem outCRS = createCRS("IGNF:LAMB93");
+        CoordinateReferenceSystem srcCRS = cRSFactory.getCRS("IGNF:LAMB2");
+        CoordinateReferenceSystem outCRS = cRSFactory.getCRS("IGNF:LAMB93");
         double[] result = transform((GeodeticCRS) srcCRS, (GeodeticCRS) outCRS, srcPoint);
         assertTrue(checkEquals2D(srcCRS + " to " + outCRS, result, expectedPoint, 10E-3));
     }
@@ -63,8 +63,8 @@ public class FrenchProjectionsRobustnessTest extends BaseCoordinateTransformTest
         double[] srcPoint = new double[]{201418.662, 137651.011, 0};
         //IGN data : POINT (252831.433 6873925.434 0)	ID0141
         double[] expectedPoint = new double[]{252831.433, 6873925.434, 0};
-        CoordinateReferenceSystem srcCRS = createCRS("IGNF:LAMB1");
-        CoordinateReferenceSystem outCRS = createCRS("IGNF:LAMB93");
+        CoordinateReferenceSystem srcCRS = cRSFactory.getCRS("IGNF:LAMB1");
+        CoordinateReferenceSystem outCRS = cRSFactory.getCRS("IGNF:LAMB93");
         double[] result = transform((GeodeticCRS) srcCRS, (GeodeticCRS) outCRS, srcPoint);
         assertTrue(checkEquals2D(srcCRS + " to " + outCRS, result, expectedPoint, 10E-3));
     }
@@ -75,8 +75,8 @@ public class FrenchProjectionsRobustnessTest extends BaseCoordinateTransformTest
         double[] srcPoint = new double[]{87842.341, 101687.92, 0};
         //IGN data : POINT (139121.353 6838500.192 449.99)	ID0003
         double[] expectedPoint = new double[]{139121.353, 6838500.192, 0};
-        CoordinateReferenceSystem srcCRS = createCRS("IGNF:LAMB1");
-        CoordinateReferenceSystem outCRS = createCRS("IGNF:LAMB93");
+        CoordinateReferenceSystem srcCRS = cRSFactory.getCRS("IGNF:LAMB1");
+        CoordinateReferenceSystem outCRS = cRSFactory.getCRS("IGNF:LAMB93");
         double[] result = transform((GeodeticCRS) srcCRS, (GeodeticCRS) outCRS, srcPoint);
         assertTrue(checkEquals2D(srcCRS + " to " + outCRS, result, expectedPoint, 10E-3));
     }
@@ -87,8 +87,8 @@ public class FrenchProjectionsRobustnessTest extends BaseCoordinateTransformTest
         double[] srcPoint = new double[]{1977142.451, 3095503.314, 0};
         //IGN data : POINT (977362.95 6218045.569 0)	ID5863
         double[] expectedPoint = new double[]{977362.95, 6218045.569, 0};
-        CoordinateReferenceSystem srcCRS = createCRS("IGNF:RGF93CC44");
-        CoordinateReferenceSystem outCRS = createCRS("IGNF:LAMB93");
+        CoordinateReferenceSystem srcCRS = cRSFactory.getCRS("IGNF:RGF93CC44");
+        CoordinateReferenceSystem outCRS = cRSFactory.getCRS("IGNF:LAMB93");
         double[] result = transform((GeodeticCRS) srcCRS, (GeodeticCRS) outCRS, srcPoint);
         assertTrue(checkEquals2D(srcCRS + " to " + outCRS, result, expectedPoint, 10E-3));
     }
@@ -99,8 +99,8 @@ public class FrenchProjectionsRobustnessTest extends BaseCoordinateTransformTest
         double[] srcPoint = new double[]{6.4, 43.008, 0};
         //IGN data : POINT (977362.95 6218045.569 0)	ID5863
         double[] expectedPoint = new double[]{977362.95, 6218045.569, 0};
-        CoordinateReferenceSystem srcCRS = createCRS("IGNF:RGF93G");
-        CoordinateReferenceSystem outCRS = createCRS("IGNF:LAMB93");
+        CoordinateReferenceSystem srcCRS = cRSFactory.getCRS("IGNF:RGF93G");
+        CoordinateReferenceSystem outCRS = cRSFactory.getCRS("IGNF:LAMB93");
         double[] result = transform((GeodeticCRS) srcCRS, (GeodeticCRS) outCRS, srcPoint);
         assertTrue(checkEquals2D(srcCRS + " to " + outCRS, result, expectedPoint, 10E-3));
     }
@@ -111,8 +111,8 @@ public class FrenchProjectionsRobustnessTest extends BaseCoordinateTransformTest
         double[] srcPoint = new double[]{931813.94, 1786923.891, 0};
         //IGN data : POINT (977362.95 6218045.569 0)	ID5863
         double[] expectedPoint = new double[]{977362.95, 6218045.569, 0};
-        CoordinateReferenceSystem srcCRS = createCRS("IGNF:LAMBE");
-        CoordinateReferenceSystem outCRS = createCRS("IGNF:LAMB93");
+        CoordinateReferenceSystem srcCRS = cRSFactory.getCRS("IGNF:LAMBE");
+        CoordinateReferenceSystem outCRS = cRSFactory.getCRS("IGNF:LAMB93");
         double[] result = transform((GeodeticCRS) srcCRS, (GeodeticCRS) outCRS, srcPoint);
         assertTrue(checkEquals2D(srcCRS + " to " + outCRS, result, expectedPoint, 10E-2));
     }
@@ -123,8 +123,8 @@ public class FrenchProjectionsRobustnessTest extends BaseCoordinateTransformTest
         double[] srcPoint = new double[]{87674.404, 2400935.485, 0};
         //IGN data : POINT (139121.353 6838500.192 449.99)	ID0003
         double[] expectedPoint = new double[]{139121.353, 6838500.192, 0};
-        CoordinateReferenceSystem srcCRS = createCRS("IGNF:LAMBE");
-        CoordinateReferenceSystem outCRS = createCRS("IGNF:LAMB93");
+        CoordinateReferenceSystem srcCRS = cRSFactory.getCRS("IGNF:LAMBE");
+        CoordinateReferenceSystem outCRS = cRSFactory.getCRS("IGNF:LAMB93");
         double[] result = transform((GeodeticCRS) srcCRS, (GeodeticCRS) outCRS, srcPoint);
         assertTrue(checkEquals2D(srcCRS + " to " + outCRS, result, expectedPoint, 10E-2));
     }
@@ -135,8 +135,8 @@ public class FrenchProjectionsRobustnessTest extends BaseCoordinateTransformTest
         double[] srcPoint = new double[]{576164.366, 303143.285, 0};
         //IGN data : POINT (9.408 43.006 540.8)	ID6429
         double[] expectedPoint = new double[]{9.408, 43.006, 0};
-        CoordinateReferenceSystem srcCRS = createCRS("IGNF:LAMB4");
-        CoordinateReferenceSystem outCRS = createCRS("IGNF:RGF93G");
+        CoordinateReferenceSystem srcCRS = cRSFactory.getCRS("IGNF:LAMB4");
+        CoordinateReferenceSystem outCRS = cRSFactory.getCRS("IGNF:RGF93G");
         double[] result = transform((GeodeticCRS) srcCRS, (GeodeticCRS) outCRS, srcPoint);
         assertTrue(checkEquals2D(srcCRS + " to " + outCRS, result, expectedPoint, 10E-3));
     }
@@ -147,8 +147,8 @@ public class FrenchProjectionsRobustnessTest extends BaseCoordinateTransformTest
         double[] srcPoint = new double[]{6.4, 43.008, 2525.68};
         //IGN data : POINT (977362.95 6218045.569 2525.68)	ID5863
         double[] expectedPoint = new double[]{977362.95, 6218045.569, 2525.68};
-        CoordinateReferenceSystem srcCRS = createCRS("IGNF:RGF93G");
-        CoordinateReferenceSystem outCRS = createCRS("IGNF:LAMB93");
+        CoordinateReferenceSystem srcCRS = cRSFactory.getCRS("IGNF:RGF93G");
+        CoordinateReferenceSystem outCRS = cRSFactory.getCRS("IGNF:LAMB93");
         double[] result = transform((GeodeticCRS) srcCRS, (GeodeticCRS) outCRS, srcPoint);
         assertTrue(checkEquals(srcCRS + " to " + outCRS, result, expectedPoint, 10E-3));
     }
@@ -159,8 +159,8 @@ public class FrenchProjectionsRobustnessTest extends BaseCoordinateTransformTest
         double[] srcPoint = new double[]{1708465.025, 1256428.742, 0};
         //IGN data : POINT (708477.597 6156470.549 2423.84)	ID3673
         double[] expectedPoint = new double[]{708477.597, 6156470.549, 0};
-        CoordinateReferenceSystem srcCRS = createCRS("IGNF:RGF93CC42");
-        CoordinateReferenceSystem outCRS = createCRS("IGNF:LAMB93");
+        CoordinateReferenceSystem srcCRS = cRSFactory.getCRS("IGNF:RGF93CC42");
+        CoordinateReferenceSystem outCRS = cRSFactory.getCRS("IGNF:LAMB93");
         double[] result = transform((GeodeticCRS) srcCRS, (GeodeticCRS) outCRS, srcPoint);
         assertTrue(checkEquals(srcCRS + " to " + outCRS, result, expectedPoint, 10E-3));
     }
@@ -176,8 +176,8 @@ public class FrenchProjectionsRobustnessTest extends BaseCoordinateTransformTest
         double[] srcPoint = new double[]{484950.069, 1997266.647, 0};
         //IGN data : POINT (485184.241 1996829.341)	ID1384 -> RRAF UTM20
         double[] expectedPoint = new double[]{485184.241, 1996829.341, 0};
-        CoordinateReferenceSystem srcCRS = createCRS("IGNF:GUADFM49U20");
-        CoordinateReferenceSystem outCRS = createCRS("IGNF:UTM20W84GUAD");
+        CoordinateReferenceSystem srcCRS = cRSFactory.getCRS("IGNF:GUADFM49U20");
+        CoordinateReferenceSystem outCRS = cRSFactory.getCRS("IGNF:UTM20W84GUAD");
         double[] result = transform((GeodeticCRS) srcCRS, (GeodeticCRS) outCRS, srcPoint);
         assertTrue(checkEquals(srcCRS + " to " + outCRS, result, expectedPoint, 10E-3));
     }
@@ -193,8 +193,8 @@ public class FrenchProjectionsRobustnessTest extends BaseCoordinateTransformTest
         double[] srcPoint = new double[]{704500.635, 1803378.302, 0};
         //IGN data : POINT (704078.258 1803075.127)	ID0365 -> RRAF UTM20
         double[] expectedPoint = new double[]{704078.258, 1803075.127, 0};
-        CoordinateReferenceSystem srcCRS = createCRS("IGNF:GUAD48UTM20");
-        CoordinateReferenceSystem outCRS = createCRS("IGNF:UTM20W84GUAD");
+        CoordinateReferenceSystem srcCRS = cRSFactory.getCRS("IGNF:GUAD48UTM20");
+        CoordinateReferenceSystem outCRS = cRSFactory.getCRS("IGNF:UTM20W84GUAD");
         double[] result = transform((GeodeticCRS) srcCRS, (GeodeticCRS) outCRS, srcPoint);
         assertTrue(checkEquals(srcCRS + " to " + outCRS, result, expectedPoint, 10E-3));
     }
@@ -210,8 +210,8 @@ public class FrenchProjectionsRobustnessTest extends BaseCoordinateTransformTest
         double[] srcPoint = new double[]{170451.067, 633659.662, 0};
         //IGN data : POINT (170453.13 633546.624 4331.42)	ID0001
         double[] expectedPoint = new double[]{170453.13, 633546.624, 0};
-        CoordinateReferenceSystem srcCRS = createCRS("IGNF:UTM22RGFG95");
-        CoordinateReferenceSystem outCRS = createCRS("IGNF:CSG67UTM22");
+        CoordinateReferenceSystem srcCRS = cRSFactory.getCRS("IGNF:UTM22RGFG95");
+        CoordinateReferenceSystem outCRS = cRSFactory.getCRS("IGNF:CSG67UTM22");
         double[] result = transform((GeodeticCRS) srcCRS, (GeodeticCRS) outCRS, srcPoint);
         assertTrue(checkEquals(srcCRS + " to " + outCRS, result, expectedPoint, 10E-3));
     }
