@@ -32,13 +32,23 @@
 package org.cts.op.projection;
 
 import java.util.Map;
+
 import org.cts.CoordinateDimensionException;
-import org.cts.datum.Ellipsoid;
 import org.cts.Identifier;
-import org.cts.units.Measure;
-import static java.lang.Math.*;
+import org.cts.datum.Ellipsoid;
 import org.cts.op.CoordinateOperation;
 import org.cts.op.NonInvertibleOperationException;
+import org.cts.units.Measure;
+
+import static java.lang.Math.abs;
+import static java.lang.Math.atan;
+import static java.lang.Math.atan2;
+import static java.lang.Math.cos;
+import static java.lang.Math.PI;
+import static java.lang.Math.pow;
+import static java.lang.Math.sin;
+import static java.lang.Math.sqrt;
+import static java.lang.Math.tan;
 
 /**
  * The Polar Stereographic Projection (STERE). <p>
@@ -47,6 +57,9 @@ import org.cts.op.NonInvertibleOperationException;
  */
 public class Stereographic extends Projection {
 
+    /**
+     * The Identifier used for all Polar Stereographic projections.
+     */
     public static final Identifier STERE =
             new Identifier("EPSG", "9810", "Polar Stereographic", "STERE");
     protected final double lat0, // the reference latitude

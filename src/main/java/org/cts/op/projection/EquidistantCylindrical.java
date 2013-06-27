@@ -32,13 +32,20 @@
 package org.cts.op.projection;
 
 import java.util.Map;
+
 import org.cts.CoordinateDimensionException;
-import org.cts.datum.Ellipsoid;
 import org.cts.Identifier;
-import org.cts.units.Measure;
-import static java.lang.Math.*;
+import org.cts.datum.Ellipsoid;
 import org.cts.op.CoordinateOperation;
 import org.cts.op.NonInvertibleOperationException;
+import org.cts.units.Measure;
+
+import static java.lang.Math.abs;
+import static java.lang.Math.cos;
+import static java.lang.Math.PI;
+import static java.lang.Math.pow;
+import static java.lang.Math.sin;
+import static java.lang.Math.sqrt;
 
 /**
  * The Equidistant Cylindrical projection (EQC). <p>
@@ -47,6 +54,9 @@ import org.cts.op.NonInvertibleOperationException;
  */
 public class EquidistantCylindrical extends Projection {
 
+    /**
+     * The Identifier used for all Equidistant Cylindrical projections.
+     */
     public static final Identifier EQC =
             new Identifier("EPSG", "1028", "Equidistant Cylindrical", "EQC");
     protected final double lat0, // the reference latitude

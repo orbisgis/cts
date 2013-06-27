@@ -31,6 +31,19 @@
  */
 package org.cts.op.projection;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.cts.CoordinateDimensionException;
+import org.cts.Identifier;
+import org.cts.IllegalCoordinateException;
+import org.cts.Parameter;
+import org.cts.datum.Ellipsoid;
+import org.cts.op.CoordinateOperation;
+import org.cts.op.NonInvertibleOperationException;
+import org.cts.units.Measure;
+import org.cts.units.Unit;
+
 import static java.lang.Math.abs;
 import static java.lang.Math.atan;
 import static java.lang.Math.cos;
@@ -39,17 +52,6 @@ import static java.lang.Math.log;
 import static java.lang.Math.sin;
 import static java.lang.Math.sqrt;
 import static java.lang.Math.tan;
-import java.util.HashMap;
-import java.util.Map;
-import org.cts.CoordinateDimensionException;
-import org.cts.op.CoordinateOperation;
-import org.cts.datum.Ellipsoid;
-import org.cts.Identifier;
-import org.cts.IllegalCoordinateException;
-import org.cts.units.Measure;
-import org.cts.op.NonInvertibleOperationException;
-import org.cts.Parameter;
-import org.cts.units.Unit;
 
 /**
  * A map projection is any method used in cartography (mapmaking) to represent
@@ -61,6 +63,9 @@ import org.cts.units.Unit;
  */
 public class LambertConicConformal1SP extends Projection {
 
+    /**
+     * The Identifier used for all Cylindrical Equal Area projection.
+     */
     public static final Identifier LCC1SP =
             new Identifier("EPSG", "9801", "Lambert Conic Conformal (1SP)", "Lambert tangent");
     /**

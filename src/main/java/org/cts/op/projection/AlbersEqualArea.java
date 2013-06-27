@@ -32,13 +32,21 @@
 package org.cts.op.projection;
 
 import java.util.Map;
+
 import org.cts.CoordinateDimensionException;
-import org.cts.datum.Ellipsoid;
 import org.cts.Identifier;
-import org.cts.units.Measure;
-import static java.lang.Math.*;
+import org.cts.datum.Ellipsoid;
 import org.cts.op.CoordinateOperation;
 import org.cts.op.NonInvertibleOperationException;
+import org.cts.units.Measure;
+
+import static java.lang.Math.asin;
+import static java.lang.Math.atan;
+import static java.lang.Math.cos;
+import static java.lang.Math.log;
+import static java.lang.Math.pow;
+import static java.lang.Math.sin;
+import static java.lang.Math.sqrt;
 
 /**
  * The Albers Equal Area Projection (AEA). <p>
@@ -47,6 +55,9 @@ import org.cts.op.NonInvertibleOperationException;
  */
 public class AlbersEqualArea extends Projection {
 
+    /**
+     * The Identifier used for all Albers Equal Area projections.
+     */
     public static final Identifier AEA =
             new Identifier("EPSG", "9822", "Albers Equal Area", "AEA");
     protected final double lat0, // the reference latitude
@@ -75,21 +86,28 @@ public class AlbersEqualArea extends Projection {
         FN = getFalseNorthing();
         double e2 = ellipsoid.getSquareEccentricity();
         double lat1 = getStandardParallel1();
-        double alpha1 = alpha(lat1);
+        double alpha1 = q(lat1);
         double m1 = cos(lat1) / sqrt(1 - e2 * sin(lat1) * sin(lat1));
         double lat2 = getStandardParallel2();
-        double alpha2 = alpha(lat2);
+        double alpha2 = q(lat2);
         double m2 = cos(lat2) / sqrt(1 - e2 * sin(lat2) * sin(lat2));
         n = (m1 * m1 - m2 * m2) / (alpha2 - alpha1);
         C = m1 * m1 + n * alpha1;
-        rho0 = ellipsoid.getSemiMajorAxis() / n * sqrt(C - n * alpha(lat0));
+        rho0 = ellipsoid.getSemiMajorAxis() / n * sqrt(C - n * q(lat0));
     }
 
-    private double alpha(double lat) {
+    /**
+     * Calculation of q from the equation (3-12) of Snyder in the USGS
+     * professional paper 1395, "Map Projection - A Working Manual" by John P.
+     * Snyder :
+     * <http://pubs.er.usgs.gov/publication/pp1395>
+     * NB : q is named alpha in OGP's Guidance Note, it is why the result is
+     * stored in a parameter whose name is alpha
+     */
+    private double q(double lat) {
         double e = ellipsoid.getEccentricity();
-        double e2 = ellipsoid.getSquareEccentricity();
         double esin = e * sin(lat);
-        return (1 - e2) * (sin(lat) / (1 - esin * esin) - log((1 - esin) / (1 + esin)) / 2 / e);
+        return (1 - e * e) * (sin(lat) / (1 - esin * esin) - log((1 - esin) / (1 + esin)) / 2 / e);
     }
 
     /**
@@ -135,7 +153,7 @@ public class AlbersEqualArea extends Projection {
     @Override
     public double[] transform(double[] coord) throws CoordinateDimensionException {
         double theta = n * (coord[1] - lon0);
-        double rho = ellipsoid.getSemiMajorAxis() / n * sqrt(C - n * alpha(coord[0]));
+        double rho = ellipsoid.getSemiMajorAxis() / n * sqrt(C - n * q(coord[0]));
         coord[0] = FE + rho * sin(theta);
         coord[1] = FN + rho0 - rho * cos(theta);
         return coord;

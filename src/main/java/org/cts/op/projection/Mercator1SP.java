@@ -32,13 +32,22 @@
 package org.cts.op.projection;
 
 import java.util.Map;
+
 import org.cts.CoordinateDimensionException;
-import org.cts.datum.Ellipsoid;
 import org.cts.Identifier;
-import org.cts.units.Measure;
-import static java.lang.Math.*;
+import org.cts.datum.Ellipsoid;
 import org.cts.op.CoordinateOperation;
 import org.cts.op.NonInvertibleOperationException;
+import org.cts.units.Measure;
+
+import static java.lang.Math.abs;
+import static java.lang.Math.atan;
+import static java.lang.Math.cos;
+import static java.lang.Math.exp;
+import static java.lang.Math.PI;
+import static java.lang.Math.pow;
+import static java.lang.Math.sin;
+import static java.lang.Math.sqrt;
 
 /**
  * The Mercator Projection (MERC). <p>
@@ -47,6 +56,9 @@ import org.cts.op.NonInvertibleOperationException;
  */
 public class Mercator1SP extends Projection {
 
+    /**
+     * The Identifier used for all Mercator 1SP projections.
+     */
     public static final Identifier MERC =
             new Identifier("EPSG", "9804", "Mercator (1SP)", "MERC");
     protected final double lat0, // the reference latitude

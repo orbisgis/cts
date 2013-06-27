@@ -32,13 +32,19 @@
 package org.cts.op.projection;
 
 import java.util.Map;
+
 import org.cts.CoordinateDimensionException;
-import org.cts.datum.Ellipsoid;
 import org.cts.Identifier;
-import org.cts.units.Measure;
-import static java.lang.Math.*;
+import org.cts.datum.Ellipsoid;
 import org.cts.op.CoordinateOperation;
 import org.cts.op.NonInvertibleOperationException;
+import org.cts.units.Measure;
+
+import static java.lang.Math.abs;
+import static java.lang.Math.atan;
+import static java.lang.Math.exp;
+import static java.lang.Math.PI;
+import static java.lang.Math.sin;
 
 /**
  * The Miller Cylindrical Projection (MILL). <p>
@@ -47,6 +53,9 @@ import org.cts.op.NonInvertibleOperationException;
  */
 public class MillerCylindrical extends Projection {
 
+    /**
+     * The Identifier used for all Miller Cylindrical projections.
+     */
     public static final Identifier MILL =
             new Identifier("EPSG", "9818", "Miller Cylindrical", "MILL");
     protected final double lat0, // the reference latitude

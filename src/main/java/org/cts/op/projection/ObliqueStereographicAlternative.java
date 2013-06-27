@@ -32,13 +32,23 @@
 package org.cts.op.projection;
 
 import java.util.Map;
+
 import org.cts.CoordinateDimensionException;
-import org.cts.datum.Ellipsoid;
 import org.cts.Identifier;
-import org.cts.units.Measure;
-import static java.lang.Math.*;
+import org.cts.datum.Ellipsoid;
 import org.cts.op.CoordinateOperation;
 import org.cts.op.NonInvertibleOperationException;
+import org.cts.units.Measure;
+
+import static java.lang.Math.asin;
+import static java.lang.Math.atan;
+import static java.lang.Math.cos;
+import static java.lang.Math.log;
+import static java.lang.Math.PI;
+import static java.lang.Math.pow;
+import static java.lang.Math.sin;
+import static java.lang.Math.sqrt;
+import static java.lang.Math.tan;
 
 /**
  * The Oblique Stereographic Alternative Projection (STEREA). <p>
@@ -47,6 +57,10 @@ import org.cts.op.NonInvertibleOperationException;
  */
 public class ObliqueStereographicAlternative extends Projection {
 
+    /**
+     * The Identifier used for all Oblique Stereographic Alternative
+     * projections.
+     */
     public static final Identifier STEREA =
             new Identifier("EPSG", "9809", "Oblique Stereographic Alternative", "STEREA");
     protected final double lat0, // the reference latitude

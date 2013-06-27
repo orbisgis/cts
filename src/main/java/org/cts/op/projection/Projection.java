@@ -58,7 +58,10 @@ public abstract class Projection extends AbstractCoordinateOperation {
         new Parameter(Parameter.CENTRAL_MERIDIAN, new Measure(0, Unit.DEGREE)),
         new Parameter(Parameter.STANDARD_PARALLEL_1, new Measure(0, Unit.DEGREE)),
         new Parameter(Parameter.STANDARD_PARALLEL_2, new Measure(0, Unit.DEGREE)),
-        new Parameter(Parameter.SCALE_FACTOR, new Measure(0, Unit.UNIT)),
+        new Parameter(Parameter.LATITUDE_OF_TRUE_SCALE, new Measure(0, Unit.DEGREE)),
+        new Parameter(Parameter.AZIMUTH_OF_INITIAL_LINE, new Measure(0, Unit.DEGREE)),
+        new Parameter(Parameter.ANGLE_RECTIFIED_TO_OBLIQUE, new Measure(0, Unit.DEGREE)),
+        new Parameter(Parameter.SCALE_FACTOR, new Measure(1, Unit.UNIT)),
         new Parameter(Parameter.LATITUDE_OF_ORIGIN, new Measure(0, Unit.DEGREE))};
 
     public static ConcurrentHashMap<String, Measure> getDefaultParameters() {
@@ -109,10 +112,14 @@ public abstract class Projection extends AbstractCoordinateOperation {
         TANGENT,
         TRANSVERSE
     };
-    // Ellispoid used for this projection
+    /**
+     * Ellispoid used for this projection.
+     */
     Ellipsoid ellipsoid;
-    // Other parameters
-    final Map<String, Measure> parameters; // = new HashMap<String,Measure>();
+    /**
+     * Parameters other than the ellipsoid used in this projection.
+     */
+    final Map<String, Measure> parameters;
 
     /**
      * Creates a new Projection
@@ -247,6 +254,13 @@ public abstract class Projection extends AbstractCoordinateOperation {
      */
     public abstract Orientation getOrientation();
 
+    /**
+     * Returns true if object is equals to
+     * <code>this</code>. Tests equality between the references of both object,
+     * then tests if the string representation of these objects are equals.
+     *
+     * @param object The object to compare this ProjectedCRS against
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -262,6 +276,9 @@ public abstract class Projection extends AbstractCoordinateOperation {
         return false;
     }
 
+    /**
+     * Returns the hash code for this Projection.
+     */
     @Override
     public int hashCode() {
         int hash = 7;

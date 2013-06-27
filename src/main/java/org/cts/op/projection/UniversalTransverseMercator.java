@@ -31,14 +31,15 @@
  */
 package org.cts.op.projection;
 
-import org.cts.op.NonInvertibleOperationException;
-import org.cts.op.CoordinateOperation;
+import java.util.Map;
+
+import org.cts.CoordinateDimensionException;
+import org.cts.Identifier;
 import org.cts.datum.Ellipsoid;
-import org.cts.*;
+import org.cts.op.CoordinateOperation;
+import org.cts.op.NonInvertibleOperationException;
 import org.cts.units.Measure;
 import org.cts.util.Complex;
-
-import java.util.Map;
 
 /**
  * The Universal Transverse Mercator Projection (UTM).<p>
@@ -47,6 +48,9 @@ import java.util.Map;
  */
 public class UniversalTransverseMercator extends Projection {
 
+    /**
+     * The Identifier used for all Universal Transverse Mercator projections.
+     */
     public static final Identifier UTM =
             new Identifier("EPSG", "9824", "Transverse Mercator Zoned Grid System", "UTM");
     protected final double FE, // false easting

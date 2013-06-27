@@ -32,12 +32,13 @@
 package org.cts.op.projection;
 
 import java.util.Map;
+
 import org.cts.CoordinateDimensionException;
-import org.cts.datum.Ellipsoid;
 import org.cts.Identifier;
-import org.cts.units.Measure;
+import org.cts.datum.Ellipsoid;
 import org.cts.op.CoordinateOperation;
 import org.cts.op.NonInvertibleOperationException;
+import org.cts.units.Measure;
 import org.cts.util.Complex;
 
 /**
@@ -47,6 +48,9 @@ import org.cts.util.Complex;
  */
 public class NewZealandMapGrid extends Projection {
 
+    /**
+     * The Identifier used for all New Zealand Map Grid projections.
+     */
     public static final Identifier NZMG =
             new Identifier("EPSG", "9811", "New Zealand Map Grid", "NZMG");
     protected final double lat0, // the reference latitude

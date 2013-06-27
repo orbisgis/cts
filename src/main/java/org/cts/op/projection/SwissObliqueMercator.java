@@ -32,13 +32,24 @@
 package org.cts.op.projection;
 
 import java.util.Map;
+
 import org.cts.CoordinateDimensionException;
-import org.cts.datum.Ellipsoid;
 import org.cts.Identifier;
-import org.cts.units.Measure;
-import static java.lang.Math.*;
+import org.cts.datum.Ellipsoid;
 import org.cts.op.CoordinateOperation;
 import org.cts.op.NonInvertibleOperationException;
+import org.cts.units.Measure;
+
+import static java.lang.Math.asin;
+import static java.lang.Math.atan;
+import static java.lang.Math.cos;
+import static java.lang.Math.exp;
+import static java.lang.Math.log;
+import static java.lang.Math.PI;
+import static java.lang.Math.pow;
+import static java.lang.Math.sin;
+import static java.lang.Math.sqrt;
+import static java.lang.Math.tan;
 
 /**
  * The Swiss Oblique Mercator Projection (SOMERC). <p>
@@ -49,6 +60,9 @@ import org.cts.op.NonInvertibleOperationException;
  */
 public class SwissObliqueMercator extends Projection {
 
+    /**
+     * The Identifier used for all Swiss Oblique Mercator projections.
+     */
     public static final Identifier SOMERC =
             new Identifier("EPSG", "9815", "Swiss Oblique Mercator", "SOMERC");
     protected final double latc, // latitude of the projection center

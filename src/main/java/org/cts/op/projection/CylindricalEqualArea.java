@@ -32,13 +32,22 @@
 package org.cts.op.projection;
 
 import java.util.Map;
+
 import org.cts.CoordinateDimensionException;
-import org.cts.datum.Ellipsoid;
 import org.cts.Identifier;
-import org.cts.units.Measure;
-import static java.lang.Math.*;
+import org.cts.datum.Ellipsoid;
 import org.cts.op.CoordinateOperation;
 import org.cts.op.NonInvertibleOperationException;
+import org.cts.units.Measure;
+
+import static java.lang.Math.abs;
+import static java.lang.Math.asin;
+import static java.lang.Math.cos;
+import static java.lang.Math.log;
+import static java.lang.Math.PI;
+import static java.lang.Math.pow;
+import static java.lang.Math.sin;
+import static java.lang.Math.sqrt;
 
 /**
  * The Cylindrical Equal Area (normal case) Projection (CEA). <p>
@@ -47,6 +56,9 @@ import org.cts.op.NonInvertibleOperationException;
  */
 public class CylindricalEqualArea extends Projection {
 
+    /**
+     * The Identifier used for all Cylindrical Equal Area projections.
+     */
     public static final Identifier CEA =
             new Identifier("EPSG", "9835", "Cylindrical Equal Area (normal case)", "CEA");
     protected final double lat_ts, // the latitude of true scale

@@ -32,13 +32,17 @@
 package org.cts.op.projection;
 
 import java.util.Map;
+
 import org.cts.CoordinateDimensionException;
-import org.cts.datum.Ellipsoid;
 import org.cts.Identifier;
-import org.cts.units.Measure;
-import static java.lang.Math.*;
+import org.cts.datum.Ellipsoid;
 import org.cts.op.CoordinateOperation;
 import org.cts.op.NonInvertibleOperationException;
+import org.cts.units.Measure;
+
+import static java.lang.Math.cos;
+import static java.lang.Math.pow;
+import static java.lang.Math.tan;
 
 /**
  * The Cassini-Soldner Projection (CASS). <p>
@@ -47,6 +51,9 @@ import org.cts.op.NonInvertibleOperationException;
  */
 public class CassiniSoldner extends Projection {
 
+    /**
+     * The Identifier used for all Cassini-Soldner projections.
+     */
     public static final Identifier CASS =
             new Identifier("EPSG", "9806", "Cassini-Soldner", "CASS");
     protected final double lat0, // the reference latitude
@@ -57,7 +64,6 @@ public class CassiniSoldner extends Projection {
             k0, // scale coefficent for easting
             e, // eccentricity of the ellipsoid
             e2; // square eccentricity of the ellipsoid
-    private double PI_2 = PI / 2;
 
     /**
      * Create a new Cassini-Soldner Projection corresponding to the

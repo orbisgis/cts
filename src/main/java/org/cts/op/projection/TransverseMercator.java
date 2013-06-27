@@ -32,13 +32,14 @@
 package org.cts.op.projection;
 
 import java.util.Map;
-import org.cts.util.Complex;
+
 import org.cts.CoordinateDimensionException;
-import org.cts.op.CoordinateOperation;
-import org.cts.datum.Ellipsoid;
 import org.cts.Identifier;
-import org.cts.units.Measure;
+import org.cts.datum.Ellipsoid;
+import org.cts.op.CoordinateOperation;
 import org.cts.op.NonInvertibleOperationException;
+import org.cts.units.Measure;
+import org.cts.util.Complex;
 
 /**
  * A map projection is any method used in cartography (mapmaking) to represent
@@ -50,8 +51,11 @@ import org.cts.op.NonInvertibleOperationException;
  */
 public class TransverseMercator extends Projection {
 
-    public static final Identifier UTM =
-            new Identifier("EPSG", "9824", "Transverse Mercator Zoned Grid System", "UTM");
+    /**
+     * The Identifier used for all Transverse Mercator projections.
+     */
+    public static final Identifier TMERC =
+            new Identifier("EPSG", "9807", "Transverse Mercator", "TMERC");
     protected final double lat0, // the reference latitude
             lon0, // the reference longitude (from the datum prime meridian)
             n, // projection exponent
@@ -71,7 +75,7 @@ public class TransverseMercator extends Projection {
      */
     public TransverseMercator(final Ellipsoid ellipsoid,
             final Map<String, Measure> parameters) {
-        super(UTM, ellipsoid, parameters);
+        super(TMERC, ellipsoid, parameters);
         double k0 = getScaleFactor();
         double x0 = getFalseEasting();
         double y0 = getFalseNorthing();

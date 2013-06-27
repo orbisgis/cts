@@ -32,13 +32,21 @@
 package org.cts.op.projection;
 
 import java.util.Map;
+
 import org.cts.CoordinateDimensionException;
-import org.cts.datum.Ellipsoid;
 import org.cts.Identifier;
-import org.cts.units.Measure;
-import static java.lang.Math.*;
+import org.cts.datum.Ellipsoid;
 import org.cts.op.CoordinateOperation;
 import org.cts.op.NonInvertibleOperationException;
+import org.cts.units.Measure;
+
+import static java.lang.Math.asin;
+import static java.lang.Math.atan;
+import static java.lang.Math.cos;
+import static java.lang.Math.log;
+import static java.lang.Math.pow;
+import static java.lang.Math.sin;
+import static java.lang.Math.sqrt;
 
 /**
  * The Lambert Azimuthal Equal Area Projection (LAEA). <p>
@@ -47,6 +55,9 @@ import org.cts.op.NonInvertibleOperationException;
  */
 public class LambertAzimuthalEqualArea extends Projection {
 
+    /**
+     * The Identifier used for all Lambert Azimuthal Equal Area projections.
+     */
     public static final Identifier LAEA =
             new Identifier("EPSG", "9820", "Lambert Azimuthal Equal Area", "LAEA");
     protected final double lat0, // the reference latitude
