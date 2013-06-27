@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.cts.Identifier;
+import org.cts.crs.CRSException;
 import org.cts.crs.CRSHelper;
 import org.cts.crs.CoordinateReferenceSystem;
 
@@ -70,7 +71,7 @@ public class PrjParser {
      * @throws PrjParserException if the PRJ cannot be parsed into a CRS for any
      * reason
      */
-    public CoordinateReferenceSystem parse(String prjString) {
+    public CoordinateReferenceSystem parse(String prjString) throws CRSException {
         Map<String, String> prjParameters = getParameters(prjString);
         String name = prjParameters.remove("name");
         String refname = prjParameters.remove("refname");
@@ -94,7 +95,7 @@ public class PrjParser {
      * @throws PrjParserException if the PRJ cannot be parsed into a CRS for any
      * reason
      */
-    public Map<String, String> getParameters(String prjString) {
+    public Map<String, String> getParameters(String prjString)  {
         CharBuffer s = CharBuffer.wrap(prjString);
         PrjElement e;
         try {

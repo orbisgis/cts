@@ -152,7 +152,7 @@ public class CRSFactory {
      * @param prjString the PRJ String
      * @return a {@link CoordinateReferenceSystem}
      */
-    public CoordinateReferenceSystem createFromPrj(String prjString) {
+    public CoordinateReferenceSystem createFromPrj(String prjString) throws CRSException {
         PrjParser p = new PrjParser();
         return p.parse(prjString);
     }
@@ -166,7 +166,7 @@ public class CRSFactory {
      * @return a {@link CoordinateReferenceSystem}
      * @throws IOException
      */
-    public CoordinateReferenceSystem createFromPrj(InputStream stream, Charset encoding) throws IOException {
+    public CoordinateReferenceSystem createFromPrj(InputStream stream, Charset encoding) throws IOException, CRSException {
         BufferedReader r = new BufferedReader(new InputStreamReader(stream, encoding));
         StringBuilder b = new StringBuilder();
         while (r.ready()) {
@@ -183,7 +183,7 @@ public class CRSFactory {
      * @return
      * @throws IOException
      */
-    public CoordinateReferenceSystem createFromPrj(InputStream stream) throws IOException {
+    public CoordinateReferenceSystem createFromPrj(InputStream stream) throws IOException, CRSException {
         return createFromPrj(stream, Charset.defaultCharset());
     }
 
@@ -195,7 +195,7 @@ public class CRSFactory {
      * @return a {@link CoordinateReferenceSystem}
      * @throws IOException if there is a problem reading the file
      */
-    public CoordinateReferenceSystem createFromPrj(File file) throws IOException {
+    public CoordinateReferenceSystem createFromPrj(File file) throws IOException, CRSException {
         InputStream i = null;
         CoordinateReferenceSystem crs;
         try {
