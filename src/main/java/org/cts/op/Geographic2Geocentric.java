@@ -33,10 +33,11 @@ package org.cts.op;
 
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
+
 import org.cts.CoordinateDimensionException;
-import org.cts.datum.Ellipsoid;
 import org.cts.Identifier;
 import org.cts.IllegalCoordinateException;
+import org.cts.datum.Ellipsoid;
 
 /**
  * <p>Transform geographic coordinates (latitude, longitude, ellipsoidal height
@@ -61,15 +62,21 @@ import org.cts.IllegalCoordinateException;
 public class Geographic2Geocentric extends AbstractCoordinateOperation {
 
     /**
-     * Useful transformation to go from geographic to geocentric coordinates
-     * using radians and the standard GRS80 ellipsoid.
+     * The Identifier used for all Geographic to geocentric conversions.
      */
-    public static final Geographic2Geocentric GC_GRS80 =
-            new Geographic2Geocentric(Ellipsoid.GRS80);
     private static final Identifier opId =
             new Identifier("EPSG", "9602",
             "Geographic to geocentric conversion", "Geographic to geocentric");
+    /**
+     * The ellipsoid used to define geographic coordinates.
+     */
     private Ellipsoid ellipsoid;
+    /**
+     * Stop condition for the Geocentric to Geographic transformation algorithm
+     * (the inverse transformation of this Geographic2Geocentric). epsilon is a
+     * value in radian, 1E-11 is the default epsilon and it means that error is
+     * less than 1E-4 m.
+     */
     private double epsilon;
 
     /**
@@ -136,44 +143,11 @@ public class Geographic2Geocentric extends AbstractCoordinateOperation {
     }
 
     /**
-     * Apply the inverse transformation to coord (geocentric to geographic)
-     */
-    /*
-     public void inverseTransform(double[] coord)
-     throws CoordinateDimensionException, NonInvertibleOperationException {
-     if (coord.length != 3) throw new CoordinateDimensionException(coord, 3);
-     double X = coord[0];
-     double Y = coord[1];
-     double Z = coord[2];
-     double a = ellipsoid.getSemiMajorAxis();
-     double e2 = ellipsoid.getSquareEccentricity();
-     // Calcul de la longitude
-     double lon = atan2(Y, X);
-     // Calcul de la latitude
-     double XY2 = sqrt(X*X + Y*Y);
-     double lat0 = atan( Z / ( XY2 * (1 - (a*e2 / sqrt(X*X+Y*Y+Z*Z)))));
-     double lati = lat0;
-     double lati1 = 0;
-     while (abs(lati1-lati)>epsilon) {
-     lati = lati1;
-     double exp1 = a * e2 * cos(lati);
-     double exp2 = sqrt(1-(e2*sin(lati)*sin(lati)));
-     lati1 = atan((Z/XY2)/(1-(exp1/(XY2*exp2))));
-     }
-     double lat = lati1;
-     // Calcul de la hauteur
-     double height = XY2/cos(lat) - a/sqrt(1-(e2*sin(lat)*sin(lat)));
-     coord[0] = lat;
-     coord[1] = lon;
-     coord[2] = height;
-     }
-     */
-    /**
      * Creates the inverse CoordinateOperation.
      */
     @Override
     public CoordinateOperation inverse() throws NonInvertibleOperationException {
-        return new Geocentric2Geographic(ellipsoid);
+        return new Geocentric2Geographic(ellipsoid, epsilon);
     }
 
     /**

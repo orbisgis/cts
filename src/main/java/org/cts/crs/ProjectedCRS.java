@@ -78,7 +78,6 @@ public class ProjectedCRS extends GeodeticCRS {
      * The projection used by this ProjectedCRS.
      */
     private Projection projection;
-    private Unit angularUnit;
 
     /**
      * Create a new ProjectedCRS.
@@ -106,11 +105,10 @@ public class ProjectedCRS extends GeodeticCRS {
      * with the ProjectedCRS
      */
     public ProjectedCRS(Identifier identifier, GeodeticDatum datum,
-            Projection projection, Unit unit, Unit angularUnit) {
+            Projection projection, Unit unit) {
         super(identifier, datum, new CoordinateSystem(new Axis[]{EASTING,
             NORTHING}, new Unit[]{unit, unit}));
         this.projection = projection;
-        this.angularUnit = angularUnit;
     }
 
     /**
@@ -193,10 +191,6 @@ public class ProjectedCRS extends GeodeticCRS {
                 CoordinateOperationSequence.class), ops);
     }
 
-    public Unit getAngularUnit() {
-        return angularUnit;
-    }
-
     /**
      * Returns true if object is equals to
      * <code>this</code>. Tests equality between identifiers, then tests if the
@@ -241,7 +235,6 @@ public class ProjectedCRS extends GeodeticCRS {
     public int hashCode() {
         int hash = 3;
         hash = 97 * hash + (this.projection != null ? this.projection.hashCode() : 0);
-        hash = 97 * hash + (this.angularUnit != null ? this.angularUnit.hashCode() : 0);
         return hash;
     }
 }

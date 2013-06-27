@@ -44,11 +44,13 @@ import org.cts.units.Unit;
  */
 public class UnitConversion extends AbstractCoordinateOperation {
 
-    public final static UnitConversion RAD2DD = createUnitConverter(Unit.RADIAN, Unit.DEGREE);
-    public final static UnitConversion DD2RAD = createUnitConverter(Unit.DEGREE, Unit.RADIAN);
-    public final static UnitConversion RAD2GRAD = createUnitConverter(Unit.RADIAN, Unit.GRAD);
-    public final static UnitConversion GRAD2RAD = createUnitConverter(Unit.GRAD, Unit.RADIAN);
+    /**
+     * Units used in source coordinates.
+     */
     private Unit[] sourceUnit;
+    /**
+     * Units expected in the resulting coordinates.
+     */
     private Unit[] targetUnit;
 
     /**

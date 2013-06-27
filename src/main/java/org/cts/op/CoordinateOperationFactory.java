@@ -31,20 +31,22 @@
  */
 package org.cts.op;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.log4j.Logger;
+
 import org.cts.Identifier;
 import org.cts.crs.*;
 import org.cts.datum.Datum;
 import org.cts.datum.GeodeticDatum;
-
-import java.util.ArrayList;
-import java.util.List;
 import org.cts.op.transformation.NTv2GridShiftTransformation;
 
 /**
  * CoordinateOperationFactory is a factory used to create
- * {@link org.cts.CoordinateOperation}s from source and target
- * {@link org.cts.crs.CoordinateReferenceSystem}s.
+ * {@linkplain  org.cts.CoordinateOperation CoordinateOperations} from source
+ * and target
+ * {@linkplain org.cts.crs.CoordinateReferenceSystem CoordinateReferenceSystems}.
  *
  * @author Michaël Michaud, Jules Party
  */
@@ -120,6 +122,26 @@ public final class CoordinateOperationFactory {
         return opList;
     }
 
+    /**
+     * Create a CoordinateOperation from a source {@link GeodeticCRS} to a
+     * target {@link GeodeticCRS} based on different {@link Datum} and using a
+     * CoordinateOperation to convert coordinates directly from one Geographic
+     * CRS to another without the use of GeocentricCRS. Remember that
+     * {@link GeodeticCRS} includes {@link GeocentricCRS},
+     * {@link Geographic2DCRS}, {@link Geographic3DCRS} and
+     * {@link ProjectedCRS}, but here the use of {@link GeocentricCRS} is
+     * senseless. NB : This class was made for nadgrids that are
+     * defined only in the parameter of the source CRS for the nadgrids
+     * transformation, it is why there is two createNadgridsOperation,
+     * createNadgridsOperationDir must be use when the nadgrids is defined in
+     * the sourceCRS.
+     *
+     * @param sourceDatum the (non null) datum used by source CRS
+     * @param source the source geodetic coordinate reference system
+     * @param targetDatum the (non null) datum used by target CRS
+     * @param target the target geodetic coordinate reference system
+     * @param coordOp the transformation between two Geographic CRS
+     */
     private static List<CoordinateOperation> createNadgridsOperationDir(
             GeodeticDatum sourceDatum, GeodeticCRS source,
             GeodeticDatum targetDatum, GeodeticCRS target, CoordinateOperation coordOp) {
@@ -155,6 +177,26 @@ public final class CoordinateOperationFactory {
         return opList;
     }
 
+    /**
+     * Create a CoordinateOperation from a source {@link GeodeticCRS} to a
+     * target {@link GeodeticCRS} based on different {@link Datum} and using a
+     * CoordinateOperation to convert coordinates directly from one Geographic
+     * CRS to another without the use of GeocentricCRS. Remember that
+     * {@link GeodeticCRS} includes {@link GeocentricCRS},
+     * {@link Geographic2DCRS}, {@link Geographic3DCRS} and
+     * {@link ProjectedCRS}, but here the use of {@link GeocentricCRS} is
+     * senseless. NB : This class was made for nadgrids that are
+     * defined only in the parameter of the source CRS for the nadgrids
+     * transformation, it is why there is two createNadgridsOperation,
+     * createNadgridsOperationInv must be use when the nadgrids is defined in
+     * the targetCRS.
+     *
+     * @param sourceDatum the (non null) datum used by source CRS
+     * @param source the source geodetic coordinate reference system
+     * @param targetDatum the (non null) datum used by target CRS
+     * @param target the target geodetic coordinate reference system
+     * @param coordOp the transformation between two Geographic CRS
+     */
     private static List<CoordinateOperation> createNadgridsOperationInv(
             GeodeticDatum sourceDatum, GeodeticCRS source,
             GeodeticDatum targetDatum, GeodeticCRS target, CoordinateOperation coordOp) {

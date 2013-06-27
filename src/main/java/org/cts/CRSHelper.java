@@ -133,7 +133,7 @@ public class CRSHelper {
                 unit = new Unit(Quantity.LENGTH, "", Double.parseDouble(stometer),
                         "");
                 }
-                crs = new ProjectedCRS(identifier, geodeticDatum, proj, unit, Unit.DEGREE);
+                crs = new ProjectedCRS(identifier, geodeticDatum, proj, unit);
             } else {
                 LOGGER.warn("Unknown projection : " + sproj);
                 return null;

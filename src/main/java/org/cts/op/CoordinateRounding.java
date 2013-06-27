@@ -42,11 +42,29 @@ import org.cts.IllegalCoordinateException;
  */
 public class CoordinateRounding extends AbstractCoordinateOperation {
 
+    /**
+     * Round the coordinates to millimeter value.
+     */
     public final static CoordinateRounding MILLIMETER = createCoordinateRoundingOperation(0.001);
+    /**
+     * Round the coordinates to centimeter value.
+     */
     public final static CoordinateRounding CENTIMETER = createCoordinateRoundingOperation(0.01);
+    /**
+     * Round the coordinates to decimeter value.
+     */
     public final static CoordinateRounding DECIMETER = createCoordinateRoundingOperation(0.1);
+    /**
+     * Round the coordinates to meter value.
+     */
     public final static CoordinateRounding METER = createCoordinateRoundingOperation(0.0);
+    /**
+     * Round the coordinates to kilometer value.
+     */
     public final static CoordinateRounding KILOMETER = createCoordinateRoundingOperation(1000.0);
+    /**
+     * Store the inverse resolution of the rounding.
+     */
     private double inv_resolution = 1.0;
 
     /**
@@ -65,7 +83,7 @@ public class CoordinateRounding extends AbstractCoordinateOperation {
      * Returns a coordinate representing the same point as coord but with
      * coordinates rounded as specified.
      *
-     * @param coord is an array containing one, two or three ordinates.
+     * @param coord is an array containing one, two or three ordinates
      * @throws IllegalCoordinateException if <code>coord</code> is not
      * compatible with this <code>CoordinateOperation</code>.
      */

@@ -74,7 +74,7 @@ public abstract class AbstractCoordinateOperation
      * {@link fr.cts.CoordinateOperation}s and/or inverse CoordinateOperation in
      * a unique CoordinateOperationSequence. This method is not declared
      * abstract, so that implementation classes have not to implement it if they
-     * represent non invertible op�ration.
+     * represent non invertible operation.
      */
     @Override
     public CoordinateOperation inverse()
