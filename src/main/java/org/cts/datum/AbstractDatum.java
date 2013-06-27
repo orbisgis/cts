@@ -32,7 +32,7 @@
 package org.cts.datum;
 
 import java.util.*;
-import org.cts.CoordinateOperation;
+import org.cts.op.CoordinateOperation;
 import org.cts.IdentifiableComponent;
 import org.cts.Identifier;
 import org.cts.cs.Extent;

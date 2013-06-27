@@ -35,7 +35,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import org.cts.Ellipsoid;
+import org.cts.datum.Ellipsoid;
 import org.cts.Identifier;
 import org.cts.Parameter;
 import org.cts.op.AbstractCoordinateOperation;

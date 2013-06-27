@@ -34,11 +34,9 @@ package org.cts.op;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 import org.cts.CoordinateDimensionException;
-import org.cts.CoordinateOperation;
-import org.cts.Ellipsoid;
+import org.cts.datum.Ellipsoid;
 import org.cts.Identifier;
 import org.cts.IllegalCoordinateException;
-import org.cts.NonInvertibleOperationException;
 
 /**
  * <p>Transform geographic coordinates (latitude, longitude, ellipsoidal height

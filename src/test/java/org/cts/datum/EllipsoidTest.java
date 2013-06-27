@@ -29,11 +29,13 @@
  *
  * For more information, please consult: <https://github.com/irstv/cts/>
  */
-package org.cts;
+package org.cts.datum;
 
+import org.cts.CTSTestCase;
+import org.cts.Identifier;
 import static org.junit.Assert.*;
 import org.junit.Test;
-import static org.cts.Ellipsoid.*;
+import static org.cts.datum.Ellipsoid.*;
 
 /**
  *

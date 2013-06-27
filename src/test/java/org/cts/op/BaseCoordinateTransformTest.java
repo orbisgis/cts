@@ -33,7 +33,6 @@ package org.cts.op;
 
 import org.cts.CRSFactory;
 import org.cts.CTSTestCase;
-import org.cts.CoordinateOperation;
 import org.cts.IllegalCoordinateException;
 import org.cts.crs.CRSException;
 import org.cts.crs.CoordinateReferenceSystem;

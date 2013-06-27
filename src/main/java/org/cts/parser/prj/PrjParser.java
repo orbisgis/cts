@@ -36,9 +36,6 @@ import java.nio.CharBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.cts.Identifier;
-import org.cts.crs.CRSHelper;
-import org.cts.crs.CoordinateReferenceSystem;
 
 /**
  * Parser for PRJ / WKT (OGC & ESRI) String.
@@ -59,29 +56,6 @@ public class PrjParser {
      *
      */
     public PrjParser() {
-    }
-
-    /**
-     * Parses a WKT PRJ String into a set of parameters.
-     *
-     *
-     * @param prjString a WKT string
-     * @return a CRS if it can be build
-     * @throws PrjParserException if the PRJ cannot be parsed into a CRS for any
-     * reason
-     */
-    public CoordinateReferenceSystem parse(String prjString) {
-        Map<String, String> prjParameters = getParameters(prjString);
-        String name = prjParameters.remove("name");
-        String refname = prjParameters.remove("refname");
-        CoordinateReferenceSystem crs;
-        if (refname!=null) {
-            String[] authorityNameWithKey = refname.split(":");
-            crs = CRSHelper.createCoordinateReferenceSystem(new Identifier(authorityNameWithKey[0], authorityNameWithKey[1], name), prjParameters);
-        } else {
-            crs = CRSHelper.createCoordinateReferenceSystem(new Identifier(name, name, name), prjParameters);
-        }
-        return crs;
     }
 
     /**

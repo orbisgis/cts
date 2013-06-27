@@ -29,12 +29,13 @@
 *
 * For more information, please consult: <https://github.com/irstv/cts/>
 */
-package org.cts.crs;
+package org.cts;
 
+import org.cts.op.CoordinateOperation;
+import org.cts.datum.Ellipsoid;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import org.apache.log4j.Logger;
-import org.cts.*;
 import org.cts.cs.Axis;
 import org.cts.cs.CoordinateSystem;
 import org.cts.datum.GeodeticDatum;
@@ -51,6 +52,11 @@ import org.cts.units.Unit;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.cts.crs.CoordinateReferenceSystem;
+import org.cts.crs.GeocentricCRS;
+import org.cts.crs.GeodeticCRS;
+import org.cts.crs.Geographic3DCRS;
+import org.cts.crs.ProjectedCRS;
 import org.cts.op.transformation.NTv2GridShiftTransformation;
 
 /**
@@ -175,37 +181,13 @@ public class CRSHelper {
          */
         public static PrimeMeridian getPrimeMeridian(Map<String, String> param) {
                 String pmName = param.get(ProjKeyParameters.pm);
+                PrimeMeridian pm;
                 if (null != pmName) {
-                        if (pmName.equals("greenwich")) {
-                                return PrimeMeridian.GREENWICH;
-                        } else if (pmName.equals("paris")) {
-                                return PrimeMeridian.PARIS;
-                        } else if (pmName.equals("lisbon")) {
-                                return PrimeMeridian.LISBON;
-                        } else if (pmName.equals("bogota")) {
-                                return PrimeMeridian.BOGOTA;
-                        } else if (pmName.equals("madrid")) {
-                                return PrimeMeridian.MADRID;
-                        } else if (pmName.equals("rome")) {
-                                return PrimeMeridian.ROME;
-                        } else if (pmName.equals("bern")) {
-                                return PrimeMeridian.BERN;
-                        } else if (pmName.equals("jakarta")) {
-                                return PrimeMeridian.JAKARTA;
-                        } else if (pmName.equals("ferro")) {
-                                return PrimeMeridian.FERRO;
-                        } else if (pmName.equals("brussels")) {
-                                return PrimeMeridian.BRUSSELS;
-                        } else if (pmName.equals("stockholm")) {
-                                return PrimeMeridian.STOCKHOLM;
-                        } else if (pmName.equals("athens")) {
-                                return PrimeMeridian.ATHENS;
-                        } else if (pmName.equals("oslo")) {
-                                return PrimeMeridian.OSLO;
-                        } else {
+                    pm = PrimeMeridian.primeMeridianFromName.get(pmName.toLowerCase());
+                    if (pm==null) {
                                 try {
                                         double pmdd = Double.parseDouble(pmName);
-                                        return PrimeMeridian.createPrimeMeridianFromDDLongitude(
+                                        pm = PrimeMeridian.createPrimeMeridianFromDDLongitude(
                                                 new Identifier(PrimeMeridian.class,
                                                 Identifiable.UNKNOWN), pmdd);
                                 } catch (NumberFormatException ex) {
@@ -214,80 +196,9 @@ public class CRSHelper {
                                 }
                         }
                 } else {
-                        return PrimeMeridian.GREENWICH;
+                        pm = PrimeMeridian.GREENWICH;
                 }
-        }
-
-        /**
-         * Returns true is the {@link org.cts.datum.PrimeMeridian} is supported
-         *
-         * @param pmName the PrimeMeridian to check
-         * @return true if pmName is a supported {@link org.cts.datum.PrimeMeridian}
-         */
-        public static boolean isPrimeMeridianSupported(String pmName) {
-                if (null != pmName) {
-                        if (pmName.equals("greenwich")) {
-                                return true;
-                        } else if (pmName.equals("paris")) {
-                                return true;
-                        } else if (pmName.equals("lisbon")) {
-                                return true;
-                        } else if (pmName.equals("bogota")) {
-                                return true;
-                        } else if (pmName.equals("madrid")) {
-                                return true;
-                        } else if (pmName.equals("rome")) {
-                                return true;
-                        } else if (pmName.equals("bern")) {
-                                return true;
-                        } else if (pmName.equals("jakarta")) {
-                                return true;
-                        } else if (pmName.equals("ferro")) {
-                                return true;
-                        } else if (pmName.equals("brussels")) {
-                                return true;
-                        } else if (pmName.equals("stockholm")) {
-                                return true;
-                        } else if (pmName.equals("athens")) {
-                                return true;
-                        } else if (pmName.equals("oslo")) {
-                                return true;
-                        } else {
-                                try {
-                                        Double.parseDouble(pmName);
-                                        return true;
-                                } catch (NumberFormatException ex) {
-                                        LOGGER.error(pmName + " prime meridian is not supported");
-                                        return false;
-                                }
-                        }
-                } else {
-                        return true;
-                }
-        }
-
-        /**
-         * Returns true if the {@link org.cts.datum.GeodeticDatum} with this name is supported.
-         * TODO : add other datum
-         *
-         * @param datumName name of the GeodeticDatum to check
-         * @return true if datumName is supported
-         */
-        public static boolean isDatumSupported(String datumName) {
-                if (null != datumName) {
-                        if (datumName.equals(GeodeticDatum.WGS84.getName())) {
-                                return true;
-                        } else if (datumName.equals(GeodeticDatum.ED50.getName())) {
-                                return true;
-                        } else if (datumName.equals(GeodeticDatum.NTF.getName())) {
-                                return true;
-                        } else if (datumName.equals(GeodeticDatum.NTF_PARIS.getName())) {
-                                return true;
-                        } else if (datumName.equals(GeodeticDatum.RGF93.getName())) {
-                                return true;
-                        }
-                }
-                return false;
+                return pm;
         }
 
         /**
@@ -295,29 +206,19 @@ public class CRSHelper {
          */
         public static GeodeticDatum getDatum(Map<String, String> param) {
                 String datumName = param.get(ProjKeyParameters.datum);
+                GeodeticDatum gd = null;
                 if (null != datumName) {
-                        if (datumName.equalsIgnoreCase(GeodeticDatum.WGS84.getShortName())) {
-                                return GeodeticDatum.WGS84;
-                        } else if (datumName.equalsIgnoreCase(GeodeticDatum.ED50.getShortName())) {
-                                return GeodeticDatum.ED50;
-                        } else if (datumName.equalsIgnoreCase(GeodeticDatum.NTF.getShortName())) {
-                                return GeodeticDatum.NTF;
-                        } else if (datumName.equalsIgnoreCase(GeodeticDatum.NTF_PARIS.getShortName())) {
-                                return GeodeticDatum.NTF_PARIS;
-                        } else if (datumName.equalsIgnoreCase(GeodeticDatum.RGF93.getShortName())) {
-                                return GeodeticDatum.RGF93;
-                        }
+                    gd = GeodeticDatum.datumFromName.get(datumName.toLowerCase());
                } else {
                 Ellipsoid ell = getEllipsoid(param);
                 PrimeMeridian pm = getPrimeMeridian(param);
                 if (null != pm && null != ell) {
-                    GeodeticDatum gd = new GeodeticDatum(pm, ell);
+                    gd = new GeodeticDatum(pm, ell);
                     setDefaultWGS84Parameters(gd, param);
                     gd = gd.checkExistingGeodeticDatum();
-                    return gd;
                 }
             }
-            return null;
+            return gd;
         }
         
         private static void setNadgrids(GeodeticCRS crs, Map<String, String> param) {
@@ -332,15 +233,15 @@ public class CRSHelper {
                                     GeodeticDatum.WGS84.addCoordinateOperation(crs.getDatum(), Identity.IDENTITY);
                                 } else {
                                     try {
-                                        //NTv2GridShiftTransformation gt = new NTv2GridShiftTransformation(
-                                        //        GridShift.class.getResource(grid).toURI().toURL());
                                         NTv2GridShiftTransformation gt = NTv2GridShiftTransformation.createNTv2GridShiftTransformation(grid);
                                         gt.setMode(NTv2GridShiftTransformation.SPEED);
-                                        crs.addGridTransformation(GeodeticDatum.getGeodeticDatumFromShortName(gt.getToDatum()), gt);
+                                        crs.addGridTransformation(GeodeticDatum.datumFromName.get(gt.getToDatum()), gt);
                                     } catch (IOException ex) {
-                                        LOGGER.error("Cannot found the nadgrid", ex);
+                                        LOGGER.error("Cannot found the nadgrid "+grid+".", ex);
                                     } catch (URISyntaxException ex) {
-                                        LOGGER.error("Cannot found the nadgrid", ex);
+                                        LOGGER.error("Cannot found the nadgrid "+grid+".", ex);
+                                    } catch (NullPointerException ex) {
+                                        LOGGER.error("Cannot found the nadgrid "+grid+".", ex);
                                     }
                                 }
                             }
@@ -362,40 +263,8 @@ public class CRSHelper {
                 String datum = param.get(ProjKeyParameters.datum);
 
                 if (null != ellipsoidName) {
-                        if (ellipsoidName.equals("GRS80")) {
-                                return Ellipsoid.GRS80;
-                        } else if (ellipsoidName.equals("WGS_1984") || (ellipsoidName.equals("WGS 84"))) {
-                                return Ellipsoid.WGS84;
-                        } else if (ellipsoidName.equals("International_1924") || ellipsoidName.equals("intl")) {
-                                return Ellipsoid.INTERNATIONAL1924;
-                        } else if (ellipsoidName.equals("clrk66")) {
-                                return Ellipsoid.CLARKE1866;
-                        } else if (ellipsoidName.equals("clrk80")) {
-                                return Ellipsoid.CLARKE1880ARC;
-                        } else if (ellipsoidName.equals("Clarke_1880_IGN")
-                                || ellipsoidName.equals("Clarke 1880 (IGN)")
-                                || ellipsoidName.equals("Clarke_1880")) {
-                                return Ellipsoid.CLARKE1880IGN;
-                        } else if (ellipsoidName.equals("Clarke_1880_RGS")
-                                || ellipsoidName.equals("Clarke 1880 (RGS)")) {
-                                return Ellipsoid.CLARKE1880RGS;
-                        } else if (ellipsoidName.equals("sphere")) {
-                                return Ellipsoid.SPHERE;
-                        } else if (ellipsoidName.equals("bessel")) {
-                                return Ellipsoid.BESSEL1841;
-                        } else if (ellipsoidName.equals("krass")) {
-                                return Ellipsoid.KRASSOWSKI;
-                        } else if (ellipsoidName.equals("evrstSS")) {
-                                return Ellipsoid.EVERESTSS;
-                        } else if (ellipsoidName.equals("GRS67")) {
-                                return Ellipsoid.GRS67;
-                        } else if (ellipsoidName.equals("aust_SA")) {
-                                return Ellipsoid.AustSA;
-                        } else {
-                                LOGGER.warn(ellipsoidName + " return default ellipsoid WGS84");
-                                return Ellipsoid.WGS84;
-                        }
-
+                    ellipsoidName = ellipsoidName.replaceAll("[^a-zA-Z0-9]", "");
+                    return Ellipsoid.ellipsoidFromName.get(ellipsoidName.toLowerCase());
                 } else if (null != a && (null != b || null != rf)) {
                         double a_ = Double.parseDouble(a);
                         if (null != b) {
