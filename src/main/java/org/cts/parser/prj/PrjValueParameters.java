@@ -69,12 +69,16 @@ public class PrjValueParameters {
 
     static {
         PARAMNAMES.put("centralmeridian", "lon_0");
+        PARAMNAMES.put("longitudeofcenter", "lon_0");
         PARAMNAMES.put("falseeasting", "x_0");
         PARAMNAMES.put("falsenorthing", "y_0");
         PARAMNAMES.put("latitudeoforigin", "lat_0");
+        PARAMNAMES.put("latitudeofcenter", "lat_0");
         PARAMNAMES.put("scalefactor", "k_0");
         PARAMNAMES.put("standardparallel1", "lat_1");
         PARAMNAMES.put("standardparallel2", "lat_2");
+        PARAMNAMES.put("azimuth", "alpha");
+        PARAMNAMES.put("rectifiedgridangle", "gamma");
         PROJNAMES.put("airy", "airy");
         PROJNAMES.put("aitoff", "aitoff");
         PROJNAMES.put("albers" + "equal" + "area", "aea");
@@ -104,6 +108,7 @@ public class PrjValueParameters {
         PROJNAMES.put("goode" + "homolosine", "goode");
         PROJNAMES.put("hammer" + "eckert" + "greifendorff", "hammer");
         PROJNAMES.put("hatano" + "asymmetrical" + "equal" + "area", "hatano");
+        PROJNAMES.put("hotine"+"oblique"+"mercator", "omerc");
         PROJNAMES.put("kavraisky" + "v", "kav5");
         PROJNAMES.put("lagrange", "lagrng");
         PROJNAMES.put("lambert" + "azimuthal" + "equal" + "area", "laea");

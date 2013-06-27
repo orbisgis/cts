@@ -49,8 +49,8 @@ import org.cts.op.NonInvertibleOperationException;
  */
 public class SwissObliqueMercator extends Projection {
 
-    public static final Identifier OMERC =
-            new Identifier("EPSG", "9815", "Oblique Mercator", "OMERC");
+    public static final Identifier SOMERC =
+            new Identifier("EPSG", "9815", "Swiss Oblique Mercator", "SOMERC");
     protected final double latc, // latitude of the projection center
             lonc, // longitude of the projection center
             kc, // scale factor on the initial line
@@ -73,7 +73,7 @@ public class SwissObliqueMercator extends Projection {
      */
     public SwissObliqueMercator(final Ellipsoid ellipsoid,
             final Map<String, Measure> parameters) {
-        super(OMERC, ellipsoid, parameters);
+        super(SOMERC, ellipsoid, parameters);
         lonc = getCentralMeridian();
         latc = getLatitudeOfOrigin();
         FE = getFalseEasting();

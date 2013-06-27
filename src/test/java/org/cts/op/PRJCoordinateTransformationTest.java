@@ -115,9 +115,7 @@ public class PRJCoordinateTransformationTest extends BaseCoordinateTransformTest
 
     @Test
     public void testMercatorPRJ() throws Exception {
-        //IGN data : POINT (931813.94 1786923.891 2525.68) ID5863
         double[] srcPoint = new double[]{120, -3, 0};
-        //IGN data : POINT (977362.95 6218045.569 0)	ID5863
         double[] expectedPoint = new double[]{5009726.58, 569150.82, 0};
         String srcprj = "GEOGCS[\"Makassar\",DATUM[\"Makassar\","
                 + "SPHEROID[\"Bessel 1841\",6377397.155,299.1528128,AUTHORITY[\"EPSG\",\"7004\"]],"
@@ -180,6 +178,54 @@ public class PRJCoordinateTransformationTest extends BaseCoordinateTransformTest
                 + "    AUTHORITY[\"EPSG\",\"30200\"],\n"
                 + "    AXIS[\"Easting\",EAST],\n"
                 + "    AXIS[\"Northing\",NORTH]]";
+        CoordinateReferenceSystem outCRS = crsf.createFromPrj(outprj);
+        double[] result = transform((GeodeticCRS) srcCRS, (GeodeticCRS) outCRS, srcPoint);
+        assertTrue(checkEquals2D(srcCRS + " to " + outCRS, result, expectedPoint, 10E-2));
+        double[] check = transform((GeodeticCRS) outCRS, (GeodeticCRS) srcCRS, expectedPoint);
+        assertTrue(checkEquals2D(outCRS + " to " + srcCRS, check, srcPoint, 1E-2));
+    }
+
+    @Test
+    public void testCH1903toLV95PRJ() throws Exception {
+        double[] srcPoint = new double[]{8.486419798, 47.0580435, 0};
+        double[] expectedPoint = new double[]{2679520.05, 1212273.44, 0};
+        String srcprj = "GEOGCS[\"CH1903+\",\n"
+                + "    DATUM[\"CH1903\",\n"
+                + "        SPHEROID[\"Bessel 1841\",6377397.155,299.1528128,\n"
+                + "            AUTHORITY[\"EPSG\",\"7004\"]],\n"
+                + "        TOWGS84[674.374,15.056,405.346,0,0,0,0],\n"
+                + "        AUTHORITY[\"EPSG\",\"6150\"]],\n"
+                + "    PRIMEM[\"Greenwich\",0,\n"
+                + "        AUTHORITY[\"EPSG\",\"8901\"]],\n"
+                + "    UNIT[\"degree\",0.01745329251994328,\n"
+                + "        AUTHORITY[\"EPSG\",\"9122\"]],\n"
+                + "    AUTHORITY[\"EPSG\",\"4150\"]]";
+        CoordinateReferenceSystem srcCRS = crsf.createFromPrj(srcprj);
+        String outprj = "PROJCS[\"CH1903+ / LV95\",\n"
+                + "    GEOGCS[\"CH1903+\",\n"
+                + "        DATUM[\"CH1903\",\n"
+                + "            SPHEROID[\"Bessel 1841\",6377397.155,299.1528128,\n"
+                + "                AUTHORITY[\"EPSG\",\"7004\"]],\n"
+                + "            TOWGS84[674.374,15.056,405.346,0,0,0,0],\n"
+                + "            AUTHORITY[\"EPSG\",\"6150\"]],\n"
+                + "        PRIMEM[\"Greenwich\",0,\n"
+                + "            AUTHORITY[\"EPSG\",\"8901\"]],\n"
+                + "        UNIT[\"degree\",0.01745329251994328,\n"
+                + "            AUTHORITY[\"EPSG\",\"9122\"]],\n"
+                + "        AUTHORITY[\"EPSG\",\"4150\"]],\n"
+                + "    UNIT[\"metre\",1,\n"
+                + "        AUTHORITY[\"EPSG\",\"9001\"]],\n"
+                + "    PROJECTION[\"Hotine_Oblique_Mercator\"],\n"
+                + "    PARAMETER[\"latitude_of_center\",46.95240555555556],\n"
+                + "    PARAMETER[\"longitude_of_center\",7.439583333333333],\n"
+                + "    PARAMETER[\"azimuth\",90],\n"
+                + "    PARAMETER[\"rectified_grid_angle\",90],\n"
+                + "    PARAMETER[\"scale_factor\",1],\n"
+                + "    PARAMETER[\"false_easting\",2600000],\n"
+                + "    PARAMETER[\"false_northing\",1200000],\n"
+                + "    AUTHORITY[\"EPSG\",\"2056\"],\n"
+                + "    AXIS[\"Y\",EAST],\n"
+                + "    AXIS[\"X\",NORTH]]";
         CoordinateReferenceSystem outCRS = crsf.createFromPrj(outprj);
         double[] result = transform((GeodeticCRS) srcCRS, (GeodeticCRS) outCRS, srcPoint);
         assertTrue(checkEquals2D(srcCRS + " to " + outCRS, result, expectedPoint, 10E-2));

@@ -399,6 +399,9 @@ public class CRSHelper {
         } else if (projectionName.equalsIgnoreCase(ProjValueParameters.CASS)) {
             return new CassiniSoldner(ell, map);
         } else if (projectionName.equalsIgnoreCase(ProjValueParameters.OMERC)) {
+            if (alpha==90 && gamma==90) {
+                return new SwissObliqueMercator(ell, map);
+            }
             return new ObliqueMercator(ell, map);
         } else if (projectionName.equalsIgnoreCase(ProjValueParameters.SOMERC)) {
             return new SwissObliqueMercator(ell, map);
