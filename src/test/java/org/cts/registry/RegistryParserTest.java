@@ -32,26 +32,19 @@
 package org.cts.registry;
 
 import java.util.Map;
+import org.cts.CTSTestCase;
 import org.cts.parser.proj.ProjKeyParameters;
 import static org.junit.Assert.assertTrue;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
  *
  * @author Erwan Bocher
  */
-public class RegistryParserTest {
-
-    private RegistryManager registryManager;
-
-    @Before
-    public void setUp() {
-        registryManager = new RegistryManager();
-    }
+public class RegistryParserTest extends CTSTestCase {
 
     @Test
-    public void testEPSG() {
+    public void testEPSG() throws Exception {
         Map<String, String> parameters = getParameters("epsg", "4326");
         //Expected 
         //# WGS 84
@@ -62,7 +55,7 @@ public class RegistryParserTest {
     }
 
     @Test
-    public void testReadEPSGFile2() {
+    public void testReadEPSGFile2() throws Exception {
         Map<String, String> parameters = getParameters("epsg", "2736");
         //Expected 
         //# Tete / UTM zone 36S
@@ -78,7 +71,7 @@ public class RegistryParserTest {
     }
 
     @Test
-    public void testReadEPSGFileWrongCode() {
+    public void testReadEPSGFileWrongCode() throws Exception {
         Map<String, String> parameters = getParameters("EPSG", "300000");
         assertTrue(parameters == null);
     }
@@ -90,13 +83,13 @@ public class RegistryParserTest {
      * @param code
      * @return
      */
-    public Map<String, String> getParameters(String registry, String code) {
-        Map<String, String> parameters = registryManager.getRegistry(registry).getParameters(code);
+    public Map<String, String> getParameters(String registry, String code) throws Exception {
+        Map<String, String> parameters = cRSFactory.getRegistryManager().getRegistry(registry).getParameters(code);
         return parameters;
     }
 
     @Test
-    public void testReadIGNFFile() {
+    public void testReadIGNFFile() throws Exception {
         Map<String, String> parameters = getParameters("IGNF", "RGF93");
         //Expected 
         //<RGF93> +title=Reseau geodesique francais 1993 
@@ -112,7 +105,7 @@ public class RegistryParserTest {
     }
 
     @Test
-    public void testReadIGNFNadGrids() {
+    public void testReadIGNFNadGrids() throws Exception {
         //Expected
         //<NTF> +title=Nouvelle Triangulation Francaise +proj=geocent +nadgrids=ntf_r93.gsb,null 
         //+towgs84=-168.0000,-60.0000,320.0000 +a=6378249.2000 +rf=293.4660210000000 
@@ -128,7 +121,7 @@ public class RegistryParserTest {
     }
 
     @Test
-    public void testReadESRIFile() {
+    public void testReadESRIFile() throws Exception {
         Map<String, String> parameters = getParameters("ESRI", "102632");
         //<102632> +proj=tmerc +lat_0=54 +lon_0=-142 +k=0.999900 +x_0=500000.0000000002 
         //+y_0=0 +ellps=GRS80 +datum=NAD83 +to_meter=0.3048006096012192  no_defs <>
@@ -144,7 +137,7 @@ public class RegistryParserTest {
     }
 
     @Test
-    public void testRegisteryCaseInsensitive() {
+    public void testRegisteryCaseInsensitive() throws Exception {
         Map<String, String> parameters = getParameters("IGnF", "AmSt63");
         assertTrue(parameters != null);
         parameters = getParameters("EPsg", "4326");

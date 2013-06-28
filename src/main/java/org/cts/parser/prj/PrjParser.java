@@ -47,7 +47,7 @@ import java.util.Map;
  * string is passed to the {@link org.jproj.parser.Proj4Parser } that builds the
  * CRS.
  *
- * @author Antoine Gourlay, Erwan Bocher
+ * @author Antoine Gourlay, Erwan Bocher, Jules Party
  */
 public class PrjParser {
 
@@ -101,7 +101,7 @@ public class PrjParser {
         s.position(start + ll + 1);
 
         if (complexNode) {
-            // parse children and return                
+            // parse children and return
             return new PrjNodeElement(name, parseNodeChildren(s));
         } else {
             s.position(s.position() - 1);

@@ -36,6 +36,7 @@ import java.nio.charset.Charset;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import org.cts.registry.RegistryException;
 
 import org.cts.crs.CRSException;
 import org.cts.crs.CoordinateReferenceSystem;
@@ -89,19 +90,41 @@ public class CRSFactory {
     public CoordinateReferenceSystem getCRS(String authorityAndSrid) throws CRSException {
         CoordinateReferenceSystem crs = CRSPOOL.get(authorityAndSrid);
         if (crs == null) {
-            if (isRegistrySupported(authorityAndSrid)) {
-                String[] registryNameWithCode = authorityAndSrid.split(":");
-                Registry registry = getRegistryManager().getRegistry(registryNameWithCode[0]);
-                Map<String, String> crsParameters = registry.getParameters(registryNameWithCode[1]);
-                if (crsParameters != null) {
-                    crs = CRSHelper.createCoordinateReferenceSystem(new Identifier(registryNameWithCode[0], registryNameWithCode[1], crsParameters.get("title")), crsParameters);
+            try {
+                String[] registryNameWithCode = splitRegistryNameAndCode(authorityAndSrid);
+                if (isRegistrySupported(registryNameWithCode[0])) {
+                    Registry registry = getRegistryManager().getRegistry(registryNameWithCode[0]);
+                    Map<String, String> crsParameters = registry.getParameters(registryNameWithCode[1]);
+                    if (crsParameters != null) {
+                        crs = CRSHelper.createCoordinateReferenceSystem(new Identifier(registryNameWithCode[0], registryNameWithCode[1], crsParameters.get("title")), crsParameters);
+                    }
+                    if (crs != null) {
+                        CRSPOOL.put(authorityAndSrid, crs);
+                    }
                 }
-                if (crs != null) {
-                    CRSPOOL.put(authorityAndSrid, crs);
-                }
+            } catch (RegistryException ex) {
+                throw new CRSException("Cannot create the CRS", ex);
             }
         }
         return crs;
+    }
+
+    /**
+     * Return the registry name and the code base on the pattern name:code ed :
+     * epsg:4326 returns epsg;4326
+     *
+     * @param authorityAndSrid
+     * @return
+     * @throws RegistryException
+     */
+    public String[] splitRegistryNameAndCode(String authorityAndSrid) throws RegistryException {
+        String[] registryAndCode = authorityAndSrid.split(":");
+        if (registryAndCode.length == 2) {
+            return registryAndCode;
+        } else {
+            throw new RegistryException("This registry pattern " + authorityAndSrid + " is not supported");
+        }
+
     }
 
     /**
@@ -113,21 +136,17 @@ public class CRSFactory {
     }
 
     /**
-     * Check if the registry name (ie EPSG, IGNF...) of the crsCode is
+     * Check if the registry name (ie EPSG, IGNF...) is
      * supported.
      *
-     * @param crsCode ie <code>authorityName:authorityKey</code> (ex
-     * : <code>EPSG:4326</code> or <code>IGNF:LAMBE</code>)
+     * @param registryName (ex : ESPG, IGNF, ESRI)
      */
-    public boolean isRegistrySupported(String crsCode) {
-        int p = crsCode.indexOf(':');
-        if (p >= 0) {
-            String auth = crsCode.substring(0, p);
-            if (getRegistryManager().contains(auth.toLowerCase())) {
-                return true;
-            }
+    public boolean isRegistrySupported(String registryName) throws RegistryException {
+        if (getRegistryManager().contains(registryName.toLowerCase())) {
+            return true;
+        } else {
+            throw new RegistryException("This registry " + registryName + " is not supported");
         }
-        throw new RuntimeException("This registry is not supported");
     }
 
     /**
@@ -136,7 +155,7 @@ public class CRSFactory {
      *
      * @param prjString the OGC WKT String defining the CRS
      */
-    public CoordinateReferenceSystem createFromPrj(String prjString) {
+    public CoordinateReferenceSystem createFromPrj(String prjString) throws CRSException {
         PrjParser p = new PrjParser();
         Map<String, String> prjParameters = p.getParameters(prjString);
         String name = prjParameters.remove("name");
@@ -165,13 +184,12 @@ public class CRSFactory {
      * @param encoding the charset used to read the input stream
      * @throws IOException
      */
-    public CoordinateReferenceSystem createFromPrj(InputStream stream, Charset encoding) throws IOException {
+    public CoordinateReferenceSystem createFromPrj(InputStream stream, Charset encoding) throws IOException, CRSException {
         BufferedReader r = new BufferedReader(new InputStreamReader(stream, encoding));
         StringBuilder b = new StringBuilder();
         while (r.ready()) {
             b.append(r.readLine());
         }
-
         return createFromPrj(b.toString());
     }
 
@@ -182,7 +200,7 @@ public class CRSFactory {
      * @param stream the input stream of bytes defining the OGC WKT String
      * @throws IOException
      */
-    public CoordinateReferenceSystem createFromPrj(InputStream stream) throws IOException {
+    public CoordinateReferenceSystem createFromPrj(InputStream stream) throws IOException, CRSException {
         return createFromPrj(stream, Charset.defaultCharset());
     }
 
@@ -193,7 +211,7 @@ public class CRSFactory {
      * @param file containing the OGC WKT String that defined the desired CRS
      * @throws IOException if there is a problem reading the file
      */
-    public CoordinateReferenceSystem createFromPrj(File file) throws IOException {
+    public CoordinateReferenceSystem createFromPrj(File file) throws IOException, CRSException {
         InputStream i = null;
         CoordinateReferenceSystem crs;
         try {
@@ -212,7 +230,7 @@ public class CRSFactory {
      *
      * @param registryName (ex : EPSG, IGNF, ESRI)
      */
-    public Set<String> getSupportedCodes(String registryName) {
+    public Set<String> getSupportedCodes(String registryName) throws RegistryException {
         return getRegistryManager().getRegistry(registryName).getSupportedCodes();
     }
 

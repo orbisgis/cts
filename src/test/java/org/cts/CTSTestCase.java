@@ -33,15 +33,48 @@ package org.cts;
 
 import java.util.Arrays;
 import org.apache.log4j.Logger;
+import org.cts.registry.EPSGRegistry;
+import org.cts.registry.ESRIRegistry;
+import org.cts.registry.IGNFRegistry;
+import org.cts.registry.Nad27Registry;
+import org.cts.registry.Nad83Registry;
+import org.cts.registry.RegistryManager;
+import org.junit.BeforeClass;
 
 /**
- *
+ * A main class for all CTS tests
  * @author Erwan Bocher
  */
 public class CTSTestCase {
 
-    protected Logger LOGGER = Logger.getLogger(CTSTestCase.class);
+    protected Logger LOGGER = Logger.getLogger(CTSTestCase.class);    
+    protected static CRSFactory cRSFactory;
+    
+    /**
+     * This method is used to create the CRSFactory and 
+     * load some default registries.
+     */
+    @BeforeClass
+    public static void setup(){    
+        cRSFactory = new CRSFactory();
+        RegistryManager registryManager = cRSFactory.getRegistryManager();        
+        registryManager.addRegistry(new IGNFRegistry());
+        registryManager.addRegistry(new EPSGRegistry());
+        registryManager.addRegistry(new ESRIRegistry());
+        registryManager.addRegistry(new Nad27Registry());
+        registryManager.addRegistry(new Nad83Registry());        
+    }
 
+    /**
+     * Check if the result point is equal to the target point using an epsilon
+     * clause
+     * 
+     * @param test
+     * @param o1
+     * @param o2
+     * @param tol
+     * @return 
+     */
     public boolean checkEquals(String test, double o1, double o2, double tol) {
         if (Math.abs(o1 - o2) <= tol) {
             LOGGER.debug("TRUE : " + test + " " + o1 + " = " + o2 + " <= " + tol);

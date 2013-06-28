@@ -59,8 +59,8 @@ public class SpecialCoordinateTransformTest extends BaseCoordinateTransformTest 
         double csNameDest_X = 5996378.71;
         double csNameDest_Y = 10671650.06;
         double tolerance = 0.01;
-        CoordinateReferenceSystem inputCRS = createCRS("EPSG:4674");
-        CoordinateReferenceSystem outputCRS = crsf.createFromPrj(
+        CoordinateReferenceSystem inputCRS = cRSFactory.getCRS("EPSG:4674");
+        CoordinateReferenceSystem outputCRS = cRSFactory.createFromPrj(
                 "PROJCS[\"SIRGAS 2000 / Brazil Polyconic\",\n"
                 + "    GEOGCS[\"SIRGAS 2000\",\n"
                 + "        DATUM[\"Sistema_de_Referencia_Geocentrico_para_America_del_Sur_2000\",\n"
