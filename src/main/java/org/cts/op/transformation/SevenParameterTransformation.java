@@ -32,12 +32,13 @@
 package org.cts.op.transformation;
 
 import static java.lang.Math.sin;
+
 import org.cts.CoordinateDimensionException;
-import org.cts.op.CoordinateOperation;
 import org.cts.Identifier;
 import org.cts.IllegalCoordinateException;
-import org.cts.op.NonInvertibleOperationException;
 import org.cts.op.AbstractCoordinateOperation;
+import org.cts.op.CoordinateOperation;
+import org.cts.op.NonInvertibleOperationException;
 
 /**
  * Seven-Parameter transformations are mathematical similarities or Helmert

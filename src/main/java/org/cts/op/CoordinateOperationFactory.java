@@ -38,7 +38,6 @@ import org.apache.log4j.Logger;
 
 import org.cts.Identifier;
 import org.cts.crs.*;
-import org.cts.datum.Datum;
 import org.cts.datum.GeodeticDatum;
 import org.cts.op.transformation.NTv2GridShiftTransformation;
 
@@ -124,7 +123,7 @@ public final class CoordinateOperationFactory {
 
     /**
      * Create a CoordinateOperation from a source {@link GeodeticCRS} to a
-     * target {@link GeodeticCRS} based on different {@link Datum} and using a
+     * target {@link GeodeticCRS} based on different {@link org.cts.datum.Datum} and using a
      * CoordinateOperation to convert coordinates directly from one Geographic
      * CRS to another without the use of GeocentricCRS. Remember that
      * {@link GeodeticCRS} includes {@link GeocentricCRS},
@@ -179,7 +178,7 @@ public final class CoordinateOperationFactory {
 
     /**
      * Create a CoordinateOperation from a source {@link GeodeticCRS} to a
-     * target {@link GeodeticCRS} based on different {@link Datum} and using a
+     * target {@link GeodeticCRS} based on different {@link org.cts.datum.Datum} and using a
      * CoordinateOperation to convert coordinates directly from one Geographic
      * CRS to another without the use of GeocentricCRS. Remember that
      * {@link GeodeticCRS} includes {@link GeocentricCRS},
@@ -262,7 +261,7 @@ public final class CoordinateOperationFactory {
 
     /**
      * Create a CoordinateOperation from a source {@link GeodeticCRS} to a
-     * target {@link GeodeticCRS} based on different {@link Datum}. Remember
+     * target {@link GeodeticCRS} based on different {@link org.cts.datum.Datum}. Remember
      * that {@link GeodeticCRS} includes {@link GeocentricCRS},
      * {@link Geographic2DCRS}, {@link Geographic3DCRS} and
      * {@link ProjectedCRS}.

@@ -32,11 +32,11 @@
 package org.cts.op.transformation;
 
 import org.cts.CoordinateDimensionException;
-import org.cts.op.CoordinateOperation;
 import org.cts.Identifier;
 import org.cts.IllegalCoordinateException;
-import org.cts.op.NonInvertibleOperationException;
 import org.cts.op.AbstractCoordinateOperation;
+import org.cts.op.CoordinateOperation;
+import org.cts.op.NonInvertibleOperationException;
 
 /**
  * <p>GeocentricTranslation is a coordinate operation used to transform
@@ -52,8 +52,14 @@ import org.cts.op.AbstractCoordinateOperation;
  */
 public class GeocentricTranslation extends AbstractCoordinateOperation implements GeoTransformation {
 
+    /**
+     * The Identifier used for all Geocentric translations.
+     */
     private static final Identifier opId =
             new Identifier("EPSG", "9603", "Geocentric translation", "Translation");
+    /**
+     * Translation value used in this Geocentric translation.
+     */
     private double tx, ty, tz;
 
     /**
@@ -105,19 +111,6 @@ public class GeocentricTranslation extends AbstractCoordinateOperation implement
     }
 
     /**
-     * <p>Return a coordinates representing the same point as coord but in
-     * another CoordinateReferenceSystem.</p> <p>Equations of this
-     * transformation are : <ul> <li>X' = X - tx</li> <li>Y' = Y - ty</li>
-     * <li>Z' = Z - tz</li> </ul> </p>
-     */
-    /*
-     * public void inverseTransform(double[] coord) throws
-     * CoordinateDimensionException, NonInvertibleOperationException { if
-     * (coord.length != 3) throw new CoordinateDimensionException(coord, 3);
-     * coord[0] = coord[0] - tx; coord[1] = coord[1] - ty; coord[2] = coord[2] -
-     * tz; }
-     */
-    /**
      * Creates the inverse CoordinateOperation.
      */
     @Override
@@ -136,6 +129,9 @@ public class GeocentricTranslation extends AbstractCoordinateOperation implement
                 + "precision = " + precision;
     }
 
+    /**
+     * Returns this Geocentric translation as an OGC WKT String.
+     */
     @Override
     public String toWKT() {
         StringBuilder w = new StringBuilder();
@@ -149,6 +145,14 @@ public class GeocentricTranslation extends AbstractCoordinateOperation implement
         return w.toString();
     }
 
+    /**
+     * Returns true if object is equals to
+     * <code>this</code>. Tests equality between the references of both object,
+     * then tests if the three translation values (tx, ty and tz) used by both
+     * Geocentric Translation are equals.
+     *
+     * @param object The object to compare this ProjectedCRS against
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -161,6 +165,9 @@ public class GeocentricTranslation extends AbstractCoordinateOperation implement
         return false;
     }
 
+    /**
+     * Returns the hash code for this GeocentricTranslation.
+     */
     @Override
     public int hashCode() {
         int hash = 5;
