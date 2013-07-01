@@ -121,6 +121,6 @@ public interface Grid {
      * Get the value corrsponding to the x,y position. WARNING : x, y represent
      * the real world coordinates and not the matrix coordinate.
      */
-    public double getValue(double x, double y, InterpolationMethod method)
+    public double[] getValue(double x, double y, InterpolationMethod method)
             throws OutOfExtentException, InterpolationMethodException;
 }

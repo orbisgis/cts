@@ -43,7 +43,7 @@ import org.cts.op.CoordinateOperation;
 import org.cts.op.Geocentric2Geographic;
 import org.cts.op.NonInvertibleOperationException;
 import org.cts.op.UnitConversion;
-import org.cts.op.transformation.grids.BleggGeographicGrid;
+import org.cts.op.transformation.grids.IGNGeographicGrid;
 
 /**
  * French Geocentric interpolation is a transformation used at IGN-France to
@@ -51,7 +51,7 @@ import org.cts.op.transformation.grids.BleggGeographicGrid;
  * compatible RGF93.<p> It is a geocentric translation which parameters are
  * interpolated on a geographic grid.
  *
- * @author Michaël Michaud
+ * @author Michaël Michaud, Jules Party
  */
 public class FrenchGeocentricNTF2RGF extends AbstractCoordinateOperation {
 
@@ -63,43 +63,52 @@ public class FrenchGeocentricNTF2RGF extends AbstractCoordinateOperation {
             new Geocentric2Geographic(Ellipsoid.GRS80);
     //private static GeographicExtent EXTENT =
     //    new GeographicExtent("gr3df97a", 41.0, 52.0, -5.5, 10.0, 360.0);
-    private BleggGeographicGrid GRIDX, GRIDY, GRIDZ;
+    private IGNGeographicGrid GRID3D;
     private String gridPath;
 
     /**
-     * Geocentric translation with parameters interpolated in a grid.<p>
+     * Geocentric translation with parameters interpolated in a grid.<p> The
+     * gride can be found <a href =
+     * http://geodesie.ign.fr/contenu/fichiers/documentation/rgf93/gr3df97a.txt>here</a>.
      *
      * @param gridPath url of the geographic grid containing the translation
-     *
-     * "http://www.ign.fr/telechargement/MPro/geodesie/CIRCE/gr3df97a.txt"
-     *
      * parameters
      */
     public FrenchGeocentricNTF2RGF(String gridPath) {
         super(opId);
-        this.gridPath = gridPath;
         this.precision = 0.01;
         try {
             InputStream is;
 
-            is = FrenchGeocentricNTF2RGF.class.getClassLoader().getResourceAsStream("fr/cts/datum/gr3df97a-tx.blegg");
+            is = FrenchGeocentricNTF2RGF.class.getClassLoader().getResourceAsStream("org/cts/op/transformation/grids/gr3df97a.txt");
             if (is == null) {
-                GRIDX = new BleggGeographicGrid(new FileInputStream(gridPath + "gr3df97a-tx.blegg"));
+                this.gridPath = gridPath;
+                GRID3D = new IGNGeographicGrid(new FileInputStream(gridPath + "gr3df97a.txt"), false);
             } else {
-                GRIDX = new BleggGeographicGrid(is);
+                this.gridPath = "org/cts/op/transformation/grids/";
+                GRID3D = new IGNGeographicGrid(is, false);
             }
-            is = FrenchGeocentricNTF2RGF.class.getClassLoader().getResourceAsStream("fr/cts/datum/gr3df97a-ty.blegg");
-            if (is == null) {
-                GRIDY = new BleggGeographicGrid(new FileInputStream(gridPath + "gr3df97a-ty.blegg"));
-            } else {
-                GRIDY = new BleggGeographicGrid(is);
-            }
-            is = FrenchGeocentricNTF2RGF.class.getClassLoader().getResourceAsStream("fr/cts/datum/gr3df97a-tz.blegg");
-            if (is == null) {
-                GRIDZ = new BleggGeographicGrid(new FileInputStream(gridPath + "gr3df97a-tz.blegg"));
-            } else {
-                GRIDZ = new BleggGeographicGrid(is);
-            }
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Geocentric translation with parameters interpolated in a grid.<p> The
+     * gride can be found <a href =
+     * http://geodesie.ign.fr/contenu/fichiers/documentation/rgf93/gr3df97a.txt>here</a>.
+     */
+    public FrenchGeocentricNTF2RGF() {
+        super(opId);
+        this.gridPath = "org/cts/op/transformation/grids/";
+        this.precision = 0.01;
+        try {
+            InputStream is;
+
+            is = FrenchGeocentricNTF2RGF.class.getClassLoader().getResourceAsStream("org/cts/op/transformation/grids/gr3df97a.txt");
+            GRID3D = new IGNGeographicGrid(is, false);
         } catch (IOException ioe) {
             ioe.printStackTrace();
         } catch (Exception e) {
@@ -138,9 +147,10 @@ public class FrenchGeocentricNTF2RGF extends AbstractCoordinateOperation {
         double tz = 320.0;
         // Get the definitive translation parameters from the grids
         try {
-            tx = GRIDX.bilinearInterpolation(coordi[0], coordi[1]);
-            ty = GRIDY.bilinearInterpolation(coordi[0], coordi[1]);
-            tz = GRIDZ.bilinearInterpolation(coordi[0], coordi[1]);
+            double[] t = GRID3D.bilinearInterpolation(coordi[0], coordi[1]);
+            tx = t[0];
+            ty = t[1];
+            tz = t[2];
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -156,7 +166,7 @@ public class FrenchGeocentricNTF2RGF extends AbstractCoordinateOperation {
      */
     @Override
     public CoordinateOperation inverse() throws NonInvertibleOperationException {
-        return new FrenchGeocentricNTF2RGF(gridPath) {
+        return new FrenchGeocentricNTF2RGF() {
             @Override
             public double[] transform(double[] coord)
                     throws IllegalCoordinateException {
@@ -173,9 +183,10 @@ public class FrenchGeocentricNTF2RGF extends AbstractCoordinateOperation {
                 double tz = 320.0;
                 // Get the definitive translation parameters from the grids
                 try {
-                    tx = GRIDX.bilinearInterpolation(coordi[0], coordi[1]);
-                    ty = GRIDY.bilinearInterpolation(coordi[0], coordi[1]);
-                    tz = GRIDZ.bilinearInterpolation(coordi[0], coordi[1]);
+                    double[] t = GRID3D.bilinearInterpolation(coordi[0], coordi[1]);
+                    tx = t[0];
+                    ty = t[1];
+                    tz = t[2];
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

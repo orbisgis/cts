@@ -40,11 +40,12 @@ import org.cts.cs.OutOfExtentException;
  * (digital elevation model), or transformation parameters for transformations
  * based on a model.
  *
- * @author Michaël Michaud
+ * @author Michaël Michaud, Jules Party
  */
 public class GeographicGrid implements Grid {
 
     protected int colNumber, rowNumber;
+    protected int dim;
     protected double x0, y0, xL, yL;
     protected double dx, dy;
     protected GeographicExtent extent;
@@ -58,7 +59,7 @@ public class GeographicGrid implements Grid {
     // may vary from small quantities (rotation) to greater quantities
     // (translation), but never need a great precision (6 digits are generally
     // sufficient)
-    protected float[][] values;
+    protected double[][][] values;
     // Context object (may be used to specify the reference Datum)
     protected Object context;
 
@@ -77,13 +78,14 @@ public class GeographicGrid implements Grid {
      * @param southernLatitude
      * @param colNumber number of column
      * @param rowNumber number of rows
+     * @param dim dimension of the stored value(s)
      * @param modulo a tour (360.0 for longitude in degrees, PI*2 for radians
      * and 400 for grades)
      * @param context optional context object
      */
     public GeographicGrid(double westernLongitude, double northernLatitude,
             double easternLongitude, double southernLatitude,
-            int colNumber, int rowNumber, double modulo,
+            int colNumber, int rowNumber, int dim, double modulo,
             int scale, Object context) {
         this.x0 = westernLongitude;
         this.y0 = northernLatitude;
@@ -91,13 +93,14 @@ public class GeographicGrid implements Grid {
         this.yL = southernLatitude;
         this.colNumber = colNumber;
         this.rowNumber = rowNumber;
+        this.dim = dim;
         this.modulo = modulo;
         this.dx = (xL - x0) / (colNumber - 1);
         this.dy = (yL - y0) / (rowNumber - 1);
         this.extent = new GeographicExtent("GG", yL, y0, x0, xL, modulo);
         this.scale = scale;
         this.context = context;
-        values = new float[rowNumber][colNumber];
+        values = new double[rowNumber][colNumber][dim];
     }
 
     /**
@@ -209,8 +212,8 @@ public class GeographicGrid implements Grid {
      * @param r row index
      * @param c column index
      */
-    public double getValue(int r, int c) {
-        return (double) values[r][c];
+    public double[] getValues(int r, int c) {
+        return values[r][c];
     }
 
     /**
@@ -220,8 +223,8 @@ public class GeographicGrid implements Grid {
      * @param c column index
      * @param value new value of row r column c
      */
-    public void setValue(int r, int c, float value) {
-        values[r][c] = value;
+    public void setValue(int r, int c, double[] values) {
+        System.arraycopy(values, 0, this.values[r][c], 0, dim);
     }
 
     /**
@@ -229,7 +232,7 @@ public class GeographicGrid implements Grid {
      * the real world coordinates and not the matrix coordinate.
      */
     @Override
-    public double getValue(double x, double y, Grid.InterpolationMethod method)
+    public double[] getValue(double x, double y, Grid.InterpolationMethod method)
             throws OutOfExtentException,
             InterpolationMethodException {
         switch (method) {
@@ -243,7 +246,7 @@ public class GeographicGrid implements Grid {
     /**
      * Return the array of values
      */
-    public float[][] getValues() {
+    public double[][][] getValues() {
         return values;
     }
 
@@ -267,7 +270,7 @@ public class GeographicGrid implements Grid {
     // IndexOutOfBoundsException --> remplacé par
     // i\<nbL-1?i+1:i<br>
     // j\<nbC-1?j+1:j
-    public double bilinearInterpolation(double latitude, double longitude)
+    public double[] bilinearInterpolation(double latitude, double longitude)
             throws OutOfExtentException {
         if (!extent.isInside(latitude, longitude)) {
             throw new OutOfExtentException(new double[]{latitude, longitude}, extent);
@@ -276,21 +279,40 @@ public class GeographicGrid implements Grid {
         double y = latitude;
         // Utiliser l'origine x0/y0 pour calculer fx/fy évite certains problemes
         // d'arrondis
-        double fx = (x - x0) / dx - Math.floor((x - x0) / dx);
-        double fy = (y - y0) / dy - Math.floor((y - y0) / dy);
         // Il est important que le calcul des ligne/colonne de référence se fasse
         // avec la même ecriture que le calcul de fx et fy pour éviter les
         // problemes d'arrondi
-        int j = (int) Math.floor((x - x0) / dx);  // column
-        int i = (int) Math.floor((y - y0) / dy);  // line
+        double fx;
+        double fy;
+        int j;
+        int i;
+        if (x0 < xL) {
+            j = (int) Math.floor((x - x0) / dx);  // column
+            fx = (x - x0) / dx - j;
+        } else {
+            j = (int) Math.floor((x0 - x) / dx);  // column
+            fx = (x0 - x) / dx - j;
+        }
+        if (y0 < yL) {
+            i = (int) Math.floor((y - y0) / dy);  // line
+            fy = (y - y0) / dy - i;
+        } else {
+            i = (int) Math.floor((y0 - y) / dy);  // line
+            fy = (y0 - y) / dy - i;
+        }
+        
         // Les tests j<(cnb-1) et i<(rnb-1) permettent de gérer le cas des
         // coordonnées situées exactement sur la dernière ligne ou dernière
         // colonne (cela revient à les dupliquer)
-        double d1 = values[i][j];
-        double d2 = values[i < (rowNumber - 1) ? i + 1 : i][j];
-        double d3 = values[i][j < (colNumber - 1) ? j + 1 : j];
-        double d4 = values[i < (rowNumber - 1) ? i + 1 : i][j < (colNumber - 1) ? j + 1 : j];
-        return ((1 - fx) * (1 - fy) * d1 + (1 - fx) * fy * d2 + fx * (1 - fy) * d3 + fx * fy * d4);
+        double[] shift = new double[dim];
+        for (int k = 0; k < dim; k++) {
+            double d1 = values[i][j][k];
+            double d2 = values[i < (rowNumber - 1) ? i + 1 : i][j][k];
+            double d3 = values[i][j < (colNumber - 1) ? j + 1 : j][k];
+            double d4 = values[i < (rowNumber - 1) ? i + 1 : i][j < (colNumber - 1) ? j + 1 : j][k];
+            shift[k] = ((1 - fx) * (1 - fy) * d1 + (1 - fx) * fy * d2 + fx * (1 - fy) * d3 + fx * fy * d4);
+        }
+        return shift;
     }
 
     /**

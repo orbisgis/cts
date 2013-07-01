@@ -37,6 +37,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.StringTokenizer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import org.cts.cs.GeographicExtent;
+import org.cts.cs.OutOfExtentException;
 
 /**
  * <p>Classe representing a Geographic grid as defined by IGN (France).</p>
@@ -67,9 +69,18 @@ import java.util.zip.ZipInputStream;
  * For geoid grids :<br>
  * N = He - A = Ellipsoidal height - Altitude (above geoid)<br>
  *
- * @author Michaël Michaud
+ * @author Michaël Michaud, Jules Party
  */
 public class IGNGeographicGrid extends GeographicGrid {
+
+    String gridType;
+    int datumId;
+    int coordinateType;
+    int geographicDatumId;
+    int unit;
+    int primeMeridian;
+    String interpolationMode;
+    String precisionUnit;
 
     /**
      * <p>Construct a GeographicGrid from an InputStream representing an IGN
@@ -90,16 +101,7 @@ public class IGNGeographicGrid extends GeographicGrid {
      */
     public IGNGeographicGrid(InputStream is, boolean zip) throws Exception {
         String token;
-        int dim = 0;
-        String gridType;
-        int datumId;
-        int coordinateType;
-        int geographicDatumId;
-        int unit;
-        int primeMeridian;
         double xmin, xmax, ymin, ymax;
-        String interpolationMode;
-        String precisionUnit;
         ConcurrentHashMap precisionCodes = new ConcurrentHashMap();
         String ignFile;
 
@@ -175,12 +177,14 @@ public class IGNGeographicGrid extends GeographicGrid {
         if (stt.hasMoreTokens()) {
             token = stt.nextToken();
             xmax = Double.parseDouble(token);
+            xL = xmax;
         } else {
             throw new Exception("Missing maximum longitude in line : " + gr1);
         }
         if (stt.hasMoreTokens()) {
             token = stt.nextToken();
             ymin = Double.parseDouble(token);
+            yL =ymin;
         } else {
             throw new Exception("Missing minimum latitude in line : " + gr1);
         }
@@ -248,19 +252,20 @@ public class IGNGeographicGrid extends GeographicGrid {
             }
         }
         // Lecture de la grille
-        values = new float[rowNumber][colNumber];
+        values = new double[rowNumber][colNumber][dim];
         int nbdec = 0;
         while (st.hasMoreTokens()) {
             String[] gg = st.nextToken().trim().split("[ \t]+");
             try {
-                if (gg.length > 3) {
-                    double lon = Double.parseDouble(gg[0]);
-                    double lat = Double.parseDouble(gg[1]);
-                    double h = Double.parseDouble(gg[2]);
-                    nbdec = Math.max(nbdec, gg[2].split("\\.")[1].length());
-                    values[(int) Math.rint((ymax - lat) / dy)][(int) Math.rint((lon - xmin) / dx)] =
-                            (float) h;
+                double lon = Double.parseDouble(gg[1]);
+                double lat = Double.parseDouble(gg[2]);
+                double[] t = new double[dim];
+                for (int i=0;i<dim;i++) {
+                    t[i] = Double.parseDouble(gg[3+i]);
                 }
+                String prec = gg[3+dim];
+                nbdec = Math.max(nbdec, gg[3].split("\\.")[1].length());
+                System.arraycopy(t, 0, values[(int) Math.rint((ymax - lat) / dy)][(int) Math.rint((lon - xmin) / dx)], 0, dim);
             } catch (NumberFormatException nfe) {
                 System.out.println(gg[0]);
                 System.out.println(gg[1]);
@@ -269,5 +274,6 @@ public class IGNGeographicGrid extends GeographicGrid {
         }
         // decimal part size --> scale
         scale = (int) Math.rint(Math.pow(10.0, (double) nbdec));
+        extent = new GeographicExtent("GG", yL, y0, x0, xL, modulo);
     }
 }

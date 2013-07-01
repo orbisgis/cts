@@ -90,6 +90,7 @@ public class BleggGeographicGrid extends GeographicGrid {
      */
     public BleggGeographicGrid(InputStream is) throws Exception {
         DataInputStream dis = new DataInputStream(is);
+        this.dim=1;
         int pos = 0;
         try {
             // Reading file format signature
@@ -158,12 +159,12 @@ public class BleggGeographicGrid extends GeographicGrid {
                 }
                 groupNumber++;
             }
-            values = new float[rowNumber][colNumber];
-            values[0][0] = (float) intVal[0] / (float) scale;
-            values[0][1] = (float) intVal[1] / (float) scale;
+            values = new double[rowNumber][colNumber][];
+            values[0][0][0] = intVal[0] / (float) scale;
+            values[0][1][0] = intVal[1] / (float) scale;
             for (int i = 2; i < rowNumber * colNumber; i++) {
                 int[] lc = getPos(i, rowNumber, colNumber);
-                values[lc[0]][lc[1]] = (float) intVal[i] / (float) scale;
+                values[lc[0]][lc[1]][0] = intVal[i] / (float) scale;
             }
         } catch (Exception e) {
             throw e;
@@ -182,7 +183,7 @@ public class BleggGeographicGrid extends GeographicGrid {
      * bit number (default is 16).
      * @param os outputStream
      */
-    public static void compress(float[][] values,
+    public static void compress(double[][][] values,
             int scale,
             int groupSize,
             OutputStream os) throws Exception {
@@ -206,7 +207,7 @@ public class BleggGeographicGrid extends GeographicGrid {
      * @param gridHeight in degrees
      * @param os output stream
      */
-    public static void compress(float[][] values,
+    public static void compress(double[][][] values,
             int scale,
             int groupSize,
             double x0,
@@ -238,9 +239,9 @@ public class BleggGeographicGrid extends GeographicGrid {
         for (int i = 0; i < nbl; i++) {
             for (int j = 0; j < nbc; j++) {
                 if (i % 2 == 0) {
-                    val[i * nbc + j] = (int) Math.rint(values[i][j] * scale);
+                    val[i * nbc + j] = (int) Math.rint(values[i][j][0] * scale);
                 } else {
-                    val[(i + 1) * nbc - j - 1] = (int) Math.rint(values[i][j] * scale);
+                    val[(i + 1) * nbc - j - 1] = (int) Math.rint(values[i][j][0] * scale);
                 }
             }
         }
