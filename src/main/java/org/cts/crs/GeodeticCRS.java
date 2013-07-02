@@ -131,7 +131,7 @@ public abstract class GeodeticCRS extends IdentifiableComponent
     /**
      * Return the list of nadgrids transformation defined for this CRS that used the datum in parameter as target datum.
      */
-    public List<CoordinateOperation> getGridTransformation(GeodeticDatum datum) {
+    public List<CoordinateOperation> getGridTransformations(GeodeticDatum datum) {
         return nadgridsTransformations.get(datum);
     }
     
@@ -145,7 +145,7 @@ public abstract class GeodeticCRS extends IdentifiableComponent
     /**
      * Return the list of transformation defined for this CRS to the CRS in parameter.
      */
-    public List<CoordinateOperation> getCRSTransformation(CoordinateReferenceSystem crs) {
+    public List<CoordinateOperation> getCRSTransformations(CoordinateReferenceSystem crs) {
         return crsTransformation.get(crs);
     }
 

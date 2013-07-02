@@ -85,7 +85,7 @@ public final class CoordinateOperationFactory {
         if (target == null) {
             throw new IllegalArgumentException("The target CRS must not be null");
         }
-        List<CoordinateOperation> opList = source.getCRSTransformation(target);
+        List<CoordinateOperation> opList = source.getCRSTransformations(target);
         if (opList != null) {
             return opList;
         } else {
@@ -101,10 +101,10 @@ public final class CoordinateOperationFactory {
                 throw new IllegalArgumentException("The target datum must not be null");
             }
 
-            if (source.getGridTransformation(targetDatum) != null) {
-                addNadgridsOperationDir(sourceDatum, source, targetDatum, target, source.getGridTransformation(targetDatum), opList);
-            } else if (target.getGridTransformation(sourceDatum) != null) {
-                addNadgridsOperationInv(sourceDatum, source, targetDatum, target, target.getGridTransformation(sourceDatum), opList);
+            if (source.getGridTransformations(targetDatum) != null) {
+                addNadgridsOperationDir(sourceDatum, source, targetDatum, target, source.getGridTransformations(targetDatum), opList);
+            } else if (target.getGridTransformations(sourceDatum) != null) {
+                addNadgridsOperationInv(sourceDatum, source, targetDatum, target, target.getGridTransformations(sourceDatum), opList);
             }
             if (sourceDatum.equals(targetDatum)) {
                 addCoordinateOperations(sourceDatum, source, target, opList);
