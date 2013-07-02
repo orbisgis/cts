@@ -58,7 +58,10 @@ public abstract class Projection extends AbstractCoordinateOperation {
         new Parameter(Parameter.CENTRAL_MERIDIAN, new Measure(0, Unit.DEGREE)),
         new Parameter(Parameter.STANDARD_PARALLEL_1, new Measure(0, Unit.DEGREE)),
         new Parameter(Parameter.STANDARD_PARALLEL_2, new Measure(0, Unit.DEGREE)),
-        new Parameter(Parameter.SCALE_FACTOR, new Measure(0, Unit.UNIT)),
+        new Parameter(Parameter.LATITUDE_OF_TRUE_SCALE, new Measure(0, Unit.DEGREE)),
+        new Parameter(Parameter.AZIMUTH_OF_INITIAL_LINE, new Measure(0, Unit.DEGREE)),
+        new Parameter(Parameter.ANGLE_RECTIFIED_TO_OBLIQUE, new Measure(0, Unit.DEGREE)),
+        new Parameter(Parameter.SCALE_FACTOR, new Measure(1, Unit.UNIT)),
         new Parameter(Parameter.LATITUDE_OF_ORIGIN, new Measure(0, Unit.DEGREE))};
 
     public static ConcurrentHashMap<String, Measure> getDefaultParameters() {
@@ -109,10 +112,14 @@ public abstract class Projection extends AbstractCoordinateOperation {
         TANGENT,
         TRANSVERSE
     };
-    // Ellispoid used for this projection
+    /**
+     * Ellispoid used for this projection.
+     */
     Ellipsoid ellipsoid;
-    // Other parameters
-    final Map<String, Measure> parameters; // = new HashMap<String,Measure>();
+    /**
+     * Parameters other than the ellipsoid used in this projection.
+     */
+    final Map<String, Measure> parameters;
 
     /**
      * Creates a new Projection
@@ -137,14 +144,16 @@ public abstract class Projection extends AbstractCoordinateOperation {
     }
 
     /**
-     * Return the semi-major axis of the ellipsoid used for this projection (fr : demi grand axe).
+     * Return the semi-major axis of the ellipsoid used for this projection (fr
+     * : demi grand axe).
      */
     public double getSemiMajorAxis() {
         return ellipsoid.getSemiMajorAxis();
     }
 
     /**
-     * Return the semi-minor axis of the ellipsoid used for this projection (fr : demi petit axe).
+     * Return the semi-minor axis of the ellipsoid used for this projection (fr
+     * : demi petit axe).
      */
     public double getSemiMinorAxis() {
         return ellipsoid.getSemiMinorAxis();
@@ -165,35 +174,38 @@ public abstract class Projection extends AbstractCoordinateOperation {
     }
 
     /**
-     * Return the the first standard parallel of secant conformal conic projections.
+     * Return the the first standard parallel of secant conformal conic
+     * projections.
      */
     public double getStandardParallel1() {
         return parameters.get(Parameter.STANDARD_PARALLEL_1).getSValue();
     }
 
     /**
-     * Return the the second standard parallel of secant conformal conic projections.
+     * Return the the second standard parallel of secant conformal conic
+     * projections.
      */
     public double getStandardParallel2() {
         return parameters.get(Parameter.STANDARD_PARALLEL_2).getSValue();
     }
-    
+
     /**
      * Return the latitude of true scale of secant projections.
      */
     public double getLatitudeOfTrueScale() {
         return parameters.get(Parameter.LATITUDE_OF_TRUE_SCALE).getSValue();
     }
-     
+
     /**
      * Return the azimuth of the initial line of oblique projections.
      */
     public double getAzimuthOfInitialLine() {
         return parameters.get(Parameter.AZIMUTH_OF_INITIAL_LINE).getSValue();
     }
-     
+
     /**
-     * Return the angle from the rectified grid to the skew (oblique) grid of oblique projections.
+     * Return the angle from the rectified grid to the skew (oblique) grid of
+     * oblique projections.
      */
     public double getAngleRectifiedToOblique() {
         return parameters.get(Parameter.ANGLE_RECTIFIED_TO_OBLIQUE).getSValue();
@@ -242,6 +254,13 @@ public abstract class Projection extends AbstractCoordinateOperation {
      */
     public abstract Orientation getOrientation();
 
+    /**
+     * Returns true if object is equals to
+     * <code>this</code>. Tests equality between the references of both object,
+     * then tests if the string representation of these objects are equals.
+     *
+     * @param object The object to compare this ProjectedCRS against
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -257,6 +276,9 @@ public abstract class Projection extends AbstractCoordinateOperation {
         return false;
     }
 
+    /**
+     * Returns the hash code for this Projection.
+     */
     @Override
     public int hashCode() {
         int hash = 7;

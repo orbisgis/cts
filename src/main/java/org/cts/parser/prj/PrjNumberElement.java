@@ -45,7 +45,8 @@ public class PrjNumberElement extends AbstractPrjElement {
 
     /**
      * Return the value of the element
-     * @return 
+     *
+     * @return
      */
     public double getValue() {
         return value;

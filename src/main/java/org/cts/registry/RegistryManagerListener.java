@@ -32,23 +32,22 @@
 package org.cts.registry;
 
 /**
- * 
+ *
  * @author Erwan Bocher
  */
 public interface RegistryManagerListener {
 
-	/**
-	 * Called when a registry is registered in the {@link RegistryManager}
-	 * 
-	 * @param registryName
-	 */
-	void registryAdded(String registryName);
+    /**
+     * Called when a registry is registered in the {@link RegistryManager}
+     *
+     * @param registryName
+     */
+    void registryAdded(String registryName);
 
-	/**
-	 * Called when a registry is removed from the {@link RegistryManager}
-	 * 
-	 * @param registryName
-	 */
-	void registryRemoved(String registryName);
-
+    /**
+     * Called when a registry is removed from the {@link RegistryManager}
+     *
+     * @param registryName
+     */
+    void registryRemoved(String registryName);
 }

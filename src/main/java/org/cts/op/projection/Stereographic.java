@@ -32,13 +32,23 @@
 package org.cts.op.projection;
 
 import java.util.Map;
+
 import org.cts.CoordinateDimensionException;
-import org.cts.datum.Ellipsoid;
 import org.cts.Identifier;
-import org.cts.units.Measure;
-import static java.lang.Math.*;
+import org.cts.datum.Ellipsoid;
 import org.cts.op.CoordinateOperation;
 import org.cts.op.NonInvertibleOperationException;
+import org.cts.units.Measure;
+
+import static java.lang.Math.abs;
+import static java.lang.Math.atan;
+import static java.lang.Math.atan2;
+import static java.lang.Math.cos;
+import static java.lang.Math.PI;
+import static java.lang.Math.pow;
+import static java.lang.Math.sin;
+import static java.lang.Math.sqrt;
+import static java.lang.Math.tan;
 
 /**
  * The Polar Stereographic Projection (STERE). <p>
@@ -47,24 +57,27 @@ import org.cts.op.NonInvertibleOperationException;
  */
 public class Stereographic extends Projection {
 
+    /**
+     * The Identifier used for all Polar Stereographic projections.
+     */
     public static final Identifier STERE =
             new Identifier("EPSG", "9810", "Polar Stereographic", "STERE");
     protected final double lat0, // the reference latitude
             lon0, // the reference longitude (from the datum prime meridian)
             FE, // false easting
-            FN,   // false northing
+            FN, // false northing
             k0, // scale coefficent for easting
             a, // semi major axis
             e, // eccentricity of the ellipsoid
             e2; // square eccentricity of the ellipsoid
-    private double PI_2 = PI/2;
+    private double PI_2 = PI / 2;
 
     /**
-     * Create a new Stereographic Projection corresponding to
-     * the <code>Ellipsoid</code> and the list of parameters given in argument
-     * and initialize common parameters lon0, lat0, FE, FN and other parameters
+     * Create a new Stereographic Projection corresponding to the
+     * <code>Ellipsoid</code> and the list of parameters given in argument and
+     * initialize common parameters lon0, lat0, FE, FN and other parameters
      * useful for the projection.
-     * 
+     *
      * @param ellipsoid ellipsoid used to define the projection.
      * @param parameters a map of useful parameters to define the projection.
      */
@@ -80,8 +93,8 @@ public class Stereographic extends Projection {
         if (abs(getLatitudeOfTrueScale()) != PI_2) {
             double lat_ts = getLatitudeOfTrueScale();
             double esints = e * sin(lat_ts);
-            double tf = tan((PI_2+lat_ts)/2) / pow ((1+esints)/(1-esints), e/2);
-            double mf = cos(lat_ts)/sqrt(1 - esints*esints);
+            double tf = tan((PI_2 + lat_ts) / 2) / pow((1 + esints) / (1 - esints), e / 2);
+            double mf = cos(lat_ts) / sqrt(1 - esints * esints);
             k0 = mf * sqrt(pow(1 + e, 1 + e) * pow(1 - e, 1 - e)) / 2 / tf;
         } else {
             k0 = getScaleFactor();
@@ -120,8 +133,8 @@ public class Stereographic extends Projection {
     }
 
     /**
-     * Transform coord using the Stereographic Projection. Input coord is supposed to
-     * be a geographic latitude / longitude coordinate in radians.
+     * Transform coord using the Stereographic Projection. Input coord is
+     * supposed to be a geographic latitude / longitude coordinate in radians.
      * Algorithm based on the OGP's Guidance Note Number 7 Part 2 :
      * <http://www.epsg.org/guides/G7-2.html>
      *
@@ -151,19 +164,18 @@ public class Stereographic extends Projection {
         }
         return coord;
     }
-    
+
     /**
-     * Creates the inverse operation for Stereographic Projection.
-     * Input coord is supposed to be a projected easting / northing coordinate in meters.
+     * Creates the inverse operation for Stereographic Projection. Input coord
+     * is supposed to be a projected easting / northing coordinate in meters.
      * Algorithm based on the OGP's Guidance Note Number 7 Part 2 :
      * <http://www.epsg.org/guides/G7-2.html>
-     * 
+     *
      * @param coord coordinate to transform
      */
     @Override
     public CoordinateOperation inverse() throws NonInvertibleOperationException {
         return new Stereographic(ellipsoid, parameters) {
-
             @Override
             public double[] transform(double[] coord) throws CoordinateDimensionException {
                 double rho = sqrt((coord[0] - FE) * (coord[0] - FE) + (coord[1] - FN) * (coord[1] - FN));

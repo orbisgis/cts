@@ -45,9 +45,9 @@ import static org.cts.units.Unit.METER;
 
 /**
  * A vertical {@link org.cts.crs.CoordinateReferenceSystem} is a
- * CoordinateReferenceSystem based on a VerticalDatum. It is used
- * to indicate what is the reference for the vertical ordinate of
- * a 3D point (ex. ellipsoid surface, world geoid, local geoid...).
+ * CoordinateReferenceSystem based on a VerticalDatum. It is used to indicate
+ * what is the reference for the vertical ordinate of a 3D point (ex. ellipsoid
+ * surface, world geoid, local geoid...).
  *
  * @author Michaël Michaud
  */
@@ -127,5 +127,4 @@ public class VerticalCRS extends IdentifiableComponent implements
         return "[" + getAuthorityName() + ":" + getAuthorityKey() + "] " + getName() + " ("
                 + getShortName() + ")";
     }
-
 }

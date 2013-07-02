@@ -45,7 +45,6 @@ public final class RegistryManager {
     static final Logger LOGGER = Logger.getLogger(RegistryManager.class);
     private final Map<String, Registry> registries = new HashMap<String, Registry>();
     private final List<RegistryManagerListener> listeners = new ArrayList<RegistryManagerListener>();
-    
 
     /**
      * Create a default registry manager without any declared registry.

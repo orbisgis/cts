@@ -44,21 +44,73 @@ package org.cts.cs;
  */
 public class GeographicExtent implements Extent {
 
+    /**
+     * The World Extent that contains all the planet surface.
+     */
     public static final GeographicExtent WORLD =
             new GeographicExtent("World", -90, 90, -180, 180);
+    /**
+     * The name of this GeographicExtent.
+     */
     private String name;
+    /**
+     * The western bound of this GeographicExtent.
+     */
     private double westernBound;
+    /**
+     * The eastern bound of this GeographicExtent.
+     */
     private double easternBound;
+    /**
+     * The southern bound of this GeographicExtent.
+     */
     private double southernBound;
+    /**
+     * The northern bound of this GeographicExtent.
+     */
     private double northernBound;
+    /**
+     * The modulo value (360 for an extent in degree) for this GeographicExtent.
+     */
     private double modulo;
 
+    /**
+     * Creates a new GeographicExtent. If easternBound is lower than
+     * westernBound, CTS consider that the GeographicExtent crosses the 180
+     * meridian.
+     *
+     * @param name the name of the GeographicExtent
+     * @param southernBound the southern bound of the GeographicExtent, in
+     * decimal degree
+     * @param northernBound the northern bound of the GeographicExtent, in
+     * decimal degree
+     * @param westernBound the western bound of the GeographicExtent, in decimal
+     * degree
+     * @param easternBound the eastern bound of the GeographicExtent, in decimal
+     * degree
+     */
     public GeographicExtent(String name,
             double southernBound, double northernBound,
             double westernBound, double easternBound) {
         this(name, southernBound, northernBound, westernBound, easternBound, 360.0);
     }
 
+    /**
+     * Creates a new GeographicExtent. If easternBound is lower than
+     * westernBound, CTS consider that the GeographicExtent crosses the 180
+     * meridian.
+     *
+     * @param name the name of the GeographicExtent
+     * @param southernBound the southern bound of the GeographicExtent, in
+     * decimal degree
+     * @param northernBound the northern bound of the GeographicExtent, in
+     * decimal degree
+     * @param westernBound the western bound of the GeographicExtent, in decimal
+     * degree
+     * @param easternBound the eastern bound of the GeographicExtent, in decimal
+     * degree
+     * @param modulo the modulo value for the GeographicExtent
+     */
     public GeographicExtent(String name,
             double southernBound, double northernBound,
             double westernBound, double easternBound, double modulo) {
@@ -101,7 +153,7 @@ public class GeographicExtent implements Extent {
     }
 
     /**
-     * Return the western bound of this geographic area.
+     * Return the northern bound of this geographic area.
      */
     public double getNorthernBound() {
         return northernBound;
@@ -114,6 +166,14 @@ public class GeographicExtent implements Extent {
         return modulo;
     }
 
+    /**
+     * Return whether the point formed by input latitude and longitude is inside
+     * this GeographicExtent or not.
+     *
+     * @param lat the latitude of the point to test, expressed in decimal degree
+     * @param lon the longitude of the point to test, expressed in decimal
+     * degree
+     */
     public boolean isInside(double lat, double lon) {
         double lon_ = lon < westernBound ? lon + modulo : lon;
         if (lat < southernBound || lat > northernBound) {
@@ -126,9 +186,11 @@ public class GeographicExtent implements Extent {
     }
 
     /**
-     * Return wether coord is inside this Extent or not. For
+     * Return whether coord is inside this Extent or not. For
      * <code>GeographicExtent</code>, coord must be a latitude and a longitude
      * (in this order) and in decimal degrees.
+     * 
+     * @param coord the coordinates to test
      */
     @Override
     public boolean isInside(double[] coord) {
@@ -136,7 +198,7 @@ public class GeographicExtent implements Extent {
     }
 
     /**
-     * @return a String representation of this GeographicExtent
+     * Return a String representation of this GeographicExtent.
      */
     @Override
     public String toString() {

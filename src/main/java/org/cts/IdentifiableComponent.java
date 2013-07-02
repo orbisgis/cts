@@ -54,13 +54,15 @@ public class IdentifiableComponent implements Identifiable {
 
     /**
      * Change this component's Identifier
+     * 
+     * @param identifier the new identifier of the component
      */
     protected void setIdentifier(Identifier identifier) {
         this.identifier = identifier;
     }
 
     /**
-     * Return the namespace of this identifier (ex. EPSG, IGN-F) The namespace
+     * Return the namespace of this identifier (ex. EPSG, IGNF) The namespace
      * may represent a database name, a URL, a URN...
      */
     @Override
@@ -107,6 +109,8 @@ public class IdentifiableComponent implements Identifiable {
     /**
      * Change the short string used to identify unambiguously the object. The
      * string must have a maximum of 16 characters to fit menus with ease.
+     * 
+     * @param uiName the new short name of the component
      */
     @Override
     public void setShortName(String uiName) {
@@ -122,7 +126,9 @@ public class IdentifiableComponent implements Identifiable {
     }
 
     /**
-     * Change the remarks.
+     * Change the remarks. Be careful, this method will delete former remarks.
+     * 
+     * @param remarks the new remarks of the component
      */
     @Override
     public void setRemarks(String remarks) {
@@ -131,6 +137,8 @@ public class IdentifiableComponent implements Identifiable {
 
     /**
      * Add remarks.
+     * 
+     * @param new_remark the remark to add to the component
      */
     @Override
     public void addRemark(String new_remark) {
@@ -158,7 +166,7 @@ public class IdentifiableComponent implements Identifiable {
     /**
      * Creates an identifiable component from an identifier.
      *
-     * @param identifier
+     * @param identifier the identifier of the component
      */
     public IdentifiableComponent(Identifier identifier) {
         this.identifier = identifier;
@@ -167,7 +175,7 @@ public class IdentifiableComponent implements Identifiable {
     /**
      * Returns true if object is an Identifier equals to this one.
      *
-     * @param object
+     * @param object The object to compare this IdentifiableComponent against
      */
     @Override
     public boolean equals(Object object) {
@@ -181,6 +189,9 @@ public class IdentifiableComponent implements Identifiable {
         }
     }
 
+    /**
+     * Returns a hash code for this IdentifiableComponent.
+     */
     @Override
     public int hashCode() {
         int hash = 5;

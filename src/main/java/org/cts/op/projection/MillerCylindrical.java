@@ -32,13 +32,19 @@
 package org.cts.op.projection;
 
 import java.util.Map;
+
 import org.cts.CoordinateDimensionException;
-import org.cts.datum.Ellipsoid;
 import org.cts.Identifier;
-import org.cts.units.Measure;
-import static java.lang.Math.*;
+import org.cts.datum.Ellipsoid;
 import org.cts.op.CoordinateOperation;
 import org.cts.op.NonInvertibleOperationException;
+import org.cts.units.Measure;
+
+import static java.lang.Math.abs;
+import static java.lang.Math.atan;
+import static java.lang.Math.exp;
+import static java.lang.Math.PI;
+import static java.lang.Math.sin;
 
 /**
  * The Miller Cylindrical Projection (MILL). <p>
@@ -47,19 +53,22 @@ import org.cts.op.NonInvertibleOperationException;
  */
 public class MillerCylindrical extends Projection {
 
+    /**
+     * The Identifier used for all Miller Cylindrical projections.
+     */
     public static final Identifier MILL =
             new Identifier("EPSG", "9818", "Miller Cylindrical", "MILL");
     protected final double lat0, // the reference latitude
             lon0, // the reference longitude (from the datum prime meridian)
             FE, // false easting
-            FN,   // false northing
+            FN, // false northing
             n; // projection expnent
 
     /**
-     * Create a new Miller Cylindrical Projection corresponding to
-     * the <code>Ellipsoid</code> and the list of parameters given in argument
-     * and initialize common parameters lon0, lat0, FE, FN.
-     * 
+     * Create a new Miller Cylindrical Projection corresponding to the
+     * <code>Ellipsoid</code> and the list of parameters given in argument and
+     * initialize common parameters lon0, lat0, FE, FN.
+     *
      * @param ellipsoid ellipsoid used to define the projection.
      * @param parameters a map of useful parameters to define the projection.
      */
@@ -106,10 +115,10 @@ public class MillerCylindrical extends Projection {
     }
 
     /**
-     * Transform coord using the Miller Cylindrical Projection. Input
-     * coord is supposed to be a geographic latitude / longitude coordinate in
-     * radians. Algorithm based on the USGS professional paper 1395,
-     * "Map Projection - A Working Manual" by John P. Snyder :
+     * Transform coord using the Miller Cylindrical Projection. Input coord is
+     * supposed to be a geographic latitude / longitude coordinate in radians.
+     * Algorithm based on the USGS professional paper 1395, "Map Projection - A
+     * Working Manual" by John P. Snyder :
      * <http://pubs.er.usgs.gov/publication/pp1395>
      *
      * @param coord coordinate to transform
@@ -121,35 +130,34 @@ public class MillerCylindrical extends Projection {
         double lon = coord[1];
         double lat = abs(coord[0]) > PI * 85 / 180 ? PI * 85 / 180 : coord[0];
         double E = n * (lon - lon0);
-        double N = n * ellipsoid.isometricLatitude(lat*0.8)/0.8;
+        double N = n * ellipsoid.isometricLatitude(lat * 0.8) / 0.8;
         coord[0] = FE + E;
         coord[1] = FN + N;
         return coord;
     }
-    
+
     /**
-     * Creates the inverse operation for Miller Cylindrical Projection.
-     * Input coord is supposed to be a projected easting / northing coordinate in meters.
-     * Algorithm based on the USGS professional paper 1395,
-     * "Map Projection - A Working Manual" by John P. Snyder :
+     * Creates the inverse operation for Miller Cylindrical Projection. Input
+     * coord is supposed to be a projected easting / northing coordinate in
+     * meters. Algorithm based on the USGS professional paper 1395, "Map
+     * Projection - A Working Manual" by John P. Snyder :
      * <http://pubs.er.usgs.gov/publication/pp1395>
-     * 
+     *
      * @param coord coordinate to transform
      */
     @Override
     public CoordinateOperation inverse() throws NonInvertibleOperationException {
         return new MillerCylindrical(ellipsoid, parameters) {
-
             @Override
             public double[] transform(double[] coord) throws CoordinateDimensionException {
-                double t = exp(0.8*(FN-coord[1])/n);
-                double ki = PI/2 - 2 * atan(t);
+                double t = exp(0.8 * (FN - coord[1]) / n);
+                double ki = PI / 2 - 2 * atan(t);
                 double lat = ki;
-                for (int i =1;i<5;i++) {
-                    lat+= ellipsoid.getInverseMercatorCoeff()[i]*sin(2*i*ki);
+                for (int i = 1; i < 5; i++) {
+                    lat += ellipsoid.getInverseMercatorCoeff()[i] * sin(2 * i * ki);
                 }
-                coord[1] = (coord[0]-FE)/n + lon0;
-                coord[0] = lat/0.8;
+                coord[1] = (coord[0] - FE) / n + lon0;
+                coord[0] = lat / 0.8;
                 return coord;
             }
         };

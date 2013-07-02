@@ -42,7 +42,14 @@ import org.cts.units.Unit;
  */
 public class CoordinateSystem {
 
+    /**
+     * The {@linkplain Axis axes} of this CoordinateSystem.
+     */
     private Axis[] axes;
+    /**
+     * The {@linkplain Unit units} for the {@linkplain Axis axes} of this
+     * CoordinateSystem.
+     */
     private Unit[] units;
 
     /**
@@ -59,8 +66,9 @@ public class CoordinateSystem {
     }
 
     /**
+     * Return the {@link Axis} with index i of this CoordinateSystem.
+     * 
      * @param i index of the {@link Axis} to return
-     * @return the {@link Axis} with index i.
      */
     public Axis getAxis(int i) throws ArrayIndexOutOfBoundsException {
         try {
@@ -72,8 +80,9 @@ public class CoordinateSystem {
     }
 
     /**
+     * Return the {@link Unit} for Axis with index i of this CoordinateSystem.
+     * 
      * @param i index of the {@link Axis} for which Unit is returned
-     * @return the {@link Unit} for Axis with index i.
      */
     public Unit getUnit(int i) throws ArrayIndexOutOfBoundsException {
         try {
@@ -86,16 +95,18 @@ public class CoordinateSystem {
     }
 
     /**
-     * @return the axes number of this CoordinateSystem.
+     * Return the axes number of this CoordinateSystem.
      */
     public int getDimension() {
         return axes.length;
     }
 
     /**
-     * @param axis the name of the axis
-     * @return the index of {@link Axis} axis or -1 if axis is not part of this
-     * CoordinateSystem
+     * Return the index of {@link Axis} axis or -1 if axis is not part of this
+     * CoordinateSystem. If there is many axes of the CoordinateSystem equals to
+     * the axis in argument, the minimum index of these axes is returned.
+     *
+     * @param axis the axis whose index is looked for
      */
     public int getIndex(Axis axis) {
         for (int i = 0; i < axes.length; i++) {
@@ -111,7 +122,6 @@ public class CoordinateSystem {
      * <code>CoordinateSystem</code>.
      *
      * @param coord the coordinate to format
-     * @return a formatted String
      */
     public String format(double[] coord) throws CoordinateDimensionException {
         if (coord.length < axes.length) {
@@ -128,7 +138,7 @@ public class CoordinateSystem {
     }
 
     /**
-     * @return a String representation of this CoordinateSystem.
+     * Return a String representation of this CoordinateSystem.
      */
     @Override
     public String toString() {

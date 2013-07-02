@@ -31,14 +31,15 @@
  */
 package org.cts.op.projection;
 
-import org.cts.op.NonInvertibleOperationException;
-import org.cts.op.CoordinateOperation;
+import java.util.Map;
+
+import org.cts.CoordinateDimensionException;
+import org.cts.Identifier;
 import org.cts.datum.Ellipsoid;
-import org.cts.*;
+import org.cts.op.CoordinateOperation;
+import org.cts.op.NonInvertibleOperationException;
 import org.cts.units.Measure;
 import org.cts.util.Complex;
-
-import java.util.Map;
 
 /**
  * The Universal Transverse Mercator Projection (UTM).<p>
@@ -47,6 +48,9 @@ import java.util.Map;
  */
 public class UniversalTransverseMercator extends Projection {
 
+    /**
+     * The Identifier used for all Universal Transverse Mercator projections.
+     */
     public static final Identifier UTM =
             new Identifier("EPSG", "9824", "Transverse Mercator Zoned Grid System", "UTM");
     protected final double FE, // false easting
@@ -58,10 +62,11 @@ public class UniversalTransverseMercator extends Projection {
 
     /**
      * Create a new Universal Transverse Mercator Projection corresponding to
-     * the <code>Ellipsoid</code> and the list of parameters given in argument
-     * and initialize common parameters lon0, FE and other parameters
-     * useful for the projection.
-     * 
+     * the
+     * <code>Ellipsoid</code> and the list of parameters given in argument and
+     * initialize common parameters lon0, FE and other parameters useful for the
+     * projection.
+     *
      * @param ellipsoid ellipsoid used to define the projection.
      * @param parameters a map of useful parameters to define the projection.
      */
@@ -82,14 +87,13 @@ public class UniversalTransverseMercator extends Projection {
     }
 
     /**
-     * Transform coord using the Universal Transverse Mercator Projection.
-     * Input coord is supposed to be a geographic latitude / longitude
-     * coordinate in radians.
+     * Transform coord using the Universal Transverse Mercator Projection. Input
+     * coord is supposed to be a geographic latitude / longitude coordinate in
+     * radians.
      *
      * @param coord coordinate to transform
-     * @throws CoordinateDimensionException if
-     * <code>coord</code> length is not compatible with this
-     * <code>CoordinateOperation</code>.
+     * @throws CoordinateDimensionException if <code>coord</code> length is not
+     * compatible with this <code>CoordinateOperation</code>.
      */
     @Override
     public double[] transform(double[] coord) throws CoordinateDimensionException {
@@ -113,7 +117,6 @@ public class UniversalTransverseMercator extends Projection {
     @Override
     public CoordinateOperation inverse() throws NonInvertibleOperationException {
         return new UniversalTransverseMercator(ellipsoid, parameters) {
-
             @Override
             public double[] transform(double[] coord) throws CoordinateDimensionException {
                 Complex z = new Complex((coord[1] - ys) / (n * invcoeff[0]),

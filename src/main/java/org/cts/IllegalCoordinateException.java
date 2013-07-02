@@ -31,29 +31,29 @@
  */
 package org.cts;
 
-
 /**
  * Try to use an illegal coordinate.
+ *
  * @author Michaël Michaud
  */
-
 public class IllegalCoordinateException extends Exception {
-    
-   /**
-    * Create a new IllegalCoordinateException.
-    * @param exception precise description of this exception
-    */
+
+    /**
+     * Create a new IllegalCoordinateException.
+     *
+     * @param exception precise description of this exception
+     */
     public IllegalCoordinateException(String exception) {
         super(exception);
     }
-    
-   /**
-    * Create a new IllegalCoordinateException.
-    * @param exception precise description of this exception
-    * @param coord the illegal coordinate as a double array
-    */
+
+    /**
+     * Create a new IllegalCoordinateException.
+     *
+     * @param exception precise description of this exception
+     * @param coord the illegal coordinate as a double array
+     */
     public IllegalCoordinateException(String exception, double[] coord) {
         super(exception + " : " + java.util.Arrays.toString(coord));
     }
-    
 }

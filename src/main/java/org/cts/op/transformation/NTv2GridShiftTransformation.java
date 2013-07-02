@@ -31,8 +31,6 @@
  */
 package org.cts.op.transformation;
 
-import org.cts.op.NonInvertibleOperationException;
-import org.cts.op.CoordinateOperation;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -42,11 +40,17 @@ import java.io.RandomAccessFile;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+
 import org.apache.log4j.Logger;
-import org.cts.*;
+
+import org.cts.CoordinateDimensionException;
+import org.cts.Identifier;
+import org.cts.IllegalCoordinateException;
+import org.cts.op.AbstractCoordinateOperation;
+import org.cts.op.CoordinateOperation;
+import org.cts.op.NonInvertibleOperationException;
 import org.cts.op.transformation.grid.GridShift;
 import org.cts.op.transformation.grid.GridShiftFile;
-import org.cts.op.AbstractCoordinateOperation;
 
 /**
  * Geographic Offset by Interpolation of Gridded Data.<p>
@@ -69,13 +73,15 @@ public class NTv2GridShiftTransformation extends AbstractCoordinateOperation {
     private int mode = 1;
     private URL grid_file;
     private GridShiftFile gsf;
-    
+
     /**
-     * Create a NTv2GridShiftTransformation from the name of the file that defined it.
-     * 
-     * @param ntv2_gridName the name of the file that defined the wanted grid transformation (for instance : ntf_r93.gsb).
+     * Create a NTv2GridShiftTransformation from the name of the file that
+     * defined it.
+     *
+     * @param ntv2_gridName the name of the file that defined the wanted grid
+     * transformation (for instance : ntf_r93.gsb).
      * @throws URISyntaxException
-     * @throws MalformedURLException 
+     * @throws MalformedURLException
      */
     public static NTv2GridShiftTransformation createNTv2GridShiftTransformation(String ntv2_gridName) throws URISyntaxException, MalformedURLException, NullPointerException {
         return new NTv2GridShiftTransformation(GridShift.class.getResource(ntv2_gridName).toURI().toURL());
@@ -177,7 +183,7 @@ public class NTv2GridShiftTransformation extends AbstractCoordinateOperation {
     }
 
     /**
-     * Load the grid file that will be used to transform the coordinates
+     * Load the grid file that will be used to transform the coordinates.
      */
     public void loadGridShiftFile() throws IOException {
         if (grid_file != null) {
@@ -212,14 +218,34 @@ public class NTv2GridShiftTransformation extends AbstractCoordinateOperation {
         }
     }
 
+    /**
+     * Return whether the grid shift file used by this transformation is loaded
+     * or not.
+     */
     public boolean isLoaded() {
         return gsf.isLoaded();
     }
 
+    /**
+     * Unload the grid shift file used by this transformation.
+     * @throws IOException 
+     */
     public void unload() throws IOException {
         gsf.unload();
     }
 
+    /**
+     * Set the mode to access the grid shift file. If mode = 0 (SPEED), it will
+     * use an InputStream, if mode = 1 (LOW_MEMORY), it will use a
+     * RandomAccessFile. If the parameter mode is different from 0 or 1 or if it
+     * is equal to the current mode, this method will have no effect and return
+     * false.
+     *
+     * @param mode an integer representing a mode to access to grid shift file
+     * (see description above)
+     * @return true if a new mode has been set, false if not.
+     * @throws IOException
+     */
     public boolean setMode(int mode) throws IOException {
         if ((mode == 0 || mode == 1) && this.mode != mode) {
             this.mode = mode;
@@ -239,10 +265,18 @@ public class NTv2GridShiftTransformation extends AbstractCoordinateOperation {
         return "NTv2 Geographic Offset (" + grid_file + ")";
     }
 
+    /**
+     * Return the short name of the datum from which the nadgrids transformation
+     * must be used.
+     */
     public String getFromDatum() {
         return gsf.getFromEllipsoid().trim().toLowerCase();
     }
 
+    /**
+     * Return the short name of the datum toward which the nadgrids
+     * transformation must be used.
+     */
     public String getToDatum() {
         return gsf.getToEllipsoid().trim().toLowerCase();
     }

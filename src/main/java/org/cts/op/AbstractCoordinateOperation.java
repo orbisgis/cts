@@ -62,9 +62,8 @@ public abstract class AbstractCoordinateOperation
      *
      * @param coord the input coordinate
      * @return a double array containing the output coordinate
-     * @throws IllegalCoordinateException if
-     * <code>coord</code> is not compatible with this
-     * <code>CoordinateOperation</code>.
+     * @throws IllegalCoordinateException if <code>coord</code> is not
+     * compatible with this <code>CoordinateOperation</code>.
      */
     @Override
     public abstract double[] transform(double[] coord)
@@ -75,7 +74,7 @@ public abstract class AbstractCoordinateOperation
      * {@link fr.cts.CoordinateOperation}s and/or inverse CoordinateOperation in
      * a unique CoordinateOperationSequence. This method is not declared
      * abstract, so that implementation classes have not to implement it if they
-     * represent non invertible op�ration.
+     * represent non invertible operation.
      */
     @Override
     public CoordinateOperation inverse()
@@ -87,12 +86,11 @@ public abstract class AbstractCoordinateOperation
     /**
      * Returns the precision of the transformation.<p> Precision is a double
      * representing the mean error, in meters made on the position resulting
-     * from this
-     * {@link fr.cts.CoordinateOperation}.<p> ex. : 0.001 means that the
-     * precision of the resulting position is about one millimeter<p> Default
-     * precision (or maximum precision) is considered to be equals to 1E-9 which
-     * is the value of an ulp (units in the last place) for a double value
-     * equals to 6378137.0 (Earth semi-major axis).
+     * from this {@link fr.cts.CoordinateOperation}.<p> ex. : 0.001 means that
+     * the precision of the resulting position is about one millimeter<p>
+     * Default precision (or maximum precision) is considered to be equals to
+     * 1E-9 which is the value of an ulp (units in the last place) for a double
+     * value equals to 6378137.0 (Earth semi-major axis).
      */
     @Override
     public double getPrecision() {

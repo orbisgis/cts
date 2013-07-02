@@ -66,7 +66,7 @@ public class ProjParser {
             args = readRegistry(reader, crsCode, regexPattern);
 
         } finally {
-                reader.close();
+            reader.close();
         }
         return args;
     }
@@ -176,7 +176,7 @@ public class ProjParser {
             }
             return codes;
         } finally {
-                br.close();
+            br.close();
         }
     }
 }
