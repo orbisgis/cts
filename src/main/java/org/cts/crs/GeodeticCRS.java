@@ -31,6 +31,7 @@
  */
 package org.cts.crs;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,7 +57,7 @@ public abstract class GeodeticCRS extends IdentifiableComponent
 
     private GeodeticDatum geodeticDatum;
     // A map of known grid transformations from this CRS, the key of the map is the target datum of the nadgrid.
-    private Map<GeodeticDatum, CoordinateOperation> nadgridsTransformation = new HashMap<GeodeticDatum, CoordinateOperation>();
+    private Map<GeodeticDatum, List<CoordinateOperation>> nadgridsTransformations = new HashMap<GeodeticDatum, List<CoordinateOperation>>();
     // A map of known transformations from this CRS to other CRS
     private Map<CoordinateReferenceSystem, List<CoordinateOperation>> crsTransformation = new HashMap<CoordinateReferenceSystem, List<CoordinateOperation>>();
 
@@ -121,14 +122,17 @@ public abstract class GeodeticCRS extends IdentifiableComponent
      * Add a Nadgrids Transformation for this CRS to the CRS using the key datum.
      */
     public void addGridTransformation(GeodeticDatum gd, CoordinateOperation coordOp) {
-        nadgridsTransformation.put(gd, coordOp);
+        if (nadgridsTransformations.get(gd) == null) {
+            nadgridsTransformations.put(gd, new ArrayList<CoordinateOperation>());
+        }
+        nadgridsTransformations.get(gd).add(coordOp);
     }
     
     /**
      * Return the list of nadgrids transformation defined for this CRS that used the datum in parameter as target datum.
      */
-    public CoordinateOperation getGridTransformation(GeodeticDatum datum) {
-        return nadgridsTransformation.get(datum);
+    public List<CoordinateOperation> getGridTransformation(GeodeticDatum datum) {
+        return nadgridsTransformations.get(datum);
     }
     
     /**

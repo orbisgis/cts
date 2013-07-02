@@ -116,8 +116,9 @@ public final class CoordinateOperationFactory {
     
     private static List<CoordinateOperation> createNadgridsOperationDir(
             GeodeticDatum sourceDatum, GeodeticCRS source,
-            GeodeticDatum targetDatum, GeodeticCRS target, CoordinateOperation coordOp) {
+            GeodeticDatum targetDatum, GeodeticCRS target, List<CoordinateOperation> nadgridsTransformations) {
         List<CoordinateOperation> opList = new ArrayList<CoordinateOperation>();
+        for (CoordinateOperation coordOp : nadgridsTransformations) {
         try {
             if (!(coordOp instanceof NTv2GridShiftTransformation)||(sourceDatum.getShortName().equals(((NTv2GridShiftTransformation) coordOp).getFromDatum()))) {
                 opList.add(new CoordinateOperationSequence(
@@ -146,13 +147,15 @@ public final class CoordinateOperationFactory {
             LOG.warn("Operation from " + source.getName() + " to " + target.getName() + " could not be created");
             LOG.error("CoordinateOperationFactory", e);
         }
+        }
         return opList;
     }
     
     private static List<CoordinateOperation> createNadgridsOperationInv(
             GeodeticDatum sourceDatum, GeodeticCRS source,
-            GeodeticDatum targetDatum, GeodeticCRS target, CoordinateOperation coordOp) {
+            GeodeticDatum targetDatum, GeodeticCRS target, List<CoordinateOperation> nadgridsTransformations) {
         List<CoordinateOperation> opList = new ArrayList<CoordinateOperation>();
+        for (CoordinateOperation coordOp : nadgridsTransformations) {
         try {
             if (!(coordOp instanceof NTv2GridShiftTransformation)||sourceDatum.getShortName().equals(((NTv2GridShiftTransformation) coordOp).getFromDatum())) {
                 opList.add(new CoordinateOperationSequence(
@@ -181,6 +184,7 @@ public final class CoordinateOperationFactory {
         } catch (NonInvertibleOperationException e) {
             LOG.warn("Operation from " + source.getName() + " to " + target.getName() + " could not be created");
             LOG.error("CoordinateOperationFactory", e);
+        }
         }
         return opList;
     }
