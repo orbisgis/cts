@@ -64,10 +64,9 @@ public class ChangeCoordinateDimension extends AbstractCoordinateOperation {
     /**
      * Add a vertical coordinate.
      *
-     * @param coord is an array containing one, two or three ordinates.
-     * @throws IllegalCoordinateException if
-     * <code>coord</code> is not compatible with this
-     * <code>CoordinateOperation</code>.
+     * @param coord is an array containing one, two or three ordinates
+     * @throws IllegalCoordinateException if <code>coord</code> is not
+     * compatible with this <code>CoordinateOperation</code>.
      */
     @Override
     public double[] transform(double[] coord)

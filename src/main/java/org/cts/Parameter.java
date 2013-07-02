@@ -34,54 +34,75 @@ package org.cts;
 import org.cts.units.Measure;
 
 public class Parameter {
-	
-	
+
     public static final String ELLIPSOID = "ellipsoid";
-
-    /** Key to access central meridian, one possible parameter of the projection.*/
+    /**
+     * Key to access central meridian, one possible parameter of the projection.
+     */
     public static final String CENTRAL_MERIDIAN = "central meridian";
-
-    /** Key to access latitude of origin, one possible parameter of the projection.*/
+    /**
+     * Key to access latitude of origin, one possible parameter of the projection.
+     */
     public static final String LATITUDE_OF_ORIGIN = "latitude of origin";
-    
-    /** Key to access the first standard parallel of secant conformal conic projections.*/
+    /**
+     * Key to access the first standard parallel of secant conformal conic projections.
+     */
     public static final String STANDARD_PARALLEL_1 = "standard parallel 1";
-    
-    /** Key to access the second standard parallel of secant conformal conic projections.*/
+    /**
+     * Key to access the second standard parallel of secant conformal conic projections.
+     */
     public static final String STANDARD_PARALLEL_2 = "standard parallel 2";
-    
-    /** Key to access latitude of true scale, one possible parameter of the projection.*/
+    /**
+     * Key to access latitude of true scale, one possible parameter of the projection.
+     */
     public static final String LATITUDE_OF_TRUE_SCALE = "latitude of true scale";
-    
-    /** Key to access azimuth of the initial line of oblique projections.*/
+    /**
+     * Key to access azimuth of the initial line of oblique projections.
+     */
     public static final String AZIMUTH_OF_INITIAL_LINE = "azimuth of the initial line";
-    
-    /** Key to access angle from the rectified grid to the skew (oblique) grid of oblique projections.*/
+    /**
+     * Key to access angle from the rectified grid to the skew (oblique) grid of
+     * oblique projections.
+     */
     public static final String ANGLE_RECTIFIED_TO_OBLIQUE = "angle from the rectified grid to the skew (oblique) grid";
-
-    /** Key to access scale factor, one possible parameter of the projection.*/
+    /**
+     * Key to access scale factor, one possible parameter of the projection.
+     */
     public static final String SCALE_FACTOR = "scale factor";
-
-    /** Key to access false_easting, one possible parameter of the projection.*/
+    /**
+     * Key to access false_easting, one possible parameter of the projection.
+     */
     public static final String FALSE_EASTING = "false easting";
-
-    /** Key to access false_northing, one possible parameter of the projection.*/
+    /**
+     * Key to access false_northing, one possible parameter of the projection.
+     */
     public static final String FALSE_NORTHING = "false northing";
+    private String name;
+    private Measure measure;
 
-	private String name;
-	private Measure measure;
+    /**
+     * Creates a new Parameters defined by his name and his measure.
+     *
+     * @param name the name of the new parameter (ex : latitude, false northing)
+     * @param measure the measure in which the parameter is expressed (ex :
+     * degrees, meters)
+     */
+    public Parameter(String name, Measure measure) {
+        this.name = name;
+        this.measure = measure;
+    }
 
-	public Parameter(String name, Measure measure)  {
-		this.name=name;
-		this.measure = measure;
-	}
-	
-	public String getName() {
-		return name;
-	}
-	
-	public Measure getMeasure() {
-		return measure;
-	}
-	
+    /**
+     * Returns the name of this Parameter.
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Returns the measure in which this Parameter is expressed.
+     */
+    public Measure getMeasure() {
+        return measure;
+    }
 }

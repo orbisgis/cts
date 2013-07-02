@@ -32,13 +32,21 @@
 package org.cts.op.projection;
 
 import java.util.Map;
+
 import org.cts.CoordinateDimensionException;
-import org.cts.datum.Ellipsoid;
 import org.cts.Identifier;
-import org.cts.units.Measure;
-import static java.lang.Math.*;
+import org.cts.datum.Ellipsoid;
 import org.cts.op.CoordinateOperation;
 import org.cts.op.NonInvertibleOperationException;
+import org.cts.units.Measure;
+
+import static java.lang.Math.asin;
+import static java.lang.Math.atan;
+import static java.lang.Math.cos;
+import static java.lang.Math.log;
+import static java.lang.Math.pow;
+import static java.lang.Math.sin;
+import static java.lang.Math.sqrt;
 
 /**
  * The Lambert Azimuthal Equal Area Projection (LAEA). <p>
@@ -47,23 +55,26 @@ import org.cts.op.NonInvertibleOperationException;
  */
 public class LambertAzimuthalEqualArea extends Projection {
 
+    /**
+     * The Identifier used for all Lambert Azimuthal Equal Area projections.
+     */
     public static final Identifier LAEA =
             new Identifier("EPSG", "9820", "Lambert Azimuthal Equal Area", "LAEA");
     protected final double lat0, // the reference latitude
             lon0, // the reference longitude (from the datum prime meridian)
             FE, // false easting
-            FN,   // false northing
+            FN, // false northing
             beta0, // the authalic latitude corresponding to lat0
             qp, // a constant of the projection
             D, // another constant of the projection
             Rq; // another constant of the projection
 
     /**
-     * Create a new Lambert Azimuthal Equal Area Projection corresponding to
-     * the <code>Ellipsoid</code> and the list of parameters given in argument
-     * and initialize common parameters lon0, lat0, FE, FN and other parameters
+     * Create a new Lambert Azimuthal Equal Area Projection corresponding to the
+     * <code>Ellipsoid</code> and the list of parameters given in argument and
+     * initialize common parameters lon0, lat0, FE, FN and other parameters
      * useful for the projection.
-     * 
+     *
      * @param ellipsoid ellipsoid used to define the projection.
      * @param parameters a map of useful parameters to define the projection.
      */
@@ -76,12 +87,12 @@ public class LambertAzimuthalEqualArea extends Projection {
         FN = getFalseNorthing();
         double e = ellipsoid.getEccentricity();
         double e2 = ellipsoid.getSquareEccentricity();
-        qp = 1 - (1-e2)/2/e*log((1-e)/(1+e));
-        double esin0 = e*sin(lat0);
-        double q0 = (1-e2)*(sin(lat0)/(1-esin0*esin0) - log((1-esin0)/(1+esin0))/2/e);
-        beta0 = asin(q0/qp);
-        Rq = ellipsoid.getSemiMajorAxis()*pow(qp/2, 0.5);
-        D = ellipsoid.getSemiMajorAxis()*cos(lat0)/sqrt(1-esin0*esin0)/Rq/cos(beta0);
+        qp = 1 - (1 - e2) / 2 / e * log((1 - e) / (1 + e));
+        double esin0 = e * sin(lat0);
+        double q0 = (1 - e2) * (sin(lat0) / (1 - esin0 * esin0) - log((1 - esin0) / (1 + esin0)) / 2 / e);
+        beta0 = asin(q0 / qp);
+        Rq = ellipsoid.getSemiMajorAxis() * pow(qp / 2, 0.5);
+        D = ellipsoid.getSemiMajorAxis() * cos(lat0) / sqrt(1 - esin0 * esin0) / Rq / cos(beta0);
     }
 
     /**
@@ -128,41 +139,41 @@ public class LambertAzimuthalEqualArea extends Projection {
     public double[] transform(double[] coord) throws CoordinateDimensionException {
         double e = ellipsoid.getEccentricity();
         double e2 = ellipsoid.getSquareEccentricity();
-        double esin = e*sin(coord[0]);
-        double q = (1-e2)*(sin(coord[0])/(1-esin*esin) - log((1-esin)/(1+esin))/2/e);
-        double beta = asin(q/qp);
-        double B = Rq*sqrt(2/(1 + sin(beta0)*sin(beta) + cos(beta0)*cos(beta)*cos(coord[1]-lon0)));
-        coord[0] = FE + B*D*cos(beta)*sin(coord[1]-lon0);
-        coord[1] = FN + B/D*(cos(beta0)*sin(beta) - sin(beta0)*cos(beta)*cos(coord[1]-lon0));
+        double esin = e * sin(coord[0]);
+        double q = (1 - e2) * (sin(coord[0]) / (1 - esin * esin) - log((1 - esin) / (1 + esin)) / 2 / e);
+        double beta = asin(q / qp);
+        double B = Rq * sqrt(2 / (1 + sin(beta0) * sin(beta) + cos(beta0) * cos(beta) * cos(coord[1] - lon0)));
+        coord[0] = FE + B * D * cos(beta) * sin(coord[1] - lon0);
+        coord[1] = FN + B / D * (cos(beta0) * sin(beta) - sin(beta0) * cos(beta) * cos(coord[1] - lon0));
         return coord;
     }
-    
+
     /**
-     * Creates the inverse operation for Lambert Azimuthal Equal Area Projection.
-     * Input coord is supposed to be a projected easting / northing coordinate in meters.
-     * Algorithm based on the OGP's Guidance Note Number 7 Part 2 :
+     * Creates the inverse operation for Lambert Azimuthal Equal Area
+     * Projection. Input coord is supposed to be a projected easting / northing
+     * coordinate in meters. Algorithm based on the OGP's Guidance Note Number 7
+     * Part 2 :
      * <http://www.epsg.org/guides/G7-2.html>
-     * 
+     *
      * @param coord coordinate to transform
      */
     @Override
     public CoordinateOperation inverse() throws NonInvertibleOperationException {
         return new LambertAzimuthalEqualArea(ellipsoid, parameters) {
-
             @Override
             public double[] transform(double[] coord) throws CoordinateDimensionException {
                 double e = ellipsoid.getEccentricity();
                 double e2 = ellipsoid.getSquareEccentricity();
-                double e4 = e2*e2;
-                double e6 = e4*e2;
-                double x = (coord[0]-FE)/D;
-                double y = (coord[1]-FN)*D;
-                double rho = sqrt(x*x+y*y);
-                double C = 2*asin(rho/2/Rq);
-                double betap = asin(cos(C)*sin(beta0) + y*sin(C)*cos(beta0)/rho);
-                coord[0] = betap + (e2/3 + 31/180*e4 +517/5040*e6)*sin(2*betap)
-                        + (23/360*e4 + 251/3780*e6)*sin(4*betap) + 761/45360*e6*sin(6*betap);
-                coord[1] = lon0 + atan(x*sin(C)/(rho*cos(beta0)*cos(C)-y*sin(beta0)*sin(C)));
+                double e4 = e2 * e2;
+                double e6 = e4 * e2;
+                double x = (coord[0] - FE) / D;
+                double y = (coord[1] - FN) * D;
+                double rho = sqrt(x * x + y * y);
+                double C = 2 * asin(rho / 2 / Rq);
+                double betap = asin(cos(C) * sin(beta0) + y * sin(C) * cos(beta0) / rho);
+                coord[0] = betap + (e2 / 3 + 31 / 180 * e4 + 517 / 5040 * e6) * sin(2 * betap)
+                        + (23 / 360 * e4 + 251 / 3780 * e6) * sin(4 * betap) + 761 / 45360 * e6 * sin(6 * betap);
+                coord[1] = lon0 + atan(x * sin(C) / (rho * cos(beta0) * cos(C) - y * sin(beta0) * sin(C)));
                 return coord;
             }
         };

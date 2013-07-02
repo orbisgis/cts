@@ -31,29 +31,29 @@
  */
 package org.cts.op;
 
-
 /**
  * <p>Try to use an interpolation method which is not defined or not yet
  * implemented.</p>
+ *
  * @author Michaël Michaud
  */
-
 public class NonInvertibleOperationException extends Exception {
-    
-   /**
-    * Create a new NonInvertibleOperationException.
-    * @param exception description of this exception
-    */
+
+    /**
+     * Create a new NonInvertibleOperationException.
+     *
+     * @param exception description of this exception
+     */
     public NonInvertibleOperationException(String exception) {
         super(exception);
     }
-    
-   /**
-    * Create a new InterpolationMethodException.
-    * @param op the interpolation method
-    */
+
+    /**
+     * Create a new InterpolationMethodException.
+     *
+     * @param op the interpolation method
+     */
     public NonInvertibleOperationException(CoordinateOperation op) {
         super("" + op.getName() + " is not invertible");
     }
-    
 }

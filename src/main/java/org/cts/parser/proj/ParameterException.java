@@ -35,10 +35,9 @@ package org.cts.parser.proj;
  *
  * @author Erwan Bocher
  */
-public class ParameterException  extends RuntimeException {
+public class ParameterException extends RuntimeException {
 
-        public ParameterException(String message) {
-                super(message);
-        }
-        
+    public ParameterException(String message) {
+        super(message);
+    }
 }

@@ -41,9 +41,12 @@ import org.cts.IllegalCoordinateException;
  */
 public class Identity extends AbstractCoordinateOperation {
 
+    /**
+     * The identity transformation. When used to transform coordinates, it
+     * returns the input coordinates.
+     */
     public static final Identity IDENTITY = new Identity();
 
-    //public static Identity getInstance() {return IDENTITY;}
     /**
      * Identity is defined as a Singleton in order to avoid unuseful object
      * creation.
@@ -53,6 +56,12 @@ public class Identity extends AbstractCoordinateOperation {
         this.precision = 0.0;
     }
 
+    /**
+     * Apply the identity transformation to input coordinates.
+     * 
+     * @param coord is an array containing one, two or three ordinates
+     * @throws IllegalCoordinateException 
+     */
     @Override
     public double[] transform(double[] coord) throws IllegalCoordinateException {
         return coord;

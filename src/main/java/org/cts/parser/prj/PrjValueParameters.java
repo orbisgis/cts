@@ -36,42 +36,49 @@ import java.util.Map;
 
 /**
  * A class to manage all values used to fill a PRJ file
+ *
  * @author Erwan Bocher, Jules Party
  */
 public class PrjValueParameters {
+
     /**
-     * A map linking the name of parameters used in PRJ file to the name used in CTS.
+     * A map linking the name of parameters used in PRJ file to the name used in
+     * CTS.
      */
     public static final Map<String, String> PARAMNAMES = new HashMap<String, String>();
-    
     /**
-     * A map linking the name of projections used in PRJ file to the short name used in CTS.
+     * A map linking the name of projections used in PRJ file to the short name
+     * used in CTS.
      */
     public static final Map<String, String> PROJNAMES = new HashMap<String, String>();
-    
     /**
-     * A map linking the name of datums used in PRJ file to the short name used in CTS.
+     * A map linking the name of datums used in PRJ file to the short name used
+     * in CTS.
      */
     public static final Map<String, String> DATUMNAMES = new HashMap<String, String>();
-    
     /**
-     * A map linking the name of ellipsoids used in PRJ file to the short name used in CTS.
+     * A map linking the name of ellipsoids used in PRJ file to the short name
+     * used in CTS.
      */
     public static final Map<String, String> ELLIPSOIDNAMES = new HashMap<String, String>();
-    
     /**
-     * A map linking the name of prime meridians used in PRJ file to the short name used in CTS.
+     * A map linking the name of prime meridians used in PRJ file to the short
+     * name used in CTS.
      */
     public static final Map<String, String> PRIMEMERIDIANNAMES = new HashMap<String, String>();
-    
+
     static {
         PARAMNAMES.put("centralmeridian", "lon_0");
+        PARAMNAMES.put("longitudeofcenter", "lon_0");
         PARAMNAMES.put("falseeasting", "x_0");
         PARAMNAMES.put("falsenorthing", "y_0");
         PARAMNAMES.put("latitudeoforigin", "lat_0");
+        PARAMNAMES.put("latitudeofcenter", "lat_0");
         PARAMNAMES.put("scalefactor", "k_0");
         PARAMNAMES.put("standardparallel1", "lat_1");
         PARAMNAMES.put("standardparallel2", "lat_2");
+        PARAMNAMES.put("azimuth", "alpha");
+        PARAMNAMES.put("rectifiedgridangle", "gamma");
         PROJNAMES.put("airy", "airy");
         PROJNAMES.put("aitoff", "aitoff");
         PROJNAMES.put("albers" + "equal" + "area", "aea");
@@ -80,6 +87,7 @@ public class PrjValueParameters {
         PROJNAMES.put("boggs" + "eumorphic", "bipc");
         PROJNAMES.put("bonne", "bonne");
         PROJNAMES.put("cassini", "cass");
+        PROJNAMES.put("cassini"+"soldner", "cass");
         PROJNAMES.put("central" + "cylindrical", "cc");
         PROJNAMES.put("collignon", "collg");
         PROJNAMES.put("craster" + "parabolic", "crast");
@@ -100,7 +108,8 @@ public class PrjValueParameters {
         PROJNAMES.put("goode" + "homolosine", "goode");
         PROJNAMES.put("hammer" + "eckert" + "greifendorff", "hammer");
         PROJNAMES.put("hatano" + "asymmetrical" + "equal" + "area", "hatano");
-        PROJNAMES.put("kavraisky" + "v","kav5");
+        PROJNAMES.put("hotine"+"oblique"+"mercator", "omerc");
+        PROJNAMES.put("kavraisky" + "v", "kav5");
         PROJNAMES.put("lagrange", "lagrng");
         PROJNAMES.put("lambert" + "azimuthal" + "equal" + "area", "laea");
         PROJNAMES.put("lambert" + "conformal" + "conic", "lcc");

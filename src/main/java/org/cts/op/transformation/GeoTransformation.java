@@ -36,10 +36,11 @@ package org.cts.op.transformation;
  * @author Erwan Bocher
  */
 public interface GeoTransformation {
-        
-         /**
-         * Returns a WKT representation of the transformation
-         * @return 
-         */
-         String toWKT();
+
+    /**
+     * Returns a WKT representation of the transformation
+     *
+     * @return
+     */
+    String toWKT();
 }

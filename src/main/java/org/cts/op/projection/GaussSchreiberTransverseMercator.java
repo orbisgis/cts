@@ -32,13 +32,22 @@
 package org.cts.op.projection;
 
 import java.util.Map;
-import static java.lang.Math.*;
+
 import org.cts.CoordinateDimensionException;
-import org.cts.datum.Ellipsoid;
 import org.cts.Identifier;
-import org.cts.units.Measure;
+import org.cts.datum.Ellipsoid;
 import org.cts.op.CoordinateOperation;
 import org.cts.op.NonInvertibleOperationException;
+import org.cts.units.Measure;
+
+import static java.lang.Math.asin;
+import static java.lang.Math.atan;
+import static java.lang.Math.cos;
+import static java.lang.Math.cosh;
+import static java.lang.Math.pow;
+import static java.lang.Math.sin;
+import static java.lang.Math.sinh;
+import static java.lang.Math.sqrt;
 
 /**
  * The Gauss Schreiber Transverse Mercator (GSTMERC). <p>
@@ -47,6 +56,10 @@ import org.cts.op.NonInvertibleOperationException;
  */
 public class GaussSchreiberTransverseMercator extends Projection {
 
+    /**
+     * The Identifier used for all Gauss Schreiber Transverse Mercator
+     * projections.
+     */
     public static final Identifier GSTMERC =
             new Identifier("IGNF", "REUN47GAUSSL", "Gauss Schreiber Transverse Mercator (aka Gauss Laborde Réunion", "GSTMERC");
     protected final double lon0, // the reference longitude (from the datum prime meridian)
@@ -58,11 +71,12 @@ public class GaussSchreiberTransverseMercator extends Projection {
             ys;   // y coordinate of the pole
 
     /**
-     * Create a new Gauss Schreiber Transverse Mercator Projection corresponding to
-     * the <code>Ellipsoid</code> and the list of parameters given in argument
-     * and initialize common parameters lon0 and other parameters
-     * useful for the projection.
-     * 
+     * Create a new Gauss Schreiber Transverse Mercator Projection corresponding
+     * to the
+     * <code>Ellipsoid</code> and the list of parameters given in argument and
+     * initialize common parameters lon0 and other parameters useful for the
+     * projection.
+     *
      * @param ellipsoid ellipsoid used to define the projection.
      * @param parameters a map of useful parameters to define the projection.
      */
@@ -75,10 +89,10 @@ public class GaussSchreiberTransverseMercator extends Projection {
         double FN = getFalseNorthing();
         double k0 = getScaleFactor();
         double e2 = ellipsoid.getSquareEccentricity();
-        n1 = sqrt(1+e2/(1-e2)*pow(cos(lat0), 4));
-        latc = asin(sin(lat0)/n1);
-        c = Ellipsoid.SPHERE.isometricLatitude(latc) - n1*ellipsoid.isometricLatitude(lat0);
-        n2 = k0*ellipsoid.getSemiMajorAxis()*sqrt(1-e2)/(1-e2*sin(lat0)*sin(lat0));
+        n1 = sqrt(1 + e2 / (1 - e2) * pow(cos(lat0), 4));
+        latc = asin(sin(lat0) / n1);
+        c = Ellipsoid.SPHERE.isometricLatitude(latc) - n1 * ellipsoid.isometricLatitude(lat0);
+        n2 = k0 * ellipsoid.getSemiMajorAxis() * sqrt(1 - e2) / (1 - e2 * sin(lat0) * sin(lat0));
         xs = FE;
         ys = FN - n2 * latc;
     }
@@ -114,9 +128,10 @@ public class GaussSchreiberTransverseMercator extends Projection {
     }
 
     /**
-     * Transform coord using the Gauss Schreiber Transverse Mercator Projection. Input
-     * coord is supposed to be a geographic latitude / longitude coordinate in
-     * radians. Algorithm based on the OGP's Guidance Note Number 7 Part 2 :
+     * Transform coord using the Gauss Schreiber Transverse Mercator Projection.
+     * Input coord is supposed to be a geographic latitude / longitude
+     * coordinate in radians. Algorithm based on the OGP's Guidance Note Number
+     * 7 Part 2 :
      * <http://www.epsg.org/guides/G7-2.html>
      *
      * @param coord coordinate to transform
@@ -125,19 +140,20 @@ public class GaussSchreiberTransverseMercator extends Projection {
      */
     @Override
     public double[] transform(double[] coord) throws CoordinateDimensionException {
-        double Lambda = n1*(coord[1]-lon0);
-        double isoLats = c + n1*ellipsoid.isometricLatitude(coord[0]);
-        coord[0] = xs + n2 * Ellipsoid.SPHERE.isometricLatitude(asin(sin(Lambda)/cosh(isoLats)));
-        coord[1] = ys + n2 * atan(sinh(isoLats)/cos(Lambda));
+        double Lambda = n1 * (coord[1] - lon0);
+        double isoLats = c + n1 * ellipsoid.isometricLatitude(coord[0]);
+        coord[0] = xs + n2 * Ellipsoid.SPHERE.isometricLatitude(asin(sin(Lambda) / cosh(isoLats)));
+        coord[1] = ys + n2 * atan(sinh(isoLats) / cos(Lambda));
         return coord;
     }
-    
+
     /**
-     * Creates the inverse operation for Gauss Schreiber Transverse Mercator Projection.
-     * Input coord is supposed to be a projected easting / northing coordinate in meters.
-     * Algorithm based on the OGP's Guidance Note Number 7 Part 2 :
+     * Creates the inverse operation for Gauss Schreiber Transverse Mercator
+     * Projection. Input coord is supposed to be a projected easting / northing
+     * coordinate in meters. Algorithm based on the OGP's Guidance Note Number 7
+     * Part 2 :
      * <http://www.epsg.org/guides/G7-2.html>
-     * 
+     *
      * @param coord coordinate to transform
      */
     @Override
@@ -145,10 +161,10 @@ public class GaussSchreiberTransverseMercator extends Projection {
         return new GaussSchreiberTransverseMercator(ellipsoid, parameters) {
             @Override
             public double[] transform(double[] coord) throws CoordinateDimensionException {
-                double Lambda = atan(sinh((coord[0]-xs)/n2)/cos((coord[1]-ys)/n2));
-                double isoLats = Ellipsoid.SPHERE.isometricLatitude(asin(sin((coord[1]-ys)/n2)/cosh((coord[0]-xs)/n2)));
-                coord[0] = ellipsoid.latitude((isoLats-c)/n1);
-                coord[1] = lon0 + Lambda/n1;
+                double Lambda = atan(sinh((coord[0] - xs) / n2) / cos((coord[1] - ys) / n2));
+                double isoLats = Ellipsoid.SPHERE.isometricLatitude(asin(sin((coord[1] - ys) / n2) / cosh((coord[0] - xs) / n2)));
+                coord[0] = ellipsoid.latitude((isoLats - c) / n1);
+                coord[1] = lon0 + Lambda / n1;
                 return coord;
             }
         };

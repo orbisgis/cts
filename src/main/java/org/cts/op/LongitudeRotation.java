@@ -44,12 +44,14 @@ import org.cts.datum.PrimeMeridian;
  */
 public class LongitudeRotation extends AbstractCoordinateOperation {
 
+    /**
+     * The Identifier used for all Longitude Rotations.
+     */
     private static final Identifier opId =
             new Identifier("EPSG", "9601", "Longitude Rotation", "Rotation");
-    public static final LongitudeRotation PARIS2GREENWICH =
-            LongitudeRotation.getLongitudeRotationFrom(PrimeMeridian.PARIS);
-    public static final LongitudeRotation GREENWICH2PARIS =
-            LongitudeRotation.getLongitudeRotationTo(PrimeMeridian.PARIS);
+    /**
+     * The rotation angle in radians.
+     */
     private double rotationAngle;
 
     /**
@@ -69,10 +71,9 @@ public class LongitudeRotation extends AbstractCoordinateOperation {
      *
      * @param coord is an array containing 2 or 3 double representing geographic
      * coordinate in the following order : latitude (radians), longitude
-     * (radians from Greenwich) and optionnaly ellipsoidal height.
-     * @throws IllegalCoordinateException if
-     * <code>coord</code> is not compatible with this
-     * <code>CoordinateOperation</code>.
+     * (radians from Greenwich) and optionnaly ellipsoidal height
+     * @throws IllegalCoordinateException if <code>coord</code> is not
+     * compatible with this <code>CoordinateOperation</code>.
      */
     @Override
     public double[] transform(double[] coord) throws IllegalCoordinateException {
@@ -83,16 +84,6 @@ public class LongitudeRotation extends AbstractCoordinateOperation {
         return coord;
     }
 
-    /**
-     * Apply the inverse transformation to coord
-     */
-    /*
-     * public void inverseTransform(double[] coord) throws
-     * CoordinateDimensionException, NonInvertibleOperationException { if (coord
-     * == null || coord.length<2) throw new CoordinateDimensionException(coord,
-     * 2); coord[1] = coord[1] - rotationAngle;
-	}
-     */
     /**
      * Creates the inverse CoordinateOperation.
      */
@@ -124,6 +115,6 @@ public class LongitudeRotation extends AbstractCoordinateOperation {
      */
     @Override
     public String toString() {
-        return getName() + " ( " + rotationAngle * 180 / Math.PI + "� )";
+        return getName() + " ( " + rotationAngle * 180 / Math.PI + "° )";
     }
 }

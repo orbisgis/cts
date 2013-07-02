@@ -32,13 +32,14 @@
 package org.cts.op.projection;
 
 import java.util.Map;
-import org.cts.util.Complex;
+
 import org.cts.CoordinateDimensionException;
-import org.cts.op.CoordinateOperation;
-import org.cts.datum.Ellipsoid;
 import org.cts.Identifier;
-import org.cts.units.Measure;
+import org.cts.datum.Ellipsoid;
+import org.cts.op.CoordinateOperation;
 import org.cts.op.NonInvertibleOperationException;
+import org.cts.units.Measure;
+import org.cts.util.Complex;
 
 /**
  * A map projection is any method used in cartography (mapmaking) to represent
@@ -50,8 +51,11 @@ import org.cts.op.NonInvertibleOperationException;
  */
 public class TransverseMercator extends Projection {
 
-    public static final Identifier UTM =
-            new Identifier("EPSG", "9824", "Transverse Mercator Zoned Grid System", "UTM");
+    /**
+     * The Identifier used for all Transverse Mercator projections.
+     */
+    public static final Identifier TMERC =
+            new Identifier("EPSG", "9807", "Transverse Mercator", "TMERC");
     protected final double lat0, // the reference latitude
             lon0, // the reference longitude (from the datum prime meridian)
             n, // projection exponent
@@ -61,17 +65,17 @@ public class TransverseMercator extends Projection {
     protected final double[] dircoeff, invcoeff;
 
     /**
-     * Create a new Transverse Mercator Projection corresponding to
-     * the <code>Ellipsoid</code> and the list of parameters given in argument
-     * and initialize common parameters lon0, lat0 and other parameters
-     * useful for the projection.
-     * 
+     * Create a new Transverse Mercator Projection corresponding to the
+     * <code>Ellipsoid</code> and the list of parameters given in argument and
+     * initialize common parameters lon0, lat0 and other parameters useful for
+     * the projection.
+     *
      * @param ellipsoid ellipsoid used to define the projection.
      * @param parameters a map of useful parameters to define the projection.
      */
     public TransverseMercator(final Ellipsoid ellipsoid,
             final Map<String, Measure> parameters) {
-        super(UTM, ellipsoid, parameters);
+        super(TMERC, ellipsoid, parameters);
         double k0 = getScaleFactor();
         double x0 = getFalseEasting();
         double y0 = getFalseNorthing();
@@ -86,14 +90,12 @@ public class TransverseMercator extends Projection {
     }
 
     /**
-     * Transform coord using a Transverse Mercator projection. Input coord
-     * is supposed to be a geographic latitude / longitude coordinate in
-     * radians.
+     * Transform coord using a Transverse Mercator projection. Input coord is
+     * supposed to be a geographic latitude / longitude coordinate in radians.
      *
      * @param coord coordinate to transform
-     * @throws CoordinateDimensionException if
-     * <code>coord</code> length is not compatible with this
-     * <code>CoordinateOperation</code>.
+     * @throws CoordinateDimensionException if <code>coord</code> length is not
+     * compatible with this <code>CoordinateOperation</code>.
      */
     @Override
     public double[] transform(double[] coord) throws CoordinateDimensionException {
@@ -117,7 +119,6 @@ public class TransverseMercator extends Projection {
     @Override
     public CoordinateOperation inverse() throws NonInvertibleOperationException {
         return new TransverseMercator(ellipsoid, parameters) {
-
             @Override
             public double[] transform(double[] coord) throws CoordinateDimensionException {
                 Complex z = new Complex((coord[1] - ys) / (n * invcoeff[0]),

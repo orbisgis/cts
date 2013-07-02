@@ -52,9 +52,8 @@ public interface CoordinateOperation extends Identifiable {
      *
      * @param coord coordinate to be transformed
      * @return the same object with new values or a new double array
-     * @throws IllegalCoordinateException if
-     * <code>coord</code> is not compatible with this
-     * <code>CoordinateOperation</code>.
+     * @throws IllegalCoordinateException if <code>coord</code> is not
+     * compatible with this <code>CoordinateOperation</code>.
      */
     public double[] transform(double[] coord) throws IllegalCoordinateException;
 

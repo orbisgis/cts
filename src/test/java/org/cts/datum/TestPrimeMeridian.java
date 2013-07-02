@@ -94,37 +94,34 @@ public class TestPrimeMeridian extends CTSTestCase {
         assertTrue(checkEquals("FERRO ", PrimeMeridian.FERRO.getLongitudeFromGreenwichInDegrees(), -17.4, 10E-9));
         assertTrue(PrimeMeridian.FERRO.getAuthorityKey().equals("8909"));
     }
-    
+
     @Test
     public void testBRUSSELS_PM() {
         assertTrue(checkEquals("BRUSSELS ", PrimeMeridian.BRUSSELS.getLongitudeFromGreenwichInDegrees(), 4.220471, 10E-9));
         assertTrue(PrimeMeridian.BRUSSELS.getAuthorityKey().equals("8910"));
     }
-    
+
     @Test
     public void testSTOCKHOLM_PM() {
         assertTrue(checkEquals("STOCKHOLM ", PrimeMeridian.STOCKHOLM.getLongitudeFromGreenwichInDegrees(), 18.03298, 10E-9));
         assertTrue(PrimeMeridian.STOCKHOLM.getAuthorityKey().equals("8911"));
     }
-    
+
     @Test
     public void testATHENS_PM() {
         assertTrue(checkEquals("ATHENS ", PrimeMeridian.ATHENS.getLongitudeFromGreenwichInDegrees(), 23.4258815, 10E-9));
         assertTrue(PrimeMeridian.ATHENS.getAuthorityKey().equals("8912"));
     }
-    
+
     @Test
     public void testOSLO_PM() {
         assertTrue(checkEquals("OSLO ", PrimeMeridian.OSLO.getLongitudeFromGreenwichInDegrees(), 10.43225, 10E-9));
         assertTrue(PrimeMeridian.OSLO.getAuthorityKey().equals("8913"));
     }
-    
+
     @Test
     public void testPARIS_RGS_PM() {
         assertTrue(checkEquals("PARIS_RGS ", PrimeMeridian.PARIS_RGS.getLongitudeFromGreenwichInDegrees(), 2.201395, 10E-9));
         assertTrue(PrimeMeridian.PARIS_RGS.getAuthorityKey().equals("8914"));
     }
-    
-    
-    
 }

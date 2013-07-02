@@ -42,16 +42,22 @@ import org.cts.IllegalCoordinateException;
  */
 public class CoordinateSwitch extends AbstractCoordinateOperation {
 
+    /**
+     * Switch the two first value of a coordinate. For instance longitude and
+     * latitude in the case of geographic coordinates.
+     */
     public final static CoordinateSwitch SWITCH_LAT_LON = new CoordinateSwitch(0, 1);
+    /**
+     * Position of the ordinate to switch.
+     */
     int pos1, pos2;
 
     /**
      * Change ordinate at pos1 with ordinate at pos2.
      *
-     * @param coord is an array containing one, two or three ordinates.
-     * @throws IllegalCoordinateException if
-     * <code>coord</code> is not compatible with this
-     * <code>CoordinateOperation</code>.
+     * @param coord is an array containing one, two or three ordinates
+     * @throws IllegalCoordinateException if <code>coord</code> is not
+     * compatible with this <code>CoordinateOperation</code>.
      */
     @Override
     public double[] transform(double[] coord)

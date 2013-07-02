@@ -32,10 +32,11 @@
 package org.cts.datum;
 
 import java.util.*;
-import org.cts.op.CoordinateOperation;
+
 import org.cts.IdentifiableComponent;
 import org.cts.Identifier;
 import org.cts.cs.Extent;
+import org.cts.op.CoordinateOperation;
 
 /**
  * A datum (plural datums) is a reference from which measurements are made.<p>
@@ -54,17 +55,28 @@ import org.cts.cs.Extent;
 public abstract class AbstractDatum extends IdentifiableComponent
         implements Datum {
 
+    /**
+     * The valid {@link Extent} of this Datum.
+     */
     private Extent extent;
+    /**
+     * The description of this Datum origin.
+     */
     private String origin;
+    /**
+     * The realization epoch of this Datum as a String.
+     */
     private String epoch;
-    // A map of known transformations from this datum to other datums
+    /**
+     * A map of known transformations from this Datum to other {@linkplain Datum datums}.
+     */
     private Map<Datum, List<CoordinateOperation>> datumTransformations =
             new HashMap<Datum, List<CoordinateOperation>>();
 
     /**
      * Creates a new Datum.
      *
-     * @param identifier
+     * @param identifier the identifier of this Datum
      * @param extent valid domain extent (extent definition depends on the kind
      * of Datum)
      * @param origin description of the origin or anchor point of this Datum.
@@ -78,7 +90,7 @@ public abstract class AbstractDatum extends IdentifiableComponent
     }
 
     /**
-     * Returns the valid extent of this Datum
+     * Returns the valid extent of this Datum.
      */
     @Override
     public Extent getExtent() {
@@ -86,7 +98,7 @@ public abstract class AbstractDatum extends IdentifiableComponent
     }
 
     /**
-     * Returns the description of this Datum origin
+     * Returns the description of this Datum origin.
      */
     @Override
     public String getOrigin() {
@@ -94,7 +106,7 @@ public abstract class AbstractDatum extends IdentifiableComponent
     }
 
     /**
-     * Returns the realization epoch of this Datum as a String
+     * Returns the realization epoch of this Datum as a String.
      */
     @Override
     public String getEpoch() {
@@ -103,6 +115,10 @@ public abstract class AbstractDatum extends IdentifiableComponent
 
     /**
      * Add a Transformation to another Datum.
+     *
+     * @param datum the target datum of the transformation to add
+     * @param coordOp the transformation linking this Datum and the
+     * target <code>datum</code>
      */
     public void addCoordinateOperation(Datum datum, CoordinateOperation coordOp) {
         if (datumTransformations.get(datum) == null) {
@@ -113,6 +129,8 @@ public abstract class AbstractDatum extends IdentifiableComponent
 
     /**
      * Get a transformation to another datum.
+     *
+     * @param datum the datum that must be a target for returned transformation
      */
     public List<CoordinateOperation> getCoordinateOperations(Datum datum) {
         if (datumTransformations.get(datum) == null) {

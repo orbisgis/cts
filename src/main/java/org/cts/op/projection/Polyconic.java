@@ -32,13 +32,20 @@
 package org.cts.op.projection;
 
 import java.util.Map;
+
 import org.cts.CoordinateDimensionException;
-import org.cts.datum.Ellipsoid;
 import org.cts.Identifier;
-import org.cts.units.Measure;
-import static java.lang.Math.*;
+import org.cts.datum.Ellipsoid;
 import org.cts.op.CoordinateOperation;
 import org.cts.op.NonInvertibleOperationException;
+import org.cts.units.Measure;
+
+import static java.lang.Math.asin;
+import static java.lang.Math.cos;
+import static java.lang.Math.pow;
+import static java.lang.Math.sin;
+import static java.lang.Math.sqrt;
+import static java.lang.Math.tan;
 
 /**
  * The Polyconic (American) Projection (POLY). <p>
@@ -47,6 +54,9 @@ import org.cts.op.NonInvertibleOperationException;
  */
 public class Polyconic extends Projection {
 
+    /**
+     * The Identifier used for all Polyconic projections.
+     */
     public static final Identifier POLY =
             new Identifier("EPSG", "9818", "Polyconic (American)", "POLY");
     protected final double lat0, // the reference latitude
@@ -55,10 +65,10 @@ public class Polyconic extends Projection {
             FN;   // false northing
 
     /**
-     * Create a new Polyconic Projection corresponding to
-     * the <code>Ellipsoid</code> and the list of parameters given in argument
-     * and initialize common parameters lon0, lat0, FE, FN.
-     * 
+     * Create a new Polyconic Projection corresponding to the
+     * <code>Ellipsoid</code> and the list of parameters given in argument and
+     * initialize common parameters lon0, lat0, FE, FN.
+     *
      * @param ellipsoid ellipsoid used to define the projection.
      * @param parameters a map of useful parameters to define the projection.
      */
@@ -102,10 +112,10 @@ public class Polyconic extends Projection {
     }
 
     /**
-     * Transform coord using the Polyconic Projection. Input
-     * coord is supposed to be a geographic latitude / longitude coordinate in
-     * radians. Algorithm based on the USGS professional paper 1395,
-     * "Map Projection - A Working Manual" by John P. Snyder :
+     * Transform coord using the Polyconic Projection. Input coord is supposed
+     * to be a geographic latitude / longitude coordinate in radians. Algorithm
+     * based on the USGS professional paper 1395, "Map Projection - A Working
+     * Manual" by John P. Snyder :
      * <http://pubs.er.usgs.gov/publication/pp1395>
      *
      * @param coord coordinate to transform
@@ -115,20 +125,20 @@ public class Polyconic extends Projection {
     @Override
     public double[] transform(double[] coord) throws CoordinateDimensionException {
         double a = ellipsoid.getSemiMajorAxis();
-        double M0 = a*ellipsoid.curvilinearAbscissa(lat0);
-        if (coord[0]==0) {
-            coord[0] = FE + ellipsoid.getSemiMajorAxis()*(coord[1]-lon0);
-            coord[1] = FN -M0;
+        double M0 = a * ellipsoid.curvilinearAbscissa(lat0);
+        if (coord[0] == 0) {
+            coord[0] = FE + ellipsoid.getSemiMajorAxis() * (coord[1] - lon0);
+            coord[1] = FN - M0;
         } else {
-            double M = a*ellipsoid.curvilinearAbscissa(coord[0]);
+            double M = a * ellipsoid.curvilinearAbscissa(coord[0]);
             double v = ellipsoid.transverseRadiusOfCurvature(coord[0]);
-            double L = (coord[1]-lon0)*sin(coord[0]);
-            coord[1] = FN + M - M0 + v/tan(coord[0])*(1-cos(L));
-            coord[0] = FE + v/tan(coord[0])*sin(L);
+            double L = (coord[1] - lon0) * sin(coord[0]);
+            coord[1] = FN + M - M0 + v / tan(coord[0]) * (1 - cos(L));
+            coord[0] = FE + v / tan(coord[0]) * sin(L);
         }
         return coord;
     }
-    
+
     private double curvilinearAbscissaPrime(double latitude) {
         double[] arc_coeff = ellipsoid.getArcCoeff();
         return arc_coeff[0]
@@ -137,24 +147,23 @@ public class Polyconic extends Projection {
                 + 6 * arc_coeff[3] * cos(6 * latitude)
                 + 8 * arc_coeff[4] * cos(8 * latitude);
     }
-    
+
     /**
-     * Creates the inverse operation for Polyconic Projection.
-     * Input coord is supposed to be a projected easting / northing coordinate in meters.
-     * Algorithm based on the USGS professional paper 1395,
-     * "Map Projection - A Working Manual" by John P. Snyder :
+     * Creates the inverse operation for Polyconic Projection. Input coord is
+     * supposed to be a projected easting / northing coordinate in meters.
+     * Algorithm based on the USGS professional paper 1395, "Map Projection - A
+     * Working Manual" by John P. Snyder :
      * <http://pubs.er.usgs.gov/publication/pp1395>
-     * 
+     *
      * @param coord coordinate to transform
      */
     @Override
     public CoordinateOperation inverse() throws NonInvertibleOperationException {
         return new Polyconic(ellipsoid, parameters) {
-
             @Override
             public double[] transform(double[] coord) throws CoordinateDimensionException {
                 double a = ellipsoid.getSemiMajorAxis();
-                double M0 = a*ellipsoid.curvilinearAbscissa(lat0);
+                double M0 = a * ellipsoid.curvilinearAbscissa(lat0);
                 double e2 = ellipsoid.getSquareEccentricity();
                 double x = coord[0] - FE;
                 double y = coord[1] - FN;
@@ -170,16 +179,16 @@ public class Polyconic extends Projection {
                     int iter = 0;
                     while (++iter < MAXITER && Math.abs(lat - latold) > 1.E-15) {
                         latold = lat;
-                        C = sqrt(1-e2*sin(lat)*sin(lat))*tan(lat);
+                        C = sqrt(1 - e2 * sin(lat) * sin(lat)) * tan(lat);
                         double J = ellipsoid.curvilinearAbscissa(lat);
                         double I = curvilinearAbscissaPrime(lat);
-                        lat = latold - (A*(C*J+1)-J-C/2*(J*J+B))/(e2*sin(2*latold)*(J*(J-2*A)+B)/4/C+(A-J)*(C*I-2/sin(2*latold))-I);
+                        lat = latold - (A * (C * J + 1) - J - C / 2 * (J * J + B)) / (e2 * sin(2 * latold) * (J * (J - 2 * A) + B) / 4 / C + (A - J) * (C * I - 2 / sin(2 * latold)) - I);
                     }
                     if (iter == MAXITER) {
-                        throw new ArithmeticException("The inverse Polyconic Projection method diverges. Last value of tolerance = "+Math.abs(lat - latold));
+                        throw new ArithmeticException("The inverse Polyconic Projection method diverges. Last value of tolerance = " + Math.abs(lat - latold));
                     }
                     coord[0] = lat;
-                    coord[1] = lon0 + asin(x*C/a)/sin(lat);
+                    coord[1] = lon0 + asin(x * C / a) / sin(lat);
                 }
                 return coord;
             }

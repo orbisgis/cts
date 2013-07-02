@@ -1,50 +1,50 @@
 /*
-* Coordinate Transformations Suite (abridged CTS)  is a library developped to 
-* perform Coordinate Transformations using well known geodetic algorithms 
-* and parameter sets. 
-* Its main focus are simplicity, flexibility, interoperability, in this order.
-*
-* This library has been originally developed by Michaël Michaud under the JGeod
-* name. It has been renamed CTS in 2009 and shared to the community from 
-* the Atelier SIG code repository.
-* 
-* Since them, CTS is supported by the Atelier SIG team in collaboration with Michaël 
-* Michaud.
-* The new CTS has been funded  by the French Agence Nationale de la Recherche 
-* (ANR) under contract ANR-08-VILL-0005-01 and the regional council 
-* "Région Pays de La Loire" under the projet SOGVILLE (Système d'Orbservation 
-* Géographique de la Ville).
-*
-* CTS is free software: you can redistribute it and/or modify it under the
-* terms of the GNU General Public License as published by the Free Software
-* Foundation, either version 3 of the License, or (at your option) any later
-* version.
-*
-* CTS is distributed in the hope that it will be useful, but WITHOUT ANY
-* WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-* A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License along with
-* CTS. If not, see <http://www.gnu.org/licenses/>.
-*
-* For more information, please consult: <https://github.com/irstv/cts/>
-*/
+ * Coordinate Transformations Suite (abridged CTS)  is a library developped to 
+ * perform Coordinate Transformations using well known geodetic algorithms 
+ * and parameter sets. 
+ * Its main focus are simplicity, flexibility, interoperability, in this order.
+ *
+ * This library has been originally developed by Michaël Michaud under the JGeod
+ * name. It has been renamed CTS in 2009 and shared to the community from 
+ * the Atelier SIG code repository.
+ * 
+ * Since them, CTS is supported by the Atelier SIG team in collaboration with Michaël 
+ * Michaud.
+ * The new CTS has been funded  by the French Agence Nationale de la Recherche 
+ * (ANR) under contract ANR-08-VILL-0005-01 and the regional council 
+ * "Région Pays de La Loire" under the projet SOGVILLE (Système d'Orbservation 
+ * Géographique de la Ville).
+ *
+ * CTS is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * CTS is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * CTS. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * For more information, please consult: <https://github.com/irstv/cts/>
+ */
 package org.cts.crs;
 
-import org.cts.op.CoordinateOperation;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.cts.Identifier;
 import org.cts.cs.Axis;
 import org.cts.cs.CoordinateSystem;
 import org.cts.datum.GeodeticDatum;
 import org.cts.op.ChangeCoordinateDimension;
+import org.cts.op.CoordinateOperation;
 import org.cts.op.CoordinateOperationSequence;
 import org.cts.op.CoordinateSwitch;
 import org.cts.op.UnitConversion;
 import org.cts.op.projection.Projection;
 import org.cts.units.Unit;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.cts.cs.Axis.LATITUDE;
 import static org.cts.cs.Axis.LONGITUDE;
@@ -58,25 +58,55 @@ import static org.cts.units.Unit.*;
  */
 public class Geographic2DCRS extends GeodeticCRS {
 
+    /**
+     * A 2D {@link CoordinateSystem} whose first {@link Axis} contains latitude
+     * and second {@link Axis} contains longitude. The unit used by these axes
+     * is radian.
+     */
     public static CoordinateSystem LATLON_RR_CS = new CoordinateSystem(
             new Axis[]{LATITUDE, LONGITUDE}, new Unit[]{RADIAN, RADIAN});
+    /**
+     * A 2D {@link CoordinateSystem} whose first {@link Axis} contains longitude
+     * and second {@link Axis} contains latitude. The unit used by these axes is
+     * radian.
+     */
     public static CoordinateSystem LONLAT_RR_CS = new CoordinateSystem(
             new Axis[]{LONGITUDE, LATITUDE}, new Unit[]{RADIAN, RADIAN});
+    /**
+     * A 2D {@link CoordinateSystem} whose first {@link Axis} contains latitude
+     * and second {@link Axis} contains longitude. The unit used by these axes
+     * is decimal degree.
+     */
     public static CoordinateSystem LATLON_DD_CS = new CoordinateSystem(
             new Axis[]{LATITUDE, LONGITUDE}, new Unit[]{DEGREE, DEGREE});
+    /**
+     * A 2D {@link CoordinateSystem} whose first {@link Axis} contains longitude
+     * and second {@link Axis} contains latitude. The unit used by these axes is
+     * decimal degree.
+     */
     public static CoordinateSystem LONLAT_DD_CS = new CoordinateSystem(
             new Axis[]{LONGITUDE, LATITUDE}, new Unit[]{DEGREE, DEGREE});
+    /**
+     * A 2D {@link CoordinateSystem} whose first {@link Axis} contains latitude
+     * and second {@link Axis} contains longitude. The unit used by these axes
+     * is grad.
+     */
     public static CoordinateSystem LATLON_GG_CS = new CoordinateSystem(
             new Axis[]{LATITUDE, LONGITUDE}, new Unit[]{GRAD, GRAD});
+    /**
+     * A 2D {@link CoordinateSystem} whose first {@link Axis} contains longitude
+     * and second {@link Axis} contains latitude. The unit used by these axes is
+     * grad.
+     */
     public static CoordinateSystem LONLAT_GG_CS = new CoordinateSystem(
             new Axis[]{LONGITUDE, LATITUDE}, new Unit[]{GRAD, GRAD});
 
     /**
-     * Create a new Geographic2DCRS
+     * Create a new Geographic2DCRS.
      *
-     * @param identifier
-     * @param datum
-     * @param coordSys
+     * @param identifier the identifier of the Geographic2DCRS
+     * @param datum the datum associated with the Geographic2DCRS
+     * @param coordSys the coordinate system associated with the Geographic2DCRS
      */
     public Geographic2DCRS(Identifier identifier, GeodeticDatum datum,
             CoordinateSystem coordSys) {
@@ -84,11 +114,14 @@ public class Geographic2DCRS extends GeodeticCRS {
     }
 
     /**
-     * Create a new Geographic2DCRS
+     * Create a new Geographic2DCRS. The first {@link Axis} of the associated
+     * {@link CoordinateSystem} contains latitude and the second {@link Axis}
+     * contains longitude.
      *
-     * @param identifier
-     * @param datum
-     * @param unit
+     * @param identifier the identifier of the Geographic2DCRS
+     * @param datum the datum associated with the Geographic2DCRS
+     * @param unit the unit to use for the coordinate system associated with the
+     * Geographic2DCRS
      */
     public Geographic2DCRS(Identifier identifier, GeodeticDatum datum, Unit unit) {
         super(identifier, datum, LATLON_DD_CS);
@@ -101,6 +134,14 @@ public class Geographic2DCRS extends GeodeticCRS {
         } else;
     }
 
+    /**
+     * Create a new Geographic2DCRS. The first {@link Axis} of the associated
+     * {@link CoordinateSystem} contains latitude and the second {@link Axis}
+     * contains longitude.
+     *
+     * @param identifier the identifier of the Geographic2DCRS
+     * @param datum the datum associated with the Geographic2DCRS
+     */
     public Geographic2DCRS(Identifier identifier, GeodeticDatum datum) {
         super(identifier, datum, LATLON_DD_CS);
     }
@@ -144,13 +185,16 @@ public class Geographic2DCRS extends GeodeticCRS {
                 CoordinateOperationSequence.class), ops);
     }
 
+    /**
+     * @see GeodeticCRS#getProjection()
+     */
     @Override
     public Projection getProjection() {
         return null;
     }
 
     /**
-     * Return this CoordinateReferenceSystem Type
+     * @see GeodeticCRS#getType()
      */
     public Type getType() {
         return Type.GEOGRAPHIC2D;

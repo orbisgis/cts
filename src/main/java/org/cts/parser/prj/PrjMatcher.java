@@ -39,6 +39,7 @@ import org.cts.parser.proj.ProjValueParameters;
 
 /**
  * This class is used to get values from parameter in the prj file.
+ *
  * @author Antoine Gourlay, Erwan Bocher, Jules Party
  */
 public final class PrjMatcher {
@@ -57,61 +58,56 @@ public final class PrjMatcher {
      * This class is used to find the key and value in the WKT
      */
     private PrjNodeMatcher[] projCSmatchers = new PrjNodeMatcher[]{new PrjNodeMatcher() {
+            @Override
+            public String getName() {
+                return PrjKeyParameters.GEOGCS;
+            }
 
-    @Override
-    public String getName() {
-        return PrjKeyParameters.GEOGCS;
-    }
+            @Override
+            public void run(List<PrjElement> list) {
+                parseGeogcs(list, false);
+            }
+        }, new PrjNodeMatcher() {
+            @Override
+            public String getName() {
+                return PrjKeyParameters.UNIT;
+            }
 
-    @Override
-    public void run(List<PrjElement> list) {
-        parseGeogcs(list, false);
-    }
-}, new PrjNodeMatcher() {
+            @Override
+            public void run(List<PrjElement> list) {
+                parseUnit(list);
+            }
+        }, new PrjNodeMatcher() {
+            @Override
+            public String getName() {
+                return PrjKeyParameters.PROJECTION;
+            }
 
-    @Override
-    public String getName() {
-        return PrjKeyParameters.UNIT;
-    }
+            @Override
+            public void run(List<PrjElement> list) {
+                parseProjection(list);
+            }
+        }, new PrjNodeMatcher() {
+            @Override
+            public String getName() {
+                return PrjKeyParameters.PARAMETER;
+            }
 
-    @Override
-    public void run(List<PrjElement> list) {
-        parseUnit(list);
-    }
-}, new PrjNodeMatcher() {
+            @Override
+            public void run(List<PrjElement> list) {
+                parseParameter(list);
+            }
+        }, new PrjNodeMatcher() {
+            @Override
+            public String getName() {
+                return PrjKeyParameters.AUTHORITY;
+            }
 
-    @Override
-    public String getName() {
-        return PrjKeyParameters.PROJECTION;
-    }
-
-    @Override
-    public void run(List<PrjElement> list) {
-        parseProjection(list);
-    }
-}, new PrjNodeMatcher() {
-
-    @Override
-    public String getName() {
-        return PrjKeyParameters.PARAMETER;
-    }
-
-    @Override
-    public void run(List<PrjElement> list) {
-        parseParameter(list);
-    }
-}, new PrjNodeMatcher() {
-
-    @Override
-    public String getName() {
-        return PrjKeyParameters.AUTHORITY;
-    }
-
-    @Override
-    public void run(List<PrjElement> list) {
-        parseAuthority(list);
-    }
-}};
+            @Override
+            public void run(List<PrjElement> list) {
+                parseAuthority(list);
+            }
+        }};
 
     private Map<String, String> doMatch(PrjElement el) {
         // PROJCS[ ...
@@ -130,11 +126,22 @@ public final class PrjMatcher {
         }
 
         // clean up params
-        String unit = params.remove(PrjKeyParameters.UNITVAL);
-        if (unit == null || Double.valueOf(unit) - 1.0 < TOL) {
+        String unit = params.remove(PrjKeyParameters.UNIT);
+        String unitval = params.remove(PrjKeyParameters.UNITVAL);
+        if (unitval == null || Math.abs(Double.valueOf(unitval) - 1.0) < TOL) {
             params.put(ProjKeyParameters.units, ProjValueParameters.M);
-        } else {
-            params.put(ProjKeyParameters.to_meter, unit);
+        } else if (!unit.equals("degree")) {
+            params.put(ProjKeyParameters.to_meter, unitval);
+            String x0 = params.remove(ProjKeyParameters.x_0);
+            if (x0 != null) {
+                x0 = Double.toString(Double.valueOf(x0) * Double.valueOf(unitval));
+                params.put(ProjKeyParameters.x_0, x0);
+            }
+            String y0 = params.remove(ProjKeyParameters.y_0);
+            if (y0 != null) {
+                y0 = Double.toString(Double.valueOf(y0) * Double.valueOf(unitval));
+                params.put(ProjKeyParameters.y_0, y0);
+            }
         }
         // authority, if present
         String auth = params.remove(PrjKeyParameters.REFAUTHORITY);
@@ -161,7 +168,6 @@ public final class PrjMatcher {
             matchers = new PrjNodeMatcher[2];
         }
         matchers[0] = new PrjNodeMatcher() {
-
             @Override
             public String getName() {
                 return ProjKeyParameters.datum;
@@ -173,7 +179,6 @@ public final class PrjMatcher {
             }
         };
         matchers[1] = new PrjNodeMatcher() {
-
             @Override
             public String getName() {
                 return PrjKeyParameters.PRIMEM;
@@ -187,7 +192,6 @@ public final class PrjMatcher {
 
         if (rootElement) {
             matchers[2] = new PrjNodeMatcher() {
-
                 @Override
                 public String getName() {
                     return PrjKeyParameters.AUTHORITY;
@@ -213,37 +217,39 @@ public final class PrjMatcher {
     private void parseDatum(List<PrjElement> ll) {
         String datum = getString(ll.get(0));
         datum = datum.replaceAll("[^a-zA-Z0-9]", "");
-            String datm = PrjValueParameters.DATUMNAMES.get(datum.toLowerCase());
-            if (datm!=null) {
-                params.put(ProjKeyParameters.datum, datm);
-            } else {
-                List<PrjElement> nn = matchNode(ll.get(1), PrjKeyParameters.SPHEROID);
-                String ellps = getString(nn.get(0));
-                ellps = ellps.replaceAll("[^a-zA-Z0-9]", "");
-                String elps = PrjValueParameters.ELLIPSOIDNAMES.get(ellps.toLowerCase());
-            if (elps!=null) {
+        String datm = PrjValueParameters.DATUMNAMES.get(datum.toLowerCase());
+        if (datm != null) {
+            params.put(ProjKeyParameters.datum, datm);
+        } else {
+            List<PrjElement> nn = matchNode(ll.get(1), PrjKeyParameters.SPHEROID);
+            String ellps = getString(nn.get(0));
+            ellps = ellps.replaceAll("[^a-zA-Z0-9]", "");
+            String elps = PrjValueParameters.ELLIPSOIDNAMES.get(ellps.toLowerCase());
+            if (elps != null) {
                 params.put(ProjKeyParameters.ellps, elps);
             } else {
                 parseNumber(nn.get(1), ProjKeyParameters.a);
                 parseNumber(nn.get(2), ProjKeyParameters.rf);
             }
 
-                if (ll.size() > 2) {
-                    List<PrjElement> els = matchNode(ll.get(2), ProjKeyParameters.towgs84, false);
-                    if (els != null) {
-                        StringBuilder b = new StringBuilder();
-                        b.append(getNumber(els.get(0)));
-                        for (int i = 1; i < els.size(); i++) {
-                            b.append(',').append(getNumber(els.get(i)));
-                        }
-                        params.put(ProjKeyParameters.towgs84, b.toString());
+            if (ll.size() > 2) {
+                List<PrjElement> els = matchNode(ll.get(2), ProjKeyParameters.towgs84, false);
+                if (els != null) {
+                    StringBuilder b = new StringBuilder();
+                    b.append(getNumber(els.get(0)));
+                    for (int i = 1; i < els.size(); i++) {
+                        b.append(',').append(getNumber(els.get(i)));
                     }
+                    params.put(ProjKeyParameters.towgs84, b.toString());
                 }
             }
+        }
     }
 
     private void parseUnit(List<PrjElement> ll) {
-        //parseString(ll.get(0), "unit");
+        String unit = getString(ll.get(0));
+        unit = unit.replaceAll("[^a-zA-Z0-9]", "").toLowerCase();
+        params.put(PrjKeyParameters.UNIT, unit);
         parseNumber(ll.get(1), PrjKeyParameters.UNITVAL);
     }
 
@@ -251,7 +257,7 @@ public final class PrjMatcher {
         String proj = getString(ll.get(0));
         proj = proj.replaceAll("[^a-zA-Z0-9]", "");
         String prj = PrjValueParameters.PROJNAMES.get(proj.toLowerCase());
-        if (prj!=null) {
+        if (prj != null) {
             params.put(ProjKeyParameters.proj, prj);
         }
     }
@@ -271,7 +277,7 @@ public final class PrjMatcher {
         String param = getString(ll.get(0));
         param = param.replaceAll("[^a-zA-Z0-9]", "");
         String parm = PrjValueParameters.PARAMNAMES.get(param.toLowerCase());
-        if (parm!=null) {
+        if (parm != null) {
             parseNumber(ll.get(1), parm);
         }
     }
