@@ -126,7 +126,7 @@ public class FrenchProjectionsRobustnessTest extends BaseCoordinateTransformTest
         CoordinateReferenceSystem srcCRS = cRSFactory.getCRS("IGNF:LAMBE");
         CoordinateReferenceSystem outCRS = cRSFactory.getCRS("IGNF:LAMB93");
         double[] result = transform((GeodeticCRS) srcCRS, (GeodeticCRS) outCRS, srcPoint);
-        assertTrue(checkEquals2D(srcCRS + " to " + outCRS, result, expectedPoint, 10E-2));
+        assertTrue(checkEquals2D(srcCRS + " to " + outCRS, result, expectedPoint, 10E-3));
     }
 
     @Test
