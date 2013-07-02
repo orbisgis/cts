@@ -36,6 +36,8 @@ import org.cts.op.CoordinateOperation;
 import org.cts.IdentifiableComponent;
 import org.cts.Identifier;
 import org.cts.cs.Extent;
+import org.cts.op.CoordinateOperationSequence;
+import org.cts.op.NonInvertibleOperationException;
 
 /**
  * A datum (plural datums) is a reference from which measurements are made.<p>
@@ -116,10 +118,25 @@ public abstract class AbstractDatum extends IdentifiableComponent
      */
     public List<CoordinateOperation> getCoordinateOperations(Datum datum) {
         if (datumTransformations.get(datum) == null) {
-            return new ArrayList<CoordinateOperation>();
-        } else {
-            return datumTransformations.get(datum);
+            if (!getCoordinateOperations(GeodeticDatum.WGS84).isEmpty() && !GeodeticDatum.WGS84.getCoordinateOperations(datum).isEmpty()) {
+                CoordinateOperation op = new CoordinateOperationSequence(new Identifier(CoordinateOperationSequence.class, getName() + "to" + datum.getName() + "throughWGS84"),
+                        getCoordinateOperations(GeodeticDatum.WGS84).get(0),
+                        GeodeticDatum.WGS84.getCoordinateOperations(datum).get(0));
+                addCoordinateOperation(datum, op);
+                try {
+                    ((AbstractDatum) datum).addCoordinateOperation(datum, op.inverse());
+                } catch (NonInvertibleOperationException e) {
+                    /* The geocentric transformation should always be inversible.
+                     * Moreover, add the transformation to the target datum is useful
+                     * for further calulation but not essential, so if the inversion
+                     * fails it has no importance
+                     */
+                }
+            } else {
+                datumTransformations.put(datum, new ArrayList<CoordinateOperation>());
+            }
         }
+        return datumTransformations.get(datum);
     }
 
     /**

@@ -129,13 +129,6 @@ public final class CoordinateOperationFactory {
             } else {
                 NTv2GridShiftTransformation gt = (NTv2GridShiftTransformation) coordOp;
                 GeodeticDatum gtSource = GeodeticDatum.datumFromName.get(gt.getFromDatum());
-                if (sourceDatum.getCoordinateOperations(gtSource).isEmpty()) {
-                    CoordinateOperationSequence opSeq = new CoordinateOperationSequence(
-                            new Identifier(CoordinateOperationSequence.class, sourceDatum.getName() + " to " + gtSource.getName() + " through " + GeodeticDatum.WGS84.getName()),
-                            sourceDatum.getCoordinateOperations(GeodeticDatum.WGS84).get(0),
-                            GeodeticDatum.WGS84.getCoordinateOperations(gtSource).get(0));
-                    sourceDatum.addCoordinateOperation(gtSource, opSeq);
-                }
                 opList.add(new CoordinateOperationSequence(
                         new Identifier(CoordinateOperationSequence.class, sourceDatum.getName() + " to " + targetDatum.getName() + " through " + gt.getName() + " transformation"),
                         source.toGeographicCoordinateConverter(),
@@ -166,14 +159,6 @@ public final class CoordinateOperationFactory {
             } else {
                 NTv2GridShiftTransformation gt = (NTv2GridShiftTransformation) coordOp;
                 GeodeticDatum gtSource = GeodeticDatum.datumFromName.get(gt.getFromDatum());
-                if (gtSource.getCoordinateOperations(targetDatum).isEmpty()) {
-                    CoordinateOperationSequence opSeq = new CoordinateOperationSequence(
-                            new Identifier(CoordinateOperationSequence.class, gtSource.getName() + " to " + targetDatum.getName() + " through " + GeodeticDatum.WGS84.getName()),
-                            gtSource.getCoordinateOperations(GeodeticDatum.WGS84).get(0),
-                            GeodeticDatum.WGS84.getCoordinateOperations(targetDatum).get(0));
-                    gtSource.addCoordinateOperation(targetDatum, opSeq);
-                    targetDatum.addCoordinateOperation(gtSource, opSeq.inverse());
-                }
                 opList.add(new CoordinateOperationSequence(
                         new Identifier(CoordinateOperationSequence.class, source.getName() + " to " + target.getName()),
                         source.toGeographicCoordinateConverter(),
@@ -241,20 +226,6 @@ public final class CoordinateOperationFactory {
             } catch (NonInvertibleOperationException e) {
                 LOG.warn("Operation from " + source.getName() + " to " + target.getName()
                         + " through " + datumTf.getName() + " could not be created");
-                LOG.error("CoordinateOperationFactory", e);
-            }
-        }
-        if (opList.isEmpty()) {
-            try {
-                opList.add(new CoordinateOperationSequence(
-                        new Identifier(CoordinateOperationSequence.class),
-                        source.toGeographicCoordinateConverter(),
-                        sourceDatum.getCoordinateOperations(GeodeticDatum.WGS84).get(0),
-                        GeodeticDatum.WGS84.getCoordinateOperations(targetDatum).get(0),
-                        target.fromGeographicCoordinateConverter()));
-            } catch (NonInvertibleOperationException e) {
-                LOG.warn("Operation from " + source.getName() + " to " + target.getName()
-                        + " through " + GeodeticDatum.WGS84.getName() + " could not be created");
                 LOG.error("CoordinateOperationFactory", e);
             }
         }
