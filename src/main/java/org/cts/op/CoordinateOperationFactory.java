@@ -89,6 +89,7 @@ public final class CoordinateOperationFactory {
         if (opList != null) {
             return opList;
         } else {
+            opList = new ArrayList<CoordinateOperation>();
             GeodeticDatum sourceDatum = source.getDatum();
             if (sourceDatum == null) {
                 LOG.warn(source.getName() + " has no Geodetic Datum");
@@ -101,23 +102,24 @@ public final class CoordinateOperationFactory {
             }
 
             if (source.getGridTransformation(targetDatum) != null) {
-                opList = createNadgridsOperationDir(sourceDatum, source, targetDatum, target, source.getGridTransformation(targetDatum));
-            }else if (target.getGridTransformation(sourceDatum) != null) {
-                opList = createNadgridsOperationInv(sourceDatum, source, targetDatum, target, target.getGridTransformation(sourceDatum));
-            } else if (sourceDatum.equals(targetDatum)) {
-                opList = createCoordinateOperations(sourceDatum, source, target);
+                addNadgridsOperationDir(sourceDatum, source, targetDatum, target, source.getGridTransformation(targetDatum), opList);
+            } else if (target.getGridTransformation(sourceDatum) != null) {
+                addNadgridsOperationInv(sourceDatum, source, targetDatum, target, target.getGridTransformation(sourceDatum), opList);
+            }
+            if (sourceDatum.equals(targetDatum)) {
+                addCoordinateOperations(sourceDatum, source, target, opList);
             } else {
-                opList = createCoordinateOperations(sourceDatum, source, targetDatum, target);
+                addCoordinateOperations(sourceDatum, source, targetDatum, target, opList);
             }
             source.addCRSTransformation(target, opList);
         }
         return opList;
     }
     
-    private static List<CoordinateOperation> createNadgridsOperationDir(
+    private static void addNadgridsOperationDir(
             GeodeticDatum sourceDatum, GeodeticCRS source,
-            GeodeticDatum targetDatum, GeodeticCRS target, List<CoordinateOperation> nadgridsTransformations) {
-        List<CoordinateOperation> opList = new ArrayList<CoordinateOperation>();
+            GeodeticDatum targetDatum, GeodeticCRS target, List<CoordinateOperation> nadgridsTransformations,
+            List<CoordinateOperation> opList) {
         for (CoordinateOperation coordOp : nadgridsTransformations) {
         try {
             if (!(coordOp instanceof NTv2GridShiftTransformation)||(sourceDatum.getShortName().equals(((NTv2GridShiftTransformation) coordOp).getFromDatum()))) {
@@ -141,13 +143,12 @@ public final class CoordinateOperationFactory {
             LOG.error("CoordinateOperationFactory", e);
         }
         }
-        return opList;
     }
     
-    private static List<CoordinateOperation> createNadgridsOperationInv(
+    private static void addNadgridsOperationInv(
             GeodeticDatum sourceDatum, GeodeticCRS source,
-            GeodeticDatum targetDatum, GeodeticCRS target, List<CoordinateOperation> nadgridsTransformations) {
-        List<CoordinateOperation> opList = new ArrayList<CoordinateOperation>();
+            GeodeticDatum targetDatum, GeodeticCRS target, List<CoordinateOperation> nadgridsTransformations,
+            List<CoordinateOperation> opList) {
         for (CoordinateOperation coordOp : nadgridsTransformations) {
         try {
             if (!(coordOp instanceof NTv2GridShiftTransformation)||sourceDatum.getShortName().equals(((NTv2GridShiftTransformation) coordOp).getFromDatum())) {
@@ -171,7 +172,6 @@ public final class CoordinateOperationFactory {
             LOG.error("CoordinateOperationFactory", e);
         }
         }
-        return opList;
     }
 
     /**
@@ -183,9 +183,9 @@ public final class CoordinateOperationFactory {
      * @param source the source geodetic coordinate reference system
      * @param target the target geodetic coordinate reference system
      */
-    private static List<CoordinateOperation> createCoordinateOperations(
-            GeodeticDatum datum, GeodeticCRS source, GeodeticCRS target) {
-        List<CoordinateOperation> opList = new ArrayList<CoordinateOperation>();
+    private static void addCoordinateOperations(
+            GeodeticDatum datum, GeodeticCRS source, GeodeticCRS target,
+            List<CoordinateOperation> opList) {
         try {
             opList.add(new CoordinateOperationSequence(
                     new Identifier(CoordinateOperationSequence.class, source.getName() + " to " + target.getName()),
@@ -195,7 +195,6 @@ public final class CoordinateOperationFactory {
             LOG.warn("Operation from " + source.getName() + " to " + target.getName() + " could not be created");
             LOG.error("CoordinateOperationFactory", e);
         }
-        return opList;
     }
 
     /**
@@ -208,13 +207,13 @@ public final class CoordinateOperationFactory {
      * @param targetDatum the (non null) datum used by target CRS
      * @param target the target geodetic coordinate reference system
      */
-    private static List<CoordinateOperation> createCoordinateOperations(
+    private static void addCoordinateOperations(
             GeodeticDatum sourceDatum, GeodeticCRS source,
-            GeodeticDatum targetDatum, GeodeticCRS target) {
+            GeodeticDatum targetDatum, GeodeticCRS target,
+            List<CoordinateOperation> opList) {
         // We get registered transformation from source GeodeticDatum to target GeodeticDatum
         // There maybe one or more transformations available.
         List<CoordinateOperation> datumTransformations = sourceDatum.getCoordinateOperations(targetDatum);
-        List<CoordinateOperation> opList = new ArrayList<CoordinateOperation>();
         for (CoordinateOperation datumTf : datumTransformations) {
             try {
                 opList.add(new CoordinateOperationSequence(
@@ -229,6 +228,5 @@ public final class CoordinateOperationFactory {
                 LOG.error("CoordinateOperationFactory", e);
             }
         }
-        return opList;
     }
 }

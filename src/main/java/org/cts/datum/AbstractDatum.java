@@ -110,7 +110,9 @@ public abstract class AbstractDatum extends IdentifiableComponent
         if (datumTransformations.get(datum) == null) {
             datumTransformations.put(datum, new ArrayList<CoordinateOperation>());
         }
-        datumTransformations.get(datum).add(coordOp);
+        if (!datumTransformations.get(datum).contains(coordOp)) {
+            datumTransformations.get(datum).add(coordOp);
+        }
     }
 
     /**
