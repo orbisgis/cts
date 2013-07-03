@@ -89,7 +89,7 @@ public class ProjectedCRS extends GeodeticCRS {
      */
     public ProjectedCRS(Identifier identifier, GeodeticDatum datum,
             CoordinateSystem coordSys, Projection projection) {
-        super(identifier, datum, coordSys);
+        super(identifier, datum, coordSys, null);
         this.projection = projection;
     }
 
@@ -105,9 +105,9 @@ public class ProjectedCRS extends GeodeticCRS {
      * with the ProjectedCRS
      */
     public ProjectedCRS(Identifier identifier, GeodeticDatum datum,
-            Projection projection, Unit unit) {
+            Projection projection, Unit unit, String wktext) {
         super(identifier, datum, new CoordinateSystem(new Axis[]{EASTING,
-            NORTHING}, new Unit[]{unit, unit}));
+            NORTHING}, new Unit[]{unit, unit}), wktext);
         this.projection = projection;
     }
 
@@ -122,7 +122,7 @@ public class ProjectedCRS extends GeodeticCRS {
      */
     public ProjectedCRS(Identifier identifier, GeodeticDatum datum,
             Projection projection) {
-        super(identifier, datum, EN_CS);
+        super(identifier, datum, EN_CS, null);
         this.projection = projection;
     }
 

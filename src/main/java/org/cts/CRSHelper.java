@@ -102,6 +102,7 @@ public class CRSHelper {
         if (null == sproj) {            
             throw new CRSException("No projection defined for this Coordinate Reference System");
         }
+        String swktext = parameters.get(ProjKeyParameters.wktext);
 
         //It's not a projected CRS
         if (sproj.equals(ProjValueParameters.GEOCENT)) {
@@ -115,12 +116,12 @@ public class CRSHelper {
             CoordinateSystem cs = new CoordinateSystem(new Axis[]{Axis.X,
                 Axis.Y, Axis.Z}, new Unit[]{unit, unit, unit});
 
-            crs = new GeocentricCRS(identifier, geodeticDatum, cs);
+            crs = new GeocentricCRS(identifier, geodeticDatum, cs, swktext);
         } else if (sproj.equals(ProjValueParameters.LONGLAT)) {
             CoordinateSystem cs = new CoordinateSystem(new Axis[]{
                 Axis.LONGITUDE, Axis.LATITUDE, Axis.HEIGHT}, new Unit[]{
                 Unit.DEGREE, Unit.DEGREE, Unit.METER});
-            crs = new Geographic3DCRS(identifier, geodeticDatum, cs);
+            crs = new Geographic3DCRS(identifier, geodeticDatum, cs, swktext);
         } else {
             Projection proj = getProjection(sproj, geodeticDatum.getEllipsoid(),
                     parameters);
@@ -132,7 +133,7 @@ public class CRSHelper {
                 unit = new Unit(Quantity.LENGTH, "", Double.parseDouble(stometer),
                         "");
                 }
-                crs = new ProjectedCRS(identifier, geodeticDatum, proj, unit);
+                crs = new ProjectedCRS(identifier, geodeticDatum, proj, unit, swktext);
             } else {
                 throw new CRSException("Unknown projection : " + sproj);                
             }
