@@ -246,6 +246,10 @@ public final class PrjMatcher {
         }
     }
 
+    /**
+     * Parse unit value to a {@code PrjNumberElement}
+     * @param {@code List<PrjElement>}
+     */
     private void parseUnit(List<PrjElement> ll) {
         String unit = getString(ll.get(0));
         unit = unit.replaceAll("[^a-zA-Z0-9]", "").toLowerCase();
@@ -253,6 +257,10 @@ public final class PrjMatcher {
         parseNumber(ll.get(1), PrjKeyParameters.UNITVAL);
     }
 
+    /**
+     * Parse the projection name of the CRS to a String representation
+     * @param {@code List<PrjElement>} 
+     */
     private void parseProjection(List<PrjElement> ll) {
         String proj = getString(ll.get(0));
         proj = proj.replaceAll("[^a-zA-Z0-9]", "");
@@ -262,6 +270,10 @@ public final class PrjMatcher {
         }
     }
 
+    /**
+     * Parse the prime meridian of the CRS to a String representation
+     * @param {@code List<PrjElement>} 
+     */
     private void parsePrimeM(List<PrjElement> ll) {
         String pm = getString(ll.get(0));
         pm = pm.replaceAll("[^a-zA-Z0-9]", "");

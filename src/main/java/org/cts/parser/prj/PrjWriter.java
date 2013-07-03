@@ -66,7 +66,11 @@ public final class PrjWriter {
         w.append('"').append(datum.getEllipsoid().getName()).append("\",");
 
         w.append(datum.getEllipsoid().getSemiMajorAxis());
-        w.append(',').append(datum.getEllipsoid().getInverseFlattening());
+        if (datum.getEllipsoid().getInverseFlattening() != Double.POSITIVE_INFINITY) {
+            w.append(',').append(datum.getEllipsoid().getInverseFlattening());
+        } else {
+            w.append(',').append(0);
+        }
 
         // close spheroid
         w.append(']');
