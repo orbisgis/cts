@@ -31,7 +31,7 @@
  */
 package org.cts;
 
-import org.cts.crs.CRSException;
+import static org.cts.CTSTestCase.cRSFactory;
 import org.cts.crs.CoordinateReferenceSystem;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -108,5 +108,6 @@ public class CRSFactoryTest extends CTSTestCase{
         assertNotNull(crs);
         assertTrue(crs.getAuthorityName().equals("EPSG"));
         assertTrue(crs.getAuthorityKey().equals("27572"));
-    }
+    }    
+   
 }
