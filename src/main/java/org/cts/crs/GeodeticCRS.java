@@ -129,6 +129,13 @@ public abstract class GeodeticCRS extends IdentifiableComponent
     }
     
     /**
+     * Return the list of nadgrids transformation defined for this CRS.
+     */
+    public Map<GeodeticDatum, List<CoordinateOperation>> getGridTransformations() {
+        return nadgridsTransformations;
+    }
+    
+    /**
      * Return the list of nadgrids transformation defined for this CRS that used the datum in parameter as target datum.
      */
     public List<CoordinateOperation> getGridTransformations(GeodeticDatum datum) {
@@ -140,6 +147,13 @@ public abstract class GeodeticCRS extends IdentifiableComponent
      */
     public void addCRSTransformation(CoordinateReferenceSystem crs, List<CoordinateOperation> opList) {
         crsTransformation.put(crs, opList);
+    }
+    
+    /**
+     * Return the list of nadgrids transformation defined for this CRS.
+     */
+    public Map<CoordinateReferenceSystem, List<CoordinateOperation>> getCRSTransformations() {
+        return crsTransformation;
     }
     
     /**
@@ -173,5 +187,54 @@ public abstract class GeodeticCRS extends IdentifiableComponent
     @Override
     public String toString() {
         return "[" + getAuthorityName() + ":" + getAuthorityKey() + "] " + getName();
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o instanceof GeodeticCRS) {
+            GeodeticCRS crs = (GeodeticCRS) o;
+            if (!getType().equals(crs.getType())) {
+                return false;
+            }
+            if (getIdentifier().equals(crs.getIdentifier())) {
+                return true;
+            }
+            boolean nadgrids;
+            if (getGridTransformations() == null) {
+                if (crs.getGridTransformations() == null) {
+                    nadgrids = true;
+                } else {
+                    nadgrids = false;
+                }
+            } else {
+                nadgrids = getGridTransformations().equals(crs.getGridTransformations());
+            }
+            boolean crstransf;
+            if (getCRSTransformations() == null) {
+                if (crs.getCRSTransformations() == null) {
+                    crstransf = true;
+                } else {
+                    crstransf = false;
+                }
+            } else {
+                crstransf = getCRSTransformations().equals(crs.getGridTransformations());
+            }
+
+            return getDatum().equals(crs.getDatum()) && getProjection().equals(crs.getProjection())
+                    && getCoordinateSystem().equals(crs.getCoordinateSystem()) && nadgrids && crstransf;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 29 * hash + (this.geodeticDatum != null ? this.geodeticDatum.hashCode() : 0);
+        hash = 29 * hash + (this.coordinateSystem != null ? this.coordinateSystem.hashCode() : 0);
+        return hash;
     }
 }

@@ -151,5 +151,55 @@ public class ProjectedCRS extends GeodeticCRS {
     public Unit getAngularUnit() {
         return angularUnit;
     }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o instanceof GeodeticCRS) {
+            GeodeticCRS crs = (GeodeticCRS) o;
+            System.out.println(this);
+            System.out.println(crs);
+            if (!getType().equals(crs.getType())) {
+                return false;
+            }
+            if (getIdentifier().equals(crs.getIdentifier())) {
+                return true;
+            }
+            boolean nadgrids;
+            if (getGridTransformations() == null) {
+                if (crs.getGridTransformations() == null) {
+                    nadgrids = true;
+                } else {
+                    nadgrids = false;
+                }
+            } else {
+                nadgrids = getGridTransformations().equals(crs.getGridTransformations());
+            }
+            boolean crstransf;
+            if (getCRSTransformations() == null) {
+                if (crs.getCRSTransformations() == null) {
+                    crstransf = true;
+                } else {
+                    crstransf = false;
+                }
+            } else {
+                crstransf = getCRSTransformations().equals(crs.getGridTransformations());
+            }
 
+            return getDatum().equals(crs.getDatum()) && getProjection().equals(crs.getProjection())
+                    && getCoordinateSystem().equals(crs.getCoordinateSystem()) && nadgrids && crstransf
+                    && getProjection().equals(crs.getProjection());
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 59 * hash + (this.projection != null ? this.projection.hashCode() : 0);
+        return hash;
+    }
 }

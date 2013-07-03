@@ -182,4 +182,27 @@ public class Geographic2Geocentric extends AbstractCoordinateOperation {
 	public String toString() {
 		return getName() + " (" + ellipsoid.getName() + ")";
 	}
+        
+        public Ellipsoid getEllipsoid() {
+            return ellipsoid;
+        }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o instanceof Geographic2Geocentric) {
+            Geographic2Geocentric gg2gc = (Geographic2Geocentric) o;
+            return getEllipsoid().equals(gg2gc.getEllipsoid());
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 19 * hash + (this.ellipsoid != null ? this.ellipsoid.hashCode() : 0);
+        return hash;
+    }
 }

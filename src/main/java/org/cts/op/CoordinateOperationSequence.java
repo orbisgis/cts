@@ -31,6 +31,7 @@
  */
 package org.cts.op;
 
+import java.util.Arrays;
 import org.apache.log4j.Logger;
 import org.cts.Identifier;
 import org.cts.IllegalCoordinateException;
@@ -182,5 +183,31 @@ public class CoordinateOperationSequence extends AbstractCoordinateOperation {
         }
         sb.append("}");
         return sb.toString();
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o instanceof CoordinateOperationSequence) {
+            CoordinateOperationSequence cooordseq = (CoordinateOperationSequence) o;
+            if (getSequence().length == cooordseq.getSequence().length) {
+                for (int i=0;i<getSequence().length;i++) {
+                    if (!getSequence()[i].equals(cooordseq.getSequence()[i])) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 67 * hash + Arrays.deepHashCode(this.sequence);
+        return hash;
     }
 }

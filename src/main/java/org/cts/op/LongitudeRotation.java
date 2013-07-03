@@ -126,4 +126,27 @@ public class LongitudeRotation extends AbstractCoordinateOperation {
     public String toString() {
         return getName() + " ( " + rotationAngle * 180 / Math.PI + "° )";
     }
+        
+        public double getRotationAngle() {
+            return rotationAngle;
+        }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o instanceof LongitudeRotation) {
+            LongitudeRotation lr = (LongitudeRotation) o;
+            return (getRotationAngle() == lr.getRotationAngle());
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 97 * hash + (int) (Double.doubleToLongBits(this.rotationAngle) ^ (Double.doubleToLongBits(this.rotationAngle) >>> 32));
+        return hash;
+    }
 }
