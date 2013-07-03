@@ -38,16 +38,16 @@ package org.cts.crs;
 public class CRSException extends Exception {
 
     /**
-     * Build a coordinate reference system exception from a message
+     * Build a coordinate reference system exception from a message.
      *
-     * @param message
+     * @param message precise description of this exception
      */
     public CRSException(String message) {
         super(message);
     }
 
     /**
-     * Build a coordinate reference system exception based on an exception
+     * Build a coordinate reference system exception based on an exception.
      *
      * @param Exception
      */
@@ -57,7 +57,7 @@ public class CRSException extends Exception {
     
     /**
      * Build a coordinate reference system exception based on a message and
-     * an exception
+     * an exception.
      * 
      * @param message
      * @param ex 

@@ -33,24 +33,22 @@ package org.cts.units;
 
 /**
  * According to wikipedia, quantity is a kind of property which exists as
- * magnitude or multitude.
- * Mass, time, distance, heat, and angular separation are among the familiar examples
- * of quantitative properties.
- * This interface has no particular method, and let programmers free to implement
- * Quantities as they want.
- * A internal Factory class has been added to help creating Quantities from a simple String.
- * To use it, just write :
- * <pre>Quantity SPEED = Quantity.Factory.create("Speed");</pre>
- * Otherwise, you can create your own implementation of Quantity :
+ * magnitude or multitude. Mass, time, distance, heat, and angular separation
+ * are among the familiar examples of quantitative properties. This interface
+ * has no particular method, and let programmers free to implement Quantities as
+ * they want. A internal Factory class has been added to help creating
+ * Quantities from a simple String. To use it, just write :
+ * <pre>Quantity SPEED = Quantity.Factory.create("Speed");</pre> Otherwise, you
+ * can create your own implementation of Quantity :
  * <pre>
  * public class Speed implements Quantity {
  *     // your implementation
  * }
- * </pre>
- * Note that two quantities are considered as comparable if their toString
- * method return equalsIgnoreCase values.
- * 
+ * </pre> Note that two quantities are considered as comparable if their
+ * toString method return equalsIgnoreCase values.
+ *
  * For a complete package about units, quantities and measurements, see JSR-275.
+ *
  * @author Michaël Michaud
  */
 public interface Quantity {
@@ -74,7 +72,6 @@ public interface Quantity {
          */
         public static Quantity create(final String name) {
             return new Quantity() {
-
                 @Override
                 public String toString() {
                     return name;

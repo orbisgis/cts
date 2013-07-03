@@ -93,7 +93,8 @@ public class BatchCoordinateTransformTest extends BaseCoordinateTransformTest {
     }
 
     /**
-     * Parses a number from a String. If the string is empty returns {@link java.lang.Double#NaN}.
+     * Parses a number from a String. If the string is empty returns
+     * {@link java.lang.Double#NaN}.
      *
      * @param numStr
      * @return the number as a double

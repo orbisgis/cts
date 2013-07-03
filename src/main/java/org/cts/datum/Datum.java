@@ -31,9 +31,9 @@
  */
 package org.cts.datum;
 
-import org.cts.op.CoordinateOperation;
 import org.cts.Identifiable;
 import org.cts.cs.Extent;
+import org.cts.op.CoordinateOperation;
 
 /**
  * A Datum (plural datums) is a reference from which measurements are made.<p>
@@ -61,21 +61,17 @@ public interface Datum extends Identifiable {
     public String getEpoch();
 
     /**
-     * Returns the ellipsoid of this datum
-     *
-     * @return
+     * Returns the ellipsoid of this datum.
      */
     public Ellipsoid getEllipsoid();
 
     /**
-     * Returns the ellipsoid of this datum
+     * Returns the ellipsoid of this datum.
      */
     public CoordinateOperation getToWGS84();
 
     /**
-     * Returns the primemeridian of this datum
-     *
-     * @return
+     * Returns the primemeridian of this datum.
      */
     public PrimeMeridian getPrimeMeridian();
 }

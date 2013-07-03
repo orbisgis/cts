@@ -37,42 +37,49 @@ import static java.lang.Math.atan2;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 import static java.lang.Math.sqrt;
+
 import org.cts.CoordinateDimensionException;
-import org.cts.datum.Ellipsoid;
 import org.cts.Identifier;
 import org.cts.IllegalCoordinateException;
+import org.cts.datum.Ellipsoid;
 
 /**
  * <p>Transform geographic coordinates (latitude, longitude, ellipsoidal height
  * into geocentric coordinates.</p>
- * <p>Geographic coordinates and geocentric coordinates are supposed to use
- * the same reference datum and to be standardized :</p>
+ * <p>Geographic coordinates and geocentric coordinates are supposed to use the
+ * same reference datum and to be standardized :</p>
  * <ul>
  * <li>Geographic coordinates are given in the following order : latitude
  * (radians), longitude (radians from Greenwich) and optionnaly ellipsoidal
  * height (default = 0.0).</li>
- * <li>The center of the geocentric system (center of the mass) is equal to
- * the geographic coordinates reference ellipsoid.</p>
+ * <li>The center of the geocentric system (center of the mass) is equal to the
+ * geographic coordinates reference ellipsoid.</p>
  * <li>Z axis is oriented from origin to North Pole</li>
  * <li>Y axis is oriented from origin to intersection of equator and Greenwich
  * Meridian</li>
  * <li>OXYZ is direct</li>
  * <li>Units = radian, meter (to facilitate transformation operations).</li>
  * </ul>
+ *
  * @author Michaël Michaud
  */
 public class Geocentric2Geographic extends AbstractCoordinateOperation {
 
     /**
-     * Useful transformation to go from geographic to geocentric coordinates
-     * using radians and the standard GRS80 ellipsoid.
+     * The Identifier used for all Geocentric to geographic conversions.
      */
-    public static final Geocentric2Geographic CG_GRS80 =
-            new Geocentric2Geographic(Ellipsoid.GRS80);
     private static final Identifier opId =
             new Identifier("EPSG", "9602",
             "Geocentric to geographic conversion", "Geocentric to geographic");
+    /**
+     * The ellipsoid used to define geographic coordinates.
+     */
     private Ellipsoid ellipsoid;
+    /**
+     * Stop condition for the Geocentric to Geographic
+     * transformation algorithm. epsilon is a value in radian, 1E-11 is the
+     * default epsilon and it means that error is less than 1E-4 m.
+     */
     private double epsilon;
 
     /**
@@ -114,9 +121,8 @@ public class Geocentric2Geographic extends AbstractCoordinateOperation {
      * coordinates in the following order : latitude (radians), longitude
      * (radians from Greenwich) and optionnaly ellipsoidal height (if coord
      * contains only 2 double's, height is set to 0).
-     * @throws IllegalCoordinateException if
-     * <code>coord</code> is not compatible with this
-     * <code>CoordinateOperation</code>.
+     * @throws IllegalCoordinateException if <code>coord</code> is not
+     * compatible with this <code>CoordinateOperation</code>.
      */
     @Override
     public double[] transform(double[] coord)
@@ -152,20 +158,6 @@ public class Geocentric2Geographic extends AbstractCoordinateOperation {
     }
 
     /**
-     * Apply the inverse transformation to coord (geocentric to geographic)
-     */
-    /*
-     * public void inverseTransform(double[] coord) throws
-     * CoordinateDimensionException, NonInvertibleOperationException { if
-     * (coord.length < 2 || coord.length > 3) { throw new
-     * CoordinateDimensionException(coord, 3); } double lat = coord[0]; double
-     * lon = coord[1]; double height = coord.length==3?coord[2]:0.0; double N =
-     * ellipsoid.transverseRadiusOfCurvature(lat); coord[0] = (N+height) *
-     * cos(lat) * cos(lon); coord[1] = (N+height) * cos(lat) * sin(lon);
-     * coord[2] = (N * (1-ellipsoid.getSquareEccentricity()) + height) *
-     * sin(lat); }
-     */
-    /**
      * Creates the inverse CoordinateOperation.
      */
     @Override
@@ -185,6 +177,13 @@ public class Geocentric2Geographic extends AbstractCoordinateOperation {
             return ellipsoid;
         }
     
+    /**
+     * Returns true if object is equals to
+     * <code>this</code>. Tests equality between the ellipsoid used by the
+     * transformation.
+     *
+     * @param object The object to compare this Geocentric2Geographic against
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -197,6 +196,9 @@ public class Geocentric2Geographic extends AbstractCoordinateOperation {
         return false;
     }
 
+    /**
+     * Returns the hash code for this Geocentric2Geographic.
+     */
     @Override
     public int hashCode() {
         int hash = 5;

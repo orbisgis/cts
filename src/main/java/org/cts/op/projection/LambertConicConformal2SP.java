@@ -34,6 +34,18 @@
  */
 package org.cts.op.projection;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.cts.op.CoordinateOperation;
+import org.cts.Identifier;
+import org.cts.IllegalCoordinateException;
+import org.cts.Parameter;
+import org.cts.datum.Ellipsoid;
+import org.cts.op.NonInvertibleOperationException;
+import org.cts.units.Measure;
+import org.cts.units.Unit;
+
 import static java.lang.Math.abs;
 import static java.lang.Math.atan;
 import static java.lang.Math.cos;
@@ -41,16 +53,6 @@ import static java.lang.Math.exp;
 import static java.lang.Math.log;
 import static java.lang.Math.sin;
 import static java.lang.Math.sqrt;
-import java.util.HashMap;
-import java.util.Map;
-import org.cts.op.CoordinateOperation;
-import org.cts.datum.Ellipsoid;
-import org.cts.Identifier;
-import org.cts.IllegalCoordinateException;
-import org.cts.units.Measure;
-import org.cts.op.NonInvertibleOperationException;
-import org.cts.Parameter;
-import org.cts.units.Unit;
 
 /**
  * A map projection is any method used in cartography (mapmaking) to represent
@@ -62,6 +64,9 @@ import org.cts.units.Unit;
  */
 public class LambertConicConformal2SP extends Projection {
 
+    /**
+     * The Identifier used for all Cylindrical Equal Area projection.
+     */
     public static final Identifier LCC2SP =
             new Identifier("EPSG", "9802", "Lambert Conic Conformal (2SP)", "Lambert secant");
     /**
@@ -77,11 +82,11 @@ public class LambertConicConformal2SP extends Projection {
             ys;   // y coordinate of the pole
 
     /**
-     * Create a new Lambert Conic Conformal 2SP Projection corresponding to
-     * the <code>Ellipsoid</code> and the list of parameters given in argument
-     * and initialize common parameter lon0 and other parameters
-     * useful for the projection.
-     * 
+     * Create a new Lambert Conic Conformal 2SP Projection corresponding to the
+     * <code>Ellipsoid</code> and the list of parameters given in argument and
+     * initialize common parameter lon0 and other parameters useful for the
+     * projection.
+     *
      * @param ellipsoid ellipsoid used to define the projection.
      * @param parameters a map of useful parameters to define the projection.
      */
@@ -166,9 +171,8 @@ public class LambertConicConformal2SP extends Projection {
      * radians.
      *
      * @param coord coordinate to transform
-     * @throws IllegalCoordinateException if
-     * <code>coord</code> is not compatible with this
-     * <code>CoordinateOperation</code>..
+     * @throws IllegalCoordinateException if <code>coord</code> is not
+     * compatible with this <code>CoordinateOperation</code>..
      */
     @Override
     public double[] transform(double[] coord) throws IllegalCoordinateException {
@@ -186,7 +190,6 @@ public class LambertConicConformal2SP extends Projection {
     @Override
     public CoordinateOperation inverse() throws NonInvertibleOperationException {
         return new LambertConicConformal2SP(ellipsoid, parameters) {
-
             @Override
             public double[] transform(double[] coord)
                     throws IllegalCoordinateException {

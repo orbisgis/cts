@@ -31,68 +31,111 @@
  */
 package org.cts.crs;
 
-import org.cts.op.CoordinateOperation;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.cts.Identifier;
-import org.cts.op.NonInvertibleOperationException;
 import org.cts.cs.Axis;
 import org.cts.cs.CoordinateSystem;
 import org.cts.datum.GeodeticDatum;
 import org.cts.op.ChangeCoordinateDimension;
+import org.cts.op.CoordinateOperation;
 import org.cts.op.CoordinateOperationSequence;
 import org.cts.op.CoordinateSwitch;
+import org.cts.op.NonInvertibleOperationException;
 import org.cts.op.UnitConversion;
 import org.cts.op.projection.Projection;
 import org.cts.units.Unit;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.cts.cs.Axis.EASTING;
 import static org.cts.cs.Axis.NORTHING;
 import static org.cts.units.Unit.METER;
 
 /**
- * A Projected {@link org.cts.crs.CoordinateReferenceSystem} is a CoordinateReferenceSystem
- * based on a GeodeticDatum and a Projection operation.
+ * A Projected {@link org.cts.crs.CoordinateReferenceSystem} is a
+ * CoordinateReferenceSystem based on a GeodeticDatum and a Projection
+ * operation.
  *
  * @author Michaël Michaud
  */
 public class ProjectedCRS extends GeodeticCRS {
 
+    /**
+     * A 2D {@link CoordinateSystem} whose first {@link Axis} contains easting
+     * and second {@link Axis} contains northing. The unit used by these axes is
+     * meter.
+     */
     public static CoordinateSystem EN_CS = new CoordinateSystem(new Axis[]{
-                EASTING, NORTHING}, new Unit[]{METER, METER});
+        EASTING, NORTHING}, new Unit[]{METER, METER});
+    /**
+     * A 2D {@link CoordinateSystem} whose first {@link Axis} contains northing
+     * and second {@link Axis} contains easting. The unit used by these axes is
+     * meter.
+     */
     public static CoordinateSystem NE_CS = new CoordinateSystem(new Axis[]{
-                NORTHING, EASTING}, new Unit[]{METER, METER});
+        NORTHING, EASTING}, new Unit[]{METER, METER});
+    /**
+     * The projection used by this ProjectedCRS.
+     */
     private Projection projection;
-    private Unit angularUnit;
 
+    /**
+     * Create a new ProjectedCRS.
+     *
+     * @param identifier the identifier of the ProjectedCRS
+     * @param datum the datum associated with the ProjectedCRS
+     * @param coordSys the coordinate system associated with the ProjectedCRS
+     * @param projection the projection used in the ProjectedCRS
+     */
     public ProjectedCRS(Identifier identifier, GeodeticDatum datum,
             CoordinateSystem coordSys, Projection projection) {
         super(identifier, datum, coordSys);
         this.projection = projection;
     }
 
+    /**
+     * Create a new ProjectedCRS. The first {@link Axis} of the associated
+     * {@link CoordinateSystem} contains easting and the second {@link Axis}
+     * contains northing.
+     *
+     * @param identifier the identifier of the ProjectedCRS
+     * @param datum the datum associated with the ProjectedCRS
+     * @param projection the projection used in the ProjectedCRS
+     * @param unit the length unit to use for the coordinate system associated
+     * with the ProjectedCRS
+     */
     public ProjectedCRS(Identifier identifier, GeodeticDatum datum,
-            Projection projection, Unit unit, Unit angularUnit) {
+            Projection projection, Unit unit) {
         super(identifier, datum, new CoordinateSystem(new Axis[]{EASTING,
-                    NORTHING}, new Unit[]{unit, unit}));
+            NORTHING}, new Unit[]{unit, unit}));
         this.projection = projection;
-        this.angularUnit = angularUnit;
     }
 
+    /**
+     * Create a new ProjectedCRS. The first {@link Axis} of the associated
+     * {@link CoordinateSystem} contains easting and the second {@link Axis}
+     * contains northing.
+     *
+     * @param identifier the identifier of the ProjectedCRS
+     * @param datum the datum associated with the ProjectedCRS
+     * @param projection the projection used in the ProjectedCRS
+     */
     public ProjectedCRS(Identifier identifier, GeodeticDatum datum,
             Projection projection) {
         super(identifier, datum, EN_CS);
         this.projection = projection;
     }
 
+    /**
+     * @see GeodeticCRS#getProjection()
+     */
     @Override
     public Projection getProjection() {
         return projection;
     }
 
     /**
-     * Return this CoordinateReferenceSystem Type
+     * @see GeodeticCRS#getType()
      */
     @Override
     public Type getType() {
@@ -140,7 +183,7 @@ public class ProjectedCRS extends GeodeticCRS {
             ops.add(CoordinateSwitch.SWITCH_LAT_LON);
         }
         // Unit conversion
-        if (getCoordinateSystem().getAxis(0) != EASTING) {
+        if (getCoordinateSystem().getUnit(0) != Unit.METER) {
             ops.add(UnitConversion.createUnitConverter(Unit.METER,
                     getCoordinateSystem().getUnit(0)));
         }
@@ -148,10 +191,15 @@ public class ProjectedCRS extends GeodeticCRS {
                 CoordinateOperationSequence.class), ops);
     }
 
-    public Unit getAngularUnit() {
-        return angularUnit;
-    }
-    
+    /**
+     * Returns true if object is equals to
+     * <code>this</code>. Tests equality between identifiers, then tests if the
+     * components of this ProjectedCRS are equals : the grids transformations,
+     * the {@link GeodeticDatum}, the {@link CoordinateSystem} and the
+     * {@link Projection}.
+     *
+     * @param object The object to compare this ProjectedCRS against
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -177,25 +225,16 @@ public class ProjectedCRS extends GeodeticCRS {
             } else {
                 nadgrids = getGridTransformations().equals(crs.getGridTransformations());
             }
-            boolean crstransf;
-            if (getCRSTransformations() == null) {
-                if (crs.getCRSTransformations() == null) {
-                    crstransf = true;
-                } else {
-                    crstransf = false;
-                }
-            } else {
-                crstransf = getCRSTransformations().equals(crs.getGridTransformations());
-            }
-
             return getDatum().equals(crs.getDatum()) && getProjection().equals(crs.getProjection())
-                    && getCoordinateSystem().equals(crs.getCoordinateSystem()) && nadgrids && crstransf
-                    && getProjection().equals(crs.getProjection());
+                    && getCoordinateSystem().equals(crs.getCoordinateSystem()) && nadgrids;
         } else {
             return false;
         }
     }
 
+    /**
+     * Returns the hash code for this ProjectedCRS.
+     */
     @Override
     public int hashCode() {
         int hash = 3;

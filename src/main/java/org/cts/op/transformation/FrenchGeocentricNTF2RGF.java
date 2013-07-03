@@ -44,6 +44,7 @@ import org.cts.op.Geocentric2Geographic;
 import org.cts.op.NonInvertibleOperationException;
 import org.cts.op.UnitConversion;
 import org.cts.op.transformation.grids.IGNGeographicGrid;
+import org.cts.units.Unit;
 
 /**
  * French Geocentric interpolation is a transformation used at IGN-France to
@@ -61,6 +62,7 @@ public class FrenchGeocentricNTF2RGF extends AbstractCoordinateOperation {
             new GeocentricTranslation(-168.0, -60.0, 320.0);
     private static final Geocentric2Geographic GEOC2GEOG =
             new Geocentric2Geographic(Ellipsoid.GRS80);
+    public final static UnitConversion RAD2DD = UnitConversion.createUnitConverter(Unit.RADIAN, Unit.DEGREE);
     //private static GeographicExtent EXTENT =
     //    new GeographicExtent("gr3df97a", 41.0, 52.0, -5.5, 10.0, 360.0);
     private IGNGeographicGrid GRID3D;
@@ -138,7 +140,7 @@ public class FrenchGeocentricNTF2RGF extends AbstractCoordinateOperation {
         coordi = GEOC2GEOG.transform(coordi);
 
         // Get decimal degree coordinates for grid interpolation
-        coordi = UnitConversion.RAD2DD.transform(coordi);
+        coordi = RAD2DD.transform(coordi);
 
         // Definitive translation parameters are initialized with mean
         // translation parameters
@@ -175,7 +177,7 @@ public class FrenchGeocentricNTF2RGF extends AbstractCoordinateOperation {
                 // Find a rough position on GRS 80
                 coordi = GEOC2GEOG.transform(coordi);
                 // Get decimal degree coordinates for grid interpolation
-                coordi = UnitConversion.RAD2DD.transform(coordi);
+                coordi = RAD2DD.transform(coordi);
                 // Definitive translation parameters are initialized with mean
                 // translation parameters
                 double tx = -168.0;

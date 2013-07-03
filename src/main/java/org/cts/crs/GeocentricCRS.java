@@ -31,24 +31,19 @@
  */
 package org.cts.crs;
 
-import org.cts.op.CoordinateOperation;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.cts.Identifier;
-import org.cts.op.NonInvertibleOperationException;
-import org.cts.cs.Axis;
 import org.cts.cs.CoordinateSystem;
 import org.cts.datum.GeodeticDatum;
 import org.cts.datum.PrimeMeridian;
+import org.cts.op.CoordinateOperation;
 import org.cts.op.CoordinateOperationSequence;
 import org.cts.op.Geocentric2Geographic;
 import org.cts.op.Geographic2Geocentric;
 import org.cts.op.LongitudeRotation;
-import org.cts.units.Unit;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.cts.cs.Axis.*;
-import static org.cts.units.Unit.METER;
+import org.cts.op.NonInvertibleOperationException;
 
 /**
  * <p> A geocentric CoordinateReferenceSystem is a 3D cartesian coordinate
@@ -61,46 +56,27 @@ import static org.cts.units.Unit.METER;
  */
 public class GeocentricCRS extends GeodeticCRS {
 
-    //private CRSAuthority crsAuthority;
-
-    public boolean hasProjection() {
-        return false;
-    }
-    // //////////////////////////////////////////////////////////////////////////
-    // ////////////// CLASS ATTRIBUTES ////////////////
-    // //////////////////////////////////////////////////////////////////////////
-    public static final CoordinateSystem GEOCENTRIC_CS = new CoordinateSystem(
-            new Axis[]{X, Y, Z}, new Unit[]{METER, METER, METER});
-
-    // //////////////////////////////////////////////////////////////////////////
-    // ////////////// ATTRIBUTES & GET/SET METHODS ////////////////
-    // //////////////////////////////////////////////////////////////////////////
     /**
-     * Returns this CoordinateReferenceSystem Type
+     * Returns this CoordinateReferenceSystem Type.
      */
     @Override
     public Type getType() {
         return Type.GEOCENTRIC;
     }
 
-    // //////////////////////////////////////////////////////////////////////////
-    // ////////////// CONSTRUCTOR ////////////////
-    // //////////////////////////////////////////////////////////////////////////
-    // This constructor is made private.
-    // This means that GeocentricCoordinateSystem always use the same metric
-    // Coordinate System
+    /**
+     * Create a new Geocentric CRS based on given datum, identifier and
+     * coordinate system.
+     *
+     * @param identifier the identifier of the GeocentricCRS
+     * @param datum the datum associated with the GeocentricCRS
+     * @param coordSys the coordinate system associated with the GeocentricCRS
+     */
     public GeocentricCRS(Identifier identifier, GeodeticDatum datum,
             CoordinateSystem coordSys) {
         super(identifier, datum, coordSys);
     }
 
-    public GeocentricCRS(Identifier identifier, GeodeticDatum datum) {
-        super(identifier, datum, GEOCENTRIC_CS);
-    }
-
-    // //////////////////////////////////////////////////////////////////////////
-    // ////////////// OBJECT METHODS ////////////////
-    // //////////////////////////////////////////////////////////////////////////
     /**
      * @see GeodeticCRS#toGeographicCoordinateConverter()
      */
@@ -130,5 +106,4 @@ public class GeocentricCRS extends GeodeticCRS {
         return new CoordinateOperationSequence(new Identifier(
                 CoordinateOperationSequence.class), ops);
     }
-
 }

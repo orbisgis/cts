@@ -85,7 +85,7 @@ public class VerticalDatum extends AbstractDatum {
         this.registerDatum();
         //addCoordinateOperation(WGS84VD, altitude2EllipsoidalHeight);
     }
-    
+
     private void registerDatum() {
         datums.put(getIdentifier(), this);
     }
