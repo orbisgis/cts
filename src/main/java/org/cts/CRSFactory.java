@@ -165,10 +165,10 @@ public class CRSFactory {
             crs = CRSPOOL.get(refname);
             if (crs == null) {
                 String[] authorityNameWithKey = refname.split(":");
-                crs = CRSHelper.createCoordinateReferenceSystem(new Identifier(authorityNameWithKey[0], authorityNameWithKey[1], name), prjParameters);
-            }
-            if (crs != null) {
-                CRSPOOL.put(refname, crs);
+                crs = CRSHelper.createCoordinateReferenceSystem(new Identifier(authorityNameWithKey[0], authorityNameWithKey[1], name), prjParameters);            
+                if (crs != null) {
+                    CRSPOOL.put(refname, crs);
+                }
             }
         } else {
             crs = CRSHelper.createCoordinateReferenceSystem(new Identifier(name, name, name), prjParameters);
