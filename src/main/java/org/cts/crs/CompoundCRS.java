@@ -63,7 +63,7 @@ public abstract class CompoundCRS extends GeodeticCRS {
             verticalCRS.getCoordinateSystem().getAxis(0)},
                 new Unit[]{horizontalCRS.getCoordinateSystem().getUnit(0),
             horizontalCRS.getCoordinateSystem().getUnit(1),
-            verticalCRS.getCoordinateSystem().getUnit(0)}));
+            verticalCRS.getCoordinateSystem().getUnit(0)}), null);
         this.verticalCRS = verticalCRS;
     }
 

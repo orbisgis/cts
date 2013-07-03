@@ -73,8 +73,8 @@ public class GeocentricCRS extends GeodeticCRS {
      * @param coordSys the coordinate system associated with the GeocentricCRS
      */
     public GeocentricCRS(Identifier identifier, GeodeticDatum datum,
-            CoordinateSystem coordSys) {
-        super(identifier, datum, coordSys);
+            CoordinateSystem coordSys, String wktext) {
+        super(identifier, datum, coordSys, wktext);
     }
 
     /**

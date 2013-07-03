@@ -55,6 +55,7 @@ import org.cts.op.projection.Projection;
 public abstract class GeodeticCRS extends IdentifiableComponent
         implements CoordinateReferenceSystem {
 
+    private final String wktext;
     /**
      * The {@link GeodeticDatum} to which this
      * <code>CoordinateReferenceSystem</code> is refering.
@@ -91,10 +92,15 @@ public abstract class GeodeticCRS extends IdentifiableComponent
      * @param coordSys the coordinate system associated with the GeodeticCRS
      */
     protected GeodeticCRS(Identifier identifier, GeodeticDatum datum,
-            CoordinateSystem coordinateSystem) {
+            CoordinateSystem coordinateSystem, String wktext) {
         super(identifier);
         this.geodeticDatum = datum;
         this.coordinateSystem = coordinateSystem;
+        this.wktext = wktext;
+    }
+    
+    public String getWKT() {
+        return wktext;
     }
 
     /**

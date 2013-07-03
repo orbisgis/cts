@@ -115,8 +115,8 @@ public class Geographic3DCRS extends GeodeticCRS {
      * @param coordSys the coordinate system associated with the Geographic3DCRS
      */
     public Geographic3DCRS(Identifier identifier, GeodeticDatum datum,
-            CoordinateSystem coordSys) {
-        super(identifier, datum, coordSys);
+            CoordinateSystem coordSys, String wktext) {
+        super(identifier, datum, coordSys, wktext);
     }
 
     /**
@@ -131,7 +131,7 @@ public class Geographic3DCRS extends GeodeticCRS {
      * coordinate system associated with the Geographic3DCRS
      */
     public Geographic3DCRS(Identifier identifier, GeodeticDatum datum, Unit unit) {
-        super(identifier, datum, LATLONH_DDM_CS);
+        super(identifier, datum, LATLONH_DDM_CS, null);
         if (unit == RADIAN) {
             this.coordinateSystem = LATLONH_RRM_CS;
         } else if (unit == DEGREE) {
@@ -151,7 +151,7 @@ public class Geographic3DCRS extends GeodeticCRS {
      * @param datum the datum associated with the Geographic2DCRS
      */
     public Geographic3DCRS(Identifier identifier, GeodeticDatum datum) {
-        super(identifier, datum, LATLONH_DDM_CS);
+        super(identifier, datum, LATLONH_DDM_CS, null);
     }
 
     /**

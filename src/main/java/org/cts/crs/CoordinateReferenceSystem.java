@@ -53,6 +53,8 @@ import org.cts.op.projection.Projection;
  */
 public interface CoordinateReferenceSystem extends Identifiable {
 
+    public String getWKT();
+    
     /**
      * Coordinate Reference System Type.
      */

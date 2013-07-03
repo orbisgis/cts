@@ -60,6 +60,7 @@ public class VerticalCRS extends IdentifiableComponent implements
             new Axis[]{ALTITUDE}, new Unit[]{METER});
     private VerticalDatum verticalDatum;
     private CoordinateSystem coordinateSystem;
+    private String wktext;
 
     /**
      * Create a new VerticalCRS.
@@ -69,6 +70,10 @@ public class VerticalCRS extends IdentifiableComponent implements
         super(identifier);
         this.verticalDatum = datum;
         this.coordinateSystem = cs;
+    }
+    
+    public String getWKT() {
+        return wktext;
     }
 
     @Override

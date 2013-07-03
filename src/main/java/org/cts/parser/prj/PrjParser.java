@@ -36,6 +36,7 @@ import java.nio.CharBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.cts.parser.proj.ProjKeyParameters;
 
 /**
  * Parser for PRJ / WKT (OGC & ESRI) String.
@@ -77,6 +78,9 @@ public class PrjParser {
             throw new PrjParserException("Failed to read PRJ.", ex);
         }
         Map<String, String> prjParameters = PrjMatcher.match(e);
+        if (!prjParameters.containsKey(ProjKeyParameters.wktext)) {
+            prjParameters.put(ProjKeyParameters.wktext, prjString);
+        }
         return prjParameters;
     }
 
