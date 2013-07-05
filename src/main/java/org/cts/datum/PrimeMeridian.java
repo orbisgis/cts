@@ -68,7 +68,7 @@ public class PrimeMeridian extends IdentifiableComponent {
      * Paris Meridian.
      */
     public static final PrimeMeridian PARIS =
-            createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8903", "Paris", "Paris", "Value adopted by IGN (Paris) in 1936. Equivalent to 2°20'14.025\". Preferred by EPSG to earlier value of 2°20'13.95\" (2.596898 grads) used by RGS London", null), 2.337229167);
+            createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8903", "Paris", "Paris", "Value adopted by IGN (Paris) in 1936. Equivalent to 2°20'14.025\". Preferred by EPSG to earlier value of 2°20'13.95\" (2.596898 grads) used by RGS London", null), 2.33722917);
     /**
      * Bogota Meridian.
      */

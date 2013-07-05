@@ -141,7 +141,7 @@ public class GeocentricTranslation extends AbstractCoordinateOperation implement
         w.append((int) ty);
         w.append(',');
         w.append((int) tz);
-        w.append("]");
+        w.append(",0,0,0,0]");
         return w.toString();
     }
 

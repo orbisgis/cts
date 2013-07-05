@@ -180,7 +180,7 @@ public class PrjParserTest {
                 + "UNIT[\"m\", 1.0], AXIS[\"Easting\", EAST], AXIS[\"Northing\", NORTH], AUTHORITY[\"EPSG\",\"3857\"]]";
 
         Map<String, String> p = parser.getParameters(prj);
-        assertEquals(p.get("proj"), "longlat");
+        assertEquals(p.get("proj"), "merc");
         assertEquals(p.get("units"), "m");
         assertEquals(Double.parseDouble(p.get("lon_0")), 0., 0);
         assertEquals(Double.parseDouble(p.get("x_0")), 0.0, 0);
@@ -225,7 +225,7 @@ public class PrjParserTest {
     }
     
     
-     @Test
+    @Test
     public void testWriteOGC_3857_PRJ()throws Exception{
         CRSFactory cRSFactory = new CRSFactory();    
         cRSFactory.getRegistryManager().addRegistry(new EPSGRegistry());
@@ -234,6 +234,6 @@ public class PrjParserTest {
         assertTrue(crs.getAuthorityName().equals("EPSG"));
         assertTrue(crs.getAuthorityKey().equals("3857"));
         String crsWKT = PrjWriter.crsToWKT(crs);
-        System.out.println(crsWKT);
+        //System.out.println(crsWKT);
     }
 }

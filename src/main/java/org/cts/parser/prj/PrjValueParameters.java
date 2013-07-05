@@ -127,6 +127,7 @@ public class PrjValueParameters {
         PROJNAMES.put("mcbryde" + "thomas" + "flat" + "pole" + "sine" + "2", "mbt_fps");
         PROJNAMES.put("mercator", "merc");
         PROJNAMES.put("mercator" + "1sp", "merc");
+        PROJNAMES.put("popularvisualisationpseudomercator", "merc");
         PROJNAMES.put("miller" + "cylindrical", "mill");
         PROJNAMES.put("mollweide", "moll");
         PROJNAMES.put("murdoch" + "i", "murd1");
