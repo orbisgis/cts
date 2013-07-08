@@ -140,9 +140,9 @@ public final class PrjWriter {
             w.append(",UNIT[");
             w.append('"').append(cs.getUnit(0).getName()).append("\",");
             if (isInteger(1. / cs.getUnit(0).getScale(), 1E-11)) {
-                w.append(Math.round(1. / cs.getUnit(0).getScale())).append(']');
+                w.append(Math.round(1. / cs.getUnit(0).getScale()));
             } else {
-                w.append(1. / cs.getUnit(0).getScale()).append(']');
+                w.append(1. / cs.getUnit(0).getScale());
             }
             w.append(",AUTHORITY[\"");
             w.append(cs.getUnit(0).getAuthorityName()).append("\",\"");
@@ -252,6 +252,68 @@ public final class PrjWriter {
             Logger.getLogger(PrjWriter.class.getName()).log(Level.SEVERE, null, ex);
         }
         return result;
+    }
+
+    /**
+     * Returns the WKT in parameter into a Human-Readable OGC WKT form.
+     * 
+     * @param wkt the OGC WKT String to transform.
+     */
+    public static String formatWKT(String wkt) {
+        StringBuilder w = new StringBuilder();
+        int n = 0;
+        int index;
+        int ind;
+        String begin;
+        String end;
+        boolean dontAddAlinea = false;
+        String[] wktexp = wkt.split("]],");
+        for (int i = 0; i < wktexp.length; i++) {
+            index = wktexp[i].indexOf("[");
+            begin = wktexp[i].substring(0, index + 1);
+            w.append(begin);
+            end = wktexp[i].substring(index + 1);
+            ind = end.indexOf(",");
+            while (ind != -1) {
+                begin = end.substring(0, ind + 1);
+                index = end.indexOf("[");
+                end = end.substring(ind + 1);
+                if (dontAddAlinea) {
+                    w.append("\n").append(alinea(n)).append(begin);
+                } else if (ind < index || index == -1) {
+                    w.append(begin);
+                } else {
+                    n++;
+                    w.append("\n").append(alinea(n)).append(begin);
+                }
+                dontAddAlinea = begin.substring(begin.length() - 2).equals("],");
+                ind = end.indexOf(",");
+            }
+            n = checkAlinea(end, n);
+            w.append(end);
+            if (i != wktexp.length - 1) {
+                n--;
+                w.append("]],\n").append(alinea(n));
+            }
+        }
+        return w.toString();
+    }
+
+    private static String alinea(int n) {
+        StringBuilder w = new StringBuilder();
+        for (int i = 0; i < n; i++) {
+            w = w.append("    ");
+        }
+        return w.toString();
+    }
+    
+    private static int checkAlinea(String end, int n) {
+        int k = end.length() - 1;
+        while (end.substring(k,k+1).equals("]")) {
+            n--;
+            k--;
+        }
+        return n;
     }
 
     private PrjWriter() {
