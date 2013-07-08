@@ -199,8 +199,6 @@ public class PrjParserTest {
         Map<String, String> p = parser.getParameters(prj);
         assertTrue(p.get(PrjKeyParameters.REFNAME).equals("EPSG:27572"));
     }
-    
-    
     // @Test // This test does not work yet.
     public void testReadWriteOGC_PRJ()throws Exception{
         CRSFactory cRSFactory = new CRSFactory();
@@ -223,11 +221,10 @@ public class PrjParserTest {
         String crsWKT = PrjWriter.crsToWKT(crs);
         assertTrue(prj.equals(crsWKT));
     }
-    
-    
+
     @Test
-    public void testWriteOGC_3857_PRJ()throws Exception{
-        CRSFactory cRSFactory = new CRSFactory();    
+    public void testWriteOGC_3857_PRJ() throws Exception {
+        CRSFactory cRSFactory = new CRSFactory();
         cRSFactory.getRegistryManager().addRegistry(new EPSGRegistry());
         CoordinateReferenceSystem crs = cRSFactory.getCRS("EPSG:3857");
         assertNotNull(crs);

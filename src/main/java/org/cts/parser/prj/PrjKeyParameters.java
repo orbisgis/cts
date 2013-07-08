@@ -34,12 +34,14 @@ package org.cts.parser.prj;
 /**
  * List all parameters used to define a PRJ file
  *
- * @author Erwan Bocher
+ * @author Erwan Bocher, Jules Party
  */
 public class PrjKeyParameters {
 
     public static final String GEOGCS = "geogcs";
     public static final String UNIT = "unit";
+    public static final String PROJUNIT = "projunit";
+    public static final String GEOGUNIT = "geogunit";
     public static final String PROJECTION = "projection";
     public static final String PARAMETER = "parameter";
     public static final String AUTHORITY = "authority";
@@ -47,9 +49,23 @@ public class PrjKeyParameters {
     public static final String PRIMEM = "primem";
     public static final String SPHEROID = "spheroid";
     //Internal key parameters used by the parser
-    public static final String UNITVAL = "unitval";
+    public static final String PROJUNITVAL = "projunitval";
+    public static final String GEOGUNITVAL = "geogunitval";
     public static final String NAME = "name";
     public static final String REFCODE = "refcode";
     public static final String REFNAME = "refname";
     public static final String REFAUTHORITY = "refauthority";
+    public static final String GEOGREFCODE = "geogrefcode";
+    public static final String GEOGREFNAME = "geogrefname";
+    public static final String GEOGREFAUTHORITY = "geogrefauthority";
+    public static final String SPHEROIDCODE = "spheroidcode";
+    public static final String SPHEROIDAUTHORITY = "spheroidauthority";
+    public static final String DATUMCODE = "datumcode";
+    public static final String DATUMAUTHORITY = "datumauthority";
+    public static final String PRIMEMCODE = "primemcode";
+    public static final String PRIMEMAUTHORITY = "primemauthority";
+    public static final String PROJUNITCODE = "projunitcode";
+    public static final String PROJUNITAUTHORITY = "projunitauthority";
+    public static final String GEOGUNITCODE = "geogunitcode";
+    public static final String GEOGUNITAUTHORITY = "geogunitauthority";
 }

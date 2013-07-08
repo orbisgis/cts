@@ -66,6 +66,11 @@ public class PrjValueParameters {
      * name used in CTS.
      */
     public static final Map<String, String> PRIMEMERIDIANNAMES = new HashMap<String, String>();
+    /**
+     * A map linking the name of units used in PRJ file to the short name used
+     * in CTS.
+     */
+    public static final Map<String, String> UNITNAMES = new HashMap<String, String>();
 
     static {
         PARAMNAMES.put("centralmeridian", "lon_0");
@@ -87,7 +92,7 @@ public class PrjValueParameters {
         PROJNAMES.put("boggs" + "eumorphic", "bipc");
         PROJNAMES.put("bonne", "bonne");
         PROJNAMES.put("cassini", "cass");
-        PROJNAMES.put("cassini"+"soldner", "cass");
+        PROJNAMES.put("cassini" + "soldner", "cass");
         PROJNAMES.put("central" + "cylindrical", "cc");
         PROJNAMES.put("collignon", "collg");
         PROJNAMES.put("craster" + "parabolic", "crast");
@@ -108,7 +113,7 @@ public class PrjValueParameters {
         PROJNAMES.put("goode" + "homolosine", "goode");
         PROJNAMES.put("hammer" + "eckert" + "greifendorff", "hammer");
         PROJNAMES.put("hatano" + "asymmetrical" + "equal" + "area", "hatano");
-        PROJNAMES.put("hotine"+"oblique"+"mercator", "omerc");
+        PROJNAMES.put("hotine" + "oblique" + "mercator", "omerc");
         PROJNAMES.put("kavraisky" + "v", "kav5");
         PROJNAMES.put("lagrange", "lagrng");
         PROJNAMES.put("lambert" + "azimuthal" + "equal" + "area", "laea");
@@ -232,5 +237,17 @@ public class PrjValueParameters {
         PRIMEMERIDIANNAMES.put("stockholm", "stockholm");
         PRIMEMERIDIANNAMES.put("athens", "athens");
         PRIMEMERIDIANNAMES.put("oslo", "oslo");
+        UNITNAMES.put("meter", "m");
+        UNITNAMES.put("metre", "m");
+        UNITNAMES.put("radian", "rad");
+        UNITNAMES.put("degree", "\u00B0");
+        UNITNAMES.put("minute", "'");
+        UNITNAMES.put("second", "\"");
+        UNITNAMES.put("grad", "g");
+        UNITNAMES.put("kilometer", "km");
+        UNITNAMES.put("kilometre", "km");
+        UNITNAMES.put("foot", "ft");
+        UNITNAMES.put("foot_us", "us-ft");
+        UNITNAMES.put("yard", "yd");
     }
 }

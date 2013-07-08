@@ -75,7 +75,7 @@ public final class PrjMatcher {
 
             @Override
             public void run(List<PrjElement> list) {
-                parseUnit(list);
+                parseProjUnit(list);
             }
         }, new PrjNodeMatcher() {
             @Override
@@ -117,20 +117,22 @@ public final class PrjMatcher {
             // let's look for GEOGCS directly
             ll = matchNode(el, PrjKeyParameters.GEOGCS);
             parseGeogcs(ll, true);
+        } else {
+            for (int i = 1; i < ll.size(); i++) {
+                matchAnyNode(ll.get(i), projCSmatchers);
+            }
         }
         // projection name or GEOGCD name
         parseString(ll.get(0), PrjKeyParameters.NAME);
 
-        for (int i = 1; i < ll.size(); i++) {
-            matchAnyNode(ll.get(i), projCSmatchers);
-        }
-
         // clean up params
-        String unit = params.remove(PrjKeyParameters.UNIT);
-        String unitval = params.remove(PrjKeyParameters.UNITVAL);
-        if (unitval == null || Math.abs(Double.valueOf(unitval) - 1.0) < TOL) {
+        String unit = params.remove(PrjKeyParameters.PROJUNIT);
+        String unitval = params.remove(PrjKeyParameters.PROJUNITVAL);
+        if (PrjValueParameters.UNITNAMES.containsKey(unit)) {
+            params.put(ProjKeyParameters.units, PrjValueParameters.UNITNAMES.get(unit));
+        } else if (unitval == null || Math.abs(Double.valueOf(unitval) - 1.0) < TOL) {
             params.put(ProjKeyParameters.units, ProjValueParameters.M);
-        } else if (!unit.equals("degree")) {
+        } else {
             params.put(ProjKeyParameters.to_meter, unitval);
             String x0 = params.remove(ProjKeyParameters.x_0);
             if (x0 != null) {
@@ -149,6 +151,11 @@ public final class PrjMatcher {
             String code = params.remove(PrjKeyParameters.REFCODE);
             params.put(PrjKeyParameters.REFNAME, auth + ':' + code);
         }
+        auth = params.remove(PrjKeyParameters.GEOGREFAUTHORITY);
+        if (auth != null) {
+            String code = params.remove(PrjKeyParameters.GEOGREFCODE);
+            params.put(PrjKeyParameters.GEOGREFNAME, auth + ':' + code);
+        }
 
         // no projection specified usually means longlat
         if (!params.containsKey(ProjKeyParameters.proj)) {
@@ -162,11 +169,7 @@ public final class PrjMatcher {
         parseString(ll.get(0), PrjKeyParameters.GEOGCS);
 
         PrjNodeMatcher[] matchers;
-        if (rootElement) {
-            matchers = new PrjNodeMatcher[3];
-        } else {
-            matchers = new PrjNodeMatcher[2];
-        }
+        matchers = new PrjNodeMatcher[4];
         matchers[0] = new PrjNodeMatcher() {
             @Override
             public String getName() {
@@ -189,9 +192,31 @@ public final class PrjMatcher {
                 parsePrimeM(list);
             }
         };
+        matchers[2] = new PrjNodeMatcher() {
+            @Override
+            public String getName() {
+                return PrjKeyParameters.UNIT;
+            }
 
-        if (rootElement) {
-            matchers[2] = new PrjNodeMatcher() {
+            @Override
+            public void run(List<PrjElement> list) {
+                parseGeogUnit(list);
+            }
+        };
+        if (!rootElement) {
+            matchers[3] = new PrjNodeMatcher() {
+                @Override
+                public String getName() {
+                    return PrjKeyParameters.AUTHORITY;
+                }
+
+                @Override
+                public void run(List<PrjElement> list) {
+                    parseGeogAuthority(list);
+                }
+            };
+        } else {
+            matchers[3] = new PrjNodeMatcher() {
                 @Override
                 public String getName() {
                     return PrjKeyParameters.AUTHORITY;
@@ -214,6 +239,36 @@ public final class PrjMatcher {
         parseString(ll.get(1), PrjKeyParameters.REFCODE);
     }
 
+    private void parseGeogAuthority(List<PrjElement> ll) {
+        parseString(ll.get(0), PrjKeyParameters.GEOGREFAUTHORITY);
+        parseString(ll.get(1), PrjKeyParameters.GEOGREFCODE);
+    }
+
+    private void parseSpheroidAuthority(List<PrjElement> ll) {
+        parseString(ll.get(0), PrjKeyParameters.SPHEROIDAUTHORITY);
+        parseString(ll.get(1), PrjKeyParameters.SPHEROIDCODE);
+    }
+
+    private void parsePrimeMAuthority(List<PrjElement> ll) {
+        parseString(ll.get(0), PrjKeyParameters.PRIMEMAUTHORITY);
+        parseString(ll.get(1), PrjKeyParameters.PRIMEMCODE);
+    }
+
+    private void parseDatumAuthority(List<PrjElement> ll) {
+        parseString(ll.get(0), PrjKeyParameters.DATUMAUTHORITY);
+        parseString(ll.get(1), PrjKeyParameters.DATUMCODE);
+    }
+
+    private void parseProjUnitAuthority(List<PrjElement> ll) {
+        parseString(ll.get(0), PrjKeyParameters.PROJUNITAUTHORITY);
+        parseString(ll.get(1), PrjKeyParameters.PROJUNITCODE);
+    }
+
+    private void parseGeogUnitAuthority(List<PrjElement> ll) {
+        parseString(ll.get(0), PrjKeyParameters.GEOGUNITAUTHORITY);
+        parseString(ll.get(1), PrjKeyParameters.GEOGUNITCODE);
+    }
+
     private void parseDatum(List<PrjElement> ll) {
         String datum = getString(ll.get(0));
         datum = datum.replaceAll("[^a-zA-Z0-9]", "");
@@ -230,9 +285,10 @@ public final class PrjMatcher {
             } else {
                 parseNumber(nn.get(1), ProjKeyParameters.a);
                 parseNumber(nn.get(2), ProjKeyParameters.rf);
+                parseSpheroidAuthority(matchNode(nn.get(3), PrjKeyParameters.AUTHORITY));
             }
 
-            if (ll.size() > 2) {
+            if (ll.size() > 3) {
                 List<PrjElement> els = matchNode(ll.get(2), ProjKeyParameters.towgs84, false);
                 if (els != null) {
                     StringBuilder b = new StringBuilder();
@@ -242,24 +298,47 @@ public final class PrjMatcher {
                     }
                     params.put(ProjKeyParameters.towgs84, b.toString());
                 }
+                parseDatumAuthority(matchNode(ll.get(3), PrjKeyParameters.AUTHORITY));
+            } else {
+                parseDatumAuthority(matchNode(ll.get(2), PrjKeyParameters.AUTHORITY));
             }
         }
     }
 
     /**
      * Parse unit value to a {@code PrjNumberElement}
+     *
      * @param {@code List<PrjElement>}
      */
-    private void parseUnit(List<PrjElement> ll) {
+    private void parseProjUnit(List<PrjElement> ll) {
         String unit = getString(ll.get(0));
         unit = unit.replaceAll("[^a-zA-Z0-9]", "").toLowerCase();
-        params.put(PrjKeyParameters.UNIT, unit);
-        parseNumber(ll.get(1), PrjKeyParameters.UNITVAL);
+        params.put(PrjKeyParameters.PROJUNIT, unit);
+        parseNumber(ll.get(1), PrjKeyParameters.PROJUNITVAL);
+        if (ll.size() > 2) {
+            parseProjUnitAuthority(matchNode(ll.get(2), PrjKeyParameters.AUTHORITY));
+        }
+    }
+
+    /**
+     * Parse unit value to a {@code PrjNumberElement}
+     *
+     * @param {@code List<PrjElement>}
+     */
+    private void parseGeogUnit(List<PrjElement> ll) {
+        String unit = getString(ll.get(0));
+        unit = unit.replaceAll("[^a-zA-Z0-9]", "").toLowerCase();
+        params.put(PrjKeyParameters.GEOGUNIT, unit);
+        parseNumber(ll.get(1), PrjKeyParameters.GEOGUNITVAL);
+        if (ll.size() > 2) {
+            parseGeogUnitAuthority(matchNode(ll.get(2), PrjKeyParameters.AUTHORITY));
+        }
     }
 
     /**
      * Parse the projection name of the CRS to a String representation
-     * @param {@code List<PrjElement>} 
+     *
+     * @param {@code List<PrjElement>}
      */
     private void parseProjection(List<PrjElement> ll) {
         String proj = getString(ll.get(0));
@@ -272,7 +351,8 @@ public final class PrjMatcher {
 
     /**
      * Parse the prime meridian of the CRS to a String representation
-     * @param {@code List<PrjElement>} 
+     *
+     * @param {@code List<PrjElement>}
      */
     private void parsePrimeM(List<PrjElement> ll) {
         String pm = getString(ll.get(0));
@@ -282,6 +362,7 @@ public final class PrjMatcher {
             params.put(ProjKeyParameters.pm, prm);
         } else {
             parseNumber(ll.get(1), ProjKeyParameters.pm);
+            parsePrimeMAuthority(matchNode(ll.get(2), PrjKeyParameters.AUTHORITY));
         }
     }
 
