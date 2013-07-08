@@ -72,6 +72,7 @@ public class CRSFactory {
 
     private RegistryManager registryManager = new RegistryManager();
     protected final CRSCache<String, CoordinateReferenceSystem> CRSPOOL = new CRSCache<String, CoordinateReferenceSystem>(10);
+    protected final CRSCache<String, CoordinateReferenceSystem> PRJCRSPOOL = new CRSCache<String, CoordinateReferenceSystem>(10);
 
     /**
      * Creates a new factory.
@@ -156,22 +157,19 @@ public class CRSFactory {
      * @param prjString the OGC WKT String defining the CRS
      */
     public CoordinateReferenceSystem createFromPrj(String prjString) throws CRSException {
-        PrjParser p = new PrjParser();
-        Map<String, String> prjParameters = p.getParameters(prjString);
-        String name = prjParameters.remove("name");
-        String refname = prjParameters.remove("refname");
-        CoordinateReferenceSystem crs;
-        if (refname != null) {
-            crs = CRSPOOL.get(refname);
-            if (crs == null) {
+        CoordinateReferenceSystem crs = PRJCRSPOOL.get(prjString);
+        if (crs == null) {
+            PrjParser p = new PrjParser();
+            Map<String, String> prjParameters = p.getParameters(prjString);
+            String name = prjParameters.remove("name");
+            String refname = prjParameters.remove("refname");
+            if (refname != null) {
                 String[] authorityNameWithKey = refname.split(":");
-                crs = CRSHelper.createCoordinateReferenceSystem(new Identifier(authorityNameWithKey[0], authorityNameWithKey[1], name), prjParameters);            
-                if (crs != null) {
-                    CRSPOOL.put(refname, crs);
-                }
+                crs = CRSHelper.createCoordinateReferenceSystem(new Identifier(authorityNameWithKey[0], authorityNameWithKey[1], name), prjParameters);
+            } else {
+                crs = CRSHelper.createCoordinateReferenceSystem(new Identifier(name, name, name), prjParameters);
             }
-        } else {
-            crs = CRSHelper.createCoordinateReferenceSystem(new Identifier(name, name, name), prjParameters);
+            PRJCRSPOOL.put(prjString, crs);
         }
         return crs;
     }
