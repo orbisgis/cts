@@ -184,14 +184,14 @@ public class IGNGeographicGrid extends GeographicGrid {
         if (stt.hasMoreTokens()) {
             token = stt.nextToken();
             ymin = Double.parseDouble(token);
-            yL =ymin;
+            y0 =ymin;
         } else {
             throw new Exception("Missing minimum latitude in line : " + gr1);
         }
         if (stt.hasMoreTokens()) {
             token = stt.nextToken();
             ymax = Double.parseDouble(token);
-            y0 = ymax;
+            yL = ymax;
         } else {
             throw new Exception("Missing maximum latitude in line : " + gr1);
         }
@@ -265,7 +265,7 @@ public class IGNGeographicGrid extends GeographicGrid {
                 }
                 String prec = gg[3+dim];
                 nbdec = Math.max(nbdec, gg[3].split("\\.")[1].length());
-                System.arraycopy(t, 0, values[(int) Math.rint((ymax - lat) / dy)][(int) Math.rint((lon - xmin) / dx)], 0, dim);
+                System.arraycopy(t, 0, values[(int) Math.rint((lat - y0) / dy)][(int) Math.rint((lon - x0) / dx)], 0, dim);
             } catch (NumberFormatException nfe) {
                 System.out.println(gg[0]);
                 System.out.println(gg[1]);
@@ -274,6 +274,6 @@ public class IGNGeographicGrid extends GeographicGrid {
         }
         // decimal part size --> scale
         scale = (int) Math.rint(Math.pow(10.0, (double) nbdec));
-        extent = new GeographicExtent("GG", yL, y0, x0, xL, modulo);
+        extent = new GeographicExtent("GG", y0, yL, x0, xL, modulo);
     }
 }

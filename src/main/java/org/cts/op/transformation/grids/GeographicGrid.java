@@ -282,25 +282,11 @@ public class GeographicGrid implements Grid {
         // Il est important que le calcul des ligne/colonne de référence se fasse
         // avec la même ecriture que le calcul de fx et fy pour éviter les
         // problemes d'arrondi
-        double fx;
-        double fy;
-        int j;
-        int i;
-        if (x0 < xL) {
-            j = (int) Math.floor((x - x0) / dx);  // column
-            fx = (x - x0) / dx - j;
-        } else {
-            j = (int) Math.floor((x0 - x) / dx);  // column
-            fx = (x0 - x) / dx - j;
-        }
-        if (y0 < yL) {
-            i = (int) Math.floor((y - y0) / dy);  // line
-            fy = (y - y0) / dy - i;
-        } else {
-            i = (int) Math.floor((y0 - y) / dy);  // line
-            fy = (y0 - y) / dy - i;
-        }
-        
+        int j = (int) Math.floor((x - x0) / dx);  // column
+        double fx = (x - x0) / dx - j;
+        int i = (int) Math.floor((y - y0) / dy);  // line
+        double fy = (y - y0) / dy - i;
+
         // Les tests j<(cnb-1) et i<(rnb-1) permettent de gérer le cas des
         // coordonnées situées exactement sur la dernière ligne ou dernière
         // colonne (cela revient à les dupliquer)
