@@ -263,8 +263,7 @@ public class CRSHelper {
                 if (!grid.equals("null")) {
                     LOGGER.warn("A grid has been founded.");
                     if (grid.equals("@null")) {
-                        crs.getDatum().addCoordinateOperation(GeodeticDatum.WGS84, Identity.IDENTITY);
-                        GeodeticDatum.WGS84.addCoordinateOperation(crs.getDatum(), Identity.IDENTITY);
+                        crs.addGridTransformation(GeodeticDatum.WGS84, Identity.IDENTITY);
                     } else {
                         if (grid.equals("ntf_r93.gsb")) {
                             // Use a transformation based on IGN grid that is the official way to convert coordinates from NTF to RGF93.
@@ -273,20 +272,22 @@ public class CRSHelper {
                                         GeodeticDatum.RGF93,
                                         new CoordinateOperationSequence(
                                         new Identifier(CoordinateOperation.class, "NTF" + " to " + "RGF93"),
-                                        new LongitudeRotation(GeodeticDatum.NTF.getPrimeMeridian().getLongitudeFromGreenwichInRadians() - GeodeticDatum.RGF93.getPrimeMeridian().getLongitudeFromGreenwichInRadians()),
+                                        new LongitudeRotation(GeodeticDatum.NTF.getPrimeMeridian().getLongitudeFromGreenwichInRadians()),
                                         new Geographic2Geocentric(GeodeticDatum.NTF.getEllipsoid()),
                                         new FrenchGeocentricNTF2RGF(),
-                                        new Geocentric2Geographic(GeodeticDatum.RGF93.getEllipsoid())));
+                                        new Geocentric2Geographic(GeodeticDatum.RGF93.getEllipsoid()),
+                                        new LongitudeRotation(-GeodeticDatum.RGF93.getPrimeMeridian().getLongitudeFromGreenwichInRadians())));
                             } else if (crs.getDatum().equals(GeodeticDatum.NTF_PARIS)) {
                                 crs.addGridTransformation(
                                         GeodeticDatum.RGF93,
                                         new CoordinateOperationSequence(
                                         new Identifier(CoordinateOperation.class, "NTF" + " to " + "RGF93"),
                                         GeodeticDatum.NTF_PARIS.getCoordinateOperations(GeodeticDatum.NTF).get(0),
-                                        new LongitudeRotation(GeodeticDatum.NTF.getPrimeMeridian().getLongitudeFromGreenwichInRadians() - GeodeticDatum.RGF93.getPrimeMeridian().getLongitudeFromGreenwichInRadians()),
+                                        new LongitudeRotation(GeodeticDatum.NTF.getPrimeMeridian().getLongitudeFromGreenwichInRadians()),
                                         new Geographic2Geocentric(GeodeticDatum.NTF.getEllipsoid()),
                                         new FrenchGeocentricNTF2RGF(),
-                                        new Geocentric2Geographic(GeodeticDatum.RGF93.getEllipsoid())));
+                                        new Geocentric2Geographic(GeodeticDatum.RGF93.getEllipsoid()),
+                                        new LongitudeRotation(-GeodeticDatum.RGF93.getPrimeMeridian().getLongitudeFromGreenwichInRadians())));
                             }
                         }
                         try {

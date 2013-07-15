@@ -198,8 +198,8 @@ public class Geographic3DCRS extends GeodeticCRS {
             ops.add(CoordinateSwitch.SWITCH_LAT_LON);
         }
         // Convert from radian to this coordinate system's units
-        ops.add(UnitConversion.createUnitConverter(Unit.RADIAN,
-                getCoordinateSystem().getUnit(0)));
+        ops.add(UnitConversion.createUnitConverter(Unit.RADIAN, getCoordinateSystem().getUnit(0),
+                Unit.METER, getCoordinateSystem().getUnit(2)));
         return new CoordinateOperationSequence(new Identifier(
                 CoordinateOperationSequence.class), ops);
     }

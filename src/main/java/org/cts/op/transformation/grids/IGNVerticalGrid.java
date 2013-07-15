@@ -33,7 +33,6 @@ package org.cts.op.transformation.grids;
 
 import java.io.BufferedInputStream;
 import java.io.InputStream;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.StringTokenizer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -93,8 +92,6 @@ public class IGNVerticalGrid extends GeographicGrid {
      */
     public IGNVerticalGrid(InputStream is, boolean zip) throws Exception {
         String token;
-        double xmin, xmax, ymin, ymax;
-        ConcurrentHashMap precisionCodes = new ConcurrentHashMap();
         String ignFile;
 
         if (zip) {
@@ -208,7 +205,8 @@ public class IGNVerticalGrid extends GeographicGrid {
         int[] incr = new int[2];
         double[] t = new double[dim];
         String[] gg = st.nextToken().trim().split("[ \t]+");
-        while (index != gg.length) {
+        int max = gg.length;
+        while (index != max) {
             try {
                 if (isCoordinate) {
                     lon = Double.parseDouble(gg[index]);
@@ -242,6 +240,20 @@ public class IGNVerticalGrid extends GeographicGrid {
         extent = new GeographicExtent("GG", y0, yL, x0, xL, modulo);
     }
 
+    /**
+     * Return a table storing the new values of the parameter i and j used to
+     * browse the table. The returned values depend on the order used to write
+     * values in the file, the IGN used 4 different methods. For instance method
+     * one means that the values were stored beginning by the minimal value of
+     * longitude and latitude and order values by growing latitude, then growing
+     * longitude.
+     *
+     * @param i the first indice used to browse the grid table (corresponding to
+     * latitude)
+     * @param j the second indice used to browse the grid table (corresponding
+     * to longitude)
+     * @return
+     */
     private int[] increment(int i, int j) {
         int[] incr = new int[2];
         switch (orderType) {

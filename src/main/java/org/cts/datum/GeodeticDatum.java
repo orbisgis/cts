@@ -191,14 +191,15 @@ public class GeodeticDatum extends AbstractDatum {
     }
 
     /**
-     * Register a datum in {@link HashMap} {@code datums} using its {@link Identifier} as a key.
+     * Register a datum in {@link HashMap} {@code datums} using its
+     * {@link Identifier} as a key.
      */
     private void registerDatum() {
         datums.put(getIdentifier(), this);
     }
 
     /**
-     * Returns a collection of all the registered datums.
+     * Returns a collection of all the registered geodetic datums.
      */
     public static Collection<GeodeticDatum> getAvailableDatums() {
         return datums.values();
@@ -284,19 +285,21 @@ public class GeodeticDatum extends AbstractDatum {
                     targetDatum,
                     new CoordinateOperationSequence(
                     new Identifier(CoordinateOperation.class, getName() + " to " + targetDatum.getName()),
-                    new LongitudeRotation(primeMeridian.getLongitudeFromGreenwichInRadians() - targetDatum.getPrimeMeridian().getLongitudeFromGreenwichInRadians()),
+                    new LongitudeRotation(primeMeridian.getLongitudeFromGreenwichInRadians()),
                     new Geographic2Geocentric(getEllipsoid()),
                     toOtherDatum,
-                    new Geocentric2Geographic(targetDatum.getEllipsoid())));
+                    new Geocentric2Geographic(targetDatum.getEllipsoid()),
+                    new LongitudeRotation(-targetDatum.getPrimeMeridian().getLongitudeFromGreenwichInRadians())));
             try {
                 targetDatum.addCoordinateOperation(
                         this,
                         new CoordinateOperationSequence(
                         new Identifier(CoordinateOperation.class, targetDatum.getName() + " to " + getName()),
+                        new LongitudeRotation(targetDatum.getPrimeMeridian().getLongitudeFromGreenwichInRadians()),
                         new Geographic2Geocentric(targetDatum.getEllipsoid()),
                         toOtherDatum.inverse(),
                         new Geocentric2Geographic(getEllipsoid()),
-                        new LongitudeRotation(targetDatum.getPrimeMeridian().getLongitudeFromGreenwichInRadians() - primeMeridian.getLongitudeFromGreenwichInRadians())));
+                        new LongitudeRotation(-primeMeridian.getLongitudeFromGreenwichInRadians())));
             } catch (NonInvertibleOperationException e) {
                 // eat it
                 // toWGS84 should be Identity, GeocentricTranslation or
@@ -311,22 +314,39 @@ public class GeodeticDatum extends AbstractDatum {
             this.addCoordinateOperation(targetDatum,
                     new CoordinateOperationSequence(
                     new Identifier(CoordinateOperation.class, getName() + " to " + targetDatum.getName()),
-                    new LongitudeRotation(primeMeridian.getLongitudeFromGreenwichInRadians() - targetDatum.getPrimeMeridian().getLongitudeFromGreenwichInRadians()),
+                    new LongitudeRotation(primeMeridian.getLongitudeFromGreenwichInRadians()),
                     new Geographic2Geocentric(getEllipsoid()),
-                    new Geocentric2Geographic(targetDatum.getEllipsoid())));
+                    new Geocentric2Geographic(targetDatum.getEllipsoid()),
+                    new LongitudeRotation(-targetDatum.getPrimeMeridian().getLongitudeFromGreenwichInRadians())));
             targetDatum.addCoordinateOperation(this,
                     new CoordinateOperationSequence(
                     new Identifier(CoordinateOperation.class, getName() + " to " + targetDatum.getName()),
+                    new LongitudeRotation(targetDatum.getPrimeMeridian().getLongitudeFromGreenwichInRadians()),
                     new Geographic2Geocentric(targetDatum.getEllipsoid()),
                     new Geocentric2Geographic(getEllipsoid()),
-                    new LongitudeRotation(targetDatum.getPrimeMeridian().getLongitudeFromGreenwichInRadians() - primeMeridian.getLongitudeFromGreenwichInRadians())));
+                    new LongitudeRotation(-primeMeridian.getLongitudeFromGreenwichInRadians())));
         } // Third case : geocentric transformation is null and ellipsoid are
         // the same but prime meridians are not the same
         else if (toOtherDatum == Identity.IDENTITY
                 && !primeMeridian.equals(targetDatum.getPrimeMeridian())) {
             this.addCoordinateOperation(targetDatum, new LongitudeRotation(primeMeridian.getLongitudeFromGreenwichInRadians() - targetDatum.getPrimeMeridian().getLongitudeFromGreenwichInRadians()));
             targetDatum.addCoordinateOperation(this, new LongitudeRotation(targetDatum.getPrimeMeridian().getLongitudeFromGreenwichInRadians() - primeMeridian.getLongitudeFromGreenwichInRadians()));
-        } // Fourth case : this datum and WGS84 are equivalent
+        } // Fourth case : geocentric transformation is null and prime meridians are 
+        // the same but ellipsoids are not the same
+        else if (toOtherDatum == Identity.IDENTITY
+                && !ellipsoid.equals(targetDatum.getEllipsoid())) {
+            this.addCoordinateOperation(targetDatum,
+                    new CoordinateOperationSequence(
+                    new Identifier(CoordinateOperation.class, getName() + " to " + targetDatum.getName()),
+                    new Geographic2Geocentric(getEllipsoid()),
+                    new Geocentric2Geographic(targetDatum.getEllipsoid())));
+            targetDatum.addCoordinateOperation(this,
+                    new CoordinateOperationSequence(
+                    new Identifier(CoordinateOperation.class, getName() + " to " + targetDatum.getName()),
+                    new Geographic2Geocentric(targetDatum.getEllipsoid()),
+                    new Geocentric2Geographic(getEllipsoid())));
+        }
+        // Fifth case : this datum and WGS84 are equivalent
         else if (toOtherDatum == Identity.IDENTITY) {
             this.addCoordinateOperation(targetDatum, Identity.IDENTITY);
             targetDatum.addCoordinateOperation(this, Identity.IDENTITY);

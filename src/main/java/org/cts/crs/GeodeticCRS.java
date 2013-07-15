@@ -41,6 +41,7 @@ import org.cts.Identifier;
 import org.cts.cs.CoordinateSystem;
 import org.cts.datum.GeodeticDatum;
 import org.cts.op.CoordinateOperation;
+import org.cts.op.CoordinateOperationSequence;
 import org.cts.op.NonInvertibleOperationException;
 import org.cts.op.projection.Projection;
 
@@ -171,6 +172,14 @@ public abstract class GeodeticCRS extends IdentifiableComponent
      * transformation
      */
     public List<CoordinateOperation> getGridTransformations(GeodeticDatum datum) {
+        if (nadgridsTransformations.get(datum) == null && nadgridsTransformations.get(GeodeticDatum.WGS84) != null) {
+            List<CoordinateOperation> opList = new ArrayList<CoordinateOperation>();
+            opList.add(new CoordinateOperationSequence(
+                    new Identifier(CoordinateOperation.class),
+                    nadgridsTransformations.get(GeodeticDatum.WGS84).get(0),
+                    GeodeticDatum.WGS84.getCoordinateOperations(datum).get(0)));
+            return opList;
+        }
         return nadgridsTransformations.get(datum);
     }
 
