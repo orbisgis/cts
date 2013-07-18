@@ -31,10 +31,9 @@
  */
 package org.cts.op;
 
-import org.cts.CRSFactory;
 import org.cts.CTSTestCase;
 import org.cts.IllegalCoordinateException;
-import org.cts.crs.CRSException;
+import org.cts.crs.CompoundCRS;
 import org.cts.crs.CoordinateReferenceSystem;
 import org.cts.crs.GeodeticCRS;
 import org.cts.parser.prj.PrjWriter;
@@ -61,7 +60,14 @@ public class BaseCoordinateTransformTest extends CTSTestCase {
      * @throws IllegalCoordinateException
      */
     public double[] transform(GeodeticCRS sourceCRS, GeodeticCRS targetCRS, double[] inputPoint) throws IllegalCoordinateException {
-        List<CoordinateOperation> ops = CoordinateOperationFactory.createCoordinateOperations(sourceCRS, targetCRS);
+        List<CoordinateOperation> ops;
+        if (sourceCRS instanceof CompoundCRS && targetCRS instanceof CompoundCRS) {
+            CompoundCRS srcCRS = (CompoundCRS) sourceCRS;
+            CompoundCRS tgtCRS = (CompoundCRS) targetCRS;
+            ops = CoordinateOperationFactory.createCoordinateOperations(srcCRS, tgtCRS);
+        } else {
+            ops = CoordinateOperationFactory.createCoordinateOperations(sourceCRS, targetCRS);
+        }
         if (!ops.isEmpty()) {
             if (verbose) {
                 System.out.println(ops.get(0));

@@ -61,12 +61,12 @@ public class CTSTestCase {
     @BeforeClass
     public static void setup(){    
         cRSFactory = new CRSFactory();
-        RegistryManager registryManager = cRSFactory.getRegistryManager();        
+        RegistryManager registryManager = cRSFactory.getRegistryManager();
         registryManager.addRegistry(new IGNFRegistry());
         registryManager.addRegistry(new EPSGRegistry());
         registryManager.addRegistry(new ESRIRegistry());
         registryManager.addRegistry(new Nad27Registry());
-        registryManager.addRegistry(new Nad83Registry());        
+        registryManager.addRegistry(new Nad83Registry());
 
         // Disable log4j outputs.
         List<Logger> loggers = Collections.<Logger>list(LogManager.getCurrentLoggers());
@@ -137,6 +137,34 @@ public class CTSTestCase {
         double dx = Math.abs(c1[0] - c2[0]);
         double dy = Math.abs(c1[1] - c2[1]);
         double delta = Math.max(dx, dy);
+        boolean isInTol = delta <= tolerance;
+        if (isInTol) {
+            LOGGER.debug("TRUE : From " + test + " Result point : " + Arrays.toString(c1) + " = expected point : "
+                    + Arrays.toString(c2) + " <= " + tolerance);
+            return true;
+        } else {
+            LOGGER.debug("FALSE : From " + test + " Result point : " + Arrays.toString(c1) + " compare to expected point : "
+                    + Arrays.toString(c2) + " = " + (tolerance - delta));
+            return false;
+        }
+    }
+
+    /**
+     * Check if the result point is equal in X, Y and Z to the target point
+     * using an epsilon clause
+     *
+     * @param test
+     * @param c1
+     * @param c2
+     * @param tolerance
+     * @return
+     */
+    protected boolean checkEquals3D(String test, double[] c1, double[] c2,
+            double tolerance) {
+        double dx = Math.abs(c1[0] - c2[0]);
+        double dy = Math.abs(c1[1] - c2[1]);
+        double dz = Math.abs(c1[2] - c2[2]);
+        double delta = Math.max(Math.max(dx, dy), dz);
         boolean isInTol = delta <= tolerance;
         if (isInTol) {
             LOGGER.debug("TRUE : From " + test + " Result point : " + Arrays.toString(c1) + " = expected point : "

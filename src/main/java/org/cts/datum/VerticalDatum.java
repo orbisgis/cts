@@ -60,6 +60,143 @@ public class VerticalDatum extends AbstractDatum {
             GeographicExtent.WORLD,
             "Surface of the reference Ellipsoid for WGS 1984",
             "1984", Type.ELLIPSOIDAL, null, GeodeticDatum.WGS84);
+    /**
+     * Nivellement général de la France - IGN69. It is the main vertical datum
+     * used in France.
+     */
+    public final static VerticalDatum IGN69 = new VerticalDatum(
+            new Identifier("EPSG", "5119", "Nivellement general de la France - IGN69", "IGN69"),
+            new GeographicExtent("France", 42, 51.5, -5.5, 8.5),
+            "Mean sea level at Marseille.",
+            "1969", Type.GEOIDAL, "RAF09.txt", GeodeticDatum.RGF93);
+    public final static VerticalDatum IGN78 = new VerticalDatum(
+            new Identifier("EPSG", "5120", "Nivellement general de la France - IGN78", "IGN78"),
+            new GeographicExtent("Corse (France)", 41.2, 43.2, 8.41666666666666, 9.71666666666666),
+            "", "", Type.GEOIDAL, "RAC09.txt", GeodeticDatum.RGF93);
+    public final static VerticalDatum IGN88GTBT = new VerticalDatum(
+            new Identifier("EPSG", "5155", "Geoide géométrique pour Grande-Terre & Basse-Terre (EGM2008 + points GPS nivelés)", "IGN88GTBT"),
+            new GeographicExtent("Guadeloupe", 15.875, 16.625, -61.9, -61.075),
+            "", "", Type.GEOIDAL, "gg10_gtbt.mnt", GeodeticDatum.RGF93);
+    public final static VerticalDatum IGN92LD = new VerticalDatum(
+            new Identifier("EPSG", "5212", "Geoide géométrique pour La Désirade (EGM2008 + points GPS nivelés)", "IGN92LD"),
+            new GeographicExtent("La Désirade", 16.25, 16.4, -61.2, -60.75),
+            "", "", Type.GEOIDAL, "gg10_ld.mnt", GeodeticDatum.RGF93);
+    public final static VerticalDatum IGN88LS = new VerticalDatum(
+            new Identifier("EPSG", "5210", "Geoide géométrique pour Les Saintes (EGM2008 + points GPS nivelés)", "IGN88LS"),
+            new GeographicExtent("Les Saintes", 15.8, 15.925, -61.7, -61.475),
+            "", "", Type.GEOIDAL, "gg10_ls.mnt", GeodeticDatum.RGF93);
+    public final static VerticalDatum IGN87MART = new VerticalDatum(
+            new Identifier("EPSG", "5154", "Martinique 1987", "IGN87MART"),
+            new GeographicExtent("Martinique", 14.3, 15, -61.3, -60.725),
+            "", "", Type.GEOIDAL, "gg10_mart.mnt", GeodeticDatum.RGF93);
+    public final static VerticalDatum IGN88MG = new VerticalDatum(
+            new Identifier("EPSG", "5211", "Geoide géométrique pour Marie-Galante (EGM2008 + points GPS nivelés)", "IGN88MG"),
+            new GeographicExtent("Marie-Galante", 15.8, 16.125, -61.4, -61.075),
+            "", "", Type.GEOIDAL, "gg10_mg.mnt", GeodeticDatum.RGF93);
+    public final static VerticalDatum IGN88SB = new VerticalDatum(
+            new Identifier("EPSG", "5213", "Geoide géométrique pour Saint-Barthélémy (EGM2008 + points GPS nivelés)", "IGN88SB"),
+            new GeographicExtent("Saint-Barthélémy", 17.8, 18.025, -63, -62.725),
+            "", "", Type.GEOIDAL, "gg10_sb.mnt", GeodeticDatum.RGF93);
+    public final static VerticalDatum IGN88SM = new VerticalDatum(
+            new Identifier("EPSG", "5214", "Geoide géométrique pour Saint-Martin (EGM2008 + points GPS nivelés)", "IGN88SM"),
+            new GeographicExtent("Saint-Martin", 18, 18.2, -63.2, -62.9),
+            "", "", Type.GEOIDAL, "gg10_sm.mnt", GeodeticDatum.RGF93);
+    public final static VerticalDatum NGG77GUY = new VerticalDatum(
+            new Identifier("EPSG", "5153", "Nivellement General Guyanais 1977", "NGG77GUY"),
+            new GeographicExtent("Guyane", 2, 6, -55, -51),
+            "", "", Type.GEOIDAL, "ggguy00.txt", GeodeticDatum.RGF93);
+    public final static VerticalDatum SHOM53 = new VerticalDatum(
+            new Identifier("EPSG", "5191", "Mayotte SHOM 1953 dans RGM04", "SHOM53"),
+            new GeographicExtent("Mayotte", -13.095, -12.42, 44.91, 45.405),
+            "", "", Type.GEOIDAL, "ggm04v1.txt", GeodeticDatum.RGF93);
+    public final static VerticalDatum IGN62KER = new VerticalDatum(
+            new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, "Géoïde géométrique Kerguelen (EGM2008 + Points GPS nivelés)", "IGN62KER"),
+            new GeographicExtent("Kerguelen", 67, 71, -50.5, -48),
+            "", "", Type.GEOIDAL, "ggker08v2.txt", GeodeticDatum.RGF93);
+    public final static VerticalDatum DANGER50 = new VerticalDatum(
+            new Identifier("EPSG", "5190", "Géoïde géométrique Saint Pierre et Miquelon (EGM96 + Points GPS nivelés)", "DANGER50"),
+            new GeographicExtent("Saint Pierre et Miquelon", -56.52, -55.9350, 46.485, 47.295),
+            "", "", Type.GEOIDAL, "ggspm06v1.txt", GeodeticDatum.RGF93);
+    public final static VerticalDatum BORASAU01 = new VerticalDatum(
+            new Identifier("EPSG", "5202", "Bora Bora SAU 2001", "BORASAU01"),
+            new GeographicExtent("Bora", -152, -151.5, -16.75, -16.25),
+            "", "", Type.GEOIDAL, "ggpf02-Bora.mnt", GeodeticDatum.RGF93);
+    public final static VerticalDatum FAKARAVA = new VerticalDatum(
+            new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, "Polynésie : Fakarava dans RGPF", "FAKARAVA"),
+            new GeographicExtent("Fakarava", -145.9, -145.3, -16.65, -15.95),
+            "", "", Type.GEOIDAL, "ggpf08-Fakarava.mnt", GeodeticDatum.RGF93);
+    public final static VerticalDatum GAMBIER = new VerticalDatum(
+            new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, "Polynésie : Gambier vers RGPF", "GAMBIER"),
+            new GeographicExtent("Gambier", -135.25, -134.75, -23.4, -22.9),
+            "", "", Type.GEOIDAL, "ggpf08-Gambier.mnt", GeodeticDatum.RGF93);
+    public final static VerticalDatum HAO = new VerticalDatum(
+            new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, "Polynesie : Hao vers RGPF", "HAO"),
+            new GeographicExtent("Hao", -141.2, -140.55, -18.55, -17.95),
+            "", "", Type.GEOIDAL, "ggpf08-Hao.mnt", GeodeticDatum.RGF93);
+    public final static VerticalDatum HIVAOA = new VerticalDatum(
+            new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, "Polynésie : HIVA OA dans RGPF", "HAO"),
+            new GeographicExtent("Hao", -139.25, -138.675, -9.9, -9.6),
+            "", "", Type.GEOIDAL, "ggpf05-HivaOa.mnt", GeodeticDatum.RGF93);
+    public final static VerticalDatum HUAHINESAU01 = new VerticalDatum(
+            new Identifier("EPSG", "5200", "Huahine SAU 2001", "HUAHINESAU01"),
+            new GeographicExtent("Huahine", -151.5, -150.75, -17, -16.5),
+            "", "", Type.GEOIDAL, "ggpf02-Huahine.mnt", GeodeticDatum.RGF93);
+    public final static VerticalDatum IGNTAHITI66 = new VerticalDatum(
+            new Identifier("EPSG", "5196", "Polynésie : IGN TAHITI 1966 dans RGPF", "IGNTAHITI66"),
+            new GeographicExtent("Tahiti", -149.69, -149, -18, -17),
+            "", "", Type.GEOIDAL, "ggpf10-Tahiti.mnt", GeodeticDatum.RGF93);
+    public final static VerticalDatum MAIAO01 = new VerticalDatum(
+            new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, "Polynésie : MAIAO 2001 dans RGPF", "MAIAO01"),
+            new GeographicExtent("Maiao", -150.75, -150.5, -17.75, -17.5),
+            "", "", Type.GEOIDAL, "ggpf02-Maiao.mnt", GeodeticDatum.RGF93);
+    public final static VerticalDatum MATAIVA = new VerticalDatum(
+            new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, "Polynésie : Mataiva vers RGPF", "MATAIVA"),
+            new GeographicExtent("Mataiva", -148.8, -148.55, -14.95, -14.8),
+            "", "", Type.GEOIDAL, "ggpf08-Mataiva.mnt", GeodeticDatum.RGF93);
+    public final static VerticalDatum MAUPITISAU01 = new VerticalDatum(
+            new Identifier("EPSG", "5199", "Maupiti SAU 2001", "MAUPITISAU01"),
+            new GeographicExtent("Maupiti", -152.5, -152, -16.75, -16.25),
+            "", "", Type.GEOIDAL, "ggpf02-Maupiti.mnt", GeodeticDatum.RGF93);
+    public final static VerticalDatum MOOREASAU81 = new VerticalDatum(
+            new Identifier("EPSG", "5197", "Moorea SAU 1981", "MOOREASAU81"),
+            new GeographicExtent("Moorea", -150.05, -149.65, -17.7, -17.35),
+            "", "", Type.GEOIDAL, "ggpf10-Moorea.mnt", GeodeticDatum.RGF93);
+    public final static VerticalDatum NUKUHIVA = new VerticalDatum(
+            new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, "Polynésie : NUKU HIVA ALTI dans RGPF", "NUKUHIVA"),
+            new GeographicExtent("Nuku Hiva", -140.3, -139.9, -9, -8.675),
+            "", "", Type.GEOIDAL, "ggpf05-Nuku.mnt", GeodeticDatum.RGF93);
+    public final static VerticalDatum RAIATEASAU01 = new VerticalDatum(
+            new Identifier("EPSG", "5198", "Raiatea SAU 2001", "RAIATEASAU01"),
+            new GeographicExtent("Raiatea", -151.75, -151.25, -17, -16.5),
+            "", "", Type.GEOIDAL, "ggpf02-Raiatea.mnt", GeodeticDatum.RGF93);
+    public final static VerticalDatum RAIVAVAE = new VerticalDatum(
+            new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, "Polynésie : Raivavae vers RGPF", "RAIVAVAE"),
+            new GeographicExtent("Raicvavae", -147.8, -147.5, -24, -23.75),
+            "", "", Type.GEOIDAL, "ggpf08-Raivavae.mnt", GeodeticDatum.RGF93);
+    public final static VerticalDatum REAO = new VerticalDatum(
+            new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, "Polynésie : Reao vers RGPF", "REAO"),
+            new GeographicExtent("Reao", -136.55, -136.2, -18.65, -18.4),
+            "", "", Type.GEOIDAL, "ggpf08-Reao.mnt", GeodeticDatum.RGF93);
+    public final static VerticalDatum RURUTU = new VerticalDatum(
+            new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, "Polynésie : Rurutu vers RGPF", "RURUTU"),
+            new GeographicExtent("Rurutu", -151.45, -151.25, -22.6, -22.35),
+            "", "", Type.GEOIDAL, "ggpf08-Rurutu.mnt", GeodeticDatum.RGF93);
+    public final static VerticalDatum TAHAASAU01 = new VerticalDatum(
+            new Identifier("EPSG", "5201", "Tahaa SAU 2001", "TAHAASAU01"),
+            new GeographicExtent("Tahaa", -151.75, -151.25, -16.75, -16.5),
+            "", "", Type.GEOIDAL, "ggpf02-Tahaa.mnt", GeodeticDatum.RGF93);
+    public final static VerticalDatum TIKEHAU = new VerticalDatum(
+            new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, "Polynésie : Tikehau vers RGPF", "TIKEHAU"),
+            new GeographicExtent("Tikehau", -148.35, -147.95, -15.2, -14.85),
+            "", "", Type.GEOIDAL, "ggpf08-Tikehau.mnt", GeodeticDatum.RGF93);
+    public final static VerticalDatum TUBUAI = new VerticalDatum(
+            new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, "Polynésie : Tubuai vers RGPF", "TUBUAI"),
+            new GeographicExtent("Tubuai", -149.65, -149.3, -23.5, -23.25),
+            "", "", Type.GEOIDAL, "ggpf08-Tubuai.mnt", GeodeticDatum.RGF93);
+    public final static VerticalDatum TUPAI01 = new VerticalDatum(
+            new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, "Polynésie : Tubuai vers RGPF", "TUPAI01"),
+            new GeographicExtent("Tupai", -152, -151.75, -16.5, -16),
+            "", "", Type.GEOIDAL, "ggpf02-Tupai.mnt", GeodeticDatum.RGF93);
 
     /**
      * Vertical Datum classification based on the surface type.
