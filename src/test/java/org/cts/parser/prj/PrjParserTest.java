@@ -220,8 +220,9 @@ public class PrjParserTest {
         assertTrue(crs.getAuthorityName().equals("EPSG"));
         assertTrue(crs.getAuthorityKey().equals("27572"));
         String crsWKT = PrjWriter.crsToWKT(crs);
-        System.out.println(PrjWriter.formatWKT(prj));
-        System.out.println(PrjWriter.formatWKT(crsWKT));
+        // This test cannot work because the ProjectedCRS of CTS does not retain
+        // the Geographic2DCRS equivalent to this CRS without the projection so
+        // the unit used by the geog CRS and its authority are missing.
         //assertTrue(prj.equals(crsWKT));
     }
 
