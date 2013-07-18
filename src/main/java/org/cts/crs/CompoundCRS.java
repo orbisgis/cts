@@ -31,12 +31,23 @@
  */
 package org.cts.crs;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.cts.op.CoordinateOperation;
 import org.cts.Identifier;
 import org.cts.op.NonInvertibleOperationException;
 import org.cts.units.Unit;
 import org.cts.cs.Axis;
+import static org.cts.cs.Axis.EASTING;
 import org.cts.cs.CoordinateSystem;
+import org.cts.datum.VerticalDatum;
+import org.cts.op.CoordinateOperationSequence;
+import org.cts.op.CoordinateSwitch;
+import org.cts.op.Identity;
+import org.cts.op.LoadMemorizeCoordinate;
+import org.cts.op.MemorizeCoordinate;
+import org.cts.op.UnitConversion;
+import org.cts.op.transformation.Altitude2EllipsoidalHeight;
 
 /**
  * A compound CoordinateReferenceSystem is a
@@ -45,18 +56,22 @@ import org.cts.cs.CoordinateSystem;
  * horizontal coordinates and a {@link org.cts.crs.VerticalCRS} for the z
  * coordinate.
  *
- * @author Michaël Michaud
+ * @author Michaël Michaud, Jules Party
  */
-public abstract class CompoundCRS extends GeodeticCRS {
+public class CompoundCRS extends GeodeticCRS {
 
     private GeodeticCRS horizontalCRS;
     private VerticalCRS verticalCRS;
 
     /**
      * Create a new GeodeticCRS.
+     *
+     * @param identifier the identifier of the CompoundCRS
+     * @param horizontalCRS the horizontal part of the CompoundCRS
+     * @param verticalCRS the vertical part of the CompoundCRS
      */
-    protected CompoundCRS(Identifier identifier, GeodeticCRS horizontalCRS,
-            VerticalCRS verticalCRS) {
+    public CompoundCRS(Identifier identifier, GeodeticCRS horizontalCRS,
+            VerticalCRS verticalCRS) throws CRSException {
         super(identifier, horizontalCRS.getDatum(), new CoordinateSystem(
                 new Axis[]{horizontalCRS.getCoordinateSystem().getAxis(0),
             horizontalCRS.getCoordinateSystem().getAxis(1),
@@ -64,11 +79,16 @@ public abstract class CompoundCRS extends GeodeticCRS {
                 new Unit[]{horizontalCRS.getCoordinateSystem().getUnit(0),
             horizontalCRS.getCoordinateSystem().getUnit(1),
             verticalCRS.getCoordinateSystem().getUnit(0)}));
+        if (!(horizontalCRS instanceof ProjectedCRS || horizontalCRS instanceof Geographic2DCRS)) {
+            throw new CRSException("The horizontalCRS must be a ProjectedCRS or a Geographic2DCRS. The "
+                    + horizontalCRS.getClass() + " cannot be used as horizontalCRS.");
+        }
+        this.horizontalCRS = horizontalCRS;
         this.verticalCRS = verticalCRS;
     }
 
     /**
-     * Return this CoordinateReferenceSystem Type
+     * Return this CoordinateReferenceSystem Type.
      */
     @Override
     public Type getType() {
@@ -76,14 +96,14 @@ public abstract class CompoundCRS extends GeodeticCRS {
     }
 
     /**
-     * @return the horizonal part of this CoordinateReferenceSystem
+     * Return the horizonal part of this CoordinateReferenceSystem.
      */
     public GeodeticCRS getHorizontalCRS() {
         return horizontalCRS;
     }
 
     /**
-     * @return the vertical part of this CoordinateReferenceSystem
+     * Return the vertical part of this CoordinateReferenceSystem.
      */
     public VerticalCRS getVerticalCRS() {
         return verticalCRS;
@@ -106,8 +126,56 @@ public abstract class CompoundCRS extends GeodeticCRS {
     @Override
     public CoordinateOperation toGeographicCoordinateConverter()
             throws NonInvertibleOperationException {
-        // To BE DONE
-        return null;
+        List<CoordinateOperation> ops = new ArrayList<CoordinateOperation>();
+        if (horizontalCRS instanceof Geographic2DCRS) {
+            // Convert from source unit to radians and meters.
+            if (getCoordinateSystem().getUnit(0) != Unit.RADIAN) {
+                ops.add(UnitConversion.createUnitConverter(getCoordinateSystem().getUnit(0), Unit.RADIAN, getCoordinateSystem().getUnit(2),
+                        getCoordinateSystem().getUnit(2)));
+            }
+            // switch from LON/LAT to LAT/LON coordinate if necessary
+            if (getCoordinateSystem().getAxis(0) == Axis.LONGITUDE) {
+                ops.add(CoordinateSwitch.SWITCH_LAT_LON);
+            }
+        } else {
+            // Convert units
+            if (getCoordinateSystem().getUnit(0) != Unit.METER) {
+                ops.add(UnitConversion.createUnitConverter(getCoordinateSystem().getUnit(0), Unit.METER, getCoordinateSystem().getUnit(2),
+                        getCoordinateSystem().getUnit(2)));
+            }
+            // switch easting/northing coordinate if necessary
+            if (getCoordinateSystem().getAxis(0) != EASTING) {
+                ops.add(CoordinateSwitch.SWITCH_LAT_LON);
+            }
+            // Apply the inverse projection
+            ops.add(horizontalCRS.getProjection().inverse());
+        }
+        if (verticalCRS.getDatum().getType().equals(VerticalDatum.Type.ELLIPSOIDAL)
+                && !horizontalCRS.getDatum().getEllipsoid().equals(verticalCRS.getDatum().getEllipsoid())) {
+            System.out.println("Unsupported operation for this CRS : " + this);
+            //TO DO
+        } else if (verticalCRS.getDatum().getAltiToEllpsHeight() instanceof Altitude2EllipsoidalHeight) {
+            Altitude2EllipsoidalHeight transfo = (Altitude2EllipsoidalHeight) verticalCRS.getDatum().getAltiToEllpsHeight();
+            if (!horizontalCRS.getDatum().equals(transfo.getAssociatedDatum())) {
+                ops.add(MemorizeCoordinate.memoZ);
+                ops.add(horizontalCRS.getDatum().getCoordinateOperations(transfo.getAssociatedDatum()).get(0));
+                ops.add(UnitConversion.createUnitConverter(Unit.RADIAN, Unit.DEGREE, Unit.METER, Unit.METER));
+                ops.add(LoadMemorizeCoordinate.loadZ);
+                ops.add(transfo);
+                ops.add(UnitConversion.createUnitConverter(Unit.DEGREE, Unit.RADIAN, Unit.METER, Unit.METER));
+                ops.add(transfo.getAssociatedDatum().getCoordinateOperations(horizontalCRS.getDatum()).get(0));
+            } else {
+                ops.add(UnitConversion.createUnitConverter(Unit.RADIAN, Unit.DEGREE, Unit.METER, Unit.METER));
+                ops.add(transfo);
+                ops.add(UnitConversion.createUnitConverter(Unit.DEGREE, Unit.RADIAN, Unit.METER, Unit.METER));
+            }
+        } else if (verticalCRS.getDatum().getType().equals(VerticalDatum.Type.ELLIPSOIDAL)) {
+            ops.add(Identity.IDENTITY);
+        } else {
+            System.out.println("Unsupported operation for this CRS : " + this);
+        }
+        return new CoordinateOperationSequence(new Identifier(
+                CoordinateOperationSequence.class), ops);
     }
 
     /**
@@ -119,8 +187,52 @@ public abstract class CompoundCRS extends GeodeticCRS {
     @Override
     public CoordinateOperation fromGeographicCoordinateConverter()
             throws NonInvertibleOperationException {
-        // To BE DONE
-        return null;
+        List<CoordinateOperation> ops = new ArrayList<CoordinateOperation>();
+        if (verticalCRS.getDatum().getType().equals(VerticalDatum.Type.ELLIPSOIDAL)
+                && !horizontalCRS.getDatum().getEllipsoid().equals(verticalCRS.getDatum().getEllipsoid())) {
+            System.out.println("Unsupported operation for this CRS : " + this);
+            // TO DO
+        } else if (verticalCRS.getDatum().getAltiToEllpsHeight() instanceof Altitude2EllipsoidalHeight) {
+            Altitude2EllipsoidalHeight transfo = (Altitude2EllipsoidalHeight) verticalCRS.getDatum().getAltiToEllpsHeight();
+            ops.add(MemorizeCoordinate.memoX);
+            ops.add(MemorizeCoordinate.memoY);
+            if (!horizontalCRS.getDatum().equals(transfo.getAssociatedDatum())) {
+                ops.add(horizontalCRS.getDatum().getCoordinateOperations(transfo.getAssociatedDatum()).get(0));
+            }
+            ops.add(UnitConversion.createUnitConverter(Unit.RADIAN, Unit.DEGREE, Unit.METER, Unit.METER));
+            ops.add(transfo.inverse());
+            ops.add(LoadMemorizeCoordinate.loadY);
+            ops.add(LoadMemorizeCoordinate.loadX);
+        } else if (verticalCRS.getDatum().getType().equals(VerticalDatum.Type.ELLIPSOIDAL)) {
+            ops.add(Identity.IDENTITY);
+        } else {
+            System.out.println("Unsupported operation for this CRS : " + this);
+        }
+        if (horizontalCRS instanceof Geographic2DCRS) {
+            // Convert from source unit to radians and meters.
+            if (getCoordinateSystem().getUnit(0) != Unit.RADIAN) {
+                ops.add(UnitConversion.createUnitConverter(Unit.RADIAN, getCoordinateSystem().getUnit(0),
+                        getCoordinateSystem().getUnit(2), getCoordinateSystem().getUnit(2)));
+            }
+            // switch from LON/LAT to LAT/LON coordinate if necessary
+            if (getCoordinateSystem().getAxis(0) == Axis.LONGITUDE) {
+                ops.add(CoordinateSwitch.SWITCH_LAT_LON);
+            }
+        } else {
+            // Apply the inverse projection
+            ops.add(horizontalCRS.getProjection());
+            // Convert units
+            if (getCoordinateSystem().getUnit(0) != Unit.METER) {
+                ops.add(UnitConversion.createUnitConverter(Unit.METER, getCoordinateSystem().getUnit(0),
+                        getCoordinateSystem().getUnit(2), getCoordinateSystem().getUnit(2)));
+            }
+            // switch easting/northing coordinate if necessary
+            if (getCoordinateSystem().getAxis(0) != EASTING) {
+                ops.add(CoordinateSwitch.SWITCH_LAT_LON);
+            }
+        }
+        return new CoordinateOperationSequence(new Identifier(
+                CoordinateOperationSequence.class), ops);
     }
 
     /**

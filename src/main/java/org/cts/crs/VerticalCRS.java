@@ -49,20 +49,40 @@ import static org.cts.units.Unit.METER;
  * what is the reference for the vertical ordinate of a 3D point (ex. ellipsoid
  * surface, world geoid, local geoid...).
  *
- * @author Michaël Michaud
+ * @author Michaël Michaud, Jules Party
  */
 public class VerticalCRS extends IdentifiableComponent implements
         CoordinateReferenceSystem {
 
+    /**
+     * A 1D {@link CoordinateSystem} whose {@link Axis} contains the
+     * (ellipsoidal) height. The units used by this axis is meter.
+     */
     public static CoordinateSystem HEIGHT_CS = new CoordinateSystem(
             new Axis[]{HEIGHT}, new Unit[]{METER});
+    /**
+     * A 1D {@link CoordinateSystem} whose {@link Axis} contains the altitude.
+     * The units used by this axis is meter.
+     */
     public static CoordinateSystem ALTITUDE_CS = new CoordinateSystem(
             new Axis[]{ALTITUDE}, new Unit[]{METER});
-    private VerticalDatum verticalDatum;
-    private CoordinateSystem coordinateSystem;
+    /**
+     * The {@link VerticalDatum} to which this
+     * <code>CoordinateReferenceSystem</code> is refering.
+     */
+    private final VerticalDatum verticalDatum;
+    /**
+     * The {@link CoordinateSystem} used by this
+     * <code>CoordinateReferenceSystem</code>.
+     */
+    private final CoordinateSystem coordinateSystem;
 
     /**
      * Create a new VerticalCRS.
+     *
+     * @param identifier the identifier of the VerticalCRS
+     * @param datum the datum associated with the VerticalCRS
+     * @param cs the coordinate system associated with the VerticalCRS
      */
     public VerticalCRS(Identifier identifier, VerticalDatum datum,
             CoordinateSystem cs) {
@@ -71,13 +91,16 @@ public class VerticalCRS extends IdentifiableComponent implements
         this.coordinateSystem = cs;
     }
 
+    /**
+     * @see CoordinateReferenceSystem#getProjection()
+     */
     @Override
     public Projection getProjection() {
         return null;
     }
 
     /**
-     * Returns this CoordinateReferenceSystem Type
+     * @see CoordinateReferenceSystem#getType()
      */
     @Override
     public Type getType() {
@@ -85,7 +108,7 @@ public class VerticalCRS extends IdentifiableComponent implements
     }
 
     /**
-     * Returns the coordinate system of this CoordinateReferenceSystem.
+     * @see CoordinateReferenceSystem#getCoordinateSystem()
      */
     @Override
     public CoordinateSystem getCoordinateSystem() {

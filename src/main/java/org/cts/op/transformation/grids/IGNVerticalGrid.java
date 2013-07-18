@@ -93,6 +93,8 @@ public class IGNVerticalGrid extends GeographicGrid {
     public IGNVerticalGrid(InputStream is, boolean zip) throws Exception {
         String token;
         String ignFile;
+        boolean lonlat;
+        boolean firstRecord = true;
 
         if (zip) {
             try {
@@ -199,40 +201,58 @@ public class IGNVerticalGrid extends GeographicGrid {
         int nbdec = 0;
         double lon;
         double lat;
-        int index = 0;
+        int index;
         int i = (orderType == 2 || orderType == 3) ? rowNumber - 1 : 0;
         int j = 0;
         int[] incr = new int[2];
         double[] t = new double[dim];
-        String[] gg = st.nextToken().trim().split("[ \t]+");
-        int max = gg.length;
-        while (index != max) {
-            try {
-                if (isCoordinate) {
-                    lon = Double.parseDouble(gg[index]);
-                    index++;
-                    lat = Double.parseDouble(gg[index]);
-                    index++;
-                    i = (int) Math.rint((lat - y0) / dy);
-                    j = (int) Math.rint((lon - x0) / dx);
-                } else {
-                    incr = increment(i, j);
+        lonlat = (orderType == 1 || orderType == 3);
+        while (st.hasMoreTokens()) {
+            index = 0;
+            String[] gg = st.nextToken().trim().split("[ \t]+");
+            int max = gg.length;
+            while (index != max) {
+                try {
+                    if (isCoordinate) {
+                        if (firstRecord) {
+                            lonlat = (Double.parseDouble(gg[index]) == x0);
+                        }
+                        if (lonlat) {
+                            lon = Double.parseDouble(gg[index]);
+                            index++;
+                            lat = Double.parseDouble(gg[index]);
+                            index++;
+                        } else {
+                            lat = Double.parseDouble(gg[index]);
+                            index++;
+                            lon = Double.parseDouble(gg[index]);
+                            index++;
+                        }
+                        i = (int) Math.rint((lat - y0) / dy);
+                        j = (int) Math.rint((lon - x0) / dx);
+                    } else {
+                        incr = increment(i, j);
+                    }
+                    String[] dec = gg[index].split("\\.");
+                    if (dec.length > 1) {
+                        nbdec = Math.max(nbdec, dec[1].length());
+                    }
+                    for (int k = 0; k < dim; k++) {
+                        t[k] = Double.parseDouble(gg[index]);
+                        index++;
+                    }
+                    if (isPrecision) {
+                        String prec = gg[index];
+                        index++;
+                    }
+                    System.arraycopy(t, 0, values[i][j], 0, dim);
+                    if (!isCoordinate) {
+                        i = incr[0];
+                        j = incr[1];
+                    }
+                    firstRecord = false;
+                } catch (NumberFormatException nfe) {
                 }
-                nbdec = Math.max(nbdec, gg[index].split("\\.")[1].length());
-                for (int k = 0; k < dim; k++) {
-                    t[k] = Double.parseDouble(gg[index]);
-                    index++;
-                }
-                if (isPrecision) {
-                    String prec = gg[index];
-                    index++;
-                }
-                System.arraycopy(t, 0, values[i][j], 0, dim);
-                if (!isCoordinate) {
-                    i = incr[0];
-                    j = incr[1];
-                }
-            } catch (NumberFormatException nfe) {
             }
         }
         // decimal part size --> scale

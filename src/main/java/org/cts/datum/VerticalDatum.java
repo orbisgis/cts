@@ -37,12 +37,14 @@ import java.util.Map;
 import org.cts.op.CoordinateOperation;
 import org.cts.Identifier;
 import org.cts.cs.GeographicExtent;
+import org.cts.op.Identity;
+import org.cts.op.transformation.Altitude2EllipsoidalHeight;
 
 /**
  * <p>Vertical datum are used to determine elevation. They are generally based
  * upon a gravity model.</p>
  *
- * @author Michaël Michaud
+ * @author Michaël Michaud, Jules Party
  */
 public class VerticalDatum extends AbstractDatum {
 
@@ -57,7 +59,35 @@ public class VerticalDatum extends AbstractDatum {
             new Identifier(VerticalDatum.class, "WGS84 Ellipsoid Surface"),
             GeographicExtent.WORLD,
             "Surface of the reference Ellipsoid for WGS 1984",
-            "1984");
+            "1984", Type.ELLIPSOIDAL, null, GeodeticDatum.WGS84);
+
+    /**
+     * Vertical Datum classification based on the surface type.
+     */
+    public static enum Type {
+
+        GEOIDAL, //WKT code 2005
+        ELLIPSOIDAL, //WKT code 2002
+        DEPTH, //WKT code 2006
+        BAROMETRIC, //WKT code 2003
+        ORTHOMETRIC, //WKT code 2001
+        OTHER_SURFACE //WKT code 2000
+    };
+    /**
+     * The type of this vertical datum. Default is "geoidal".
+     */
+    private final Type type;
+    /**
+     * The operation converting altitude of the vertical datum into ellipsoidal
+     * height.
+     */
+    private final CoordinateOperation alti2ellpsHeight;
+    /**
+     * The ellipsoid associated with the vertical datum. It can be the ellipsoid
+     * defining th ellipsoidal height or the ellipsoid of the geodetic datum
+     * used by the grid transformation binding altitude and height.
+     */
+    private final Ellipsoid ellps;
 
     /**
      * Creates a new Datum.
@@ -67,59 +97,105 @@ public class VerticalDatum extends AbstractDatum {
     public VerticalDatum(String name) {
         super(new Identifier(VerticalDatum.class, name),
                 GeographicExtent.WORLD, null, null);
+        this.type = Type.GEOIDAL;
         this.registerDatum();
+        this.alti2ellpsHeight = null;
+        this.ellps = null;
         //addCoordinateOperation(WGS84VD, altitude2EllipsoidalHeight);
     }
 
     /**
-     * Creates a new Datum.
+     * Creates a new VerticalDatum.
      *
      * @param identifier identifier.
      * @param extent this datum extension
      * @param origin origin decription this datum
      * @param epoch realization epoch of this datum
+     * @param type the type of coordinate stored in this VerticalDatum
+     * @param altitudeGrid the name of the grid file used to convert altitude in
+     * ellipsoidal height
+     * @param gd the GeodeticDatum associated to the grid
      */
     public VerticalDatum(Identifier identifier, GeographicExtent extent,
-            String origin, String epoch) {
+            String origin, String epoch, Type type, String altitudeGrid, GeodeticDatum gd) {
         super(identifier, extent, origin, epoch);
+        this.type = type;
+        if (gd != null && altitudeGrid != null) {
+            this.alti2ellpsHeight = new Altitude2EllipsoidalHeight(new Identifier(Altitude2EllipsoidalHeight.class, altitudeGrid), altitudeGrid, gd);
+            this.ellps = gd.getEllipsoid();
+        } else if (gd != null && type == Type.ELLIPSOIDAL) {
+            this.alti2ellpsHeight = Identity.IDENTITY;
+            this.ellps = gd.getEllipsoid();
+        } else {
+            this.alti2ellpsHeight = null;
+            this.ellps = null;
+        }
         this.registerDatum();
-        //addCoordinateOperation(WGS84VD, altitude2EllipsoidalHeight);
     }
 
+    /**
+     * Return the type of this vertical datum. Default is "geoidal".
+     */
+    public Type getType() {
+        return type;
+    }
+
+    /**
+     * Return the operation converting altitude of the vertical datum into
+     * ellipsoidal height.
+     */
+    public CoordinateOperation getAltiToEllpsHeight() {
+        return alti2ellpsHeight;
+    }
+
+    /**
+     * Register a datum in {@link HashMap} {@code datums} using its
+     * {@link Identifier} as a key.
+     */
     private void registerDatum() {
         datums.put(getIdentifier(), this);
     }
 
     /**
-     * <p>Return a collection of all the registered datums.</p>
+     * Return a collection of all the registered vertical datums.
      */
     public static Collection<VerticalDatum> getAvailableDatums() {
         return datums.values();
     }
 
     /**
-     * <p>Return the Datum with idEPSG identifier.</p>
+     * Return the Datum with idEPSG identifier.
      */
     public static VerticalDatum getDatum(Identifier identifier) {
         return datums.get(identifier);
     }
 
     /**
-     * <p>Return the Datum with this name.</p>
+     * @see Datum#getEllipsoid()
      */
-    public static VerticalDatum getEpsgDatum(int idEpsg) {
-        return datums.get(new Identifier("EPSG", String.valueOf(idEpsg), DEFAULT));
-    }
-
     public Ellipsoid getEllipsoid() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return ellps;
     }
 
+    /**
+     * @see Datum#getToWGS84()
+     */
     public CoordinateOperation getToWGS84() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (alti2ellpsHeight instanceof Altitude2EllipsoidalHeight) {
+            Altitude2EllipsoidalHeight eH2A = (Altitude2EllipsoidalHeight) alti2ellpsHeight;
+            return eH2A.getAssociatedDatum().getToWGS84();
+        }
+        return null;
     }
 
+    /**
+     * @see Datum#getPrimeMeridian()
+     */
     public PrimeMeridian getPrimeMeridian() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (alti2ellpsHeight instanceof Altitude2EllipsoidalHeight) {
+            Altitude2EllipsoidalHeight eH2A = (Altitude2EllipsoidalHeight) alti2ellpsHeight;
+            return eH2A.getAssociatedDatum().getPrimeMeridian();
+        }
+        return null;
     }
 }

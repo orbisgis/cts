@@ -69,8 +69,40 @@ public final class CoordinateOperationFactory {
      */
     public static List<CoordinateOperation> createCoordinateOperations(
             CompoundCRS source, CompoundCRS target) {
-        System.out.println("createCoordinateOperations() for compound CRS is not yet implemented");
-        return new ArrayList<CoordinateOperation>();
+        if (source == null) {
+            throw new IllegalArgumentException("The source CRS must not be null");
+        }
+        if (target == null) {
+            throw new IllegalArgumentException("The target CRS must not be null");
+        }
+        List<CoordinateOperation> opList = source.getCRSTransformations(target);
+        if (opList != null) {
+            return opList;
+        } else {
+            opList = new ArrayList<CoordinateOperation>();
+            GeodeticDatum sourceDatum = source.getHorizontalCRS().getDatum();
+            if (sourceDatum == null) {
+                LOG.warn(source.getName() + " has no Geodetic Datum");
+                throw new IllegalArgumentException("The source datum must not be null");
+            }
+            GeodeticDatum targetDatum = target.getHorizontalCRS().getDatum();
+            if (targetDatum == null) {
+                LOG.warn(target.getName() + " has no Geodetic Datum");
+                throw new IllegalArgumentException("The target datum must not be null");
+            }
+            if (source.getHorizontalCRS().getGridTransformations(targetDatum) != null) {
+                addNadgridsOperationDir(sourceDatum, source, targetDatum, target, source.getHorizontalCRS().getGridTransformations(targetDatum), opList);
+            } else if (target.getHorizontalCRS().getGridTransformations(sourceDatum) != null) {
+                addNadgridsOperationInv(sourceDatum, source, targetDatum, target, target.getHorizontalCRS().getGridTransformations(sourceDatum), opList);
+            }
+            if (sourceDatum.equals(targetDatum)) {
+                addCoordinateOperations(sourceDatum, source, target, opList);
+            } else {
+                addCoordinateOperations(sourceDatum, source, targetDatum, target, opList);
+            }
+            source.addCRSTransformation(target, opList);
+        }
+        return opList;
     }
 
     /**
