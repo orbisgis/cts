@@ -37,7 +37,7 @@ package org.cts.cs;
  * perpendicular axis. In the context of this library, Axis objects are used for
  * any kind of coordinate system, including vertical and ellipsoidal ones.
  *
- * @author Michaël Michaud
+ * @author Michaël Michaud, Jules Party
  */
 public enum Axis {
 
@@ -45,82 +45,90 @@ public enum Axis {
      * Easting axis. Used for planimetric coordinate system, generally in pair
      * with northing.
      */
-    EASTING("Easting"),
+    EASTING("Easting", "EAST"),
     /**
      * Northing axis. Used for planimetric coordinate system, generally in pair
      * with easting.
      */
-    NORTHING("Northing"),
+    NORTHING("Northing", "NORTH"),
     /**
      * Westing axis. Used for planimetric coordinate system, generally in pair
      * with southing.
      */
-    WESTING("Westing"),
+    WESTING("Westing", "WEST"),
     /**
      * Southing axis. Used for planimetric coordinate system, generally in pair
      * with westing.
      */
-    SOUTHING("Southing"),
+    SOUTHING("Southing", "SOUTH"),
     /**
      * x axis. Used for planimetric coordinate system, sometimes used in place
      * of easting.
      */
-    x("x"),
+    x("x", "EAST"),
     /**
      * y axis. Used for planimetric coordinate system, sometimes used in place
      * of northing.
      */
-    y("y"),
+    y("y", "NORTH"),
     /**
      * Altitude axis. Used for vertical/compound system.
      */
-    ALTITUDE("Altitude"),
+    ALTITUDE("Altitude", "OTHER"),
     /**
      * Depth axis. Used for bathymetry.
      */
-    DEPTH("Depth"),
+    DEPTH("Depth", "OTHER"),
     /**
      * Latitude axis. Used for geographic coordinate system, generally in pair
      * with longitude.
      */
-    LATITUDE("Latitude"),
+    LATITUDE("Latitude", "NORTH"),
     /**
      * Longitude axis. Used for geographic coordinate system, generally in pair
      * with latitude.
      */
-    LONGITUDE("Longitude"),
+    LONGITUDE("Longitude", "EAST"),
     /**
      * Height axis. Used for 3D ellipsoidal coordinate system, generally with
      * latitude and longitude axes.
      */
-    HEIGHT("Height"),
+    HEIGHT("Height", "OTHER"),
     /**
      * X axis. Used for 3D cartesian system, generally with Y and Z axes.
      */
-    X("X"),
+    X("X", "OTHER"),
     /**
      * Y axis. Used for 3D cartesian system, generally with X and Z axes.
      */
-    Y("Y"),
+    Y("Y", "EAST"),
     /**
      * Z axis. Used for 3D cartesian system, generally with X and Y axes.
      */
-    Z("Z"),
+    Z("Z", "NORTH"),
     /**
      * Time axis. Not supported in CTS yet.
      */
-    TIME("Time");
+    TIME("Time", "OTHER");
     /**
      * The name of this Axis (X, Y, Z, LONGITUDE, ALTITUDE,&hellip;).
      */
     private String name;
+    /**
+     * The direction of the axis as it is defined in OGC WKT. It should only
+     * take one of these values : NORTH, SOUTH, EAST, WEST or OTHER. See
+     * <a href =http://trac.osgeo.org/gdal/wiki/rfc20_srs_axes>here</a> for
+     * further details.
+     */
+    private String direction;
 
     /**
      * Create a new Axis.
      * @param name name of this new Axis
      */
-    private Axis(String name) {
+    private Axis(String name, String dir) {
         this.name = name;
+        this.direction = dir;
     }
 
     /**
@@ -128,6 +136,13 @@ public enum Axis {
      */
     public String getName() {
         return name;
+    }
+
+    /**
+     * Return the direction of this Axis (NORTH, SOUTH, EAST, WEST or OTHER).
+     */
+    public String getDirection() {
+        return direction;
     }
 
     /**

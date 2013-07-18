@@ -109,8 +109,8 @@ public class CRSHelper {
             if (sunit != null) {
                 unit = Unit.getUnit(Quantity.LENGTH, sunit);
             } else if (stometer != null) {
-                unit = new Unit(Quantity.LENGTH, "", Double.parseDouble(stometer),
-                        "");
+                unit = new Unit(Quantity.LENGTH, Double.parseDouble(stometer),
+                        new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, Identifier.UNKNOWN));
             }
             CoordinateSystem cs = new CoordinateSystem(new Axis[]{Axis.X,
                 Axis.Y, Axis.Z}, new Unit[]{unit, unit, unit});
@@ -129,8 +129,8 @@ public class CRSHelper {
                 if (sunit!=null) {
                     unit = Unit.getUnit(Quantity.LENGTH, sunit);
                 } else if (stometer != null) {
-                unit = new Unit(Quantity.LENGTH, "", Double.parseDouble(stometer),
-                        "");
+                unit = new Unit(Quantity.LENGTH, Double.parseDouble(stometer),
+                        new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, Identifier.UNKNOWN));
                 }
                 crs = new ProjectedCRS(identifier, geodeticDatum, proj, unit);
             } else {
