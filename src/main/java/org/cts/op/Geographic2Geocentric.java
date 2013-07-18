@@ -124,7 +124,7 @@ public class Geographic2Geocentric extends AbstractCoordinateOperation {
     @Override
     public double[] transform(double[] coord)
             throws IllegalCoordinateException {
-        if (coord.length < 2 || coord.length > 3) {
+        if (coord.length < 2) {
             throw new CoordinateDimensionException(coord, 3);
         } else if (coord.length == 2) {
             coord = new double[]{coord[0], coord[1], 0.0};
@@ -132,7 +132,7 @@ public class Geographic2Geocentric extends AbstractCoordinateOperation {
         double lat = coord[0];
         double lon = coord[1];
         double height = 0.0;
-        if (coord.length == 3 && !Double.isNaN(coord[2])) {
+        if (coord.length > 2 && !Double.isNaN(coord[2])) {
             height = coord[2];
         }
         double N = ellipsoid.transverseRadiusOfCurvature(lat);

@@ -32,6 +32,10 @@
 package org.cts;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.cts.registry.EPSGRegistry;
 import org.cts.registry.ESRIRegistry;
@@ -63,6 +67,13 @@ public class CTSTestCase {
         registryManager.addRegistry(new ESRIRegistry());
         registryManager.addRegistry(new Nad27Registry());
         registryManager.addRegistry(new Nad83Registry());        
+
+        // Disable log4j outputs.
+        List<Logger> loggers = Collections.<Logger>list(LogManager.getCurrentLoggers());
+        loggers.add(LogManager.getRootLogger());
+        for (Logger logger : loggers) {
+            logger.setLevel(Level.OFF);
+        }
     }
 
     /**

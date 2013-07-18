@@ -66,9 +66,9 @@ public class TestComplex extends CTSTestCase {
                 "[0.7853981633974483 + 0.0i]"));
         assertTrue(" r = Complex(3.0*sqrt(2), PI/4)", r.toString().equals(
                 "[4.242640687119286 + 0.7853981633974483i]"));
-        assertEquals("z1 = createComplexFromA(30�)", z1, new Complex(
+        assertEquals("z1 = createComplexFromA(30\u00B0)", z1, new Complex(
                 0.8660254037844387, 0.5));
-        assertEquals("z2 = createComplexFromRA(2, 30�)", z2, new Complex(
+        assertEquals("z2 = createComplexFromRA(2, 30\u00B0)", z2, new Complex(
                 1.7320508075688774, 1.0));
     }
 

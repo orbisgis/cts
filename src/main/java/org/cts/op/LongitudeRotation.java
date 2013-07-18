@@ -115,7 +115,7 @@ public class LongitudeRotation extends AbstractCoordinateOperation {
      */
     @Override
     public String toString() {
-        return getName() + " ( " + rotationAngle * 180 / Math.PI + "° )";
+        return getName() + " ( " + rotationAngle * 180 / Math.PI + "\u00B0 )";
     }
 
     public double getRotationAngle() {

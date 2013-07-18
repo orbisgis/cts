@@ -342,7 +342,7 @@ public class SevenParameterTransformation extends AbstractCoordinateOperation im
      */
     @Override
     public double[] transform(double[] coord) throws IllegalCoordinateException {
-        if (coord.length != 3) {
+        if (coord.length < 3) {
             throw new CoordinateDimensionException(coord, 3);
         }
         double rotationSign = (rotationConvention == POSITION_VECTOR) ? 1.0 : -1.0;
@@ -393,18 +393,18 @@ public class SevenParameterTransformation extends AbstractCoordinateOperation im
                     throw new CoordinateDimensionException(coord, 3);
                 }
                 double rotationSign = (rotationConvention == POSITION_VECTOR) ? 1.0 : -1.0;
-                double x = coord[0] + tx;
-                double y = coord[1] + ty;
-                double z = coord[2] + tz;
+                double x = coord[0] - tx;
+                double y = coord[1] - ty;
+                double z = coord[2] - tz;
                 double srx = rx * rotationSign;
                 double sry = ry * rotationSign;
                 double srz = rz * rotationSign;
                 srx = linearized ? -srx : -sin(srx);
                 sry = linearized ? -sry : -sin(sry);
                 srz = linearized ? -srz : -sin(srz);
-                coord[0] = (1.0 / scale) * (x + z * sry - y * srz);
-                coord[1] = (1.0 / scale) * (y + x * srz - z * srx);
-                coord[2] = (1.0 / scale) * (z + y * srx - x * sry);
+                coord[0] = (1.0 / scale) * (x * (1 + srx * srx) + z * (sry + srx * srz) - y * (srz - srx * sry)) / (1 + srx * srx + sry * sry + srz * srz);
+                coord[1] = (1.0 / scale) * (y * (1 + sry * sry) + x * (srz + srx * sry) - z * (srx - sry * srz)) / (1 + srx * srx + sry * sry + srz * srz);
+                coord[2] = (1.0 / scale) * (z * (1 + srz * srz) + y * (srx + sry * srz) - x * (sry - srx * srz)) / (1 + srx * srx + sry * sry + srz * srz);
                 return coord;
             }
         };
@@ -450,5 +450,43 @@ public class SevenParameterTransformation extends AbstractCoordinateOperation im
         w.append((scale == 1 ? "0" : scale));
         w.append("]");
         return w.toString();
+    }
+
+    /**
+     * Returns true if object is equals to
+     * <code>this</code>. Tests equality between the references of both object,
+     * then tests if the seven parameters values (tx, ty, tz, etc) used by each
+     * SevenParameterTransformation are equals.
+     *
+     * @param object The object to compare this ProjectedCRS against
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o instanceof SevenParameterTransformation) {
+            SevenParameterTransformation transfo = (SevenParameterTransformation) o;
+            return ((this.tx == transfo.tx) && (this.ty == transfo.ty) && (this.tz == transfo.tz)
+                    && (this.rx == transfo.rx) && (this.ry == transfo.ry) && (this.rz == transfo.rz)
+                    && (this.scale == transfo.scale) && (this.rotationConvention == transfo.rotationConvention)
+                    && (this.linearized == transfo.linearized));
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 67 * hash + (int) (Double.doubleToLongBits(this.tx) ^ (Double.doubleToLongBits(this.tx) >>> 32));
+        hash = 67 * hash + (int) (Double.doubleToLongBits(this.ty) ^ (Double.doubleToLongBits(this.ty) >>> 32));
+        hash = 67 * hash + (int) (Double.doubleToLongBits(this.tz) ^ (Double.doubleToLongBits(this.tz) >>> 32));
+        hash = 67 * hash + (int) (Double.doubleToLongBits(this.rx) ^ (Double.doubleToLongBits(this.rx) >>> 32));
+        hash = 67 * hash + (int) (Double.doubleToLongBits(this.ry) ^ (Double.doubleToLongBits(this.ry) >>> 32));
+        hash = 67 * hash + (int) (Double.doubleToLongBits(this.rz) ^ (Double.doubleToLongBits(this.rz) >>> 32));
+        hash = 67 * hash + (int) (Double.doubleToLongBits(this.scale) ^ (Double.doubleToLongBits(this.scale) >>> 32));
+        hash = 67 * hash + this.rotationConvention;
+        hash = 67 * hash + (this.linearized ? 1 : 0);
+        return hash;
     }
 }

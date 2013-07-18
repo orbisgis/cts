@@ -101,7 +101,7 @@ public class GeocentricTranslation extends AbstractCoordinateOperation implement
      */
     @Override
     public double[] transform(double[] coord) throws IllegalCoordinateException {
-        if (coord.length != 3) {
+        if (coord.length < 3) {
             throw new CoordinateDimensionException(coord, 3);
         }
         coord[0] = tx + coord[0];
@@ -148,7 +148,7 @@ public class GeocentricTranslation extends AbstractCoordinateOperation implement
     /**
      * Returns true if object is equals to
      * <code>this</code>. Tests equality between the references of both object,
-     * then tests if the three translation values (tx, ty and tz) used by both
+     * then tests if the three translation values (tx, ty and tz) used by each
      * Geocentric Translation are equals.
      *
      * @param object The object to compare this ProjectedCRS against

@@ -127,7 +127,7 @@ public class FrenchGeocentricNTF2RGF extends AbstractCoordinateOperation {
      */
     @Override
     public double[] transform(double[] coord) throws IllegalCoordinateException {
-        if (coord.length != 3) {
+        if (coord.length < 3) {
             throw new CoordinateDimensionException(coord, 3);
         }
         // Creates a temporary coord to find the final translation parameters

@@ -127,7 +127,7 @@ public class Geocentric2Geographic extends AbstractCoordinateOperation {
     @Override
     public double[] transform(double[] coord)
             throws IllegalCoordinateException {
-        if (coord.length != 3) {
+        if (coord.length < 3) {
             throw new CoordinateDimensionException(coord, 3);
         }
         double X = coord[0];
