@@ -600,4 +600,19 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
         assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
     }
+
+    @Test
+    public void testRAR07() throws Exception {
+        CompoundCRS crs = new CompoundCRS(new Identifier("EPSG", "7400", "RGF93 + NGF RAR07"),
+                new Geographic2DCRS(new Identifier("EPSG", "4807", "RGF93"), GeodeticDatum.RGF93),
+                new VerticalCRS(new Identifier("UNKNOWN", "UNKNOWN", "NGF RAR07"), VerticalDatum.RAR07, VerticalCRS.ALTITUDE_CS));
+        double[] inputPoint = new double[]{-21.1, 55.5, 100};
+        double[] expectedPoint = new double[]{-21.1 * PI / 180, 55.5 * PI / 180, 108.762};
+        double[] outputPoint = crs.toGeographicCoordinateConverter().transform(inputPoint.clone());
+        double[] checkPoint = crs.fromGeographicCoordinateConverter().transform(expectedPoint.clone());
+        //System.out.println(outputPoint[0] * 180 / PI + ", " + outputPoint[1] * 180 / PI + ", " + outputPoint[2]);
+        // TO DO find a test for this one
+        //assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
+        //assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+    }
 }

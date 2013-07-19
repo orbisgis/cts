@@ -199,6 +199,10 @@ public class VerticalDatum extends AbstractDatum {
             new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, "Polynésie : Tubuai vers RGPF", "TUPAI01"),
             new GeographicExtent("Tupai", -152, -151.75, -16.5, -16),
             "", "", Type.GEOIDAL, "ggpf02-Tupai.mnt", GeodeticDatum.RGF93);
+    public final static VerticalDatum RAR07 = new VerticalDatum(
+            new Identifier("EPSG", "5156", "Reunion 1989", "RAR07"),
+            new GeographicExtent("Reunion", 55.14, 55.94, -21.5, -20.75),
+            "", "", Type.GEOIDAL, "RAR07.mnt", GeodeticDatum.RGF93);
 
     /**
      * Vertical Datum classification based on the surface type.
