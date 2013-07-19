@@ -32,11 +32,12 @@
 package org.cts.op.transformation;
 
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
+
 import org.cts.CoordinateDimensionException;
 import org.cts.Identifier;
 import org.cts.IllegalCoordinateException;
+import org.cts.cs.OutOfExtentException;
 import org.cts.datum.Ellipsoid;
 import org.cts.op.AbstractCoordinateOperation;
 import org.cts.op.CoordinateOperation;
@@ -56,6 +57,9 @@ import org.cts.units.Unit;
  */
 public class FrenchGeocentricNTF2RGF extends AbstractCoordinateOperation {
 
+    /**
+     * The Identifier used for all French Geocentric NTF to RGF transformation.
+     */
     private static final Identifier opId =
             new Identifier("EPSG", "9655", "French geographic interpolation", "NTF2RGF93");
     private static final GeocentricTranslation NTF2WGS84 =
@@ -63,9 +67,13 @@ public class FrenchGeocentricNTF2RGF extends AbstractCoordinateOperation {
     private static final Geocentric2Geographic GEOC2GEOG =
             new Geocentric2Geographic(Ellipsoid.GRS80);
     public final static UnitConversion RAD2DD = UnitConversion.createUnitConverter(Unit.RADIAN, Unit.DEGREE);
-    //private static GeographicExtent EXTENT =
-    //    new GeographicExtent("gr3df97a", 41.0, 52.0, -5.5, 10.0, 360.0);
+    /**
+     * The GeographicGrid that define this transformation.
+     */
     private IGNGeographicGrid GRID3D;
+    /**
+     * The grid path to acces the grid used by this transformation.
+     */
     private String gridPath;
 
     /**
@@ -76,7 +84,7 @@ public class FrenchGeocentricNTF2RGF extends AbstractCoordinateOperation {
      * @param gridPath url of the geographic grid containing the translation
      * parameters
      */
-    public FrenchGeocentricNTF2RGF(String gridPath) {
+    public FrenchGeocentricNTF2RGF(String gridPath) throws Exception {
         super(opId);
         this.precision = 0.01;
         try {
@@ -90,10 +98,8 @@ public class FrenchGeocentricNTF2RGF extends AbstractCoordinateOperation {
                 this.gridPath = "org/cts/op/transformation/grids/";
                 GRID3D = new IGNGeographicGrid(is, false);
             }
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new Exception(e.getMessage()+"\nThis problem occured when trying to load the gr3df97a.txt grid file, using this path : "+gridPath);
         }
     }
 
@@ -102,7 +108,7 @@ public class FrenchGeocentricNTF2RGF extends AbstractCoordinateOperation {
      * gride can be found <a href =
      * http://geodesie.ign.fr/contenu/fichiers/documentation/rgf93/gr3df97a.txt>here</a>.
      */
-    public FrenchGeocentricNTF2RGF() {
+    public FrenchGeocentricNTF2RGF() throws Exception {
         super(opId);
         this.gridPath = "org/cts/op/transformation/grids/";
         this.precision = 0.01;
@@ -111,10 +117,8 @@ public class FrenchGeocentricNTF2RGF extends AbstractCoordinateOperation {
 
             is = FrenchGeocentricNTF2RGF.class.getClassLoader().getResourceAsStream("org/cts/op/transformation/grids/gr3df97a.txt");
             GRID3D = new IGNGeographicGrid(is, false);
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new Exception(e.getMessage()+"\nThis problem occured when trying to load the gr3df97a.txt grid file, using this path : "+gridPath);
         }
     }
 
@@ -153,8 +157,8 @@ public class FrenchGeocentricNTF2RGF extends AbstractCoordinateOperation {
             tx = t[0];
             ty = t[1];
             tz = t[2];
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (OutOfExtentException e) {
+            throw new IllegalCoordinateException(e.getMessage());
         }
         // Apply definitive translation
         coord[0] = tx + coord[0];
@@ -168,43 +172,47 @@ public class FrenchGeocentricNTF2RGF extends AbstractCoordinateOperation {
      */
     @Override
     public CoordinateOperation inverse() throws NonInvertibleOperationException {
-        return new FrenchGeocentricNTF2RGF() {
-            @Override
-            public double[] transform(double[] coord)
-                    throws IllegalCoordinateException {
-                // Creates a temp coord to find the final translation parameters
-                double[] coordi = coord.clone();
-                // Find a rough position on GRS 80
-                coordi = GEOC2GEOG.transform(coordi);
-                // Get decimal degree coordinates for grid interpolation
-                coordi = RAD2DD.transform(coordi);
-                // Definitive translation parameters are initialized with mean
-                // translation parameters
-                double tx = -168.0;
-                double ty = -60.0;
-                double tz = 320.0;
-                // Get the definitive translation parameters from the grids
-                try {
-                    double[] t = GRID3D.bilinearInterpolation(coordi[0], coordi[1]);
-                    tx = t[0];
-                    ty = t[1];
-                    tz = t[2];
-                } catch (Exception e) {
-                    e.printStackTrace();
+        try {
+            return new FrenchGeocentricNTF2RGF() {
+                @Override
+                public double[] transform(double[] coord)
+                        throws IllegalCoordinateException {
+                    // Creates a temp coord to find the final translation parameters
+                    double[] coordi = coord.clone();
+                    // Find a rough position on GRS 80
+                    coordi = GEOC2GEOG.transform(coordi);
+                    // Get decimal degree coordinates for grid interpolation
+                    coordi = RAD2DD.transform(coordi);
+                    // Definitive translation parameters are initialized with mean
+                    // translation parameters
+                    double tx = -168.0;
+                    double ty = -60.0;
+                    double tz = 320.0;
+                    // Get the definitive translation parameters from the grids
+                    try {
+                        double[] t = GRID3D.bilinearInterpolation(coordi[0], coordi[1]);
+                        tx = t[0];
+                        ty = t[1];
+                        tz = t[2];
+                    } catch (OutOfExtentException e) {
+                        throw new IllegalCoordinateException(e.getMessage());
+                    }
+                    // Apply definitive translation
+                    coord[0] = -tx + coord[0];
+                    coord[1] = -ty + coord[1];
+                    coord[2] = -tz + coord[2];
+                    return coord;
                 }
-                // Apply definitive translation
-                coord[0] = -tx + coord[0];
-                coord[1] = -ty + coord[1];
-                coord[2] = -tz + coord[2];
-                return coord;
-            }
 
-            @Override
-            public CoordinateOperation inverse()
-                    throws NonInvertibleOperationException {
-                return FrenchGeocentricNTF2RGF.this;
-            }
-        };
+                @Override
+                public CoordinateOperation inverse()
+                        throws NonInvertibleOperationException {
+                    return FrenchGeocentricNTF2RGF.this;
+                }
+            };
+        } catch (Exception e) {
+            throw new NonInvertibleOperationException(e.getMessage());
+        }
     }
 
     /**

@@ -31,8 +31,8 @@
  */
 package org.cts.op.transformation;
 
-import java.io.IOException;
 import java.io.InputStream;
+
 import org.cts.CoordinateDimensionException;
 import org.cts.Identifier;
 import org.cts.IllegalCoordinateException;
@@ -46,14 +46,34 @@ import org.cts.op.transformation.grids.IGNReunionGrid;
 import org.cts.op.transformation.grids.IGNVerticalGrid;
 
 /**
- * 
+ * Altitude2EllipsoidalHeight is a coordinate operation used to transform 3D
+ * coordinates containing the altitude in the third coordinate with a grid
+ * transformation that return the equivalent coordinates with ellipsoidal height
+ * instead of altitude.
  *
  * @author Jules Party
  */
 public class Altitude2EllipsoidalHeight extends AbstractCoordinateOperation {
 
+    /**
+     * The GeographicGrid that define this transformation.
+     */
     private GeographicGrid GRID;
+    /**
+     * The name of the grid file used to define this transformation.
+     */
+    private String gridFileName;
+    /**
+     * The geodetic datum associated to this transformation. The latitude
+     * and longitude of the coordinate must be expressed in this datum to obtain
+     * good results.
+     */
     private GeodeticDatum associatedDatum;
+    /**
+     * The Identifier used for all Altitude to Ellipsoidal Height translations.
+     */
+    private static final Identifier opId =
+            new Identifier("EPSG", "9616", "Vertical Offset (by Interpolation of Gridded Data)", "Translation");
 
     /**
      * Altitude translation with parameter interpolated from a grid depending on
@@ -64,10 +84,11 @@ public class Altitude2EllipsoidalHeight extends AbstractCoordinateOperation {
      * @param gd the geodetic datum in which the geographic coordinates used in
      * the interpolation must be expressed
      */
-    public Altitude2EllipsoidalHeight(Identifier id, String nameGrid, GeodeticDatum gd) {
-        super(id);
+    public Altitude2EllipsoidalHeight(String nameGrid, GeodeticDatum gd) throws Exception {
+        super(opId);
         this.associatedDatum = gd;
         this.precision = 0.01;
+        this.gridFileName = nameGrid;
         try {
             InputStream is = IGNVerticalGrid.class.getClassLoader().getResourceAsStream("org/cts/op/transformation/grids/" + nameGrid);
             if (nameGrid.equals("RAR07_bl.txt")) {
@@ -75,18 +96,25 @@ public class Altitude2EllipsoidalHeight extends AbstractCoordinateOperation {
             } else {
                 GRID = new IGNVerticalGrid(is, false);
             }
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new Exception(e.getMessage()+"\nThis problem occured when loading the "+nameGrid+" grid file.");
         }
     }
-    
+
     /**
-     * Return the geodetic datum associated to this transformation.
+     * Return the geodetic datum associated to this transformation. The latitude
+     * and longitude of the coordinate must be expressed in this datum to obtain
+     * good results.
      */
     public GeodeticDatum getAssociatedDatum() {
         return associatedDatum;
+    }
+
+    /**
+     * Return the name of the grid file used to define this transformation.
+     */
+    public String getGridFileName() {
+        return gridFileName;
     }
 
     /**
@@ -105,7 +133,7 @@ public class Altitude2EllipsoidalHeight extends AbstractCoordinateOperation {
             double[] t = GRID.bilinearInterpolation(coordi[0], coordi[1]);
             th = t[0];
         } catch (OutOfExtentException e) {
-            e.printStackTrace();
+            throw new IllegalCoordinateException(e.getMessage());
         }
         // Apply definitive translation
         coord[2] = th + coord[2];
@@ -117,30 +145,34 @@ public class Altitude2EllipsoidalHeight extends AbstractCoordinateOperation {
      */
     @Override
     public CoordinateOperation inverse() throws NonInvertibleOperationException {
-        return new Altitude2EllipsoidalHeight(getIdentifier(), getName(), associatedDatum) {
-            @Override
-            public double[] transform(double[] coord)
-                    throws IllegalCoordinateException {
-                // Creates a temp coord to find the final translation parameters
-                double[] coordi = coord.clone();
-                double th = 0;
-                // Get the definitive translation parameters from the grids
-                try {
-                    double[] t = GRID.bilinearInterpolation(coordi[0], coordi[1]);
-                    th = t[0];
-                } catch (Exception e) {
-                    e.printStackTrace();
+        try {
+            return new Altitude2EllipsoidalHeight(getGridFileName(), associatedDatum) {
+                @Override
+                public double[] transform(double[] coord)
+                        throws IllegalCoordinateException {
+                    // Creates a temp coord to find the final translation parameters
+                    double[] coordi = coord.clone();
+                    double th = 0;
+                    // Get the definitive translation parameters from the grids
+                    try {
+                        double[] t = GRID.bilinearInterpolation(coordi[0], coordi[1]);
+                        th = t[0];
+                    } catch (OutOfExtentException e) {
+                        throw new IllegalCoordinateException(e.getMessage());
+                    }
+                    // Apply definitive translation
+                    coord[2] = -th + coord[2];
+                    return coord;
                 }
-                // Apply definitive translation
-                coord[2] = -th + coord[2];
-                return coord;
-            }
 
-            @Override
-            public CoordinateOperation inverse()
-                    throws NonInvertibleOperationException {
-                return Altitude2EllipsoidalHeight.this;
-            }
-        };
+                @Override
+                public CoordinateOperation inverse()
+                        throws NonInvertibleOperationException {
+                    return Altitude2EllipsoidalHeight.this;
+                }
+            };
+        } catch (Exception e) {
+            throw new NonInvertibleOperationException(e.getMessage());
+        }
     }
 }

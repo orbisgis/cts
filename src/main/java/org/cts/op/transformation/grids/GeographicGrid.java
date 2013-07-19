@@ -45,32 +45,44 @@ import org.cts.cs.OutOfExtentException;
 public class GeographicGrid implements Grid {
 
     protected int colNumber, rowNumber;
+    /**
+     * The number of values stored in the grid (for instance 3 for 3D
+     * translation grid).
+     */
     protected int dim;
     protected double x0, y0, xL, yL;
     protected double dx, dy;
+    /**
+     * Extent of use of the Geographic grid.
+     */
     protected GeographicExtent extent;
     protected double modulo;
-    // scale may be interpreted as the number of digits to write into an ASCII
-    // text grid, or as the scale factor to transform float values into int
-    // values while using a format supporting only int values (BLEGG)
+    /**
+     * Scale may be interpreted as the number of digits to write into an ASCII
+     * text grid, or as the scale factor to transform float values into int
+     * values while using a format supporting only int values (BLEGG).
+     */
     int scale = 1;
-    // 2-dimensions float array
-    // float values has been choosen because quantities represented in a grid
-    // may vary from small quantities (rotation) to greater quantities
-    // (translation), but never need a great precision (6 digits are generally
-    // sufficient)
+    /**
+     * 3-dimensions float array. Float values has been choosen because quantities
+     * represented in a grid may vary from small quantities (rotation) to
+     * greater quantities (translation), but never need a great precision (6
+     * digits are generally sufficient).
+     */
     protected double[][][] values;
-    // Context object (may be used to specify the reference Datum)
+    /**
+     * Context object (may be used to specify the reference Datum).
+     */
     protected Object context;
 
     /**
-     * Creates a new GeographicGrid
+     * Creates a new GeographicGrid.
      */
     protected GeographicGrid() {
     }
 
     /**
-     * Create a new Geographic grid
+     * Create a new Geographic grid.
      *
      * @param westernLongitude
      * @param northernLatitude
@@ -170,14 +182,14 @@ public class GeographicGrid implements Grid {
     }
 
     /**
-     * Get the total grid width as a positive number
+     * Get the total grid width as a positive number.
      */
     public double getGridWidth() {
         return Math.abs(xL - x0);
     }
 
     /**
-     * Get the total grid height as a positive number
+     * Get the total grid height as a positive number.
      */
     public double getGridHeight() {
         return Math.abs(yL - y0);
@@ -244,7 +256,7 @@ public class GeographicGrid implements Grid {
     }
 
     /**
-     * Return the array of values
+     * Return the array of values.
      */
     public double[][][] getValues() {
         return values;
@@ -302,7 +314,7 @@ public class GeographicGrid implements Grid {
     }
 
     /**
-     * @return a short string representation of the grid.
+     * Return a short string representation of the grid.
      */
     @Override
     public String toString() {
@@ -311,7 +323,7 @@ public class GeographicGrid implements Grid {
     }
 
     /**
-     * @return a complete string representation of the grid.
+     * Return a complete string representation of the grid.
      */
     public String toStringAll() {
         StringBuilder sb = new StringBuilder("Geographic grid (westLon=" + x0 + " northLat=" + y0

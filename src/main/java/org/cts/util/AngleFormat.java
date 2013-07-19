@@ -35,6 +35,7 @@ import static java.lang.Math.PI;
 import static java.lang.Math.abs;
 import static java.lang.Math.floor;
 import static java.lang.Math.signum;
+
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
@@ -73,8 +74,8 @@ public final class AngleFormat {
             "([\\+\\-])?[\\s]*"
             + // degrees, capturing, MANDATORY ('0', '0.0' or '.0'),
             "([\\d]+(?:[\\.,]\\d*)?|[\\.,]\\d+)"
-            + // units, capturing optional initial (d[egree]d[egr�]g[rado]...)
-            "[\\s]*(?:�|([dDgG])[\\w���]*\\.?)?[\\s]*"
+            + // units, capturing optional initial (d[egree]d[egré]g[rado]...)
+            "[\\s]*(?:\u00B0|([dDgG])[\\w]*\\.?)?[\\s]*"
             + // minutes, capturing, optional
             "([\\d]+(?:[\\.,]\\d*)?)?"
             + // units, capturing optional initial (m[in.])
@@ -182,7 +183,7 @@ public final class AngleFormat {
      * </ul>
      * <p>Exemples :</p>
      * <ul>
-     * <li>latitude = #D� MM' SS.SSS\" H(N|S) --> latitude = 45� 09' 56.897"
+     * <li>latitude = #D\u00B0 MM' SS.SSS\" H(N|S) --> latitude = 45\u00B0 09' 56.897"
      * S</li>
      * <li>#D deg #M min --> -4 deg 6 min</li>
      * </ul>
@@ -299,13 +300,13 @@ public final class AngleFormat {
      * strings as
      * <ul>
      * <li>2</li>
-     * <li>.2�</li>
-     * <li>-.2�</li>
-     * <li>0.2� S</li>
-     * <li>2� 2'</li>
-     * <li>2� 2' 2" W</li>
-     * <li>2� 02' 02" N</li>
-     * <li>l=-2�2'2.222"</li>
+     * <li>.2\u00B0</li>
+     * <li>-.2\u00B0</li>
+     * <li>0.2\u00B0 S</li>
+     * <li>2\u00B0 2'</li>
+     * <li>2\u00B0 2' 2" W</li>
+     * <li>2\u00B0 02' 02" N</li>
+     * <li>l=-2\u00B02'2.222"</li>
      * </ul>
      *
      * @param angle the string to parse

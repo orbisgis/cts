@@ -34,6 +34,8 @@ package org.cts.datum;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.cts.op.CoordinateOperation;
 import org.cts.Identifier;
 import org.cts.cs.GeographicExtent;
@@ -218,7 +220,7 @@ public class VerticalDatum extends AbstractDatum {
      * The operation converting altitude of the vertical datum into ellipsoidal
      * height.
      */
-    private final CoordinateOperation alti2ellpsHeight;
+    private CoordinateOperation alti2ellpsHeight;
     /**
      * The ellipsoid associated with the vertical datum. It can be the ellipsoid
      * defining th ellipsoidal height or the ellipsoid of the geodetic datum
@@ -258,7 +260,11 @@ public class VerticalDatum extends AbstractDatum {
         super(identifier, extent, origin, epoch);
         this.type = type;
         if (gd != null && altitudeGrid != null) {
-            this.alti2ellpsHeight = new Altitude2EllipsoidalHeight(new Identifier(Altitude2EllipsoidalHeight.class, altitudeGrid), altitudeGrid, gd);
+            try {
+                this.alti2ellpsHeight = new Altitude2EllipsoidalHeight(altitudeGrid, gd);
+            } catch (Exception ex) {
+                Logger.getLogger(VerticalDatum.class.getName()).log(Level.SEVERE, null, ex);
+            }
             this.ellps = gd.getEllipsoid();
         } else if (gd != null && type == Type.ELLIPSOIDAL) {
             this.alti2ellpsHeight = Identity.IDENTITY;

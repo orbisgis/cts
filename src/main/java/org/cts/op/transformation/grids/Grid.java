@@ -68,11 +68,17 @@ public interface Grid {
 
         NEAREST, BILINEAR, BICUBIC
     }
-    // bilinear interpolation method
+    /**
+     * Nearest interpolation method.
+     */
     public final static int NEAREST = 1;
-    // nearest interpolation method
+    /**
+     * Bilinear interpolation method.
+     */
     public final static int BILINEAR = 2;
-    // nearest interpolation method
+    /**
+     * Bicubic interpolation method.
+     */
     public final static int BICUBIC = 3;
 
     /**

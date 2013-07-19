@@ -362,23 +362,6 @@ public class SevenParameterTransformation extends AbstractCoordinateOperation im
     }
 
     /**
-     * Apply the inverse transformation to coord
-     *
-     * @param coord the coordinate to transform
-     */
-    /*
-     * public void inverseTransform(double[] coord) throws
-     * IllegalCoordinateException { if (coord.length != 3) throw new
-     * CoordinateDimensionException(coord, 3); double rotationSign =
-     * (rotationConvention == POSITION_VECTOR)?1.0:-1.0; double x = coord[0];
-     * double y = coord[1]; double z = coord[2]; double srx = rx * rotationSign;
-     * double sry = ry * rotationSign; double srz = rz * rotationSign; srx =
-     * linearized?-srx:-sin(srx); sry = linearized?-sry:-sin(sry); srz =
-     * linearized?-srz:-sin(srz); coord[0] = -tx + (1.0/scale) * (x + z*sry -
-     * y*srz); coord[1] = -ty + (1.0/scale) * (y + x*srz - z*srx); coord[2] =
-     * -tz + (1.0/scale) * (z + y*srx - x*sry); }
-     */
-    /**
      * Creates the inverse CoordinateOperation.
      */
     @Override
@@ -427,9 +410,8 @@ public class SevenParameterTransformation extends AbstractCoordinateOperation im
     }
 
     /**
-     * Returns a WKT representation of the seven parameter transformation
+     * Returns a WKT representation of the seven parameter transformation.
      *
-     * @return
      */
     @Override
     public String toWKT() {
@@ -475,6 +457,9 @@ public class SevenParameterTransformation extends AbstractCoordinateOperation im
         return false;
     }
 
+    /**
+     * Returns the hash code for this GeocentricTranslation.
+     */
     @Override
     public int hashCode() {
         int hash = 5;

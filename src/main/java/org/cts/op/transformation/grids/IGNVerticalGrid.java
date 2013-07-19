@@ -32,10 +32,12 @@
 package org.cts.op.transformation.grids;
 
 import java.io.BufferedInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.StringTokenizer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+
 import org.cts.cs.GeographicExtent;
 
 /**
@@ -109,7 +111,7 @@ public class IGNVerticalGrid extends GeographicGrid {
                     sb.append(new String(bytes, 0, nb));
                 }
                 ignFile = sb.toString();
-            } catch (Exception e) {
+            } catch (IOException e) {
                 throw e;
             }
         } else {

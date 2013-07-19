@@ -265,6 +265,7 @@ public class CRSHelper {
                     if (grid.equals("@null")) {
                         crs.addGridTransformation(GeodeticDatum.WGS84, Identity.IDENTITY);
                     } else {
+                        try {
                         if (grid.equals("ntf_r93.gsb")) {
                             // Use a transformation based on IGN grid that is the official way to convert coordinates from NTF to RGF93.
                             if (crs.getDatum().equals(GeodeticDatum.NTF)) {
@@ -290,16 +291,17 @@ public class CRSHelper {
                                         new LongitudeRotation(-GeodeticDatum.RGF93.getPrimeMeridian().getLongitudeFromGreenwichInRadians())));
                             }
                         }
-                        try {
                             NTv2GridShiftTransformation gt = NTv2GridShiftTransformation.createNTv2GridShiftTransformation(grid);
                             gt.setMode(NTv2GridShiftTransformation.SPEED);
                             crs.addGridTransformation(GeodeticDatum.datumFromName.get(gt.getToDatum()), gt);
                         } catch (IOException ex) {
-                            LOGGER.error("Cannot found the nadgrid " + grid + ".", ex);
+                            LOGGER.error("Cannot find the nadgrid " + grid + ".", ex);
                         } catch (URISyntaxException ex) {
-                            LOGGER.error("Cannot found the nadgrid " + grid + ".", ex);
+                            LOGGER.error("Cannot find the nadgrid " + grid + ".", ex);
                         } catch (NullPointerException ex) {
-                            LOGGER.error("Cannot found the nadgrid " + grid + ".", ex);
+                            LOGGER.error("Cannot find the nadgrid " + grid + ".", ex);
+                        } catch (Exception ex) {
+                            LOGGER.error("Cannot find the nadgrid " + grid + ".", ex);
                         }
                     }
                 }

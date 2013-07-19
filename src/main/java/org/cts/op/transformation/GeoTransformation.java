@@ -32,15 +32,17 @@
 package org.cts.op.transformation;
 
 /**
+ * A GeoTransformation is a coordinate operation that bind two Geocentric
+ * Coordinate Reference System. There is several sorts of GeoTransformation such
+ * as the GeocentricTranslation and the SevenParameterTransformation.
  *
  * @author Erwan Bocher
  */
 public interface GeoTransformation {
 
     /**
-     * Returns a WKT representation of the transformation
+     * Returns a WKT representation of the transformation.
      *
-     * @return
      */
     String toWKT();
 }

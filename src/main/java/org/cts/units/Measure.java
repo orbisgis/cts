@@ -96,6 +96,8 @@ public class Measure implements java.io.Serializable {
 
     /**
      * Set Value of this measure.
+     *
+     * @param value the new Value to set to this Measure
      */
     public void setValue(Number value) {
         this.value = value;
@@ -111,6 +113,8 @@ public class Measure implements java.io.Serializable {
 
     /**
      * Set the unit of this measure.
+     *
+     * @param unit the new Unit to set to this Measure
      */
     public void setUnit(Unit unit) {
         this.unit = unit;
@@ -132,7 +136,7 @@ public class Measure implements java.io.Serializable {
 
     /**
      * Gets the same Measure using the base unit. The measure value in the base
-     * unit is a Double
+     * unit is a Double.
      */
     public Measure toBaseUnit() {
         if (Double.isNaN(precision)) {
@@ -142,8 +146,10 @@ public class Measure implements java.io.Serializable {
     }
 
     /**
-     * Converts this measure to another unit The measure value in the new unit
-     * system is a Double
+     * Converts this measure to another unit. The measure value in the new unit
+     * system is a Double.
+     *
+     * @param unit the new unit for the returned measure
      */
     public Measure convert(Unit unit) throws IllegalArgumentException {
         assert this.unit.isComparable(unit);
@@ -170,7 +176,6 @@ public class Measure implements java.io.Serializable {
      * compatible Unit parsed from WKT.
      *
      * @param units : list of possible compatible Unit
-     * @return
      */
     public Unit getCompatibleUnit(Unit... units) {
         for (Unit unt : units) {

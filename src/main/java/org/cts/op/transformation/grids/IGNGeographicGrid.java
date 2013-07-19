@@ -32,13 +32,14 @@
 package org.cts.op.transformation.grids;
 
 import java.io.BufferedInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.StringTokenizer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+
 import org.cts.cs.GeographicExtent;
-import org.cts.cs.OutOfExtentException;
 
 /**
  * <p>Classe representing a Geographic grid as defined by IGN (France).</p>
@@ -118,7 +119,7 @@ public class IGNGeographicGrid extends GeographicGrid {
                     sb.append(new String(bytes, 0, nb));
                 }
                 ignFile = sb.toString();
-            } catch (Exception e) {
+            } catch (IOException e) {
                 throw e;
             }
         } else {
@@ -139,7 +140,7 @@ public class IGNGeographicGrid extends GeographicGrid {
         if (stt.hasMoreTokens()) {
             dim = Integer.parseInt(stt.nextToken().substring(2, 3));
         } else {
-            throw new Exception("Missing information in line : " + gr);
+            throw new IOException("Missing information in line : " + gr);
         }
         if (stt.hasMoreTokens()) {
             gridType = stt.nextToken();
