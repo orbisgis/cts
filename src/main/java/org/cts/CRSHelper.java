@@ -37,6 +37,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.cts.crs.CRSException;
 
 import org.cts.crs.CoordinateReferenceSystem;
 import org.cts.crs.GeocentricCRS;
@@ -88,15 +89,14 @@ public class CRSHelper {
      * @param parameters the map of parameters defining the properties of the
      * desired CRS
      */
-    public static CoordinateReferenceSystem createCoordinateReferenceSystem(Identifier identifier, Map<String, String> parameters) {
+    public static CoordinateReferenceSystem createCoordinateReferenceSystem(Identifier identifier, Map<String, String> parameters) throws CRSException {
 
         //Get the datum
         GeodeticDatum geodeticDatum = getDatum(parameters);
-
+        
         if (geodeticDatum == null) {
-            LOGGER.warn("No datum definition. Cannot create the"
+            throw new CRSException("No datum definition. Cannot create the"
                     + "CoordinateReferenceSystem");
-            return null;
         }
 
         GeodeticCRS crs;
@@ -104,9 +104,8 @@ public class CRSHelper {
         String sproj = parameters.get(ProjKeyParameters.proj);
         String sunit = parameters.get(ProjKeyParameters.units);
         String stometer = parameters.get(ProjKeyParameters.to_meter);
-        if (null == sproj) {
-            LOGGER.warn("No projection defined for this Coordinate Reference System");
-            return null;
+        if (null == sproj) {            
+            throw new CRSException("No projection defined for this Coordinate Reference System");
         }
 
         //It's not a projected CRS
@@ -115,8 +114,8 @@ public class CRSHelper {
             if (sunit != null) {
                 unit = Unit.getUnit(Quantity.LENGTH, sunit);
             } else if (stometer != null) {
-                unit = new Unit(Quantity.LENGTH, "", Double.parseDouble(stometer),
-                        "");
+                unit = new Unit(Quantity.LENGTH, Double.parseDouble(stometer),
+                        new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, Identifier.UNKNOWN));
             }
             CoordinateSystem cs = new CoordinateSystem(new Axis[]{Axis.X,
                 Axis.Y, Axis.Z}, new Unit[]{unit, unit, unit});
@@ -135,13 +134,12 @@ public class CRSHelper {
                 if (sunit!=null) {
                     unit = Unit.getUnit(Quantity.LENGTH, sunit);
                 } else if (stometer != null) {
-                unit = new Unit(Quantity.LENGTH, "", Double.parseDouble(stometer),
-                        "");
+                unit = new Unit(Quantity.LENGTH, Double.parseDouble(stometer),
+                        new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, Identifier.UNKNOWN));
                 }
                 crs = new ProjectedCRS(identifier, geodeticDatum, proj, unit);
             } else {
-                LOGGER.warn("Unknown projection : " + sproj);
-                return null;
+                throw new CRSException("Unknown projection : " + sproj);                
             }
         }
 
@@ -362,7 +360,7 @@ public class CRSHelper {
      * @param param the map of parameters defining the properties of a CRS
      */
     private static Projection getProjection(String projectionName, Ellipsoid ell,
-            Map<String, String> param) {
+            Map<String, String> param) throws CRSException {
         String slat_0 = param.get("lat_0");
         String slat_1 = param.get("lat_1");
         String slat_2 = param.get("lat_2");
@@ -467,7 +465,7 @@ public class CRSHelper {
             }
             return new AlbersEqualArea(ell, map);
         } else {
-            throw new RuntimeException("Cannot create the projection " + projectionName);
+            throw new CRSException("Cannot create the projection " + projectionName);
         }
     }
 }

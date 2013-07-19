@@ -85,7 +85,7 @@ public class GeodeticDatum extends AbstractDatum {
      * World Geodetic System 1984.
      */
     public final static GeodeticDatum WGS84 = new GeodeticDatum(new Identifier(
-            "EPSG", "6326", "World Geodetic System 1984", "WGS84"),
+            "EPSG", "6326", "World Geodetic System 1984", "WGS 84"),
             PrimeMeridian.GREENWICH, Ellipsoid.WGS84, GeographicExtent.WORLD,
             null, null);
     /**
