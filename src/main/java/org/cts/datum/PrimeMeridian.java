@@ -63,67 +63,67 @@ public class PrimeMeridian extends IdentifiableComponent {
      * Lisbon Meridian.
      */
     public static final PrimeMeridian LISBON =
-            createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8902", "Lisbon", "Lisbon"), -9.0754862);
+            createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8902", "Lisbon", "Lisbon"), AngleFormat.parseAngle("9° 07' 54.862\" W"));
     /**
      * Paris Meridian.
      */
     public static final PrimeMeridian PARIS =
-            createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8903", "Paris", "Paris", "Value adopted by IGN (Paris) in 1936. Equivalent to 2°20'14.025\". Preferred by EPSG to earlier value of 2°20'13.95\" (2.596898 grads) used by RGS London", null), 2.337229167);
+            createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8903", "Paris", "Paris", "Value adopted by IGN (Paris) in 1936. Equivalent to 2°20'14.025\". Preferred by EPSG to earlier value of 2° 12' 5.022\" used by RGS London", null), AngleFormat.parseAngle("2°20'14.025\""));
     /**
      * Bogota Meridian.
      */
     public static final PrimeMeridian BOGOTA =
-            createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8904", "Bogota", "Bogota"), -74.04513);
+            createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8904", "Bogota", "Bogota"), AngleFormat.parseAngle("74° 04' 51.3\" W"));
     /**
      * Madrid Meridian.
      */
     public static final PrimeMeridian MADRID =
-            createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8905", "Madrid", "Madrid"), -3.411658);
+            createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8905", "Madrid", "Madrid"), AngleFormat.parseAngle("3° 41' 16.58\" W"));
     /**
      * Rome Meridian.
      */
     public static final PrimeMeridian ROME =
-            createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8906", "Rome", "Rome"), 12.27084);
+            createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8906", "Rome", "Rome"), AngleFormat.parseAngle("12° 27' 08.4\" E"));
     /**
      * Bern Meridian.
      */
     public static final PrimeMeridian BERN =
-            createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8907", "Bern", "Bern", "1895 value. Newer value of 7°26'22.335\" determined in 1938.", null), 7.26225);
+            createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8907", "Bern", "Bern", "1895 value. Newer value of 7°26'22.335\" determined in 1938.", null), AngleFormat.parseAngle("7° 26' 22.5\" E"));
     /**
      * Jakarta Meridian.
      */
     public static final PrimeMeridian JAKARTA =
-            createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8908", "Jakarta", "Jakarta"), 106.482779);
+            createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8908", "Jakarta", "Jakarta"), AngleFormat.parseAngle("106° 48' 27.79\" E"));
     /**
      * Ferro Meridian.
      */
     public static final PrimeMeridian FERRO =
-            createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8909", "Ferro", "Ferro", "Used in Austria and former Czechoslovakia.", null), -17.4);
+            createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8909", "Ferro", "Ferro", "Used in Austria and former Czechoslovakia.", null), AngleFormat.parseAngle("17° 40' W"));
     /**
      * Brussels Meridian.
      */
     public static final PrimeMeridian BRUSSELS =
-            createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8910", "Brussels", "Brussels"), 4.220471);
+            createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8910", "Brussels", "Brussels"), AngleFormat.parseAngle("4° 22' 4.71\" E"));
     /**
      * Stockholm Meridian.
      */
     public static final PrimeMeridian STOCKHOLM =
-            createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8911", "Stockholm"), 18.03298);
+            createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8911", "Stockholm"), AngleFormat.parseAngle("18° 03' 29.8\" E"));
     /**
      * Athens Meridian.
      */
     public static final PrimeMeridian ATHENS =
-            createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8912", "Athens", "Athens", "Used in Greece for older mapping based on Hatt projection.", null), 23.4258815);
+            createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8912", "Athens", "Athens", "Used in Greece for older mapping based on Hatt projection.", null), AngleFormat.parseAngle("23° 42' 58.815\" E"));
     /**
      * Oslo Meridian.
      */
     public static final PrimeMeridian OSLO =
-            createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8913", "Oslo", "Oslo", " Formerly known as Kristiania or Christiania.", null), 10.43225);
+            createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8913", "Oslo", "Oslo", " Formerly known as Kristiania or Christiania.", null), AngleFormat.parseAngle("10° 43' 22.5\" E"));
     /**
      * Paris (Royal Geographic Society) Meridian.
      */
     public static final PrimeMeridian PARIS_RGS =
-            createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8914", "Paris (RGS)", "Paris (RGS)", "Value replaced by IGN (France) in 1936 - see code 8903. Equivalent to 2.596898 grads.", null), 2.201395);
+            createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8914", "Paris (RGS)", "Paris (RGS)", "Value replaced by IGN (France) in 1936 - see code 8903. Equivalent to 2.596898 grads.", null), AngleFormat.parseAngle("2° 12' 5.022\" E"));
     /**
      * The angle formed by this meridian with the international Greenwich
      * meridian in decimal degrees.
