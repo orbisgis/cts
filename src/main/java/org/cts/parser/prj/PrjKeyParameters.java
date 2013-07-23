@@ -42,15 +42,19 @@ public class PrjKeyParameters {
     public static final String UNIT = "unit";
     public static final String PROJUNIT = "projunit";
     public static final String GEOGUNIT = "geogunit";
+    public static final String VERTUNIT = "vertunit";
     public static final String PROJECTION = "projection";
     public static final String PARAMETER = "parameter";
     public static final String AUTHORITY = "authority";
     public static final String PROJCS = "projcs";
     public static final String PRIMEM = "primem";
     public static final String SPHEROID = "spheroid";
+    public static final String COMPDCS = "compd_cs";
+    public static final String VERTCS = "vert_cs";
     //Internal key parameters used by the parser
     public static final String PROJUNITVAL = "projunitval";
     public static final String GEOGUNITVAL = "geogunitval";
+    public static final String VERTUNITVAL = "vertunitval";
     public static final String NAME = "name";
     public static final String REFCODE = "refcode";
     public static final String REFNAME = "refname";
@@ -58,14 +62,26 @@ public class PrjKeyParameters {
     public static final String GEOGREFCODE = "geogrefcode";
     public static final String GEOGREFNAME = "geogrefname";
     public static final String GEOGREFAUTHORITY = "geogrefauthority";
+    public static final String PROJREFCODE = "projrefcode";
+    public static final String PROJREFNAME = "projrefname";
+    public static final String PROJREFAUTHORITY = "projrefauthority";
+    public static final String VERTREFCODE = "vertrefcode";
+    public static final String VERTREFNAME = "vertrefname";
+    public static final String VERTREFAUTHORITY = "vertrefauthority";
     public static final String SPHEROIDCODE = "spheroidcode";
     public static final String SPHEROIDAUTHORITY = "spheroidauthority";
     public static final String DATUMCODE = "datumcode";
     public static final String DATUMAUTHORITY = "datumauthority";
+    public static final String VERTDATUM = "vert_datum";
+    public static final String VERTDATUMCODE = "vertdatumcode";
+    public static final String VERTDATUMAUTHORITY = "vertdatumauthority";
+    public static final String VERTDATUMTYPE = "vertdatumtype";
     public static final String PRIMEMCODE = "primemcode";
     public static final String PRIMEMAUTHORITY = "primemauthority";
     public static final String PROJUNITCODE = "projunitcode";
     public static final String PROJUNITAUTHORITY = "projunitauthority";
     public static final String GEOGUNITCODE = "geogunitcode";
     public static final String GEOGUNITAUTHORITY = "geogunitauthority";
+    public static final String VERTUNITCODE = "vertunitcode";
+    public static final String VERTUNITAUTHORITY = "vertunitauthority";
 }

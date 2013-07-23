@@ -61,4 +61,5 @@ public class ProjValueParameters {
     public static String LEAC = "leac";
     //Unit values
     public static String M = "m";
+    public static String RAD = "rad";
 }

@@ -53,6 +53,11 @@ public class VerticalDatum extends AbstractDatum {
     private final static Map<Identifier, VerticalDatum> datums =
             new HashMap<Identifier, VerticalDatum>();
     /**
+     * datumFromName associates each datum to a short string used to recognize
+     * it in CTS.
+     */
+    public static final Map<String, VerticalDatum> datumFromName = new HashMap<String, VerticalDatum>();
+    /**
      * WGS84VD stands for WGS84 Vertical Datum. This not a real datum, but a
      * reference used to transform 3D Ellipsoidal coordinates into coordinates
      * based on a compound Datum made of a Geodetic datum + a Vertical Datum.
@@ -232,6 +237,43 @@ public class VerticalDatum extends AbstractDatum {
             new GeographicExtent("Saint-Martin", 18, 18.2, -63.2, -62.5),
             "", "", Type.GEOIDAL, "ggg00_sm.txt", GeodeticDatum.WGS84SBSM);
 
+    static {
+        datumFromName.put("ign69", IGN69);
+        datumFromName.put("ign78", IGN78);
+        datumFromName.put("bora", BORASAU01);
+        datumFromName.put("danger50", DANGER50);
+        datumFromName.put("fakarava", FAKARAVA);
+        datumFromName.put("gambier", GAMBIER);
+        datumFromName.put("hao", HAO);
+        datumFromName.put("hivaoa", HIVAOA);
+        datumFromName.put("huahine", HUAHINESAU01);
+        datumFromName.put("ign62ker", IGN62KER);
+        datumFromName.put("ign87mart", IGN87MART);
+        datumFromName.put("ign88gtbt", IGN88GTBT);
+        datumFromName.put("ign88ls", IGN88LS);
+        datumFromName.put("ifn88mg", IGN88MG);
+        datumFromName.put("ign88sb", IGN88SB);
+        datumFromName.put("ign88sm", IGN88SM);
+        datumFromName.put("ign92ld", IGN92LD);
+        datumFromName.put("ign66tahiti", IGNTAHITI66);
+        datumFromName.put("maiao", MAIAO01);
+        datumFromName.put("mataiva", MATAIVA);
+        datumFromName.put("maupiti", MAUPITISAU01);
+        datumFromName.put("moorea", MOOREASAU81);
+        datumFromName.put("ngg77guy", NGG77GUY);
+        datumFromName.put("nukuhiva", NUKUHIVA);
+        datumFromName.put("raiatea", RAIATEASAU01);
+        datumFromName.put("raivavae", RAIVAVAE);
+        datumFromName.put("rar07", RAR07);
+        datumFromName.put("reao", REAO);
+        datumFromName.put("rurutu", RURUTU);
+        datumFromName.put("shom53", SHOM53);
+        datumFromName.put("tahaa", TAHAASAU01);
+        datumFromName.put("tikehau", TIKEHAU);
+        datumFromName.put("tubuai", TUBUAI);
+        datumFromName.put("tupai", TUPAI01);
+    }
+
     /**
      * Vertical Datum classification based on the surface type.
      */
@@ -313,6 +355,25 @@ public class VerticalDatum extends AbstractDatum {
      */
     public Type getType() {
         return type;
+    }
+
+    public static Type getType(int numero) {
+        switch (numero) {
+            case 2000:
+                return Type.OTHER_SURFACE;
+            case 2001:
+                return Type.ORTHOMETRIC;
+            case 2002:
+                return Type.ELLIPSOIDAL;
+            case 2003:
+                return Type.BAROMETRIC;
+            case 2005:
+                return Type.GEOIDAL;
+            case 2006:
+                return Type.DEPTH;
+            default:
+                return null;
+        }
     }
 
     /**

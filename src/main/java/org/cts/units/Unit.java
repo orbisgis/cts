@@ -108,7 +108,7 @@ public class Unit extends IdentifiableComponent implements java.io.Serializable 
     public static final Unit FOOT = new Unit(LENGTH, 0.3048, new Identifier("EPSG", "9002", "foot", "ft"));
     public static final Unit USFOOT = new Unit(LENGTH, 1200 / 3937, new Identifier("EPSG", "9003", "foot_us", "us-ft"));
     public static final Unit YARD = new Unit(LENGTH, 0.9144, new Identifier("EPSG", "9096", "yard", "yd"));
-    public static final Unit UNIT = new Unit(NODIM, new Identifier(Unit.class));
+    public static final Unit UNIT = new Unit(NODIM, new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, "no dimension", ""));
     public static final Unit SECOND = new Unit(TIME, new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, "second", "s"));
     public static final ArrayList<Unit> units = new ArrayList<Unit>();
 
