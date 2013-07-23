@@ -42,7 +42,6 @@ import org.cts.op.AbstractCoordinateOperation;
 import org.cts.op.CoordinateOperation;
 import org.cts.op.NonInvertibleOperationException;
 import org.cts.op.transformation.grids.GeographicGrid;
-import org.cts.op.transformation.grids.IGNReunionGrid;
 import org.cts.op.transformation.grids.IGNVerticalGrid;
 
 /**
@@ -91,13 +90,9 @@ public class Altitude2EllipsoidalHeight extends AbstractCoordinateOperation {
         this.gridFileName = nameGrid;
         try {
             InputStream is = IGNVerticalGrid.class.getClassLoader().getResourceAsStream("org/cts/op/transformation/grids/" + nameGrid);
-            if (nameGrid.equals("RAR07_bl.txt")) {
-                GRID = new IGNReunionGrid(is, false);
-            } else {
-                GRID = new IGNVerticalGrid(is, false);
-            }
+            GRID = new IGNVerticalGrid(is, false);
         } catch (Exception e) {
-            throw new Exception(e.getMessage()+"\nThis problem occured when loading the "+nameGrid+" grid file.");
+            throw new Exception(e.getMessage() + "\nThis problem occured when loading the " + nameGrid + " grid file.");
         }
     }
 
