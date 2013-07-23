@@ -33,12 +33,16 @@ package org.cts.op;
 
 import static java.lang.Math.PI;
 import org.cts.Identifier;
+import org.cts.IllegalCoordinateException;
+import org.cts.crs.CRSException;
 import org.cts.crs.CompoundCRS;
+import org.cts.crs.CoordinateReferenceSystem;
 import org.cts.crs.GeodeticCRS;
 import org.cts.crs.Geographic2DCRS;
 import org.cts.crs.ProjectedCRS;
 import org.cts.crs.VerticalCRS;
 import org.cts.cs.GeographicExtent;
+import org.cts.datum.Ellipsoid;
 import org.cts.datum.GeodeticDatum;
 import org.cts.datum.VerticalDatum;
 import org.cts.op.projection.LambertConicConformal1SP;
@@ -830,5 +834,86 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         double[] checkPoint = transform(crs2, crs1, expectedPoint);
         assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
         assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+    }
+
+    @Test
+    public void testCompdCRS() throws CRSException, IllegalCoordinateException {
+        String prjString = "COMPD_CS[\"NTF (Paris) / France II + NGF IGN69\",\n"
+                + "    PROJCS[\"RGF93 / Lambert-93\",\n"
+                + "        GEOGCS[\"RGF93\",\n"
+                + "            DATUM[\"Reseau_Geodesique_Francais_1993\",\n"
+                + "                SPHEROID[\"GRS 1980\",6378137,298.257222101,\n"
+                + "                    AUTHORITY[\"EPSG\",\"7019\"]],\n"
+                + "                TOWGS84[0,0,0,0,0,0,0],\n"
+                + "                AUTHORITY[\"EPSG\",\"6171\"]],\n"
+                + "            PRIMEM[\"Greenwich\",0,\n"
+                + "                AUTHORITY[\"EPSG\",\"8901\"]],\n"
+                + "            UNIT[\"degree\",0.01745329251994328,\n"
+                + "                AUTHORITY[\"EPSG\",\"9122\"]],\n"
+                + "            AUTHORITY[\"EPSG\",\"4171\"]],\n"
+                + "        UNIT[\"metre\",1,\n"
+                + "            AUTHORITY[\"EPSG\",\"9001\"]],\n"
+                + "        PROJECTION[\"Lambert_Conformal_Conic_2SP\"],\n"
+                + "        PARAMETER[\"standard_parallel_1\",49],\n"
+                + "        PARAMETER[\"standard_parallel_2\",44],\n"
+                + "        PARAMETER[\"latitude_of_origin\",46.5],\n"
+                + "        PARAMETER[\"central_meridian\",3],\n"
+                + "        PARAMETER[\"false_easting\",700000],\n"
+                + "        PARAMETER[\"false_northing\",6600000],\n"
+                + "        AUTHORITY[\"EPSG\",\"2154\"],\n"
+                + "        AXIS[\"X\",EAST],\n"
+                + "        AXIS[\"Y\",NORTH]],\n"
+                + "    VERT_CS[\"NGF IGN69\",\n"
+                + "        VERT_DATUM[\"Nivellement General de la France - IGN69\",2005,\n"
+                + "            AUTHORITY[\"EPSG\",\"5119\"]],\n"
+                + "        UNIT[\"m\",1.0],\n"
+                + "        AXIS[\"Gravity-related height\",UP],\n"
+                + "        AUTHORITY[\"EPSG\",\"5720\"]],\n"
+                + "    AUTHORITY[\"EPSG\",\"7402\"]]";
+        CoordinateReferenceSystem scrs = cRSFactory.createFromPrj(prjString);
+        assertTrue(scrs instanceof CompoundCRS);
+        CompoundCRS sourceCRS = (CompoundCRS) scrs;
+        prjString = "COMPD_CS[\"NTF (Paris) / France II + NGF IGN69\",\n"
+                + "     GEOGCS[\"RGF93\",\n"
+                + "        DATUM[\"Reseau_Geodesique_Francais_1993\",\n"
+                + "            SPHEROID[\"GRS 1980\",6378137,298.257222101,\n"
+                + "                AUTHORITY[\"EPSG\",\"7019\"]],\n"
+                + "            TOWGS84[0,0,0,0,0,0,0],\n"
+                + "            AUTHORITY[\"EPSG\",\"6171\"]],\n"
+                + "        PRIMEM[\"Greenwich\",0,\n"
+                + "            AUTHORITY[\"EPSG\",\"8901\"]],\n"
+                + "        UNIT[\"degree\",0.01745329251994328,\n"
+                + "            AUTHORITY[\"EPSG\",\"9122\"]],\n"
+                + "        AUTHORITY[\"EPSG\",\"4171\"]],\n"
+                + "    VERT_CS[\"NGF IGN69\",\n"
+                + "        VERT_DATUM[\"Hauteur ellipsoidale - GRS80\",2002,\n"
+                + "            AUTHORITY[\"EPSG\",\"5019\"]],\n"
+                + "        UNIT[\"m\",1.0],\n"
+                + "        AXIS[\"Ellipsoidal height\",UP],\n"
+                + "        AUTHORITY[\"EPSG\",\"5720\"]],\n"
+                + "    AUTHORITY[\"EPSG\",\"7402\"]]";
+        CoordinateReferenceSystem tcrs = cRSFactory.createFromPrj(prjString);
+        assertTrue(tcrs instanceof CompoundCRS);
+        CompoundCRS targetCRS = (CompoundCRS) tcrs;
+        double[] inputPoint = new double[]{750000, 7000000, 100};
+        double[] expectedPoint = new double[]{3.69807131, 50.09631762, 144.492};
+        double[] outputPoint = transform(sourceCRS, targetCRS, inputPoint);
+        double[] checkPoint = transform(targetCRS, sourceCRS, expectedPoint);
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", checkPoint, inputPoint, 1E-3));
+    }
+
+    @Test
+    public void testVerticalCRS() throws CRSException, IllegalCoordinateException {
+        String prjString = "VERT_CS[\"NGF IGN69\",\n"
+                + "    VERT_DATUM[\"Hauteur ellipsoidale - GRS80\",2002,\n"
+                + "        AUTHORITY[\"EPSG\",\"5019\"]],\n"
+                + "    UNIT[\"m\",1.0],\n"
+                + "    AXIS[\"Ellipsoidal height\",UP],\n"
+                + "    AUTHORITY[\"EPSG\",\"5720\"]]";
+        CoordinateReferenceSystem crs = cRSFactory.createFromPrj(prjString);
+        assertTrue(crs instanceof VerticalCRS);
+        VerticalCRS vcrs = (VerticalCRS) crs;
+        assertTrue(vcrs.getDatum().getEllipsoid().equals(Ellipsoid.GRS80));
     }
 }

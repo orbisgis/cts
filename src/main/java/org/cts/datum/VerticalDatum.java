@@ -63,10 +63,62 @@ public class VerticalDatum extends AbstractDatum {
      * based on a compound Datum made of a Geodetic datum + a Vertical Datum.
      */
     public final static VerticalDatum WGS84VD = new VerticalDatum(
-            new Identifier(VerticalDatum.class, "WGS84 Ellipsoid Surface"),
-            GeographicExtent.WORLD,
-            "Surface of the reference Ellipsoid for WGS 1984",
-            "1984", Type.ELLIPSOIDAL, null, GeodeticDatum.WGS84);
+            new Identifier("EPSG", "5030", "WGS84 Ellipsoid Surface", "WGS84VD"),
+            "Surface of the reference Ellipsoid for WGS 1984", "1984", Ellipsoid.WGS84);
+    public final static VerticalDatum SPHEREVD = new VerticalDatum(
+            new Identifier("EPSG", "5035", "SPHERE Ellipsoid Surface", "SPHEREVD"),
+            "Surface of the reference Ellipsoid for SPHERE", "", Ellipsoid.SPHERE);
+    public final static VerticalDatum GRS80VD = new VerticalDatum(
+            new Identifier("EPSG", "5019", "GRS80 Ellipsoid Surface", "GRS80VD"),
+            "Surface of the reference Ellipsoid for GRS80", "", Ellipsoid.GRS80);
+    public final static VerticalDatum INTERNATIONAL1924VD = new VerticalDatum(
+            new Identifier("EPSG", "5022", "INTERNATIONAL1924 Ellipsoid Surface", "INTERNATIONAL1924VD"),
+            "Surface of the reference Ellipsoid for INTERNATIONAL1924", "", Ellipsoid.INTERNATIONAL1924);
+    public final static VerticalDatum BESSEL1841VD = new VerticalDatum(
+            new Identifier("EPSG", "5004", "BESSEL1841 Ellipsoid Surface", "BESSEL1841VD"),
+            "Surface of the reference Ellipsoid for BESSEL1841", "", Ellipsoid.BESSEL1841);
+    public final static VerticalDatum CLARKE1866VD = new VerticalDatum(
+            new Identifier("EPSG", "5008", "CLARKE1866 Ellipsoid Surface", "CLARKE1866VD"),
+            "Surface of the reference Ellipsoid for CLARKE1866", "", Ellipsoid.CLARKE1866);
+    public final static VerticalDatum CLARKE1880IGNVD = new VerticalDatum(
+            new Identifier("EPSG", "5011", "CLARKE1880IGN Ellipsoid Surface", "CLARKE1880IGNVD"),
+            "Surface of the reference Ellipsoid for CLARKE1880IGN", "", Ellipsoid.CLARKE1880IGN);
+    public final static VerticalDatum CLARKE1880RGSVD = new VerticalDatum(
+            new Identifier("EPSG", "5012", "CLARKE1880RGS Ellipsoid Surface", "CLARKE1880RGSVD"),
+            "Surface of the reference Ellipsoid for CLARKE1880RGS", "", Ellipsoid.CLARKE1880RGS);
+    public final static VerticalDatum CLARKE1880ARCVD = new VerticalDatum(
+            new Identifier("EPSG", "5013", "CLARKE1880ARC Ellipsoid Surface", "CLARKE1880ARCVD"),
+            "Surface of the reference Ellipsoid for CLARKE1880ARC", "", Ellipsoid.CLARKE1880ARC);
+    public final static VerticalDatum KRASSOWSKIVD = new VerticalDatum(
+            new Identifier("EPSG", "5024", "KRASSOWSKI Ellipsoid Surface", "KRASSOWSKIVD"),
+            "Surface of the reference Ellipsoid for KRASSOWSKI", "", Ellipsoid.KRASSOWSKI);
+    public final static VerticalDatum EVERESTSSVD = new VerticalDatum(
+            new Identifier("EPSG", "5016", "SPHERE Ellipsoid Surface", "EVERESTSSVD"),
+            "Surface of the reference Ellipsoid for EVERESTSS", "", Ellipsoid.EVERESTSS);
+    public final static VerticalDatum GRS67VD = new VerticalDatum(
+            new Identifier("EPSG", "5036", "GRS67 Ellipsoid Surface", "GRS67VD"),
+            "Surface of the reference Ellipsoid for GRS67", "", Ellipsoid.GRS67);
+    public final static VerticalDatum AustSAVD = new VerticalDatum(
+            new Identifier("EPSG", "5050", "AustSA Ellipsoid Surface", "AustSAVD"),
+            "Surface of the reference Ellipsoid for AustSA", "", Ellipsoid.AustSA);
+    public final static VerticalDatum AIRYVD = new VerticalDatum(
+            new Identifier("EPSG", "5001", "AIRY Ellipsoid Surface", "AIRYVD"),
+            "Surface of the reference Ellipsoid for AIRY", "", Ellipsoid.AIRY);
+    public final static VerticalDatum BESSNAMVD = new VerticalDatum(
+            new Identifier("EPSG", "5046", "BESSNAM Ellipsoid Surface", "BESSNAMVD"),
+            "Surface of the reference Ellipsoid for BESSNAM", "", Ellipsoid.BESSNAM);
+    public final static VerticalDatum HELMERTVD = new VerticalDatum(
+            new Identifier("EPSG", "5020", "HELMERT Ellipsoid Surface", "HELMERTVD"),
+            "Surface of the reference Ellipsoid for HELMERT", "", Ellipsoid.HELMERT);
+    public final static VerticalDatum AIRYMODVD = new VerticalDatum(
+            new Identifier("EPSG", "5002", "AIRYMOD Ellipsoid Surface", "AIRYMODVD"),
+            "Surface of the reference Ellipsoid for AIRYMOD", "", Ellipsoid.AIRYMOD);
+    public final static VerticalDatum WGS66VD = new VerticalDatum(
+            new Identifier("EPSG", "5025", "WGS66 Ellipsoid Surface", "WGS66VD"),
+            "Surface of the reference Ellipsoid for WGS66", "", Ellipsoid.WGS66);
+    public final static VerticalDatum WGS72VD = new VerticalDatum(
+            new Identifier("EPSG", "5043", "WGS72 Ellipsoid Surface", "WGS72VD"),
+            "Surface of the reference Ellipsoid for WGS72", "", Ellipsoid.WGS72);
     /**
      * Nivellement général de la France - IGN69. It is the main vertical datum
      * used in France.
@@ -272,6 +324,24 @@ public class VerticalDatum extends AbstractDatum {
         datumFromName.put("tikehau", TIKEHAU);
         datumFromName.put("tubuai", TUBUAI);
         datumFromName.put("tupai", TUPAI01);
+        datumFromName.put("airyvd", AIRYVD);
+        datumFromName.put("austsavd", AustSAVD);
+        datumFromName.put("besselvd", BESSEL1841VD);
+        datumFromName.put("bessnamvd", BESSNAMVD);
+        datumFromName.put("clrk66vd", CLARKE1866VD);
+        datumFromName.put("clrk80vd", CLARKE1880RGSVD);
+        datumFromName.put("clrk80ignvd", CLARKE1880IGNVD);
+        datumFromName.put("clrk80arcvd", CLARKE1880ARCVD);
+        datumFromName.put("evrstssvd", EVERESTSSVD);
+        datumFromName.put("grs67vd", GRS67VD);
+        datumFromName.put("grs80vd", GRS80VD);
+        datumFromName.put("helmertvd", HELMERTVD);
+        datumFromName.put("intlvd", INTERNATIONAL1924VD);
+        datumFromName.put("airymodvd", AIRYMODVD);
+        datumFromName.put("krassvd", KRASSOWSKIVD);
+        datumFromName.put("wgs66vd", WGS66VD);
+        datumFromName.put("wgs72vd", WGS72VD);
+        datumFromName.put("wgs84vd", WGS84VD);
     }
 
     /**
@@ -347,6 +417,22 @@ public class VerticalDatum extends AbstractDatum {
             this.alti2ellpsHeight = null;
             this.ellps = null;
         }
+        this.registerDatum();
+    }
+
+    /**
+     * Creates a new VerticalDatum of type ellipsoidal.
+     *
+     * @param identifier identifier.
+     * @param origin origin decription this datum
+     * @param epoch realization epoch of this datum
+     * @param ellps the Ellipsoid from which the height is calculated
+     */
+    public VerticalDatum(Identifier identifier, String origin, String epoch, Ellipsoid ellps) {
+        super(identifier, GeographicExtent.WORLD, origin, epoch);
+        this.type = Type.ELLIPSOIDAL;
+        this.alti2ellpsHeight = Identity.IDENTITY;
+        this.ellps = ellps;
         this.registerDatum();
     }
 
