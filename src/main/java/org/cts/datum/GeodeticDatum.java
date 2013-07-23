@@ -39,6 +39,7 @@ import org.cts.*;
 import org.cts.cs.GeographicExtent;
 import org.cts.op.*;
 import org.cts.op.transformation.GeocentricTranslation;
+import org.cts.op.transformation.SevenParameterTransformation;
 
 /**
  * Geodetic Datum or horizontal Datum : a {@link org.cts.datum.Datum} used to
@@ -127,6 +128,24 @@ public class GeodeticDatum extends AbstractDatum {
             GeographicExtent.WORLD,
             "Fundamental point: Potsdam (Helmert Tower). Latitude: 52 deg 22 min 51.4456 sec N; Longitude: 13 deg  3 min 58.9283 sec E (of Greenwich).",
             "1950");
+    public final static GeodeticDatum WGS84GUAD = new GeodeticDatum(
+            new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, "Guadeloupe : WGS84", "WGS84GUAD"),
+            PrimeMeridian.GREENWICH,
+            Ellipsoid.GRS80,
+            new GeographicExtent("Guadeloupe", 15.875, 16.625, -61.85, -61.075),
+            "",  "");
+    public final static GeodeticDatum WGS84MART = new GeodeticDatum(
+            new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, "Martinique : WGS84", "WGS84GUAD"),
+            PrimeMeridian.GREENWICH,
+            Ellipsoid.GRS80,
+            new GeographicExtent("Martinique", 14.25, 15.025, -61.25, -60.725),
+            "",  "");
+    public final static GeodeticDatum WGS84SBSM = new GeodeticDatum(
+            new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, "St-Martin St-Barth : WGS84", "WGS84SBSM"),
+            PrimeMeridian.GREENWICH,
+            Ellipsoid.GRS80,
+            new GeographicExtent("St-Martin St-Barth", 17.8, 18.2, -63.2, -62.5),
+            "",  "");
 
     static {
         WGS84.setDefaultToWGS84Operation(Identity.IDENTITY);
@@ -137,6 +156,12 @@ public class GeodeticDatum extends AbstractDatum {
                 -60.0, 320.0, 1.0));
         ED50.setDefaultToWGS84Operation(new GeocentricTranslation(-84.0, -97.0,
                 -117.0, 1.0));
+        WGS84GUAD.setDefaultToWGS84Operation(SevenParameterTransformation.createBursaWolfTransformation(
+                1.2239, 2.4156, -1.7598, 0.03800, -0.16101, -0.04925, 0.2387));
+        WGS84MART.setDefaultToWGS84Operation(SevenParameterTransformation.createBursaWolfTransformation(
+                0.7696, -0.8692, -12.0631, -0.32511, -0.21041, -0.02390, 0.2829));
+        WGS84SBSM.setDefaultToWGS84Operation(SevenParameterTransformation.createBursaWolfTransformation(
+                14.6642, 5.2493, 0.1981, -0.06838, 0.09141, -0.58131, -0.4067));
 
         datumFromName.put("wgs84", WGS84);
         datumFromName.put("ntfparis", NTF_PARIS);

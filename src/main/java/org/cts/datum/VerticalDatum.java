@@ -203,6 +203,34 @@ public class VerticalDatum extends AbstractDatum {
             new Identifier("EPSG", "5156", "Reunion 1989", "RAR07"),
             new GeographicExtent("Reunion", 55.14, 55.94, -21.5, -20.75),
             "", "", Type.GEOIDAL, "RAR07.mnt", GeodeticDatum.RGF93);
+    public final static VerticalDatum IGN88GTBTold = new VerticalDatum(
+            new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, "Geoide géométrique pour la Guadeloupe : Grande-Terre et Basse-Terre (EGM96 + points GPS nivelés)", "IGN88GTBTold"),
+            new GeographicExtent("Guadeloupe", 15.875, 16.625, -61.85, -61.075),
+            "", "", Type.GEOIDAL, "ggg00.txt", GeodeticDatum.WGS84GUAD);
+    public final static VerticalDatum IGN92LDold = new VerticalDatum(
+            new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, "Geoide géométrique pour La Désirade (EGM96 + points GPS nivelés)", "IGN92LDold"),
+            new GeographicExtent("La Désirade", 16.25, 16.4, -61.2, -60.75),
+            "", "", Type.GEOIDAL, "ggg00_ld.txt", GeodeticDatum.WGS84GUAD);
+    public final static VerticalDatum IGN88LSold = new VerticalDatum(
+            new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, "Geoide géométrique pour Les Saintes (EGM96 + points GPS nivelés)", "IGN88LSold"),
+            new GeographicExtent("Les Saintes", 15.8, 15.925, -61.7, -61.475),
+            "", "", Type.GEOIDAL, "ggg00_ls.txt", GeodeticDatum.WGS84GUAD);
+    public final static VerticalDatum IGN87MARTold = new VerticalDatum(
+            new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, "Geoide géométrique pour la Martinique (EGM96 + points GPS nivelés)", "IGN87MARTold"),
+            new GeographicExtent("Martinique", 14.25, 15.025, -61.25, -60.725),
+            "", "", Type.GEOIDAL, "ggm00.txt", GeodeticDatum.WGS84MART);
+    public final static VerticalDatum IGN88MGold = new VerticalDatum(
+            new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, "Geoide géométrique pour Marie-Galante (EGM96 + points GPS nivelés)", "IGN88MGold"),
+            new GeographicExtent("Marie-Galante", 15.8, 16.125, -61.4, -61.075),
+            "", "", Type.GEOIDAL, "ggg00_mg.txt", GeodeticDatum.WGS84GUAD);
+    public final static VerticalDatum IGN88SBold = new VerticalDatum(
+            new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, "Geoide géométrique pour Saint-Barthélémy (EGM96 + points GPS nivelés)", "IGN88SBold"),
+            new GeographicExtent("Saint-Barthélémy", 17.8, 18.025, -63, -62.725),
+            "", "", Type.GEOIDAL, "ggg00_sb.txt", GeodeticDatum.WGS84SBSM);
+    public final static VerticalDatum IGN88SMold = new VerticalDatum(
+            new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, "Geoide géométrique pour Saint-Martin (EGM96 + points GPS nivelés)", "IGN88SMold"),
+            new GeographicExtent("Saint-Martin", 18, 18.2, -63.2, -62.5),
+            "", "", Type.GEOIDAL, "ggg00_sm.txt", GeodeticDatum.WGS84SBSM);
 
     /**
      * Vertical Datum classification based on the surface type.

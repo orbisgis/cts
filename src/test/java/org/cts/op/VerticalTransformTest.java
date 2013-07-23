@@ -219,6 +219,19 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
     }
 
     @Test
+    public void testIGN88SM() throws Exception {
+        CompoundCRS crs = new CompoundCRS(new Identifier("EPSG", "7400", "RGF93 + NGF IGN88SM"),
+                new Geographic2DCRS(new Identifier("EPSG", "4807", "RGF93"), GeodeticDatum.RGF93),
+                new VerticalCRS(new Identifier("UNKNOWN", "UNKNOWN", "NGF IGN88SM"), VerticalDatum.IGN88SM, VerticalCRS.ALTITUDE_CS));
+        double[] inputPoint = new double[]{18.1, -63, 100};
+        double[] expectedPoint = new double[]{18.1 * PI / 180, -63 * PI / 180, 56.727};
+        double[] outputPoint = crs.toGeographicCoordinateConverter().transform(inputPoint.clone());
+        double[] checkPoint = crs.fromGeographicCoordinateConverter().transform(expectedPoint.clone());
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+    }
+
+    @Test
     public void testNGG77GUY() throws Exception {
         CompoundCRS crs = new CompoundCRS(new Identifier("EPSG", "7400", "RGF93 + NGF NGG77GUY"),
                 new Geographic2DCRS(new Identifier("EPSG", "4807", "RGF93"), GeodeticDatum.RGF93),
@@ -614,5 +627,208 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         // TO DO find a test for this one
         //assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
         //assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+    }
+
+    @Test
+    public void testIGN88GTBTold() throws Exception {
+        CompoundCRS crs = new CompoundCRS(new Identifier("EPSG", "7400", "RGF93 + NGF IGN88GTBTold"),
+                new Geographic2DCRS(new Identifier("EPSG", "4807", "RGF93"), GeodeticDatum.WGS84GUAD),
+                new VerticalCRS(new Identifier("UNKNOWN", "UNKNOWN", "NGF IGN88GTBTold"), VerticalDatum.IGN88GTBTold, VerticalCRS.ALTITUDE_CS));
+        double[] inputPoint = new double[]{16, -61.5, 100};
+        double[] expectedPoint = new double[]{16 * PI / 180, -61.5 * PI / 180, 59.613};
+        double[] outputPoint = crs.toGeographicCoordinateConverter().transform(inputPoint.clone());
+        double[] checkPoint = crs.fromGeographicCoordinateConverter().transform(expectedPoint.clone());
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+    }
+
+    @Test
+    public void testIGN92LDold() throws Exception {
+        CompoundCRS crs = new CompoundCRS(new Identifier("EPSG", "7400", "RGF93 + NGF IGN92LDold"),
+                new Geographic2DCRS(new Identifier("EPSG", "4807", "RGF93"), GeodeticDatum.WGS84GUAD),
+                new VerticalCRS(new Identifier("UNKNOWN", "UNKNOWN", "NGF IGN92LDold"), VerticalDatum.IGN92LDold, VerticalCRS.ALTITUDE_CS));
+        double[] inputPoint = new double[]{16.3, -61, 100};
+        double[] expectedPoint = new double[]{16.3 * PI / 180, -61 * PI / 180, 56.623};
+        double[] outputPoint = crs.toGeographicCoordinateConverter().transform(inputPoint.clone());
+        double[] checkPoint = crs.fromGeographicCoordinateConverter().transform(expectedPoint.clone());
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+    }
+
+    @Test
+    public void testIGN88LSold() throws Exception {
+        CompoundCRS crs = new CompoundCRS(new Identifier("EPSG", "7400", "RGF93 + NGF IGN88LSold"),
+                new Geographic2DCRS(new Identifier("EPSG", "4807", "RGF93"), GeodeticDatum.WGS84GUAD),
+                new VerticalCRS(new Identifier("UNKNOWN", "UNKNOWN", "NGF IGN88LSold"), VerticalDatum.IGN88LSold, VerticalCRS.ALTITUDE_CS));
+        double[] inputPoint = new double[]{15.9, -61.5, 100};
+        double[] expectedPoint = new double[]{15.9 * PI / 180, -61.5 * PI / 180, 60.000};
+        double[] outputPoint = crs.toGeographicCoordinateConverter().transform(inputPoint.clone());
+        double[] checkPoint = crs.fromGeographicCoordinateConverter().transform(expectedPoint.clone());
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+    }
+
+    @Test
+    public void testIGN87MARTold() throws Exception {
+        CompoundCRS crs = new CompoundCRS(new Identifier("EPSG", "7400", "RGF93 + NGF IGN87MARTold"),
+                new Geographic2DCRS(new Identifier("EPSG", "4807", "RGF93"), GeodeticDatum.WGS84MART),
+                new VerticalCRS(new Identifier("UNKNOWN", "UNKNOWN", "NGF IGN87MARTold"), VerticalDatum.IGN87MARTold, VerticalCRS.ALTITUDE_CS));
+        double[] inputPoint = new double[]{14.5, -61, 100};
+        double[] expectedPoint = new double[]{14.5 * PI / 180, -61 * PI / 180, 61.882};
+        double[] outputPoint = crs.toGeographicCoordinateConverter().transform(inputPoint.clone());
+        double[] checkPoint = crs.fromGeographicCoordinateConverter().transform(expectedPoint.clone());
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+    }
+
+    @Test
+    public void testIGN88MGold() throws Exception {
+        CompoundCRS crs = new CompoundCRS(new Identifier("EPSG", "7400", "RGF93 + NGF IGN88MGold"),
+                new Geographic2DCRS(new Identifier("EPSG", "4807", "RGF93"), GeodeticDatum.WGS84GUAD),
+                new VerticalCRS(new Identifier("UNKNOWN", "UNKNOWN", "NGF IGN88MGold"), VerticalDatum.IGN88MGold, VerticalCRS.ALTITUDE_CS));
+        double[] inputPoint = new double[]{16, -61.2, 100};
+        double[] expectedPoint = new double[]{16 * PI / 180, -61.2 * PI / 180, 59.199};
+        double[] outputPoint = crs.toGeographicCoordinateConverter().transform(inputPoint.clone());
+        double[] checkPoint = crs.fromGeographicCoordinateConverter().transform(expectedPoint.clone());
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+    }
+
+    @Test
+    public void testIGN88SBold() throws Exception {
+        CompoundCRS crs = new CompoundCRS(new Identifier("EPSG", "7400", "RGF93 + NGF IGN88SBold"),
+                new Geographic2DCRS(new Identifier("EPSG", "4807", "RGF93"), GeodeticDatum.WGS84SBSM),
+                new VerticalCRS(new Identifier("UNKNOWN", "UNKNOWN", "NGF IGN88SBold"), VerticalDatum.IGN88SBold, VerticalCRS.ALTITUDE_CS));
+        double[] inputPoint = new double[]{17.9, -62.8, 100};
+        double[] expectedPoint = new double[]{17.9 * PI / 180, -62.8 * PI / 180, 58.074};
+        double[] outputPoint = crs.toGeographicCoordinateConverter().transform(inputPoint.clone());
+        double[] checkPoint = crs.fromGeographicCoordinateConverter().transform(expectedPoint.clone());
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+    }
+
+    @Test
+    public void testIGN88SMold() throws Exception {
+        CompoundCRS crs = new CompoundCRS(new Identifier("EPSG", "7400", "RGF93 + NGF IGN88SMold"),
+                new Geographic2DCRS(new Identifier("EPSG", "4807", "RGF93"), GeodeticDatum.WGS84SBSM),
+                new VerticalCRS(new Identifier("UNKNOWN", "UNKNOWN", "NGF IGN88SMold"), VerticalDatum.IGN88SMold, VerticalCRS.ALTITUDE_CS));
+        double[] inputPoint = new double[]{18.1, -63, 100};
+        double[] expectedPoint = new double[]{18.1 * PI / 180, -63 * PI / 180, 57.299};
+        double[] outputPoint = crs.toGeographicCoordinateConverter().transform(inputPoint.clone());
+        double[] checkPoint = crs.fromGeographicCoordinateConverter().transform(expectedPoint.clone());
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+    }
+
+    @Test
+    public void testIGN88GTBToldToNew() throws Exception {
+        CompoundCRS crs1 = new CompoundCRS(new Identifier("EPSG", "7400", "WGS84GUAD + NGF IGN88GTBTold"),
+                new Geographic2DCRS(new Identifier("EPSG", "4807", "WGS84GUAD"), GeodeticDatum.WGS84GUAD),
+                new VerticalCRS(new Identifier("UNKNOWN", "UNKNOWN", "NGF IGN88GTBTold"), VerticalDatum.IGN88GTBTold, VerticalCRS.ALTITUDE_CS));
+        CompoundCRS crs2 = new CompoundCRS(new Identifier("EPSG", "7400", "RGF93 + NGF IGN88GTBT"),
+                new Geographic2DCRS(new Identifier("EPSG", "4807", "RGF93"), GeodeticDatum.RGF93),
+                new VerticalCRS(new Identifier("UNKNOWN", "UNKNOWN", "NGF IGN88GTBT"), VerticalDatum.IGN88GTBT, VerticalCRS.ALTITUDE_CS));
+        double[] inputPoint = new double[]{16, -61.5, 100};
+        double[] expectedPoint = new double[]{16.00000066, -61.50000549, 99.427};
+        double[] outputPoint = transform(crs1, crs2, inputPoint);
+        double[] checkPoint = transform(crs2, crs1, expectedPoint);
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+    }
+
+    @Test
+    public void testIGN92LDoldToNew() throws Exception {
+        CompoundCRS crs1 = new CompoundCRS(new Identifier("EPSG", "7400", "WGS84GUAD + NGF IGN92LDold"),
+                new Geographic2DCRS(new Identifier("EPSG", "4807", "WGS84GUAD"), GeodeticDatum.WGS84GUAD),
+                new VerticalCRS(new Identifier("UNKNOWN", "UNKNOWN", "NGF IGN92LDold"), VerticalDatum.IGN92LDold, VerticalCRS.ALTITUDE_CS));
+        CompoundCRS crs2 = new CompoundCRS(new Identifier("EPSG", "7400", "RGF93 + NGF IGN92LD"),
+                new Geographic2DCRS(new Identifier("EPSG", "4807", "RGF93"), GeodeticDatum.RGF93),
+                new VerticalCRS(new Identifier("UNKNOWN", "UNKNOWN", "NGF IGN92LD"), VerticalDatum.IGN92LD, VerticalCRS.ALTITUDE_CS));
+        double[] inputPoint = new double[]{16.3, -61, 100};
+        double[] expectedPoint = new double[]{16.30000109, -61.00000556, 100.612};
+        double[] outputPoint = transform(crs1, crs2, inputPoint);
+        double[] checkPoint = transform(crs2, crs1, expectedPoint);
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+    }
+
+    @Test
+    public void testIGN88LSoldToNew() throws Exception {
+        CompoundCRS crs1 = new CompoundCRS(new Identifier("EPSG", "7400", "WGS84GUAD + NGF IGN88LSold"),
+                new Geographic2DCRS(new Identifier("EPSG", "4807", "WGS84GUAD"), GeodeticDatum.WGS84GUAD),
+                new VerticalCRS(new Identifier("UNKNOWN", "UNKNOWN", "NGF IGN88LSold"), VerticalDatum.IGN88LSold, VerticalCRS.ALTITUDE_CS));
+        CompoundCRS crs2 = new CompoundCRS(new Identifier("EPSG", "7400", "RGF93 + NGF IGN88LS"),
+                new Geographic2DCRS(new Identifier("EPSG", "4807", "RGF93"), GeodeticDatum.RGF93),
+                new VerticalCRS(new Identifier("UNKNOWN", "UNKNOWN", "NGF IGN88LS"), VerticalDatum.IGN88LS, VerticalCRS.ALTITUDE_CS));
+        double[] inputPoint = new double[]{15.9, -61.5, 100};
+        double[] expectedPoint = new double[]{15.90000062, -61.50000542, 99.552};
+        double[] outputPoint = transform(crs1, crs2, inputPoint);
+        double[] checkPoint = transform(crs2, crs1, expectedPoint);
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+    }
+
+    @Test
+    public void testIGN87MARToldToNew() throws Exception {
+        CompoundCRS crs1 = new CompoundCRS(new Identifier("EPSG", "7400", "WGS84MART + NGF IGN87MARTold"),
+                new Geographic2DCRS(new Identifier("EPSG", "4807", "WGS84MART"), GeodeticDatum.WGS84MART),
+                new VerticalCRS(new Identifier("UNKNOWN", "UNKNOWN", "NGF IGN87MARTold"), VerticalDatum.IGN87MARTold, VerticalCRS.ALTITUDE_CS));
+        CompoundCRS crs2 = new CompoundCRS(new Identifier("EPSG", "7400", "RGF93 + NGF IGN87MART"),
+                new Geographic2DCRS(new Identifier("EPSG", "4807", "RGF93"), GeodeticDatum.RGF93),
+                new VerticalCRS(new Identifier("UNKNOWN", "UNKNOWN", "NGF IGN87MART"), VerticalDatum.IGN87MART, VerticalCRS.ALTITUDE_CS));
+        double[] inputPoint = new double[]{14.5, -61, 100};
+        double[] expectedPoint = new double[]{14.49999981, -61.00000619, 100.017};
+        double[] outputPoint = transform(crs1, crs2, inputPoint);
+        double[] checkPoint = transform(crs2, crs1, expectedPoint);
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+    }
+
+    @Test
+    public void testIGN88MGoldToNew() throws Exception {
+        CompoundCRS crs1 = new CompoundCRS(new Identifier("EPSG", "7400", "WGS84GUAD + NGF IGN88MGold"),
+                new Geographic2DCRS(new Identifier("EPSG", "4807", "WGS84GUAD"), GeodeticDatum.WGS84GUAD),
+                new VerticalCRS(new Identifier("UNKNOWN", "UNKNOWN", "NGF IGN88MGold"), VerticalDatum.IGN88MGold, VerticalCRS.ALTITUDE_CS));
+        CompoundCRS crs2 = new CompoundCRS(new Identifier("EPSG", "7400", "RGF93 + NGF IGN88MG"),
+                new Geographic2DCRS(new Identifier("EPSG", "4807", "RGF93"), GeodeticDatum.RGF93),
+                new VerticalCRS(new Identifier("UNKNOWN", "UNKNOWN", "NGF IGN88MG"), VerticalDatum.IGN88MG, VerticalCRS.ALTITUDE_CS));
+        double[] inputPoint = new double[]{16, -61.2, 100};
+        double[] expectedPoint = new double[]{16.00000086, -61.20000540, 100.119};
+        double[] outputPoint = transform(crs1, crs2, inputPoint);
+        double[] checkPoint = transform(crs2, crs1, expectedPoint);
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+    }
+
+    @Test
+    public void testIGN88SBoldToNew() throws Exception {
+        CompoundCRS crs1 = new CompoundCRS(new Identifier("EPSG", "7400", "WGS84SBSM + NGF IGN88SBold"),
+                new Geographic2DCRS(new Identifier("EPSG", "4807", "WGS84SBSM"), GeodeticDatum.WGS84SBSM),
+                new VerticalCRS(new Identifier("UNKNOWN", "UNKNOWN", "NGF IGN88SBold"), VerticalDatum.IGN88SBold, VerticalCRS.ALTITUDE_CS));
+        CompoundCRS crs2 = new CompoundCRS(new Identifier("EPSG", "7400", "RGF93 + NGF IGN88SB"),
+                new Geographic2DCRS(new Identifier("EPSG", "4807", "RGF93"), GeodeticDatum.RGF93),
+                new VerticalCRS(new Identifier("UNKNOWN", "UNKNOWN", "NGF IGN88SB"), VerticalDatum.IGN88SB, VerticalCRS.ALTITUDE_CS));
+        double[] inputPoint = new double[]{17.9, -62.8, 100};
+        double[] expectedPoint = new double[]{17.90000142, -62.80000572, 100.114};
+        double[] outputPoint = transform(crs1, crs2, inputPoint);
+        double[] checkPoint = transform(crs2, crs1, expectedPoint);
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+    }
+
+    @Test
+    public void testIGN88SMoldToNew() throws Exception {
+        CompoundCRS crs1 = new CompoundCRS(new Identifier("EPSG", "7400", "WGS84SBSM + NGF IGN88SMold"),
+                new Geographic2DCRS(new Identifier("EPSG", "4807", "WGS84SBSM"), GeodeticDatum.WGS84SBSM),
+                new VerticalCRS(new Identifier("UNKNOWN", "UNKNOWN", "NGF IGN88SMold"), VerticalDatum.IGN88SMold, VerticalCRS.ALTITUDE_CS));
+        CompoundCRS crs2 = new CompoundCRS(new Identifier("EPSG", "7400", "RGF93 + NGF IGN88SM"),
+                new Geographic2DCRS(new Identifier("EPSG", "4807", "RGF93"), GeodeticDatum.RGF93),
+                new VerticalCRS(new Identifier("UNKNOWN", "UNKNOWN", "NGF IGN88SM"), VerticalDatum.IGN88SM, VerticalCRS.ALTITUDE_CS));
+        double[] inputPoint = new double[]{18.1, -63, 100};
+        double[] expectedPoint = new double[]{18.10000162, -63.00000537, 99.923};
+        double[] outputPoint = transform(crs1, crs2, inputPoint);
+        double[] checkPoint = transform(crs2, crs1, expectedPoint);
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
     }
 }
