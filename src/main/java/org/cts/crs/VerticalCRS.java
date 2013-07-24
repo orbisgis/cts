@@ -31,6 +31,8 @@
  */
 package org.cts.crs;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.cts.IdentifiableComponent;
 import org.cts.Identifier;
 import org.cts.cs.Axis;
@@ -41,6 +43,10 @@ import org.cts.units.Unit;
 
 import static org.cts.cs.Axis.ALTITUDE;
 import static org.cts.cs.Axis.HEIGHT;
+import org.cts.op.CoordinateOperation;
+import org.cts.op.CoordinateOperationSequence;
+import org.cts.op.OppositeCoordinate;
+import org.cts.op.UnitConversion;
 import static org.cts.units.Unit.METER;
 
 /**
@@ -140,6 +146,36 @@ public class VerticalCRS extends IdentifiableComponent implements
      */
     public boolean isValid(double[] coord) {
         return verticalDatum.getExtent().isInside(coord);
+    }
+
+    /**
+     * @see GeodeticCRS#toGeographicCoordinateConverter()
+     */
+    public CoordinateOperation toGeographicCoordinateConverter() {
+        List<CoordinateOperation> ops = new ArrayList<CoordinateOperation>();
+        // change the sign if the axis is oriented down
+        if (getCoordinateSystem().getAxis(0).getDirection() == Axis.Direction.DOWN) {
+            ops.add(new OppositeCoordinate(0));
+        }
+        // Convert from source unit to meters
+        ops.add(UnitConversion.createUnitConverter(getCoordinateSystem().getUnit(0), Unit.METER));
+        return new CoordinateOperationSequence(new Identifier(
+                CoordinateOperationSequence.class), ops);
+    }
+
+    /**
+     * @see GeodeticCRS#fromGeographicCoordinateConverter()
+     */
+    public CoordinateOperation fromGeographicCoordinateConverter() {
+        List<CoordinateOperation> ops = new ArrayList<CoordinateOperation>();
+        // Convert from meters to source unit
+        ops.add(UnitConversion.createUnitConverter(getCoordinateSystem().getUnit(0), Unit.METER));
+        // change the sign if the axis is oriented down
+        if (getCoordinateSystem().getAxis(0).getDirection() == Axis.Direction.DOWN) {
+            ops.add(new OppositeCoordinate(0));
+        }
+        return new CoordinateOperationSequence(new Identifier(
+                CoordinateOperationSequence.class), ops);
     }
 
     /**

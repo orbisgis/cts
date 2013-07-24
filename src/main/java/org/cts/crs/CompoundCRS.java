@@ -38,7 +38,6 @@ import org.cts.Identifier;
 import org.cts.op.NonInvertibleOperationException;
 import org.cts.units.Unit;
 import org.cts.cs.Axis;
-import static org.cts.cs.Axis.EASTING;
 import org.cts.cs.CoordinateSystem;
 import org.cts.datum.VerticalDatum;
 import org.cts.op.CoordinateOperationSequence;
@@ -46,6 +45,7 @@ import org.cts.op.CoordinateSwitch;
 import org.cts.op.Identity;
 import org.cts.op.LoadMemorizeCoordinate;
 import org.cts.op.MemorizeCoordinate;
+import org.cts.op.OppositeCoordinate;
 import org.cts.op.UnitConversion;
 import org.cts.op.transformation.Altitude2EllipsoidalHeight;
 
@@ -127,24 +127,33 @@ public class CompoundCRS extends GeodeticCRS {
     public CoordinateOperation toGeographicCoordinateConverter()
             throws NonInvertibleOperationException {
         List<CoordinateOperation> ops = new ArrayList<CoordinateOperation>();
+        for (int i = 0; i < 3; i++) {
+            if (getCoordinateSystem().getAxis(i).getDirection() == Axis.Direction.SOUTH
+                    || getCoordinateSystem().getAxis(i).getDirection() == Axis.Direction.WEST
+                    || getCoordinateSystem().getAxis(i).getDirection() == Axis.Direction.DOWN) {
+                ops.add(new OppositeCoordinate(i));
+            }
+        }
         if (horizontalCRS instanceof Geographic2DCRS) {
             // Convert from source unit to radians and meters.
-            if (getCoordinateSystem().getUnit(0) != Unit.RADIAN) {
+            if (getCoordinateSystem().getUnit(0) != Unit.RADIAN || getCoordinateSystem().getUnit(2) != Unit.METER) {
                 ops.add(UnitConversion.createUnitConverter(getCoordinateSystem().getUnit(0), Unit.RADIAN, getCoordinateSystem().getUnit(2),
-                        getCoordinateSystem().getUnit(2)));
+                        Unit.METER));
             }
-            // switch from LON/LAT to LAT/LON coordinate if necessary
-            if (getCoordinateSystem().getAxis(0) == Axis.LONGITUDE) {
+            // switch from LON/LAT to LAT/LON or northing/easting coordinate if necessary
+            if (getCoordinateSystem().getAxis(0).getDirection() == Axis.Direction.EAST
+                    || getCoordinateSystem().getAxis(0).getDirection() == Axis.Direction.WEST) {
                 ops.add(CoordinateSwitch.SWITCH_LAT_LON);
             }
         } else {
             // Convert units
-            if (getCoordinateSystem().getUnit(0) != Unit.METER) {
+            if (getCoordinateSystem().getUnit(0) != Unit.METER || getCoordinateSystem().getUnit(2) != Unit.METER) {
                 ops.add(UnitConversion.createUnitConverter(getCoordinateSystem().getUnit(0), Unit.METER, getCoordinateSystem().getUnit(2),
-                        getCoordinateSystem().getUnit(2)));
+                        Unit.METER));
             }
             // switch easting/northing coordinate if necessary
-            if (getCoordinateSystem().getAxis(0) != EASTING) {
+            if (getCoordinateSystem().getAxis(0).getDirection() == Axis.Direction.NORTH
+                    || getCoordinateSystem().getAxis(0).getDirection() == Axis.Direction.SOUTH) {
                 ops.add(CoordinateSwitch.SWITCH_LAT_LON);
             }
             // Apply the inverse projection
@@ -210,25 +219,34 @@ public class CompoundCRS extends GeodeticCRS {
         }
         if (horizontalCRS instanceof Geographic2DCRS) {
             // Convert from source unit to radians and meters.
-            if (getCoordinateSystem().getUnit(0) != Unit.RADIAN) {
+            if (getCoordinateSystem().getUnit(0) != Unit.RADIAN || getCoordinateSystem().getUnit(2) != Unit.METER) {
                 ops.add(UnitConversion.createUnitConverter(Unit.RADIAN, getCoordinateSystem().getUnit(0),
-                        getCoordinateSystem().getUnit(2), getCoordinateSystem().getUnit(2)));
+                        Unit.METER, getCoordinateSystem().getUnit(2)));
             }
             // switch from LON/LAT to LAT/LON coordinate if necessary
-            if (getCoordinateSystem().getAxis(0) == Axis.LONGITUDE) {
+            if (getCoordinateSystem().getAxis(0).getDirection() == Axis.Direction.EAST
+                    || getCoordinateSystem().getAxis(0).getDirection() == Axis.Direction.WEST) {
                 ops.add(CoordinateSwitch.SWITCH_LAT_LON);
             }
         } else {
             // Apply the inverse projection
             ops.add(horizontalCRS.getProjection());
             // Convert units
-            if (getCoordinateSystem().getUnit(0) != Unit.METER) {
+            if (getCoordinateSystem().getUnit(0) != Unit.METER || getCoordinateSystem().getUnit(2) != Unit.METER) {
                 ops.add(UnitConversion.createUnitConverter(Unit.METER, getCoordinateSystem().getUnit(0),
-                        getCoordinateSystem().getUnit(2), getCoordinateSystem().getUnit(2)));
+                        Unit.METER, getCoordinateSystem().getUnit(2)));
             }
             // switch easting/northing coordinate if necessary
-            if (getCoordinateSystem().getAxis(0) != EASTING) {
+            if (getCoordinateSystem().getAxis(0).getDirection() == Axis.Direction.NORTH
+                    || getCoordinateSystem().getAxis(0).getDirection() == Axis.Direction.SOUTH) {
                 ops.add(CoordinateSwitch.SWITCH_LAT_LON);
+            }
+        }
+        for (int i = 0; i < 3; i++) {
+            if (getCoordinateSystem().getAxis(i).getDirection() == Axis.Direction.SOUTH
+                    || getCoordinateSystem().getAxis(i).getDirection() == Axis.Direction.WEST
+                    || getCoordinateSystem().getAxis(i).getDirection() == Axis.Direction.DOWN) {
+                ops.add(new OppositeCoordinate(i));
             }
         }
         return new CoordinateOperationSequence(new Identifier(

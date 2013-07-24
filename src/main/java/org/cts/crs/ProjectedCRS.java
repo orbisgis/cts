@@ -49,6 +49,7 @@ import org.cts.units.Unit;
 
 import static org.cts.cs.Axis.EASTING;
 import static org.cts.cs.Axis.NORTHING;
+import org.cts.op.OppositeCoordinate;
 import static org.cts.units.Unit.METER;
 
 /**
@@ -150,6 +151,12 @@ public class ProjectedCRS extends GeodeticCRS {
             throws NonInvertibleOperationException {
 
         List<CoordinateOperation> ops = new ArrayList<CoordinateOperation>();
+        for (int i = 0; i < 2; i++) {
+            if (getCoordinateSystem().getAxis(i).getDirection() == Axis.Direction.SOUTH
+                    || getCoordinateSystem().getAxis(i).getDirection() == Axis.Direction.WEST) {
+                ops.add(new OppositeCoordinate(i));
+            }
+        }
         // Convert units
         if (getCoordinateSystem().getUnit(0) != Unit.METER) {
             ops.add(UnitConversion.createUnitConverter(getCoordinateSystem().getUnit(0), METER));
@@ -158,7 +165,8 @@ public class ProjectedCRS extends GeodeticCRS {
         // geographic3D coord
         ops.add(ChangeCoordinateDimension.TO3D);
         // switch easting/northing coordinate if necessary
-        if (getCoordinateSystem().getAxis(0) != EASTING) {
+        if (getCoordinateSystem().getAxis(0).getDirection() == Axis.Direction.NORTH
+                    || getCoordinateSystem().getAxis(0).getDirection() == Axis.Direction.SOUTH) {
             ops.add(CoordinateSwitch.SWITCH_LAT_LON);
         }
         // Apply the inverse projection
@@ -179,13 +187,20 @@ public class ProjectedCRS extends GeodeticCRS {
         // Projection
         ops.add(projection);
         // switch easting/northing coordinate if necessary
-        if (getCoordinateSystem().getAxis(0) != EASTING) {
+        if (getCoordinateSystem().getAxis(0).getDirection() == Axis.Direction.NORTH
+                    || getCoordinateSystem().getAxis(0).getDirection() == Axis.Direction.SOUTH) {
             ops.add(CoordinateSwitch.SWITCH_LAT_LON);
         }
         // Unit conversion
         if (getCoordinateSystem().getUnit(0) != Unit.METER) {
             ops.add(UnitConversion.createUnitConverter(Unit.METER,
                     getCoordinateSystem().getUnit(0)));
+        }
+        for (int i = 0; i < 2; i++) {
+            if (getCoordinateSystem().getAxis(i).getDirection() == Axis.Direction.SOUTH
+                    || getCoordinateSystem().getAxis(i).getDirection() == Axis.Direction.WEST) {
+                ops.add(new OppositeCoordinate(i));
+            }
         }
         return new CoordinateOperationSequence(new Identifier(
                 CoordinateOperationSequence.class), ops);
