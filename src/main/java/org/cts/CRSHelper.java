@@ -150,11 +150,29 @@ public class CRSHelper {
                     unit = new Unit(Quantity.LENGTH, Double.parseDouble(sunitval),
                             new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, Identifier.UNKNOWN));
                 }
+                String saxis = parameters.remove(PrjKeyParameters.VERTAXIS);
+                String saxistype = parameters.remove(PrjKeyParameters.VERTAXISTYPE);
                 CoordinateSystem cs;
                 if (verticalDatum.getType().equals(VerticalDatum.Type.ELLIPSOIDAL)) {
-                    cs = new CoordinateSystem(new Axis[]{Axis.HEIGHT}, new Unit[]{unit});
+                    Axis axis = Axis.HEIGHT;
+                    if (saxistype != null && saxis != null) {
+                        Axis.Direction axistype = Axis.getDirection(saxistype);
+                        axis = Axis.getAxis(axistype, saxis);
+                        if (axis == null) {
+                            axis = new Axis(saxis, axistype);
+                        }
+                    }
+                    cs = new CoordinateSystem(new Axis[]{axis}, new Unit[]{unit});
                 } else {
-                    cs = new CoordinateSystem(new Axis[]{Axis.ALTITUDE}, new Unit[]{unit});
+                    Axis axis = Axis.ALTITUDE;
+                    if (saxistype != null && saxis != null) {
+                        Axis.Direction axistype = Axis.getDirection(saxistype);
+                        axis = Axis.getAxis(axistype, saxis);
+                        if (axis == null) {
+                            axis = new Axis(saxis, axistype);
+                        }
+                    }
+                    cs = new CoordinateSystem(new Axis[]{axis}, new Unit[]{unit});
                 }
                 return new VerticalCRS(identifier, verticalDatum, cs);
             }
@@ -165,7 +183,11 @@ public class CRSHelper {
         String sproj = parameters.remove(ProjKeyParameters.proj);
         String sunit = parameters.remove(ProjKeyParameters.units);
         String stometer = parameters.remove(ProjKeyParameters.to_meter);
-        if (null == sproj) {            
+        String saxis1 = parameters.remove(PrjKeyParameters.AXIS1);
+        String saxistype1 = parameters.remove(PrjKeyParameters.AXIS1TYPE);
+        String saxis2 = parameters.remove(PrjKeyParameters.AXIS2);
+        String saxistype2 = parameters.remove(PrjKeyParameters.AXIS2TYPE);
+        if (null == sproj) {
             throw new CRSException("No projection defined for this Coordinate Reference System");
         }
 
@@ -183,14 +205,30 @@ public class CRSHelper {
 
             crs = new GeocentricCRS(identifier, geodeticDatum, cs);
         } else if (sproj.equals(ProjValueParameters.LONGLAT)) {
+            Axis axis1 = Axis.LONGITUDE;
+            if (saxis1 != null && saxistype1 != null) {
+                Axis.Direction axistype1 = Axis.getDirection(saxistype1);
+                axis1 = Axis.getAxis(axistype1, saxis1);
+                if (axis1 == null) {
+                    axis1 = new Axis(saxis1, axistype1);
+                }
+            }
+            Axis axis2 = Axis.LATITUDE;
+            if (saxis2 != null && saxistype2 != null) {
+                Axis.Direction axistype2 = Axis.getDirection(saxistype2);
+                axis2 = Axis.getAxis(axistype2, saxis2);
+                if (axis2 == null) {
+                    axis2 = new Axis(saxis2, axistype2);
+                }
+            }
             if (parameters.get(PrjKeyParameters.VERTCS) == null) {
                 CoordinateSystem cs = new CoordinateSystem(new Axis[]{
-                    Axis.LONGITUDE, Axis.LATITUDE, Axis.HEIGHT}, new Unit[]{
+                    axis1, axis2, Axis.HEIGHT}, new Unit[]{
                     Unit.DEGREE, Unit.DEGREE, Unit.METER});
                 crs = new Geographic3DCRS(identifier, geodeticDatum, cs);
             } else {
                 CoordinateSystem cs = new CoordinateSystem(new Axis[]{
-                    Axis.LONGITUDE, Axis.LATITUDE}, new Unit[]{
+                    axis1, axis2}, new Unit[]{
                     Unit.DEGREE, Unit.DEGREE});
                 crs = new Geographic2DCRS(identifier, geodeticDatum, cs);
             }
@@ -205,7 +243,26 @@ public class CRSHelper {
                 unit = new Unit(Quantity.LENGTH, Double.parseDouble(stometer),
                         new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, Identifier.UNKNOWN));
                 }
-                crs = new ProjectedCRS(identifier, geodeticDatum, proj, unit);
+                Axis axis1 = Axis.EASTING;
+                if (saxis1 != null && saxistype1 != null) {
+                    Axis.Direction axistype1 = Axis.getDirection(saxistype1);
+                    axis1 = Axis.getAxis(axistype1, saxis1);
+                    if (axis1 == null) {
+                        axis1 = new Axis(saxis1, axistype1);
+                    }
+                }
+                Axis axis2 = Axis.NORTHING;
+                if (saxis2 != null && saxistype2 != null) {
+                    Axis.Direction axistype2 = Axis.getDirection(saxistype2);
+                    axis2 = Axis.getAxis(axistype2, saxis2);
+                    if (axis2 == null) {
+                        axis2 = new Axis(saxis2, axistype2);
+                    }
+                }
+                CoordinateSystem cs = new CoordinateSystem(new Axis[]{
+                    axis1, axis2}, new Unit[]{
+                        unit, unit});
+                crs = new ProjectedCRS(identifier, geodeticDatum, cs, proj);
             } else {
                 throw new CRSException("Unknown projection : " + sproj);                
             }

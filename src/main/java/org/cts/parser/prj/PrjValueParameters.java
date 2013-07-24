@@ -71,6 +71,11 @@ public class PrjValueParameters {
      * in CTS.
      */
     public static final Map<String, String> UNITNAMES = new HashMap<String, String>();
+    /**
+     * A map linking the name of axes used in PRJ file to the short name used
+     * in CTS.
+     */
+    public static final Map<String, String> AXISNAMES = new HashMap<String, String>();
 
     static {
         PARAMNAMES.put("centralmeridian", "lon_0");
@@ -272,5 +277,18 @@ public class PrjValueParameters {
         UNITNAMES.put("foot", "ft");
         UNITNAMES.put("foot_us", "us-ft");
         UNITNAMES.put("yard", "yd");
+        AXISNAMES.put("geocentricx", "x");
+        AXISNAMES.put("geocentricy", "y");
+        AXISNAMES.put("geocentricz", "z");
+        AXISNAMES.put("x", "x");
+        AXISNAMES.put("y", "y");
+        AXISNAMES.put("z", "z");
+        AXISNAMES.put("easting", "easting");
+        AXISNAMES.put("northing", "northing");
+        AXISNAMES.put("latitude", "latitude");
+        AXISNAMES.put("longitude", "longitude");
+        AXISNAMES.put("geodeticlatitude", "latitude");
+        AXISNAMES.put("geodeticlongitude", "longitude");
+        AXISNAMES.put("gravityrelatedheight", "altitude");
     }
 }

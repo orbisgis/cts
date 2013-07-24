@@ -61,7 +61,7 @@ public final class PrjMatcher {
         parseString(ll.get(0), PrjKeyParameters.PROJCS);
 
         PrjNodeMatcher[] matchers;
-        matchers = new PrjNodeMatcher[5];
+        matchers = new PrjNodeMatcher[6];
         matchers[0] = new PrjNodeMatcher() {
             @Override
             public String getName() {
@@ -131,6 +131,17 @@ public final class PrjMatcher {
                 }
             };
         }
+        matchers[5] = new PrjNodeMatcher() {
+            @Override
+            public String getName() {
+                return PrjKeyParameters.AXIS;
+            }
+
+            @Override
+            public void run(List<PrjElement> list) {
+                parseAxis2D(list);
+            }
+        };
 
         for (int i = 1; i < ll.size(); i++) {
             matchAnyNode(ll.get(i), matchers);
@@ -300,7 +311,7 @@ public final class PrjMatcher {
         parseString(ll.get(0), PrjKeyParameters.GEOGCS);
 
         PrjNodeMatcher[] matchers;
-        matchers = new PrjNodeMatcher[4];
+        matchers = new PrjNodeMatcher[5];
         matchers[0] = new PrjNodeMatcher() {
             @Override
             public String getName() {
@@ -359,6 +370,17 @@ public final class PrjMatcher {
                 }
             };
         }
+        matchers[4] = new PrjNodeMatcher() {
+            @Override
+            public String getName() {
+                return PrjKeyParameters.AXIS;
+            }
+
+            @Override
+            public void run(List<PrjElement> list) {
+                parseAxis2D(list);
+            }
+        };
 
         for (int i = 1; i < ll.size(); i++) {
             matchAnyNode(ll.get(i), matchers);
@@ -369,7 +391,7 @@ public final class PrjMatcher {
         parseString(ll.get(0), PrjKeyParameters.VERTCS);
 
         PrjNodeMatcher[] matchers;
-        matchers = new PrjNodeMatcher[3];
+        matchers = new PrjNodeMatcher[4];
         matchers[0] = new PrjNodeMatcher() {
             @Override
             public String getName() {
@@ -417,6 +439,17 @@ public final class PrjMatcher {
                 }
             };
         }
+        matchers[3] = new PrjNodeMatcher() {
+            @Override
+            public String getName() {
+                return PrjKeyParameters.AXIS;
+            }
+
+            @Override
+            public void run(List<PrjElement> list) {
+                parseVertAxis(list);
+            }
+        };
 
         for (int i = 1; i < ll.size(); i++) {
             matchAnyNode(ll.get(i), matchers);
@@ -608,6 +641,42 @@ public final class PrjMatcher {
         String parm = PrjValueParameters.PARAMNAMES.get(param.toLowerCase());
         if (parm != null) {
             parseNumber(ll.get(1), parm);
+        }
+    }
+
+    private void parseVertAxis(List<PrjElement> ll) {
+        String axisName = getString(ll.get(0));
+        String axis = PrjValueParameters.AXISNAMES.get(axisName.replaceAll("[^a-zA-Z0-9]", "").toLowerCase());
+        if (axis != null) {
+            params.put(PrjKeyParameters.VERTAXIS, axis);
+        } else {
+            params.put(PrjKeyParameters.VERTAXIS, axisName);
+        }
+        parseString(ll.get(1), PrjKeyParameters.VERTAXISTYPE);
+    }
+    private boolean secondAxis = false;
+
+    private void parseAxis2D(List<PrjElement> ll) {
+        if (secondAxis) {
+            String axisName = getString(ll.get(0));
+            String axis = PrjValueParameters.AXISNAMES.get(axisName.replaceAll("[^a-zA-Z0-9]", "").toLowerCase());
+            if (axis != null) {
+                params.put(PrjKeyParameters.AXIS2, axis);
+            } else {
+                params.put(PrjKeyParameters.AXIS2, axisName);
+            }
+            parseString(ll.get(1), PrjKeyParameters.AXIS2TYPE);
+            secondAxis = false;
+        } else {
+            String axisName = getString(ll.get(0));
+            String axis = PrjValueParameters.AXISNAMES.get(axisName.replaceAll("[^a-zA-Z0-9]", "").toLowerCase());
+            if (axis != null) {
+                params.put(PrjKeyParameters.AXIS1, axis);
+            } else {
+                params.put(PrjKeyParameters.AXIS1, axisName);
+            }
+            parseString(ll.get(1), PrjKeyParameters.AXIS1TYPE);
+            secondAxis = true;
         }
     }
 

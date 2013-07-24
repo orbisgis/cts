@@ -49,6 +49,7 @@ public class PrjKeyParameters {
     public static final String PROJCS = "projcs";
     public static final String PRIMEM = "primem";
     public static final String SPHEROID = "spheroid";
+    public static final String AXIS = "axis";
     public static final String COMPDCS = "compd_cs";
     public static final String VERTCS = "vert_cs";
     //Internal key parameters used by the parser
@@ -84,4 +85,10 @@ public class PrjKeyParameters {
     public static final String GEOGUNITAUTHORITY = "geogunitauthority";
     public static final String VERTUNITCODE = "vertunitcode";
     public static final String VERTUNITAUTHORITY = "vertunitauthority";
+    public static final String AXIS1 = "axis1";
+    public static final String AXIS1TYPE = "axis1type";
+    public static final String AXIS2 = "axis2";
+    public static final String AXIS2TYPE = "axis2type";
+    public static final String VERTAXIS = "vertaxis";
+    public static final String VERTAXISTYPE = "vertaxistype";
 }
