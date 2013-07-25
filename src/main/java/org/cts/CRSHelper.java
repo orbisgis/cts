@@ -44,7 +44,6 @@ import org.cts.crs.CoordinateReferenceSystem;
 import org.cts.crs.GeocentricCRS;
 import org.cts.crs.GeodeticCRS;
 import org.cts.crs.Geographic2DCRS;
-import org.cts.crs.Geographic3DCRS;
 import org.cts.crs.ProjectedCRS;
 import org.cts.crs.VerticalCRS;
 import org.cts.cs.Axis;
@@ -98,37 +97,10 @@ public class CRSHelper {
 
         if ((parameters.get(PrjKeyParameters.PROJCS) != null || parameters.get(PrjKeyParameters.GEOGCS) != null)
                 && parameters.get(PrjKeyParameters.VERTCS) != null) {
-            GeodeticCRS horizontalCRS;
-            VerticalCRS verticalCRS;
-            String name = parameters.remove(PrjKeyParameters.PROJCS);
-            String refname = parameters.remove(PrjKeyParameters.PROJREFNAME);
-            if (name != null) {
-                if (refname != null) {
-                    parameters.remove(PrjKeyParameters.GEOGCS);
-                    parameters.remove(PrjKeyParameters.GEOGREFNAME);
-                    String[] authorityNameWithKey = refname.split(":");
-                    horizontalCRS = (GeodeticCRS) CRSHelper.createCoordinateReferenceSystem(new Identifier(authorityNameWithKey[0], authorityNameWithKey[1], name), parameters);
-                } else {
-                    horizontalCRS = (GeodeticCRS) CRSHelper.createCoordinateReferenceSystem(new Identifier(name, name, name), parameters);
-                }
-            } else {
-                name = parameters.remove(PrjKeyParameters.GEOGCS);
-                refname = parameters.remove(PrjKeyParameters.GEOGREFNAME);
-                if (refname != null) {
-                    String[] authorityNameWithKey = refname.split(":");
-                    horizontalCRS = (GeodeticCRS) CRSHelper.createCoordinateReferenceSystem(new Identifier(authorityNameWithKey[0], authorityNameWithKey[1], name), parameters);
-                } else {
-                    horizontalCRS = (GeodeticCRS) CRSHelper.createCoordinateReferenceSystem(new Identifier(name, name, name), parameters);
-                }
-            }
-            name = parameters.remove(PrjKeyParameters.VERTCS);
-            refname = parameters.remove(PrjKeyParameters.VERTREFNAME);
-            if (refname != null) {
-                String[] authorityNameWithKey = refname.split(":");
-                verticalCRS = (VerticalCRS) CRSHelper.createCoordinateReferenceSystem(new Identifier(authorityNameWithKey[0], authorityNameWithKey[1], name), parameters);
-            } else {
-                verticalCRS = (VerticalCRS) CRSHelper.createCoordinateReferenceSystem(new Identifier(name, name, name), parameters);
-            }
+            Identifier id = getIdentifier(parameters);
+            GeodeticCRS horizontalCRS = (GeodeticCRS) CRSHelper.createCoordinateReferenceSystem(id, parameters);
+            id = getIdentifier(parameters);
+            VerticalCRS verticalCRS = (VerticalCRS) CRSHelper.createCoordinateReferenceSystem(id, parameters);
             return new CompoundCRS(identifier, horizontalCRS, verticalCRS);
         }
 
@@ -141,31 +113,7 @@ public class CRSHelper {
                 throw new CRSException("No datum definition. Cannot create the "
                         + "CoordinateReferenceSystem");
             } else {
-                Unit unit = getUnit(Quantity.LENGTH, parameters, true);
-                String saxis = parameters.remove(PrjKeyParameters.VERTAXIS);
-                String saxistype = parameters.remove(PrjKeyParameters.VERTAXISTYPE);
-                CoordinateSystem cs;
-                if (verticalDatum.getType().equals(VerticalDatum.Type.ELLIPSOIDAL)) {
-                    Axis axis = Axis.HEIGHT;
-                    if (saxistype != null && saxis != null) {
-                        Axis.Direction axistype = Axis.getDirection(saxistype);
-                        axis = Axis.getAxis(axistype, saxis);
-                        if (axis == null) {
-                            axis = new Axis(saxis, axistype);
-                        }
-                    }
-                    cs = new CoordinateSystem(new Axis[]{axis}, new Unit[]{unit});
-                } else {
-                    Axis axis = Axis.ALTITUDE;
-                    if (saxistype != null && saxis != null) {
-                        Axis.Direction axistype = Axis.getDirection(saxistype);
-                        axis = Axis.getAxis(axistype, saxis);
-                        if (axis == null) {
-                            axis = new Axis(saxis, axistype);
-                        }
-                    }
-                    cs = new CoordinateSystem(new Axis[]{axis}, new Unit[]{unit});
-                }
+                CoordinateSystem cs = getCoordinateSystem(parameters, 1);
                 return new VerticalCRS(identifier, verticalDatum, cs);
             }
         }
@@ -173,71 +121,19 @@ public class CRSHelper {
         GeodeticCRS crs;
 
         String sproj = parameters.remove(ProjKeyParameters.proj);
-        String saxis1 = parameters.remove(PrjKeyParameters.AXIS1);
-        String saxistype1 = parameters.remove(PrjKeyParameters.AXIS1TYPE);
-        String saxis2 = parameters.remove(PrjKeyParameters.AXIS2);
-        String saxistype2 = parameters.remove(PrjKeyParameters.AXIS2TYPE);
         if (null == sproj) {
             throw new CRSException("No projection defined for this Coordinate Reference System");
         }
 
         //It's not a projected CRS
         if (sproj.equals(ProjValueParameters.GEOCENT)) {
-            Unit unit = getUnit(Quantity.LENGTH, parameters, false);
-            CoordinateSystem cs = new CoordinateSystem(new Axis[]{Axis.X,
-                Axis.Y, Axis.Z}, new Unit[]{unit, unit, unit});
-
+            CoordinateSystem cs = getCoordinateSystem(parameters, 2);
             crs = new GeocentricCRS(identifier, geodeticDatum, cs);
         } else if (sproj.equals(ProjValueParameters.LONGLAT)) {
-            Unit unit = getUnit(Quantity.ANGLE, parameters, false);
-            Axis axis1 = Axis.LONGITUDE;
-            if (saxis1 != null && saxistype1 != null) {
-                Axis.Direction axistype1 = Axis.getDirection(saxistype1);
-                axis1 = Axis.getAxis(axistype1, saxis1);
-                if (axis1 == null) {
-                    axis1 = new Axis(saxis1, axistype1);
-                }
-            }
-            Axis axis2 = Axis.LATITUDE;
-            if (saxis2 != null && saxistype2 != null) {
-                Axis.Direction axistype2 = Axis.getDirection(saxistype2);
-                axis2 = Axis.getAxis(axistype2, saxis2);
-                if (axis2 == null) {
-                    axis2 = new Axis(saxis2, axistype2);
-                }
-            }
-            if (parameters.get(PrjKeyParameters.VERTCS) == null) {
-                CoordinateSystem cs = new CoordinateSystem(new Axis[]{
-                    axis1, axis2, Axis.HEIGHT}, new Unit[]{
-                    unit, unit, Unit.METER});
-                crs = new Geographic3DCRS(identifier, geodeticDatum, cs);
-            } else {
-                CoordinateSystem cs = new CoordinateSystem(new Axis[]{
-                    axis1, axis2}, new Unit[]{
-                        unit, unit});
-                crs = new Geographic2DCRS(identifier, geodeticDatum, cs);
-            }
+            CoordinateSystem cs = getCoordinateSystem(parameters, 3);
+            crs = new Geographic2DCRS(identifier, geodeticDatum, cs);
         } else {
-            Unit unit = getUnit(Quantity.LENGTH, parameters, false);
-            Axis axis1 = Axis.EASTING;
-            if (saxis1 != null && saxistype1 != null) {
-                Axis.Direction axistype1 = Axis.getDirection(saxistype1);
-                axis1 = Axis.getAxis(axistype1, saxis1);
-                if (axis1 == null) {
-                    axis1 = new Axis(saxis1, axistype1);
-                }
-            }
-            Axis axis2 = Axis.NORTHING;
-            if (saxis2 != null && saxistype2 != null) {
-                Axis.Direction axistype2 = Axis.getDirection(saxistype2);
-                axis2 = Axis.getAxis(axistype2, saxis2);
-                if (axis2 == null) {
-                    axis2 = new Axis(saxis2, axistype2);
-                }
-            }
-            CoordinateSystem cs = new CoordinateSystem(new Axis[]{
-                axis1, axis2}, new Unit[]{
-                unit, unit});
+            CoordinateSystem cs = getCoordinateSystem(parameters, 4);
             Projection proj = getProjection(sproj, geodeticDatum.getEllipsoid(),
                     parameters);
             if (null != proj) {
@@ -250,7 +146,175 @@ public class CRSHelper {
         setNadgrids(crs, parameters);
         return crs;
     }
-    
+
+    /**
+     * Returns the {@link org.cts.Identifier} identifier of one of the CRS part
+     * of CoumpoundCRS.
+     *
+     * @param param the map of parameters defining the properties of a CRS
+     */
+    private static Identifier getIdentifier(Map<String, String> param) {
+        Identifier id;
+        String name = param.remove(PrjKeyParameters.PROJCS);
+        String refname = param.remove(PrjKeyParameters.PROJREFNAME);
+        if (name != null) {
+            param.remove(PrjKeyParameters.GEOGCS);
+            param.remove(PrjKeyParameters.GEOGREFNAME);
+        } else {
+            name = param.remove(PrjKeyParameters.GEOGCS);
+            refname = param.remove(PrjKeyParameters.GEOGREFNAME);
+        }
+        if (name == null) {
+            name = param.remove(PrjKeyParameters.VERTCS);
+            refname = param.remove(PrjKeyParameters.VERTREFNAME);
+        }
+        if (refname != null) {
+            String[] authorityNameWithKey = refname.split(":");
+            id = new Identifier(authorityNameWithKey[0], authorityNameWithKey[1], name);
+        } else {
+            id = new Identifier(name, name, name);
+        }
+        return id;
+    }
+
+    /**
+     * Returns a {@link org.cts.cs.CoordinateSystem} from parameters.
+     *
+     * @param param the map of parameters defining the properties of a CRS
+     * @param crsType 1 = VerticalCRS, 2 = GeocentricCRS, 3 = Geographic2DCRS, 4
+     * = ProjectedCRS
+     */
+    private static CoordinateSystem getCoordinateSystem(Map<String, String> param, int crsType) throws CRSException {
+        Unit[] units;
+        Axis[] axes;
+        Quantity quant = Quantity.LENGTH;
+        boolean isVert = false;
+        int dim = 0;
+        switch (crsType) {
+            case 1:
+                isVert = true;
+                dim = 1;
+                break;
+            case 2:
+                dim = 3;
+                break;
+            case 3:
+                dim = 2;
+                quant = Quantity.ANGLE;
+                break;
+            case 4:
+                dim = 2;
+                break;
+        }
+        units = new Unit[dim];
+        axes = new Axis[dim];
+        Unit unit = getUnit(quant, param, isVert);
+        for (int i = 0; i < dim; i++) {
+            units[i] = unit;
+            axes[i] = getAxis(param, crsType, i);
+        }
+        return new CoordinateSystem(axes, units);
+    }
+
+    /**
+     * Returns a {@link org.cts.cs.Axis} from its name or from its other
+     * parameters. By default, it returns an {@link org.cts.cs.Axis} that
+     * corresponds to the given CRS type and index.
+     *
+     * @param param the map of parameters defining the properties of a CRS
+     * @param crsType 1 = VerticalCRS, 2 = GeocentricCRS, 3 = Geographic2DCRS, 4
+     * = ProjectedCRS
+     * @param index the index of the axis to defined (start with 0)
+     */
+    private static Axis getAxis(Map<String, String> param, int crsType, int index) throws CRSException {
+        // crsType = 1 pour vertCRS ; 2 pour GEOCCRS ; 3 pour GEOGCRS ; 4 pour PROJ CRS.
+        Axis axis;
+        Axis defaultAxis = null;
+        String saxis = null;
+        String saxistype = null;
+        switch (crsType) {
+            case 1:
+                saxis = param.remove(PrjKeyParameters.VERTAXIS);
+                saxistype = param.remove(PrjKeyParameters.VERTAXISTYPE);
+                defaultAxis = Axis.HEIGHT;
+                break;
+            case 2:
+                switch (index) {
+                    case 0:
+                        saxis = param.remove(PrjKeyParameters.AXIS1);
+                        saxistype = param.remove(PrjKeyParameters.AXIS1TYPE);
+                        defaultAxis = Axis.X;
+                        break;
+                    case 1:
+                        saxis = param.remove(PrjKeyParameters.AXIS2);
+                        saxistype = param.remove(PrjKeyParameters.AXIS2TYPE);
+                        defaultAxis = Axis.Y;
+                        break;
+                    case 2:
+                        saxis = param.remove(PrjKeyParameters.AXIS3);
+                        saxistype = param.remove(PrjKeyParameters.AXIS3TYPE);
+                        defaultAxis = Axis.Z;
+                        break;
+                    default:
+                        throw new CRSException("Wrong argument index: " + index + ". Parameter shall be between 1 and 3.");
+                }
+                break;
+            case 3:
+                switch (index) {
+                    case 0:
+                        saxis = param.remove(PrjKeyParameters.AXIS1);
+                        saxistype = param.remove(PrjKeyParameters.AXIS1TYPE);
+                        defaultAxis = Axis.LONGITUDE;
+                        break;
+                    case 1:
+                        saxis = param.remove(PrjKeyParameters.AXIS2);
+                        saxistype = param.remove(PrjKeyParameters.AXIS2TYPE);
+                        defaultAxis = Axis.LATITUDE;
+                        break;
+                    default:
+                        throw new CRSException("Wrong argument index: " + index + ". Parameter shall be 1 or 2.");
+                }
+                break;
+            case 4:
+                switch (index) {
+                    case 0:
+                        saxis = param.remove(PrjKeyParameters.AXIS1);
+                        saxistype = param.remove(PrjKeyParameters.AXIS1TYPE);
+                        defaultAxis = Axis.EASTING;
+                        break;
+                    case 1:
+                        saxis = param.remove(PrjKeyParameters.AXIS2);
+                        saxistype = param.remove(PrjKeyParameters.AXIS2TYPE);
+                        defaultAxis = Axis.NORTHING;
+                        break;
+                    default:
+                        throw new CRSException("Wrong argument index: " + index + ". Parameter shall be 1 or 2.");
+                }
+                break;
+            default:
+                throw new CRSException("Wrong argument crsType: " + crsType + ". Parameter shall be between 1 and 4.");
+        }
+        Axis.Direction axistype = Axis.getDirection(saxistype);
+        axis = Axis.getAxis(axistype, saxis);
+        if (axis == null && saxis != null && axistype != null) {
+            axis = new Axis(saxis, axistype);
+        } else {
+            axis = defaultAxis;
+        }
+        return axis;
+    }
+
+    /**
+     * Returns a {@link org.cts.units.Unit} from its name or from its other
+     * parameters. By default, it returns the base unit of the {@link Quantity}
+     * in parameter or DEGREE, if the {@link Quantity} is ANGLE..
+     *
+     * @param quant the quanity of the desired unit (ANGLE for a geographic CRS,
+     * else LENGTH)
+     * @param param the map of parameters defining the properties of a CRS
+     * @param isVertical true if the returned unit shall be used for a
+     * VerticalCRS
+     */
     private static Unit getUnit(Quantity quant, Map<String, String> param, boolean isVertical) {
         String sunit;
         String sunitval;
@@ -388,6 +452,15 @@ public class CRSHelper {
         return gd;
     }
 
+    /**
+     * Returns a {@link VerticalDatum} from a map of parameters. Try first to
+     * obtain the {@link VerticalDatum} from its name using {@code vertdatum}
+     * keyword. Then if {@code param} does not contain {@code vertdatum} keyword
+     * or if the name is not recognized, it tries to get the datum from its
+     * identifier. Last, it defines a {@link VerticalDatum} from its type.
+     *
+     * @param param the map of parameters defining the properties of a CRS
+     */
     private static VerticalDatum getVerticalDatum(Map<String, String> param) {
         String datumName = param.remove(PrjKeyParameters.VERTDATUM);
         VerticalDatum vd;

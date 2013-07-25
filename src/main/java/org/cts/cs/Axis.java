@@ -196,20 +196,22 @@ public class Axis {
      */
     public static Direction getDirection(String dir) {
         Direction direction = null;
-        if (dir.equals("EAST")) {
-            direction = Direction.EAST;
-        } else if (dir.equals("NORTH")) {
-            direction = Direction.NORTH;
-        } else if (dir.equals("WEST")) {
-            direction = Direction.WEST;
-        } else if (dir.equals("SOUTH")) {
-            direction = Direction.SOUTH;
-        } else if (dir.equals("UP")) {
-            direction = Direction.UP;
-        } else if (dir.equals("DOWN")) {
-            direction = Direction.DOWN;
-        } else if (dir.equals("OTHER")) {
-            direction = Direction.OTHER;
+        if (dir != null) {
+            if (dir.equals("EAST")) {
+                direction = Direction.EAST;
+            } else if (dir.equals("NORTH")) {
+                direction = Direction.NORTH;
+            } else if (dir.equals("WEST")) {
+                direction = Direction.WEST;
+            } else if (dir.equals("SOUTH")) {
+                direction = Direction.SOUTH;
+            } else if (dir.equals("UP")) {
+                direction = Direction.UP;
+            } else if (dir.equals("DOWN")) {
+                direction = Direction.DOWN;
+            } else if (dir.equals("OTHER")) {
+                direction = Direction.OTHER;
+            }
         }
         return direction;
     }
