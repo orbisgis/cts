@@ -240,7 +240,7 @@ public final class PrjWriter {
 
     /**
      * Converts the input value from radian to degree.
-     * 
+     *
      * @param alpha the value (in radians) to convert
      */
     private static double fromRadianToDegree(double alpha) {
@@ -256,7 +256,7 @@ public final class PrjWriter {
 
     /**
      * Returns the WKT in parameter into a Human-Readable OGC WKT form.
-     * 
+     *
      * @param wkt the OGC WKT String to transform.
      */
     public static String formatWKT(String wkt) {
@@ -279,43 +279,58 @@ public final class PrjWriter {
                 index = end.indexOf("[");
                 end = end.substring(ind + 1);
                 if (dontAddAlinea) {
-                    w.append("\n").append(alinea(n)).append(begin);
+                    w.append("\n").append(indent(n)).append(begin);
                 } else if (ind < index || index == -1) {
                     w.append(begin);
                 } else {
                     n++;
-                    w.append("\n").append(alinea(n)).append(begin);
+                    w.append("\n").append(indent(n)).append(begin);
                 }
                 dontAddAlinea = begin.substring(begin.length() - 2).equals("],");
                 ind = end.indexOf(",");
             }
-            n = checkAlinea(end, n);
+            n = checkIndent(end, n);
             w.append(end);
             if (i != wktexp.length - 1) {
                 n--;
-                w.append("]],\n").append(alinea(n));
+                w.append("]],\n").append(indent(n));
             }
         }
         return w.toString();
     }
 
-    private static String alinea(int n) {
+    /**
+     * Return a String constituted by {@code n} indent. One indent = four space.
+     *
+     * @param n the number of indent wanted
+     */
+    private static String indent(int n) {
         StringBuilder w = new StringBuilder();
         for (int i = 0; i < n; i++) {
             w = w.append("    ");
         }
         return w.toString();
     }
-    
-    private static int checkAlinea(String end, int n) {
+
+    /**
+     * Decrese the number of required indents, depending on the number of node
+     * closed at the end of line.
+     *
+     * @param end the end of a node
+     * @param n the current number of indent
+     */
+    private static int checkIndent(String end, int n) {
         int k = end.length() - 1;
-        while (end.substring(k,k+1).equals("]")) {
+        while (end.substring(k, k + 1).equals("]")) {
             n--;
             k--;
         }
         return n;
     }
 
+    /**
+     * Create a new PrjWriter.
+     */
     private PrjWriter() {
     }
 }

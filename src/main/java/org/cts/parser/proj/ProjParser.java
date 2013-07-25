@@ -48,12 +48,29 @@ import org.cts.registry.Registry;
  */
 public class ProjParser {
 
+    /**
+     * The registry parse by this parser.
+     */
     private final Registry registry;
 
+    /**
+     * Create a new ProjParser for the given registry.
+     *
+     * @param registry the registry to parse
+     */
     public ProjParser(Registry registry) {
         this.registry = registry;
     }
 
+    /**
+     * Read all parameters from the registry
+     *
+     * @param crsCode the code corresponding to the information that must be
+     * extracted from the registry
+     * @param regex the pattern used to split the line that describes the
+     * coordinate system
+     * @throws IOException
+     */
     public Map<String, String> readParameters(String crsCode, Pattern regexPattern)
             throws IOException {
         InputStream inStr = Registry.class.getResourceAsStream(registry.getRegistryName());
@@ -75,10 +92,10 @@ public class ProjParser {
      * Read all parameters from the registry
      *
      * @param br
-     * @param nameOfCRS
+     * @param nameOfCRS the code corresponding to the information that must be
+     * extracted from the registry
      * @param regex the pattern used to split the line that describes the
      * coordinate system
-     * @return
      * @throws IOException
      */
     private Map<String, String> readRegistry(BufferedReader br, String nameOfCRS, Pattern regex) throws IOException {
@@ -134,7 +151,6 @@ public class ProjParser {
      * Remove + char if exists
      *
      * @param key
-     * @return
      */
     private static String formatKey(String key) {
         String formatKey = key;
@@ -148,7 +164,6 @@ public class ProjParser {
      * Return the list of all codes defined by this registry
      *
      * @param regex pattern
-     * @return
      */
     public Set<String> getSupportedCodes(Pattern regex) throws IOException {
         InputStream inStr = Registry.class.getResourceAsStream(registry.getRegistryName());

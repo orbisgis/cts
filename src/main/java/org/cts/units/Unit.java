@@ -92,7 +92,7 @@ public class Unit extends IdentifiableComponent implements java.io.Serializable 
      */
     public ArrayList<String> getNames() {
         ArrayList<String> names = new ArrayList<String>();
-        for (Identifiable id:getAliases()) {
+        for (Identifiable id : getAliases()) {
             if (!names.contains(id.getName())) {
                 names.add(id.getName());
             }
@@ -226,7 +226,7 @@ public class Unit extends IdentifiableComponent implements java.io.Serializable 
 
     /**
      * Convert a measure from this unit into base unit(s).
-     * 
+     *
      * @param measure the measure to convert into base unit
      */
     public double toBaseUnit(double measure) {
@@ -235,7 +235,7 @@ public class Unit extends IdentifiableComponent implements java.io.Serializable 
 
     /**
      * Convert a measure from base unit(s) into this unit.
-     * 
+     *
      * @param measure the measure to convert into this unit
      */
     public double fromBaseUnit(double measure) {
@@ -251,7 +251,7 @@ public class Unit extends IdentifiableComponent implements java.io.Serializable 
 
     /**
      * Set factor or scale.
-     * 
+     *
      * @param scale the scale to set to the unit.
      */
     public void setScale(double scale) {

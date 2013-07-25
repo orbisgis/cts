@@ -39,17 +39,32 @@ import java.util.List;
  */
 public class PrjNodeElement extends AbstractPrjElement {
 
+    /**
+     * The name of this node.
+     */
     private String name;
 
+    /**
+     * Creates a node from its name and the list of its children.
+     *
+     * @param name the name of the node
+     * @param children the list of the children elements of the node
+     */
     PrjNodeElement(String name, List<PrjElement> children) {
         super(children);
         this.name = name;
     }
 
+    /**
+     * Return the name of this node.
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Return a String representation of the PrjNodeElement.
+     */
     @Override
     public String toString() {
         return "PrjNodeElement[" + name + ", ...]";

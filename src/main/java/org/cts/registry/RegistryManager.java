@@ -47,9 +47,9 @@ public final class RegistryManager {
     private final List<RegistryManagerListener> listeners = new ArrayList<RegistryManagerListener>();
 
     /**
-     * Create a default registry manager without any declared registry.
-     * To load a registry you must call the {@code addRegistry}
-     * ig : addRegistry(new IGNFRegistry());
+     * Create a default registry manager without any declared registry. To load
+     * a registry you must call the {@code addRegistry} ig : addRegistry(new
+     * IGNFRegistry());
      */
     public RegistryManager() {
     }
@@ -84,14 +84,14 @@ public final class RegistryManager {
     }
 
     /**
-     * Declare a registry to the {@code RegistryManager} 
-     * An existing registry can be replaced by a new one.
+     * Declare a registry to the {@code RegistryManager} An existing registry
+     * can be replaced by a new one.
      *
      * @param registryClass
      * @param replace
      */
     public void addRegistry(Registry registry, boolean replace) {
-        LOGGER.trace("Adding a new registry " + registry.getRegistryName());        
+        LOGGER.trace("Adding a new registry " + registry.getRegistryName());
         String registryName = registry.getRegistryName().toLowerCase();
         if (!replace && registries.containsKey(registryName)) {
             throw new IllegalArgumentException("Registry " + registryName
@@ -101,7 +101,6 @@ public final class RegistryManager {
         fireRegistryAdded(registryName);
     }
 
-    
     /**
      * Listener to inform that a registry has been added.
      *
@@ -146,7 +145,7 @@ public final class RegistryManager {
         if (registry == null) {
             return null;
         } else {
-           return registry;
+            return registry;
         }
     }
 }

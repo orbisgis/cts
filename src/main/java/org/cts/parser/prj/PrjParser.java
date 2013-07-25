@@ -80,6 +80,11 @@ public class PrjParser {
         return prjParameters;
     }
 
+    /**
+     * Parses a Node into its PrjElement representation.
+     *
+     * @param s the Buffer to parse
+     */
     public PrjElement parseNode(CharBuffer s) {
         // parse Name
         boolean complexNode = false;
@@ -109,6 +114,11 @@ public class PrjParser {
         }
     }
 
+    /**
+     * Return the next character that is not a white space.
+     *
+     * @param s the parsed Buffer
+     */
     private char next(CharBuffer s) {
         char next;
         do {
@@ -117,6 +127,11 @@ public class PrjParser {
         return next;
     }
 
+    /**
+     * Parses a Node's children into a list of PrjElement.
+     *
+     * @param s the Buffer to parse
+     */
     private List<PrjElement> parseNodeChildren(CharBuffer s) {
         List<PrjElement> elms = new ArrayList<PrjElement>();
 
@@ -151,6 +166,11 @@ public class PrjParser {
         return elms;
     }
 
+    /**
+     * Parses a String information into its PrjStringElement representation.
+     *
+     * @param s the Buffer to parse
+     */
     private PrjStringElement parseString(CharBuffer s) {
         int start = s.position();
         int ll = 0;
@@ -169,6 +189,11 @@ public class PrjParser {
         return new PrjStringElement(str);
     }
 
+    /**
+     * Parses a Number information into its PrjNumberElement representation.
+     *
+     * @param s the Buffer to parse
+     */
     private PrjNumberElement parseNumber(CharBuffer s) {
         int start = s.position();
         int ll = 0;

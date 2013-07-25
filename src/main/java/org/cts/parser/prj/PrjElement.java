@@ -39,5 +39,8 @@ import java.util.List;
  */
 public interface PrjElement {
 
+    /**
+     * Return the list of the children of this PrjElement.
+     */
     List<PrjElement> getChildren();
 }

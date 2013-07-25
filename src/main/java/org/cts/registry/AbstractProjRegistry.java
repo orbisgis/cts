@@ -41,8 +41,14 @@ import org.cts.parser.proj.ProjParser;
 public abstract class AbstractProjRegistry implements Registry {
 
     public Logger LOGGER = Logger.getLogger(org.cts.registry.AbstractProjRegistry.class);
+    /**
+     * The parser associated to the PROJ registry.
+     */
     protected final ProjParser projParser;
 
+    /**
+     * Create a new AbstractProjRegistry.
+     */
     public AbstractProjRegistry() {
         projParser = new ProjParser(this);
     }

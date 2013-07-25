@@ -183,8 +183,8 @@ public final class AngleFormat {
      * </ul>
      * <p>Exemples :</p>
      * <ul>
-     * <li>latitude = #D\u00B0 MM' SS.SSS\" H(N|S) --> latitude = 45\u00B0 09' 56.897"
-     * S</li>
+     * <li>latitude = #D\u00B0 MM' SS.SSS\" H(N|S) --> latitude = 45\u00B0 09'
+     * 56.897" S</li>
      * <li>#D deg #M min --> -4 deg 6 min</li>
      * </ul>
      */

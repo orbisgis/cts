@@ -72,8 +72,8 @@ public class PrjValueParameters {
      */
     public static final Map<String, String> UNITNAMES = new HashMap<String, String>();
     /**
-     * A map linking the name of axes used in PRJ file to the short name used
-     * in CTS.
+     * A map linking the name of axes used in PRJ file to the short name used in
+     * CTS.
      */
     public static final Map<String, String> AXISNAMES = new HashMap<String, String>();
 

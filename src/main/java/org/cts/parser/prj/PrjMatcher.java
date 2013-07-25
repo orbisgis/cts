@@ -44,18 +44,134 @@ import org.cts.parser.proj.ProjValueParameters;
  */
 public final class PrjMatcher {
 
-    private static final double TOL = 1.0E-100;
-
+    /**
+     * Create a new PrjMatcher.
+     */
     private PrjMatcher() {
     }
+    /**
+     * The map that contained all the parsed informations.
+     */
     private Map<String, String> params = new HashMap<String, String>();
 
+    /**
+     * Transform the PrjElement in parameter into a set of parameters.
+     *
+     * @param el the PrjElement to transform
+     */
     static Map<String, String> match(PrjElement el) {
         PrjMatcher m = new PrjMatcher();
         return m.doMatch(el);
     }
+
     /**
-     * This class is used to find the key and value in the WKT
+     * Transform the PrjElement in parameter into a set of parameters.
+     *
+     * @param el the PrjElement to transform
+     */
+    private Map<String, String> doMatch(PrjElement el) {
+        // COMPD_CS[ ...
+        List<PrjElement> ll = matchNode(el, PrjKeyParameters.COMPDCS, false);
+        if (ll == null) {
+            // PROJCS[ ...
+            ll = matchNode(el, PrjKeyParameters.PROJCS, false);
+            if (ll == null) {
+                // there is no PROJCS node, could still be valid...
+                // let's look for GEOGCS directly
+                ll = matchNode(el, PrjKeyParameters.GEOGCS, false);
+                if (ll == null) {
+                    ll = matchNode(el, PrjKeyParameters.GEOCCS, false);
+                    if (ll == null) {
+                        ll = matchNode(el, PrjKeyParameters.VERTCS);
+                        parseVertcs(ll, true);
+                    } else {
+                        parseGeoccs(ll);
+                    }
+                } else {
+                    parseGeogcs(ll, true);
+                }
+            } else {
+                parseProjcs(ll, true);
+            }
+        } else {
+            parseCompdcs(ll);
+        }
+        // projection name or GEOGCS name or COMPD_CS name or GEOCCS name
+        parseString(ll.get(0), PrjKeyParameters.NAME);
+
+        // clean up params
+        String unit = params.remove(PrjKeyParameters.PROJUNIT);
+        String unitval = params.remove(PrjKeyParameters.PROJUNITVAL);
+        if (unit != null) {
+            params.put(ProjKeyParameters.units, unit);
+            if (unitval != null) {
+                params.put(ProjKeyParameters.to_meter, unitval);
+                String x0 = params.remove(ProjKeyParameters.x_0);
+                if (x0 != null) {
+                    x0 = Double.toString(Double.valueOf(x0) * Double.valueOf(unitval));
+                    params.put(ProjKeyParameters.x_0, x0);
+                }
+                String y0 = params.remove(ProjKeyParameters.y_0);
+                if (y0 != null) {
+                    y0 = Double.toString(Double.valueOf(y0) * Double.valueOf(unitval));
+                    params.put(ProjKeyParameters.y_0, y0);
+                }
+            }
+            String unitAuth = params.remove(PrjKeyParameters.PROJUNITAUTHORITY);
+            String unitCode = params.remove(PrjKeyParameters.PROJUNITCODE);
+            if (unitAuth != null && unitCode != null) {
+                params.put(PrjKeyParameters.UNITAUTHORITY, unitAuth);
+                params.put(PrjKeyParameters.UNITCODE, unitCode);
+            }
+            params.remove(PrjKeyParameters.GEOUNIT);
+            params.remove(PrjKeyParameters.GEOUNITVAL);
+            params.remove(PrjKeyParameters.GEOUNITAUTHORITY);
+            params.remove(PrjKeyParameters.GEOUNITCODE);
+        } else {
+            unit = params.remove(PrjKeyParameters.GEOUNIT);
+            unitval = params.remove(PrjKeyParameters.GEOUNITVAL);
+            if (unit != null) {
+                params.put(ProjKeyParameters.units, PrjValueParameters.UNITNAMES.get(unit));
+                params.put(ProjKeyParameters.to_meter, unitval);
+                String unitAuth = params.remove(PrjKeyParameters.GEOUNITAUTHORITY);
+                String unitCode = params.remove(PrjKeyParameters.GEOUNITCODE);
+                if (unitAuth != null && unitCode != null) {
+                    params.put(PrjKeyParameters.UNITAUTHORITY, unitAuth);
+                    params.put(PrjKeyParameters.UNITCODE, unitCode);
+                }
+            }
+        }
+        // authority, if present
+        String auth = params.remove(PrjKeyParameters.REFAUTHORITY);
+        if (auth != null) {
+            String code = params.remove(PrjKeyParameters.REFCODE);
+            params.put(PrjKeyParameters.REFNAME, auth + ':' + code);
+        }
+        auth = params.remove(PrjKeyParameters.GEOGREFAUTHORITY);
+        if (auth != null) {
+            String code = params.remove(PrjKeyParameters.GEOGREFCODE);
+            params.put(PrjKeyParameters.GEOGREFNAME, auth + ':' + code);
+        }
+        auth = params.remove(PrjKeyParameters.PROJREFAUTHORITY);
+        if (auth != null) {
+            String code = params.remove(PrjKeyParameters.PROJREFCODE);
+            params.put(PrjKeyParameters.PROJREFNAME, auth + ':' + code);
+        }
+        auth = params.remove(PrjKeyParameters.VERTREFAUTHORITY);
+        if (auth != null) {
+            String code = params.remove(PrjKeyParameters.VERTREFCODE);
+            params.put(PrjKeyParameters.VERTREFNAME, auth + ':' + code);
+        }
+
+        return params;
+    }
+
+    /**
+     * Read the informations contains in the PROJCS node and put it into the set
+     * of parameters.
+     *
+     * @param ll the children of the PROJCS node
+     * @param rootElement true if PROJCS is the root element given in match
      */
     private void parseProjcs(List<PrjElement> ll, boolean rootElement) {
         parseString(ll.get(0), PrjKeyParameters.PROJCS);
@@ -147,8 +263,15 @@ public final class PrjMatcher {
             matchAnyNode(ll.get(i), matchers);
         }
     }
-    
-    private void parseCompdcs(List<PrjElement> ll, boolean rootElement) {
+
+    /**
+     * Read the informations contains in the COMPD_CS node and put it into the
+     * set of parameters.
+     *
+     * @param ll the children of the COMPD_CS node
+     * @param rootElement true if COMPD_CS is the root element given in match
+     */
+    private void parseCompdcs(List<PrjElement> ll) {
         PrjNodeMatcher[] matchers;
         matchers = new PrjNodeMatcher[4];
         matchers[0] = new PrjNodeMatcher() {
@@ -201,108 +324,12 @@ public final class PrjMatcher {
         }
     }
 
-    private Map<String, String> doMatch(PrjElement el) {
-        // COMPD_CS[ ...
-        List<PrjElement> ll = matchNode(el, PrjKeyParameters.COMPDCS, false);
-        if (ll == null) {
-            // PROJCS[ ...
-            ll = matchNode(el, PrjKeyParameters.PROJCS, false);
-            if (ll == null) {
-                // there is no PROJCS node, could still be valid...
-                // let's look for GEOGCS directly
-                ll = matchNode(el, PrjKeyParameters.GEOGCS, false);
-                if (ll == null) {
-                    ll = matchNode(el, PrjKeyParameters.GEOCCS, false);
-                    if (ll == null) {
-                        ll = matchNode(el, PrjKeyParameters.VERTCS);
-                        parseVertcs(ll, true);
-                    } else {
-                        parseGeoccs(ll);
-                    }
-                } else {
-                    parseGeogcs(ll, true);
-                }
-            } else {
-                parseProjcs(ll, true);
-            }
-        } else {
-            parseCompdcs(ll, true);
-        }
-        // projection name or GEOGCS name or COMPD_CS name or GEOCCS name
-        parseString(ll.get(0), PrjKeyParameters.NAME);
-
-        // clean up params
-        String unit = params.remove(PrjKeyParameters.PROJUNIT);
-        String unitval = params.remove(PrjKeyParameters.PROJUNITVAL);
-        if (unit != null) {
-            params.put(ProjKeyParameters.units, unit);
-            if (unitval != null) {
-                params.put(ProjKeyParameters.to_meter, unitval);
-                String x0 = params.remove(ProjKeyParameters.x_0);
-                if (x0 != null) {
-                    x0 = Double.toString(Double.valueOf(x0) * Double.valueOf(unitval));
-                    params.put(ProjKeyParameters.x_0, x0);
-                }
-                String y0 = params.remove(ProjKeyParameters.y_0);
-                if (y0 != null) {
-                    y0 = Double.toString(Double.valueOf(y0) * Double.valueOf(unitval));
-                    params.put(ProjKeyParameters.y_0, y0);
-                }
-            }
-            String unitAuth = params.remove(PrjKeyParameters.PROJUNITAUTHORITY);
-            String unitCode = params.remove(PrjKeyParameters.PROJUNITCODE);
-            if (unitAuth != null && unitCode != null) {
-                params.put(PrjKeyParameters.UNITAUTHORITY, unitAuth);
-                params.put(PrjKeyParameters.UNITCODE, unitCode);
-            }
-            params.remove(PrjKeyParameters.GEOUNIT);
-            params.remove(PrjKeyParameters.GEOUNITVAL);
-            params.remove(PrjKeyParameters.GEOUNITAUTHORITY);
-            params.remove(PrjKeyParameters.GEOUNITCODE);
-        } else {
-            unit = params.remove(PrjKeyParameters.GEOUNIT);
-            unitval = params.remove(PrjKeyParameters.GEOUNITVAL);
-            if (unit != null) {
-                params.put(ProjKeyParameters.units, PrjValueParameters.UNITNAMES.get(unit));
-                params.put(ProjKeyParameters.to_meter, unitval);
-                String unitAuth = params.remove(PrjKeyParameters.GEOUNITAUTHORITY);
-                String unitCode = params.remove(PrjKeyParameters.GEOUNITCODE);
-                if (unitAuth != null && unitCode != null) {
-                    params.put(PrjKeyParameters.UNITAUTHORITY, unitAuth);
-                    params.put(PrjKeyParameters.UNITCODE, unitCode);
-                }
-            }
-        }
-        // authority, if present
-        String auth = params.remove(PrjKeyParameters.REFAUTHORITY);
-        if (auth != null) {
-            String code = params.remove(PrjKeyParameters.REFCODE);
-            params.put(PrjKeyParameters.REFNAME, auth + ':' + code);
-        }
-        auth = params.remove(PrjKeyParameters.GEOGREFAUTHORITY);
-        if (auth != null) {
-            String code = params.remove(PrjKeyParameters.GEOGREFCODE);
-            params.put(PrjKeyParameters.GEOGREFNAME, auth + ':' + code);
-        }
-        auth = params.remove(PrjKeyParameters.PROJREFAUTHORITY);
-        if (auth != null) {
-            String code = params.remove(PrjKeyParameters.PROJREFCODE);
-            params.put(PrjKeyParameters.PROJREFNAME, auth + ':' + code);
-        }
-        auth = params.remove(PrjKeyParameters.VERTREFAUTHORITY);
-        if (auth != null) {
-            String code = params.remove(PrjKeyParameters.VERTREFCODE);
-            params.put(PrjKeyParameters.VERTREFNAME, auth + ':' + code);
-        }
-
-        // no projection specified usually means longlat
-        //if (!params.containsKey(ProjKeyParameters.proj)) {
-        //    params.put(ProjKeyParameters.proj, ProjValueParameters.LONGLAT);
-        //}
-
-        return params;
-    }
-
+    /**
+     * Read the informations contains in the GEOCCS node and put it into the set
+     * of parameters.
+     *
+     * @param ll the children of the GEOCCS node
+     */
     private void parseGeoccs(List<PrjElement> ll) {
         params.put(ProjKeyParameters.proj, ProjValueParameters.GEOCENT);
 
@@ -369,6 +396,13 @@ public final class PrjMatcher {
         }
     }
 
+    /**
+     * Read the informations contains in the GEOGCS node and put it into the set
+     * of parameters.
+     *
+     * @param ll the children of the GEOGCS node
+     * @param rootElement true if GEOGCS is the root element given in match
+     */
     private void parseGeogcs(List<PrjElement> ll, boolean rootElement) {
         params.put(ProjKeyParameters.proj, ProjValueParameters.LONGLAT);
 
@@ -450,6 +484,13 @@ public final class PrjMatcher {
         }
     }
 
+    /**
+     * Read the informations contains in the VERT_CS node and put it into the
+     * set of parameters.
+     *
+     * @param ll the children of the VERT_CS node
+     * @param rootElement true if VERT_CS is the root element given in match
+     */
     private void parseVertcs(List<PrjElement> ll, boolean rootElement) {
         parseString(ll.get(0), PrjKeyParameters.VERTCS);
 
@@ -519,61 +560,133 @@ public final class PrjMatcher {
         }
     }
 
+    /**
+     * Read the informations contains in the AUTHORITY node of the root element
+     * and put it into the set of parameters.
+     *
+     * @param ll the children of the AUTHORITY node
+     */
     private void parseAuthority(List<PrjElement> ll) {
         parseString(ll.get(0), PrjKeyParameters.REFAUTHORITY);
         parseString(ll.get(1), PrjKeyParameters.REFCODE);
     }
 
+    /**
+     * Read the informations contains in the AUTHORITY node of the GEOGCS node
+     * and put it into the set of parameters.
+     *
+     * @param ll the children of the AUTHORITY node
+     */
     private void parseGeogAuthority(List<PrjElement> ll) {
         parseString(ll.get(0), PrjKeyParameters.GEOGREFAUTHORITY);
         parseString(ll.get(1), PrjKeyParameters.GEOGREFCODE);
     }
 
+    /**
+     * Read the informations contains in the AUTHORITY node of the PROJCS node
+     * and put it into the set of parameters.
+     *
+     * @param ll the children of the AUTHORITY node
+     */
     private void parseProjAuthority(List<PrjElement> ll) {
         parseString(ll.get(0), PrjKeyParameters.PROJREFAUTHORITY);
         parseString(ll.get(1), PrjKeyParameters.PROJREFCODE);
     }
 
+    /**
+     * Read the informations contains in the AUTHORITY node of the VERT_CS node
+     * and put it into the set of parameters.
+     *
+     * @param ll the children of the AUTHORITY node
+     */
     private void parseVertAuthority(List<PrjElement> ll) {
         parseString(ll.get(0), PrjKeyParameters.VERTREFAUTHORITY);
         parseString(ll.get(1), PrjKeyParameters.VERTREFCODE);
     }
 
+    /**
+     * Read the informations contains in the AUTHORITY node of the SPHEROID node
+     * and put it into the set of parameters.
+     *
+     * @param ll the children of the AUTHORITY node
+     */
     private void parseSpheroidAuthority(List<PrjElement> ll) {
         parseString(ll.get(0), PrjKeyParameters.SPHEROIDAUTHORITY);
         parseString(ll.get(1), PrjKeyParameters.SPHEROIDCODE);
     }
 
+    /**
+     * Read the informations contains in the AUTHORITY node of the PRIMEM node
+     * and put it into the set of parameters.
+     *
+     * @param ll the children of the AUTHORITY node
+     */
     private void parsePrimeMAuthority(List<PrjElement> ll) {
         parseString(ll.get(0), PrjKeyParameters.PRIMEMAUTHORITY);
         parseString(ll.get(1), PrjKeyParameters.PRIMEMCODE);
     }
 
+    /**
+     * Read the informations contains in the AUTHORITY node of the DATUM node
+     * and put it into the set of parameters.
+     *
+     * @param ll the children of the AUTHORITY node
+     */
     private void parseDatumAuthority(List<PrjElement> ll) {
         parseString(ll.get(0), PrjKeyParameters.DATUMAUTHORITY);
         parseString(ll.get(1), PrjKeyParameters.DATUMCODE);
     }
 
+    /**
+     * Read the informations contains in the AUTHORITY node of the VERT_DATUM
+     * node and put it into the set of parameters.
+     *
+     * @param ll the children of the AUTHORITY node
+     */
     private void parseVertDatumAuthority(List<PrjElement> ll) {
         parseString(ll.get(0), PrjKeyParameters.VERTDATUMAUTHORITY);
         parseString(ll.get(1), PrjKeyParameters.VERTDATUMCODE);
     }
 
+    /**
+     * Read the informations contains in the AUTHORITY node of the UNIT node of
+     * the PROJCS node and put it into the set of parameters.
+     *
+     * @param ll the children of the AUTHORITY node
+     */
     private void parseProjUnitAuthority(List<PrjElement> ll) {
         parseString(ll.get(0), PrjKeyParameters.PROJUNITAUTHORITY);
         parseString(ll.get(1), PrjKeyParameters.PROJUNITCODE);
     }
 
+    /**
+     * Read the informations contains in the AUTHORITY node of the UNIT node of
+     * the GEOGCS or GEOCCS node and put it into the set of parameters.
+     *
+     * @param ll the children of the AUTHORITY node
+     */
     private void parseGeoUnitAuthority(List<PrjElement> ll) {
         parseString(ll.get(0), PrjKeyParameters.GEOUNITAUTHORITY);
         parseString(ll.get(1), PrjKeyParameters.GEOUNITCODE);
     }
 
+    /**
+     * Read the informations contains in the AUTHORITY node of the UNIT node of
+     * the VERT_CS node and put it into the set of parameters.
+     *
+     * @param ll the children of the AUTHORITY node
+     */
     private void parseVertUnitAuthority(List<PrjElement> ll) {
         parseString(ll.get(0), PrjKeyParameters.VERTUNITAUTHORITY);
         parseString(ll.get(1), PrjKeyParameters.VERTUNITCODE);
     }
 
+    /**
+     * Read the informations contains in the DATUM node and put it into the set
+     * of parameters.
+     *
+     * @param ll the children of the DATUM node
+     */
     private void parseDatum(List<PrjElement> ll) {
         String datum = getString(ll.get(0));
         datum = datum.replaceAll("[^a-zA-Z0-9]", "");
@@ -610,6 +723,12 @@ public final class PrjMatcher {
         }
     }
 
+    /**
+     * Read the informations contains in the VERT_DATUM node and put it into the
+     * set of parameters.
+     *
+     * @param ll the children of the VERT_DATUM node
+     */
     private void parseVertDatum(List<PrjElement> ll) {
         String datum = getString(ll.get(0));
         datum = datum.replaceAll("[^a-zA-Z0-9]", "");
@@ -623,9 +742,10 @@ public final class PrjMatcher {
     }
 
     /**
-     * Parse unit value to a {@code PrjNumberElement}
+     * Read the informations contains in the UNIT node of the PROJCS node and
+     * put it into the set of parameters.
      *
-     * @param {@code List<PrjElement>}
+     * @param ll the children of the UNIT node
      */
     private void parseProjUnit(List<PrjElement> ll) {
         String unit = getString(ll.get(0));
@@ -642,9 +762,10 @@ public final class PrjMatcher {
     }
 
     /**
-     * Parse unit value to a {@code PrjNumberElement}
+     * Read the informations contains in the UNIT node of the GEOGCS or GEOCCS
+     * node and put it into the set of parameters.
      *
-     * @param {@code List<PrjElement>}
+     * @param ll the children of the UNIT node
      */
     private void parseGeoUnit(List<PrjElement> ll) {
         String unit = getString(ll.get(0));
@@ -661,14 +782,15 @@ public final class PrjMatcher {
     }
 
     /**
-     * Parse unit value to a {@code PrjNumberElement}
+     * Read the informations contains in the UNIT node of the VERT_CS node and
+     * put it into the set of parameters.
      *
-     * @param {@code List<PrjElement>}
+     * @param ll the children of the UNIT node
      */
     private void parseVertUnit(List<PrjElement> ll) {
         String unit = getString(ll.get(0));
         String unt = PrjValueParameters.UNITNAMES.get(unit.replaceAll("[^a-zA-Z0-9]", "").toLowerCase());
-        if (unt != null){
+        if (unt != null) {
             params.put(PrjKeyParameters.VERTUNIT, unt);
         } else {
             params.put(PrjKeyParameters.VERTUNIT, unit);
@@ -680,9 +802,10 @@ public final class PrjMatcher {
     }
 
     /**
-     * Parse the projection name of the CRS to a String representation
+     * Read the informations contains in the PROJECTION node and put it into the
+     * set of parameters.
      *
-     * @param {@code List<PrjElement>}
+     * @param ll the children of the PROJECTION node
      */
     private void parseProjection(List<PrjElement> ll) {
         String proj = getString(ll.get(0));
@@ -694,9 +817,10 @@ public final class PrjMatcher {
     }
 
     /**
-     * Parse the prime meridian of the CRS to a String representation
+     * Read the informations contains in the PRIMEM node and put it into the set
+     * of parameters.
      *
-     * @param {@code List<PrjElement>}
+     * @param ll the children of the PRIMEM node
      */
     private void parsePrimeM(List<PrjElement> ll) {
         String pm = getString(ll.get(0));
@@ -710,6 +834,12 @@ public final class PrjMatcher {
         }
     }
 
+    /**
+     * Read the informations contains in a PARAMETER node and put it into the
+     * set of parameters.
+     *
+     * @param ll the children of the PARAMETER node
+     */
     private void parseParameter(List<PrjElement> ll) {
         String param = getString(ll.get(0));
         param = param.replaceAll("[^a-zA-Z0-9]", "");
@@ -719,6 +849,12 @@ public final class PrjMatcher {
         }
     }
 
+    /**
+     * Read the informations contains in the AXIS node of the VERT_CS and put it
+     * into the set of parameters.
+     *
+     * @param ll the children of the AXIS node
+     */
     private void parseVertAxis(List<PrjElement> ll) {
         String axisName = getString(ll.get(0));
         String axis = PrjValueParameters.AXISNAMES.get(axisName.replaceAll("[^a-zA-Z0-9]", "").toLowerCase());
@@ -732,6 +868,12 @@ public final class PrjMatcher {
     private boolean secondAxis = false;
     private boolean thirdAxis = false;
 
+    /**
+     * Read the informations contains in an AXIS node and put it into the set of
+     * parameters.
+     *
+     * @param ll the children of the AXIS node
+     */
     private void parseAxis3D(List<PrjElement> ll) {
         if (secondAxis) {
             String axisName = getString(ll.get(0));
@@ -767,10 +909,26 @@ public final class PrjMatcher {
         }
     }
 
+    /**
+     * Read the informations contains in the PrjElement in parameter using one
+     * of the PrjNodeMatcher in parameter and put it into the set of parameters.
+     *
+     * @param e the PrjElement to parse
+     * @param nn the PrjNodeMatcher to use to parse the given PrjElement
+     */
     private void matchAnyNode(PrjElement e, PrjNodeMatcher[] nn) {
         matchAnyNode(e, nn, false);
     }
 
+    /**
+     * Read the informations contains in the PrjElement in parameter using one
+     * of the PrjNodeMatcher in parameter and put it into the set of parameters.
+     *
+     * @param e the PrjElement to parse
+     * @param nn the PrjNodeMatcher to use to parse the given PrjElement
+     * @param strict if true, the method throw a PrjParserException if it does
+     * not manage to parse the PrjElement in parameter
+     */
     private void matchAnyNode(PrjElement e, PrjNodeMatcher[] nn, boolean strict) {
         if (e instanceof PrjNodeElement) {
             PrjNodeElement ne = (PrjNodeElement) e;
@@ -787,10 +945,29 @@ public final class PrjMatcher {
         }
     }
 
+    /**
+     * Return the children of the PrjElement in parameter if it is an instance
+     * of PrjNodeElement and if its name is the same as the name given in
+     * parameter,else it throws a PrjParserException.
+     *
+     * @param e the PrjElement to match
+     * @param name the name of the desired PrjElement
+     */
     private List<PrjElement> matchNode(PrjElement e, String name) {
         return matchNode(e, name, true);
     }
 
+    /**
+     * Return the children of the PrjElement in parameter if it is an instance
+     * of PrjNodeElement and if its name is the same as the name given in
+     * parameter,else it throws a PrjParserException unless strict is false, it
+     * then returns null.
+     *
+     * @param e the PrjElement to match
+     * @param name the name of the desired PrjElement
+     * @param strict true if the method must throw an exception instead of
+     * return null
+     */
     private List<PrjElement> matchNode(PrjElement e, String name, boolean strict) {
         if (e instanceof PrjNodeElement) {
             PrjNodeElement n = (PrjNodeElement) e;
@@ -806,10 +983,11 @@ public final class PrjMatcher {
     }
 
     /**
-     * Return the name of the projection
+     * Read the informations contains in the PrjElement in parameter if it is a
+     * PrjStringParameter and put it into the set of parameters.
      *
-     * @param e
-     * @param name
+     * @param e the PrjElement to parse
+     * @param name the key to use to put the string in the Map of parameters
      */
     private void parseString(PrjElement e, String name) {
         if (e instanceof PrjStringElement) {
@@ -820,6 +998,12 @@ public final class PrjMatcher {
         }
     }
 
+    /**
+     * Return the informations contains in the PrjElement in parameter if it is
+     * a PrjStringParameter.
+     *
+     * @param e the PrjElement to parse
+     */
     private String getString(PrjElement e) {
         if (e instanceof PrjStringElement) {
             PrjStringElement s = (PrjStringElement) e;
@@ -828,6 +1012,13 @@ public final class PrjMatcher {
         throw new PrjParserException("Failed to parse PRJ. Found '" + e + "', expected some PrjStringElement.");
     }
 
+    /**
+     * Read the informations contains in the PrjElement in parameter if it is a
+     * PrjNumberParameter and put it into the set of parameters.
+     *
+     * @param e the PrjElement to parse
+     * @param name the key to use to put the string in the Map of parameters
+     */
     private void parseNumber(PrjElement e, String name) {
         if (e instanceof PrjNumberElement) {
             PrjNumberElement n = (PrjNumberElement) e;
@@ -837,8 +1028,11 @@ public final class PrjMatcher {
         }
     }
 
-    /*
-     * Return the value of the element as double representation
+    /**
+     * Return the informations contains in the PrjElement in parameter if it is
+     * a PrjNumberParameter.
+     *
+     * @param e the PrjElement to parse
      */
     private double getNumber(PrjElement e) {
         if (e instanceof PrjNumberElement) {
