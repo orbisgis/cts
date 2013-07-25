@@ -39,9 +39,10 @@ package org.cts.parser.prj;
 public class PrjKeyParameters {
 
     public static final String GEOGCS = "geogcs";
+    public static final String GEOCCS = "geoccs";
     public static final String UNIT = "unit";
     public static final String PROJUNIT = "projunit";
-    public static final String GEOGUNIT = "geogunit";
+    public static final String GEOUNIT = "geogunit";
     public static final String VERTUNIT = "vertunit";
     public static final String PROJECTION = "projection";
     public static final String PARAMETER = "parameter";
@@ -54,7 +55,7 @@ public class PrjKeyParameters {
     public static final String VERTCS = "vert_cs";
     //Internal key parameters used by the parser
     public static final String PROJUNITVAL = "projunitval";
-    public static final String GEOGUNITVAL = "geogunitval";
+    public static final String GEOUNITVAL = "geogunitval";
     public static final String VERTUNITVAL = "vertunitval";
     public static final String NAME = "name";
     public static final String REFCODE = "refcode";
@@ -83,14 +84,16 @@ public class PrjKeyParameters {
     public static final String UNITAUTHORITY = "unitauthority";
     public static final String PROJUNITCODE = "projunitcode";
     public static final String PROJUNITAUTHORITY = "projunitauthority";
-    public static final String GEOGUNITCODE = "geogunitcode";
-    public static final String GEOGUNITAUTHORITY = "geogunitauthority";
+    public static final String GEOUNITCODE = "geogunitcode";
+    public static final String GEOUNITAUTHORITY = "geogunitauthority";
     public static final String VERTUNITCODE = "vertunitcode";
     public static final String VERTUNITAUTHORITY = "vertunitauthority";
     public static final String AXIS1 = "axis1";
     public static final String AXIS1TYPE = "axis1type";
     public static final String AXIS2 = "axis2";
     public static final String AXIS2TYPE = "axis2type";
+    public static final String AXIS3 = "axis3";
+    public static final String AXIS3TYPE = "axis3type";
     public static final String VERTAXIS = "vertaxis";
     public static final String VERTAXISTYPE = "vertaxistype";
 }

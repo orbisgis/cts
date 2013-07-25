@@ -139,7 +139,7 @@ public final class PrjMatcher {
 
             @Override
             public void run(List<PrjElement> list) {
-                parseAxis2D(list);
+                parseAxis3D(list);
             }
         };
 
@@ -212,8 +212,13 @@ public final class PrjMatcher {
                 // let's look for GEOGCS directly
                 ll = matchNode(el, PrjKeyParameters.GEOGCS, false);
                 if (ll == null) {
-                    ll = matchNode(el, PrjKeyParameters.VERTCS);
-                    parseVertcs(ll, true);
+                    ll = matchNode(el, PrjKeyParameters.GEOCCS, false);
+                    if (ll == null) {
+                        ll = matchNode(el, PrjKeyParameters.VERTCS);
+                        parseVertcs(ll, true);
+                    } else {
+                        parseGeoccs(ll);
+                    }
                 } else {
                     parseGeogcs(ll, true);
                 }
@@ -223,7 +228,7 @@ public final class PrjMatcher {
         } else {
             parseCompdcs(ll, true);
         }
-        // projection name or GEOGCS name or COMPD_CS name
+        // projection name or GEOGCS name or COMPD_CS name or GEOCCS name
         parseString(ll.get(0), PrjKeyParameters.NAME);
 
         // clean up params
@@ -250,18 +255,18 @@ public final class PrjMatcher {
                 params.put(PrjKeyParameters.UNITAUTHORITY, unitAuth);
                 params.put(PrjKeyParameters.UNITCODE, unitCode);
             }
-            params.remove(PrjKeyParameters.GEOGUNIT);
-            params.remove(PrjKeyParameters.GEOGUNITVAL);
-            params.remove(PrjKeyParameters.GEOGUNITAUTHORITY);
-            params.remove(PrjKeyParameters.GEOGUNITCODE);
+            params.remove(PrjKeyParameters.GEOUNIT);
+            params.remove(PrjKeyParameters.GEOUNITVAL);
+            params.remove(PrjKeyParameters.GEOUNITAUTHORITY);
+            params.remove(PrjKeyParameters.GEOUNITCODE);
         } else {
-            unit = params.remove(PrjKeyParameters.GEOGUNIT);
-            unitval = params.remove(PrjKeyParameters.GEOGUNITVAL);
+            unit = params.remove(PrjKeyParameters.GEOUNIT);
+            unitval = params.remove(PrjKeyParameters.GEOUNITVAL);
             if (unit != null) {
                 params.put(ProjKeyParameters.units, PrjValueParameters.UNITNAMES.get(unit));
                 params.put(ProjKeyParameters.to_meter, unitval);
-                String unitAuth = params.remove(PrjKeyParameters.GEOGUNITAUTHORITY);
-                String unitCode = params.remove(PrjKeyParameters.GEOGUNITCODE);
+                String unitAuth = params.remove(PrjKeyParameters.GEOUNITAUTHORITY);
+                String unitCode = params.remove(PrjKeyParameters.GEOUNITCODE);
                 if (unitAuth != null && unitCode != null) {
                     params.put(PrjKeyParameters.UNITAUTHORITY, unitAuth);
                     params.put(PrjKeyParameters.UNITCODE, unitCode);
@@ -291,15 +296,15 @@ public final class PrjMatcher {
         }
 
         // no projection specified usually means longlat
-        if (!params.containsKey(ProjKeyParameters.proj)) {
-            params.put(ProjKeyParameters.proj, ProjValueParameters.LONGLAT);
-        }
+        //if (!params.containsKey(ProjKeyParameters.proj)) {
+        //    params.put(ProjKeyParameters.proj, ProjValueParameters.LONGLAT);
+        //}
 
         return params;
     }
 
-    private void parseGeogcs(List<PrjElement> ll, boolean rootElement) {
-        parseString(ll.get(0), PrjKeyParameters.GEOGCS);
+    private void parseGeoccs(List<PrjElement> ll) {
+        params.put(ProjKeyParameters.proj, ProjValueParameters.GEOCENT);
 
         PrjNodeMatcher[] matchers;
         matchers = new PrjNodeMatcher[5];
@@ -333,10 +338,77 @@ public final class PrjMatcher {
 
             @Override
             public void run(List<PrjElement> list) {
-                parseGeogUnit(list);
+                parseGeoUnit(list);
+            }
+        };
+        matchers[3] = new PrjNodeMatcher() {
+            @Override
+            public String getName() {
+                return PrjKeyParameters.AUTHORITY;
+            }
+
+            @Override
+            public void run(List<PrjElement> list) {
+                parseAuthority(list);
+            }
+        };
+        matchers[4] = new PrjNodeMatcher() {
+            @Override
+            public String getName() {
+                return PrjKeyParameters.AXIS;
+            }
+
+            @Override
+            public void run(List<PrjElement> list) {
+                parseAxis3D(list);
+            }
+        };
+
+        for (int i = 1; i < ll.size(); i++) {
+            matchAnyNode(ll.get(i), matchers);
+        }
+    }
+
+    private void parseGeogcs(List<PrjElement> ll, boolean rootElement) {
+        params.put(ProjKeyParameters.proj, ProjValueParameters.LONGLAT);
+
+        PrjNodeMatcher[] matchers;
+        matchers = new PrjNodeMatcher[5];
+        matchers[0] = new PrjNodeMatcher() {
+            @Override
+            public String getName() {
+                return ProjKeyParameters.datum;
+            }
+
+            @Override
+            public void run(List<PrjElement> list) {
+                parseDatum(list);
+            }
+        };
+        matchers[1] = new PrjNodeMatcher() {
+            @Override
+            public String getName() {
+                return PrjKeyParameters.PRIMEM;
+            }
+
+            @Override
+            public void run(List<PrjElement> list) {
+                parsePrimeM(list);
+            }
+        };
+        matchers[2] = new PrjNodeMatcher() {
+            @Override
+            public String getName() {
+                return PrjKeyParameters.UNIT;
+            }
+
+            @Override
+            public void run(List<PrjElement> list) {
+                parseGeoUnit(list);
             }
         };
         if (!rootElement) {
+            parseString(ll.get(0), PrjKeyParameters.GEOGCS);
             matchers[3] = new PrjNodeMatcher() {
                 @Override
                 public String getName() {
@@ -369,7 +441,7 @@ public final class PrjMatcher {
 
             @Override
             public void run(List<PrjElement> list) {
-                parseAxis2D(list);
+                parseAxis3D(list);
             }
         };
 
@@ -492,9 +564,9 @@ public final class PrjMatcher {
         parseString(ll.get(1), PrjKeyParameters.PROJUNITCODE);
     }
 
-    private void parseGeogUnitAuthority(List<PrjElement> ll) {
-        parseString(ll.get(0), PrjKeyParameters.GEOGUNITAUTHORITY);
-        parseString(ll.get(1), PrjKeyParameters.GEOGUNITCODE);
+    private void parseGeoUnitAuthority(List<PrjElement> ll) {
+        parseString(ll.get(0), PrjKeyParameters.GEOUNITAUTHORITY);
+        parseString(ll.get(1), PrjKeyParameters.GEOUNITCODE);
     }
 
     private void parseVertUnitAuthority(List<PrjElement> ll) {
@@ -574,17 +646,17 @@ public final class PrjMatcher {
      *
      * @param {@code List<PrjElement>}
      */
-    private void parseGeogUnit(List<PrjElement> ll) {
+    private void parseGeoUnit(List<PrjElement> ll) {
         String unit = getString(ll.get(0));
         String unt = PrjValueParameters.UNITNAMES.get(unit.replaceAll("[^a-zA-Z0-9]", "").toLowerCase());
         if (unt != null) {
-            params.put(PrjKeyParameters.GEOGUNIT, unt);
+            params.put(PrjKeyParameters.GEOUNIT, unt);
         } else {
-            params.put(PrjKeyParameters.GEOGUNIT, unit);
+            params.put(PrjKeyParameters.GEOUNIT, unit);
         }
-        parseNumber(ll.get(1), PrjKeyParameters.GEOGUNITVAL);
+        parseNumber(ll.get(1), PrjKeyParameters.GEOUNITVAL);
         if (ll.size() > 2) {
-            parseGeogUnitAuthority(matchNode(ll.get(2), PrjKeyParameters.AUTHORITY));
+            parseGeoUnitAuthority(matchNode(ll.get(2), PrjKeyParameters.AUTHORITY));
         }
     }
 
@@ -658,8 +730,9 @@ public final class PrjMatcher {
         parseString(ll.get(1), PrjKeyParameters.VERTAXISTYPE);
     }
     private boolean secondAxis = false;
+    private boolean thirdAxis = false;
 
-    private void parseAxis2D(List<PrjElement> ll) {
+    private void parseAxis3D(List<PrjElement> ll) {
         if (secondAxis) {
             String axisName = getString(ll.get(0));
             String axis = PrjValueParameters.AXISNAMES.get(axisName.replaceAll("[^a-zA-Z0-9]", "").toLowerCase());
@@ -670,6 +743,17 @@ public final class PrjMatcher {
             }
             parseString(ll.get(1), PrjKeyParameters.AXIS2TYPE);
             secondAxis = false;
+            thirdAxis = true;
+        } else if (thirdAxis) {
+            String axisName = getString(ll.get(0));
+            String axis = PrjValueParameters.AXISNAMES.get(axisName.replaceAll("[^a-zA-Z0-9]", "").toLowerCase());
+            if (axis != null) {
+                params.put(PrjKeyParameters.AXIS3, axis);
+            } else {
+                params.put(PrjKeyParameters.AXIS3, axisName);
+            }
+            parseString(ll.get(1), PrjKeyParameters.AXIS3TYPE);
+            thirdAxis = false;
         } else {
             String axisName = getString(ll.get(0));
             String axis = PrjValueParameters.AXISNAMES.get(axisName.replaceAll("[^a-zA-Z0-9]", "").toLowerCase());
