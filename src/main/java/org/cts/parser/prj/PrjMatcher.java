@@ -230,11 +230,8 @@ public final class PrjMatcher {
         String unit = params.remove(PrjKeyParameters.PROJUNIT);
         String unitval = params.remove(PrjKeyParameters.PROJUNITVAL);
         if (unit != null) {
-            if (PrjValueParameters.UNITNAMES.containsKey(unit)) {
-                params.put(ProjKeyParameters.units, PrjValueParameters.UNITNAMES.get(unit));
-            } else if (Math.abs(Double.valueOf(unitval) - 1.0) < TOL) {
-                params.put(ProjKeyParameters.units, ProjValueParameters.M);
-            } else {
+            params.put(ProjKeyParameters.units, unit);
+            if (unitval != null) {
                 params.put(ProjKeyParameters.to_meter, unitval);
                 String x0 = params.remove(ProjKeyParameters.x_0);
                 if (x0 != null) {
@@ -247,8 +244,12 @@ public final class PrjMatcher {
                     params.put(ProjKeyParameters.y_0, y0);
                 }
             }
-            params.remove(PrjKeyParameters.PROJUNITAUTHORITY);
-            params.remove(PrjKeyParameters.PROJUNITCODE);
+            String unitAuth = params.remove(PrjKeyParameters.PROJUNITAUTHORITY);
+            String unitCode = params.remove(PrjKeyParameters.PROJUNITCODE);
+            if (unitAuth != null && unitCode != null) {
+                params.put(PrjKeyParameters.UNITAUTHORITY, unitAuth);
+                params.put(PrjKeyParameters.UNITCODE, unitCode);
+            }
             params.remove(PrjKeyParameters.GEOGUNIT);
             params.remove(PrjKeyParameters.GEOGUNITVAL);
             params.remove(PrjKeyParameters.GEOGUNITAUTHORITY);
@@ -257,25 +258,15 @@ public final class PrjMatcher {
             unit = params.remove(PrjKeyParameters.GEOGUNIT);
             unitval = params.remove(PrjKeyParameters.GEOGUNITVAL);
             if (unit != null) {
-                if (PrjValueParameters.UNITNAMES.containsKey(unit)) {
-                    params.put(ProjKeyParameters.units, PrjValueParameters.UNITNAMES.get(unit));
-                } else if (Math.abs(Double.valueOf(unitval) - 1.0) < TOL) {
-                    params.put(ProjKeyParameters.units, ProjValueParameters.RAD);
+                params.put(ProjKeyParameters.units, PrjValueParameters.UNITNAMES.get(unit));
+                params.put(ProjKeyParameters.to_meter, unitval);
+                String unitAuth = params.remove(PrjKeyParameters.GEOGUNITAUTHORITY);
+                String unitCode = params.remove(PrjKeyParameters.GEOGUNITCODE);
+                if (unitAuth != null && unitCode != null) {
+                    params.put(PrjKeyParameters.UNITAUTHORITY, unitAuth);
+                    params.put(PrjKeyParameters.UNITCODE, unitCode);
                 }
             }
-            params.remove(PrjKeyParameters.GEOGUNITAUTHORITY);
-            params.remove(PrjKeyParameters.GEOGUNITCODE);
-        }
-        unit = params.remove(PrjKeyParameters.VERTUNIT);
-        unitval = params.remove(PrjKeyParameters.VERTUNITVAL);
-        if (unit != null) {
-            if (PrjValueParameters.UNITNAMES.containsKey(unit)) {
-                params.put(PrjKeyParameters.VERTUNIT, PrjValueParameters.UNITNAMES.get(unit));
-            } else if (Math.abs(Double.valueOf(unitval) - 1.0) < TOL) {
-                params.put(PrjKeyParameters.VERTUNIT, ProjValueParameters.M);
-            }
-            params.remove(PrjKeyParameters.VERTUNITAUTHORITY);
-            params.remove(PrjKeyParameters.VERTUNITCODE);
         }
         // authority, if present
         String auth = params.remove(PrjKeyParameters.REFAUTHORITY);
@@ -566,8 +557,12 @@ public final class PrjMatcher {
      */
     private void parseProjUnit(List<PrjElement> ll) {
         String unit = getString(ll.get(0));
-        unit = unit.replaceAll("[^a-zA-Z0-9]", "").toLowerCase();
-        params.put(PrjKeyParameters.PROJUNIT, unit);
+        String unt = PrjValueParameters.UNITNAMES.get(unit.replaceAll("[^a-zA-Z0-9]", "").toLowerCase());
+        if (unt != null) {
+            params.put(PrjKeyParameters.PROJUNIT, unt);
+        } else {
+            params.put(PrjKeyParameters.PROJUNIT, unit);
+        }
         parseNumber(ll.get(1), PrjKeyParameters.PROJUNITVAL);
         if (ll.size() > 2) {
             parseProjUnitAuthority(matchNode(ll.get(2), PrjKeyParameters.AUTHORITY));
@@ -581,8 +576,12 @@ public final class PrjMatcher {
      */
     private void parseGeogUnit(List<PrjElement> ll) {
         String unit = getString(ll.get(0));
-        unit = unit.replaceAll("[^a-zA-Z0-9]", "").toLowerCase();
-        params.put(PrjKeyParameters.GEOGUNIT, unit);
+        String unt = PrjValueParameters.UNITNAMES.get(unit.replaceAll("[^a-zA-Z0-9]", "").toLowerCase());
+        if (unt != null) {
+            params.put(PrjKeyParameters.GEOGUNIT, unt);
+        } else {
+            params.put(PrjKeyParameters.GEOGUNIT, unit);
+        }
         parseNumber(ll.get(1), PrjKeyParameters.GEOGUNITVAL);
         if (ll.size() > 2) {
             parseGeogUnitAuthority(matchNode(ll.get(2), PrjKeyParameters.AUTHORITY));
@@ -596,8 +595,12 @@ public final class PrjMatcher {
      */
     private void parseVertUnit(List<PrjElement> ll) {
         String unit = getString(ll.get(0));
-        unit = unit.replaceAll("[^a-zA-Z0-9]", "").toLowerCase();
-        params.put(PrjKeyParameters.VERTUNIT, unit);
+        String unt = PrjValueParameters.UNITNAMES.get(unit.replaceAll("[^a-zA-Z0-9]", "").toLowerCase());
+        if (unt != null){
+            params.put(PrjKeyParameters.VERTUNIT, unt);
+        } else {
+            params.put(PrjKeyParameters.VERTUNIT, unit);
+        }
         parseNumber(ll.get(1), PrjKeyParameters.VERTUNITVAL);
         if (ll.size() > 2) {
             parseVertUnitAuthority(matchNode(ll.get(2), PrjKeyParameters.AUTHORITY));

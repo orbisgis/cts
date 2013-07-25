@@ -229,8 +229,9 @@ public class Ellipsoid extends IdentifiableComponent {
     transient private double[] inv_utm_coeff;
     /**
      * The coefficients used to compute meridian arc length from/to latitude
-     * this second method is taken from <a href="http://www.ngs.noaa.gov/gps-toolbox/Hehl"> here </a>.
-     * It makes it possible to choose the precision of the result.
+     * this second method is taken from <a
+     * href="http://www.ngs.noaa.gov/gps-toolbox/Hehl"> here </a>. It makes it
+     * possible to choose the precision of the result.
      */
     transient private double[] kk;
     /**
@@ -240,7 +241,6 @@ public class Ellipsoid extends IdentifiableComponent {
     /**
      * ellipsoidFromName associates each ellipsoid to a short string used to
      * recognize it in CTS.
-     *
      */
     public static final Map<String, Ellipsoid> ellipsoidFromName = new HashMap<String, Ellipsoid>();
 
@@ -427,7 +427,7 @@ public class Ellipsoid extends IdentifiableComponent {
             double semiMajorAxis,
             double invFlattening)
             throws IllegalArgumentException {
-        Identifier id = new Identifier(Ellipsoid.class, Identifiable.UNKNOWN);
+        Identifier id = new Identifier(Ellipsoid.class);
         Ellipsoid ellps = new Ellipsoid(id, semiMajorAxis,
                 SecondParameter.InverseFlattening, invFlattening);
         return ellps.checkExistingEllipsoid();
@@ -464,7 +464,7 @@ public class Ellipsoid extends IdentifiableComponent {
             double semiMajorAxis,
             double semiMinorAxis)
             throws IllegalArgumentException {
-        Identifier id = new Identifier(Ellipsoid.class, Identifiable.UNKNOWN);
+        Identifier id = new Identifier(Ellipsoid.class);
         Ellipsoid ellps = new Ellipsoid(id, semiMajorAxis,
                 SecondParameter.SemiMinorAxis, semiMinorAxis);
         return ellps.checkExistingEllipsoid();
@@ -501,7 +501,7 @@ public class Ellipsoid extends IdentifiableComponent {
             double semiMajorAxis,
             double eccentricity)
             throws IllegalArgumentException {
-        Identifier id = new Identifier(Ellipsoid.class, Identifiable.UNKNOWN);
+        Identifier id = new Identifier(Ellipsoid.class);
         Ellipsoid ellps = new Ellipsoid(id, semiMajorAxis,
                 SecondParameter.Eccentricity, eccentricity);
         return ellps.checkExistingEllipsoid();

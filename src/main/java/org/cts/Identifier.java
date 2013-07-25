@@ -131,6 +131,34 @@ public class Identifier implements Identifiable {
     }
 
     /**
+     * Create a local identifier.
+     *
+     * @param clazz the class of the identified object
+     * @param name the name of the identified object
+     * @param shortName the short name of the identified object
+     */
+    public Identifier(Class clazz, String name, String shortName) {
+        this(Identifiable.LOCAL + "_" + clazz.getSimpleName(),
+                "" + getNewId(),
+                name, shortName, null, null);
+    }
+
+    /**
+     * Create a local identifier.
+     *
+     * @param clazz the class of the identified object
+     * @param name the name of the identified object
+     * @param shortName the short name of the identified object
+     * @param aliases synonyms of this Identifiable
+     */
+    public Identifier(Class clazz, String name, String shortName,
+            List<Identifiable> aliases) {
+        this(Identifiable.LOCAL + "_" + clazz.getSimpleName(),
+                "" + getNewId(),
+                name, shortName, null, aliases);
+    }
+
+    /**
      * Creates a complete identifier.
      *
      * @param authorityName ie EPSG, IGNF

@@ -79,6 +79,8 @@ public class PrjKeyParameters {
     public static final String VERTDATUMTYPE = "vertdatumtype";
     public static final String PRIMEMCODE = "primemcode";
     public static final String PRIMEMAUTHORITY = "primemauthority";
+    public static final String UNITCODE = "unitcode";
+    public static final String UNITAUTHORITY = "unitauthority";
     public static final String PROJUNITCODE = "projunitcode";
     public static final String PROJUNITAUTHORITY = "projunitauthority";
     public static final String GEOGUNITCODE = "geogunitcode";

@@ -129,19 +129,19 @@ public class GeodeticDatum extends AbstractDatum {
             "Fundamental point: Potsdam (Helmert Tower). Latitude: 52 deg 22 min 51.4456 sec N; Longitude: 13 deg  3 min 58.9283 sec E (of Greenwich).",
             "1950");
     public final static GeodeticDatum WGS84GUAD = new GeodeticDatum(
-            new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, "Guadeloupe : WGS84", "WGS84GUAD"),
+            new Identifier(GeodeticDatum.class, "Guadeloupe : WGS84", "WGS84GUAD"),
             PrimeMeridian.GREENWICH,
             Ellipsoid.GRS80,
             new GeographicExtent("Guadeloupe", 15.875, 16.625, -61.85, -61.075),
             "",  "");
     public final static GeodeticDatum WGS84MART = new GeodeticDatum(
-            new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, "Martinique : WGS84", "WGS84GUAD"),
+            new Identifier(GeodeticDatum.class, "Martinique : WGS84", "WGS84GUAD"),
             PrimeMeridian.GREENWICH,
             Ellipsoid.GRS80,
             new GeographicExtent("Martinique", 14.25, 15.025, -61.25, -60.725),
             "",  "");
     public final static GeodeticDatum WGS84SBSM = new GeodeticDatum(
-            new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, "St-Martin St-Barth : WGS84", "WGS84SBSM"),
+            new Identifier(GeodeticDatum.class, "St-Martin St-Barth : WGS84", "WGS84SBSM"),
             PrimeMeridian.GREENWICH,
             Ellipsoid.GRS80,
             new GeographicExtent("St-Martin St-Barth", 17.8, 18.2, -63.2, -62.5),
@@ -178,7 +178,7 @@ public class GeodeticDatum extends AbstractDatum {
      */
     public GeodeticDatum(final PrimeMeridian primeMeridian,
             final Ellipsoid ellipsoid) {
-        this(new Identifier(GeodeticDatum.class, Identifiable.UNKNOWN),
+        this(new Identifier(GeodeticDatum.class),
                 primeMeridian, ellipsoid, GeographicExtent.WORLD, null, null);
     }
 
@@ -190,7 +190,7 @@ public class GeodeticDatum extends AbstractDatum {
      */
     public GeodeticDatum(final PrimeMeridian primeMeridian,
             final Ellipsoid ellipsoid, final CoordinateOperation toWGS84) {
-        this(new Identifier(GeodeticDatum.class, Identifiable.UNKNOWN),
+        this(new Identifier(GeodeticDatum.class),
                 primeMeridian, ellipsoid, GeographicExtent.WORLD, null, null);
         this.setDefaultToWGS84Operation(toWGS84);
     }

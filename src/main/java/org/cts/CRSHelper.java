@@ -141,15 +141,7 @@ public class CRSHelper {
                 throw new CRSException("No datum definition. Cannot create the "
                         + "CoordinateReferenceSystem");
             } else {
-                String sunit = parameters.remove(PrjKeyParameters.VERTUNIT);
-                String sunitval = parameters.remove(PrjKeyParameters.VERTUNITVAL);
-                Unit unit = Unit.METER;
-                if (sunit != null) {
-                    unit = Unit.getUnit(Quantity.LENGTH, sunit);
-                } else if (sunitval != null) {
-                    unit = new Unit(Quantity.LENGTH, Double.parseDouble(sunitval),
-                            new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, Identifier.UNKNOWN));
-                }
+                Unit unit = getUnit(Quantity.LENGTH, parameters, true);
                 String saxis = parameters.remove(PrjKeyParameters.VERTAXIS);
                 String saxistype = parameters.remove(PrjKeyParameters.VERTAXISTYPE);
                 CoordinateSystem cs;
@@ -181,8 +173,6 @@ public class CRSHelper {
         GeodeticCRS crs;
 
         String sproj = parameters.remove(ProjKeyParameters.proj);
-        String sunit = parameters.remove(ProjKeyParameters.units);
-        String stometer = parameters.remove(ProjKeyParameters.to_meter);
         String saxis1 = parameters.remove(PrjKeyParameters.AXIS1);
         String saxistype1 = parameters.remove(PrjKeyParameters.AXIS1TYPE);
         String saxis2 = parameters.remove(PrjKeyParameters.AXIS2);
@@ -193,18 +183,13 @@ public class CRSHelper {
 
         //It's not a projected CRS
         if (sproj.equals(ProjValueParameters.GEOCENT)) {
-            Unit unit = Unit.METER;
-            if (sunit != null) {
-                unit = Unit.getUnit(Quantity.LENGTH, sunit);
-            } else if (stometer != null) {
-                unit = new Unit(Quantity.LENGTH, Double.parseDouble(stometer),
-                        new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, Identifier.UNKNOWN));
-            }
+            Unit unit = getUnit(Quantity.LENGTH, parameters, false);
             CoordinateSystem cs = new CoordinateSystem(new Axis[]{Axis.X,
                 Axis.Y, Axis.Z}, new Unit[]{unit, unit, unit});
 
             crs = new GeocentricCRS(identifier, geodeticDatum, cs);
         } else if (sproj.equals(ProjValueParameters.LONGLAT)) {
+            Unit unit = getUnit(Quantity.ANGLE, parameters, false);
             Axis axis1 = Axis.LONGITUDE;
             if (saxis1 != null && saxistype1 != null) {
                 Axis.Direction axistype1 = Axis.getDirection(saxistype1);
@@ -224,44 +209,38 @@ public class CRSHelper {
             if (parameters.get(PrjKeyParameters.VERTCS) == null) {
                 CoordinateSystem cs = new CoordinateSystem(new Axis[]{
                     axis1, axis2, Axis.HEIGHT}, new Unit[]{
-                    Unit.DEGREE, Unit.DEGREE, Unit.METER});
+                    unit, unit, Unit.METER});
                 crs = new Geographic3DCRS(identifier, geodeticDatum, cs);
             } else {
                 CoordinateSystem cs = new CoordinateSystem(new Axis[]{
                     axis1, axis2}, new Unit[]{
-                    Unit.DEGREE, Unit.DEGREE});
+                        unit, unit});
                 crs = new Geographic2DCRS(identifier, geodeticDatum, cs);
             }
         } else {
+            Unit unit = getUnit(Quantity.LENGTH, parameters, false);
+            Axis axis1 = Axis.EASTING;
+            if (saxis1 != null && saxistype1 != null) {
+                Axis.Direction axistype1 = Axis.getDirection(saxistype1);
+                axis1 = Axis.getAxis(axistype1, saxis1);
+                if (axis1 == null) {
+                    axis1 = new Axis(saxis1, axistype1);
+                }
+            }
+            Axis axis2 = Axis.NORTHING;
+            if (saxis2 != null && saxistype2 != null) {
+                Axis.Direction axistype2 = Axis.getDirection(saxistype2);
+                axis2 = Axis.getAxis(axistype2, saxis2);
+                if (axis2 == null) {
+                    axis2 = new Axis(saxis2, axistype2);
+                }
+            }
+            CoordinateSystem cs = new CoordinateSystem(new Axis[]{
+                axis1, axis2}, new Unit[]{
+                unit, unit});
             Projection proj = getProjection(sproj, geodeticDatum.getEllipsoid(),
                     parameters);
             if (null != proj) {
-                Unit unit = Unit.METER;
-                if (sunit!=null) {
-                    unit = Unit.getUnit(Quantity.LENGTH, sunit);
-                } else if (stometer != null) {
-                unit = new Unit(Quantity.LENGTH, Double.parseDouble(stometer),
-                        new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, Identifier.UNKNOWN));
-                }
-                Axis axis1 = Axis.EASTING;
-                if (saxis1 != null && saxistype1 != null) {
-                    Axis.Direction axistype1 = Axis.getDirection(saxistype1);
-                    axis1 = Axis.getAxis(axistype1, saxis1);
-                    if (axis1 == null) {
-                        axis1 = new Axis(saxis1, axistype1);
-                    }
-                }
-                Axis axis2 = Axis.NORTHING;
-                if (saxis2 != null && saxistype2 != null) {
-                    Axis.Direction axistype2 = Axis.getDirection(saxistype2);
-                    axis2 = Axis.getAxis(axistype2, saxis2);
-                    if (axis2 == null) {
-                        axis2 = new Axis(saxis2, axistype2);
-                    }
-                }
-                CoordinateSystem cs = new CoordinateSystem(new Axis[]{
-                    axis1, axis2}, new Unit[]{
-                        unit, unit});
                 crs = new ProjectedCRS(identifier, geodeticDatum, cs, proj);
             } else {
                 throw new CRSException("Unknown projection : " + sproj);                
@@ -270,6 +249,45 @@ public class CRSHelper {
 
         setNadgrids(crs, parameters);
         return crs;
+    }
+    
+    private static Unit getUnit(Quantity quant, Map<String, String> param, boolean isVertical) {
+        String sunit;
+        String sunitval;
+        String sunitAuth;
+        String sunitCode;
+        if (isVertical) {
+            sunit = param.remove(PrjKeyParameters.VERTUNIT);
+            sunitval = param.remove(PrjKeyParameters.VERTUNITVAL);
+            sunitAuth = param.remove(PrjKeyParameters.VERTUNITAUTHORITY);
+            sunitCode = param.remove(PrjKeyParameters.VERTUNITCODE);
+        } else {
+            sunit = param.remove(ProjKeyParameters.units);
+            sunitval = param.remove(ProjKeyParameters.to_meter);
+            sunitAuth = param.remove(PrjKeyParameters.UNITAUTHORITY);
+            sunitCode = param.remove(PrjKeyParameters.UNITCODE);
+        }
+        Unit unit = Unit.getUnit(quant, sunit);
+        if (unit == null) {
+            sunit = sunit == null ? Identifiable.UNKNOWN : sunit;
+            Identifier id;
+            if (sunitAuth != null && sunitCode != null) {
+                id = new Identifier(sunitAuth, sunitCode, sunit);
+                unit = Unit.unitMap.get(id);
+            } else {
+                id = new Identifier(Unit.class, sunit);
+            }
+            if (unit == null) {
+                if (sunitval != null) {
+                    unit = new Unit(quant, Double.parseDouble(sunitval), id);
+                } else if (quant == Quantity.ANGLE) {
+                    unit = Unit.DEGREE;
+                } else {
+                    unit = Unit.getBaseUnit(quant);
+                }
+            }
+        }
+        return unit;
     }
 
     /**
@@ -329,8 +347,7 @@ public class CRSHelper {
                 try {
                     double pmdd = Double.parseDouble(pmName);
                     pm = PrimeMeridian.createPrimeMeridianFromDDLongitude(
-                            new Identifier(PrimeMeridian.class,
-                            Identifiable.UNKNOWN), pmdd);
+                            new Identifier(PrimeMeridian.class), pmdd);
                 } catch (NumberFormatException ex) {
                     LOGGER.error(pmName + " prime meridian is not parsable");
                     return null;

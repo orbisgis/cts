@@ -55,6 +55,10 @@ public class Unit extends IdentifiableComponent implements java.io.Serializable 
             new HashMap<Quantity, Map<String, Unit>>();
     // A table containing base units for each quantity Class
     private static Map<Quantity, Unit> baseUnits = new HashMap<Quantity, Unit>();
+    /**
+     * A Map containing all Units linked to their identifier.
+     */
+    public static Map<Identifier, Unit> unitMap = new HashMap<Identifier, Unit>();
 
     /**
      * Static method returning a Unit from its symbol and quantity Class.
@@ -108,48 +112,30 @@ public class Unit extends IdentifiableComponent implements java.io.Serializable 
     public static final Unit FOOT = new Unit(LENGTH, 0.3048, new Identifier("EPSG", "9002", "foot", "ft"));
     public static final Unit USFOOT = new Unit(LENGTH, 1200 / 3937, new Identifier("EPSG", "9003", "foot_us", "us-ft"));
     public static final Unit YARD = new Unit(LENGTH, 0.9144, new Identifier("EPSG", "9096", "yard", "yd"));
-    public static final Unit UNIT = new Unit(NODIM, new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, "no dimension", ""));
-    public static final Unit SECOND = new Unit(TIME, new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, "second", "s"));
-    public static final ArrayList<Unit> units = new ArrayList<Unit>();
+    public static final Unit UNIT = new Unit(NODIM, new Identifier(Unit.class, "no dimension", ""));
+    public static final Unit SECOND = new Unit(TIME, new Identifier(Unit.class, "second", "s"));
 
     static {
-        units.add(RADIAN);
-        units.add(DEGREE);
-        units.add(ARC_MINUTE);
-        units.add(ARC_SECOND);
-        units.add(GRAD);
-
         Identifier id = new Identifier("EPSG", "9001", "metre", "m");
         ArrayList<Identifiable> aliases = new ArrayList<Identifiable>();
         aliases.add(id);
         METER = new Unit(LENGTH, new Identifier("EPSG", "9001", "meter", "m", "", aliases));
-        id = new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, "millimetre", "mm");
+        id = new Identifier(Unit.class, "millimetre", "mm");
         aliases = new ArrayList<Identifiable>();
         aliases.add(id);
-        MILLIMETER = new Unit(LENGTH, 0.001, new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, "millimeter", "mm", "", aliases));
-        id = new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, "centimetre", "cm");
+        MILLIMETER = new Unit(LENGTH, 0.001, new Identifier(Unit.class, "millimeter", "mm", aliases));
+        id = new Identifier(Unit.class, "centimetre", "cm");
         aliases = new ArrayList<Identifiable>();
         aliases.add(id);
-        CENTIMETER = new Unit(LENGTH, 0.01, new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, "centimeter", "cm", "", aliases));
-        id = new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, "decimetre", "dm");
+        CENTIMETER = new Unit(LENGTH, 0.01, new Identifier(Unit.class, "centimeter", "cm", aliases));
+        id = new Identifier(Unit.class, "decimetre", "dm");
         aliases = new ArrayList<Identifiable>();
         aliases.add(id);
-        DECIMETER = new Unit(LENGTH, 0.1, new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, "decimeter", "dm", "", aliases));
+        DECIMETER = new Unit(LENGTH, 0.1, new Identifier(Unit.class, "decimeter", "dm", aliases));
         id = new Identifier("EPSG", "9036", "kilometre", "km");
         aliases = new ArrayList<Identifiable>();
         aliases.add(id);
         KILOMETER = new Unit(LENGTH, 1000d, new Identifier("EPSG", "9036", "kilometer", "km", "", aliases));
-
-        units.add(METER);
-        units.add(MILLIMETER);
-        units.add(CENTIMETER);
-        units.add(DECIMETER);
-        units.add(KILOMETER);
-        units.add(FOOT);
-        units.add(USFOOT);
-        units.add(YARD);
-        units.add(UNIT);
-        units.add(SECOND);
     }
     private Quantity quantity;
     private double scale;
@@ -200,10 +186,10 @@ public class Unit extends IdentifiableComponent implements java.io.Serializable 
     }
 
     /**
-     * Register the unit in a map, using its symbol (ie its short name) as a
-     * key. If the unit is a base unit, the method also register it in a
-     * specific map for base units, this time the key is the quantity of the
-     * unit.
+     * Register the unit in different maps, one uses the unit's symbol (ie its
+     * short name) as a key, and another its identifier. Moreover, if the unit
+     * is a base unit, the method also register it in a specific map for base
+     * units, this time the key is the quantity of the unit.
      */
     private void registerUnit() {
         Map<String, Unit> unts = map.get(quantity);
@@ -214,29 +200,7 @@ public class Unit extends IdentifiableComponent implements java.io.Serializable 
         if (scale == 1d && offset == 0d) {
             baseUnits.put(quantity, this);
         }
-    }
-
-    /**
-     * Returns the unit corresponding to the name in parameters. Returns null if
-     * the name is not registered.
-     *
-     * @param name the name of the desired unit
-     */
-    public static Unit getUnit(String name) {
-        for (Unit unit : units) {
-            if (unit.getNames().isEmpty()) {
-                if (unit.getName().toLowerCase().equals(name)) {
-                    return unit;
-                }
-            } else {
-                for (String oneName : unit.getNames()) {
-                    if (oneName.toLowerCase().equals(name)) {
-                        return unit;
-                    }
-                }
-            }
-        }
-        return null;
+        unitMap.put(this.getIdentifier(), this);
     }
 
     /**
@@ -302,7 +266,7 @@ public class Unit extends IdentifiableComponent implements java.io.Serializable 
     public Unit getBaseUnit() {
         Unit baseUnit = baseUnits.get(quantity);
         return baseUnits == null ? new Unit(quantity,
-                new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, Identifier.UNKNOWN, "")) : baseUnit;
+                new Identifier(Unit.class, Identifiable.UNKNOWN, "")) : baseUnit;
     }
 
     /**
