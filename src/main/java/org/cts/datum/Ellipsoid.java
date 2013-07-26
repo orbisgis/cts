@@ -43,7 +43,6 @@ import static java.lang.Math.tan;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.cts.Identifiable;
 import org.cts.IdentifiableComponent;
 import org.cts.Identifier;
 
@@ -68,6 +67,12 @@ import org.cts.Identifier;
 public class Ellipsoid extends IdentifiableComponent {
 
     /**
+     * ellipsoids is a {@link HashMap} that registered all Ellipsoids using
+     * their identifiers as key.
+     */
+    private final static Map<Identifier, Ellipsoid> ellipsoids = new HashMap<Identifier, Ellipsoid>();
+
+    /**
      * The second parameter use to create the ellipsoid, this parameter can be
      * the inverse flattening, the semi-minor axis or the eccentricity.
      */
@@ -80,7 +85,7 @@ public class Ellipsoid extends IdentifiableComponent {
      */
     private static final double PI_2 = Math.PI / 2.;
     /**
-     * Perfect SPHERE
+     * Perfect SPHERE.
      */
     public static final Ellipsoid SPHERE = createEllipsoidFromSemiMinorAxis(
             new Identifier("EPSG", "7035", "SPHERE"), 6371000.0, 6371000.0);
@@ -313,6 +318,24 @@ public class Ellipsoid extends IdentifiableComponent {
                 this.e2 = 0.0;
         }
         eprime2 = e2 / (1.0 - e2);
+        this.registerEllipsoid();
+    }
+
+    /**
+     * Register an ellipsoid in {@link HashMap} {@code ellipsoids} using its
+     * {@link Identifier} as a key.
+     */
+    private void registerEllipsoid() {
+        ellipsoids.put(getIdentifier(), this);
+    }
+
+    /**
+     * Returns the Ellipsoid from its idEPSG identifier.
+     *
+     * @param idEPSG the EPSG identifier of the ellipsoid
+     */
+    public static Ellipsoid getEllipsoid(Identifier idEPSG) {
+        return ellipsoids.get(idEPSG);
     }
 
     /**

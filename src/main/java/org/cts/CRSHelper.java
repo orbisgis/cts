@@ -31,8 +31,6 @@
  */
 package org.cts;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -139,10 +137,9 @@ public class CRSHelper {
             if (null != proj) {
                 crs = new ProjectedCRS(identifier, geodeticDatum, cs, proj);
             } else {
-                throw new CRSException("Unknown projection : " + sproj);                
+                throw new CRSException("Unknown projection : " + sproj);
             }
         }
-
         setNadgrids(crs, parameters);
         return crs;
     }
@@ -319,36 +316,32 @@ public class CRSHelper {
         String sunit;
         String sunitval;
         String sunitAuth;
-        String sunitCode;
+        Identifier id = null;
         if (isVertical) {
             sunit = param.remove(PrjKeyParameters.VERTUNIT);
             sunitval = param.remove(PrjKeyParameters.VERTUNITVAL);
-            sunitAuth = param.remove(PrjKeyParameters.VERTUNITAUTHORITY);
-            sunitCode = param.remove(PrjKeyParameters.VERTUNITCODE);
+            sunitAuth = param.remove(PrjKeyParameters.VERTUNITREFNAME);
         } else {
             sunit = param.remove(ProjKeyParameters.units);
             sunitval = param.remove(ProjKeyParameters.to_meter);
-            sunitAuth = param.remove(PrjKeyParameters.UNITAUTHORITY);
-            sunitCode = param.remove(PrjKeyParameters.UNITCODE);
+            sunitAuth = param.remove(PrjKeyParameters.UNITREFNAME);
         }
         Unit unit = Unit.getUnit(quant, sunit);
+        sunit = sunit == null ? Identifiable.UNKNOWN : sunit;
+        if (unit == null && sunitAuth != null) {
+            String[] authNameWithKey = sunitAuth.split(":");
+            id = new Identifier(authNameWithKey[0], authNameWithKey[1], sunit);
+            unit = Unit.unitMap.get(id);
+        }
+        if (unit == null && sunitval != null) {
+            id = id == null ? new Identifier(Unit.class, sunit) : id;
+            unit = new Unit(quant, Double.parseDouble(sunitval), id);
+        }
         if (unit == null) {
-            sunit = sunit == null ? Identifiable.UNKNOWN : sunit;
-            Identifier id;
-            if (sunitAuth != null && sunitCode != null) {
-                id = new Identifier(sunitAuth, sunitCode, sunit);
-                unit = Unit.unitMap.get(id);
+            if (quant == Quantity.ANGLE) {
+                unit = Unit.DEGREE;
             } else {
-                id = new Identifier(Unit.class, sunit);
-            }
-            if (unit == null) {
-                if (sunitval != null) {
-                    unit = new Unit(quant, Double.parseDouble(sunitval), id);
-                } else if (quant == Quantity.ANGLE) {
-                    unit = Unit.DEGREE;
-                } else {
-                    unit = Unit.getBaseUnit(quant);
-                }
+                unit = Unit.getBaseUnit(quant);
             }
         }
         return unit;
@@ -404,7 +397,8 @@ public class CRSHelper {
      */
     private static PrimeMeridian getPrimeMeridian(Map<String, String> param) {
         String pmName = param.remove(ProjKeyParameters.pm);
-        PrimeMeridian pm;
+        String authCode = param.remove(PrjKeyParameters.PRIMEMREFNAME);
+        PrimeMeridian pm = null;
         if (null != pmName) {
             pm = PrimeMeridian.primeMeridianFromName.get(pmName.toLowerCase());
             if (pm == null) {
@@ -417,7 +411,14 @@ public class CRSHelper {
                     return null;
                 }
             }
-        } else {
+        }
+        if (pm == null && authCode != null) {
+            String[] authNameWithKey = authCode.split(":");
+            Identifier id = pmName != null ? new Identifier(authNameWithKey[0], authNameWithKey[1], pmName)
+                    : new Identifier(authNameWithKey[0], authNameWithKey[1], Identifiable.UNKNOWN);
+            pm = PrimeMeridian.getPrimeMeridian(id);
+        }
+        if (pm == null) {
             pm = PrimeMeridian.GREENWICH;
         }
         return pm;
@@ -426,8 +427,8 @@ public class CRSHelper {
     /**
      * Returns a {@link GeodeticDatum} from a map of parameters. Try first to
      * obtain the {@link GeodeticDatum} from its name using {@code datum}
-     * keyword. Then if {@code param} does not contain {@code datum}
-     * keyword or if the name is not recognized, it uses
+     * keyword. Then if {@code param} does not contain {@code datum} keyword or
+     * if the name is not recognized, it uses
      * {@code getEllipsoid}, {@code getPrimeMeridian} and
      * {@code setDefaultWGS84Parameters} methods to define the
      * {@link GeodeticDatum}.
@@ -436,11 +437,18 @@ public class CRSHelper {
      */
     private static GeodeticDatum getDatum(Map<String, String> param) {
         String datumName = param.remove(ProjKeyParameters.datum);
+        String authCode = param.remove(PrjKeyParameters.DATUMREFNAME);
         GeodeticDatum gd = null;
         if (null != datumName) {
             gd = GeodeticDatum.datumFromName.get(datumName.toLowerCase());
-            param.remove(ProjKeyParameters.pm);
-        } else {
+        }
+        if (gd == null && authCode != null) {
+            String[] authNameWithKey = authCode.split(":");
+            Identifier id = datumName != null ? new Identifier(authNameWithKey[0], authNameWithKey[1], datumName)
+                    : new Identifier(authNameWithKey[0], authNameWithKey[1], Identifiable.UNKNOWN);
+            gd = GeodeticDatum.getDatum(id);
+        }
+        if (gd == null) {
             Ellipsoid ell = getEllipsoid(param);
             PrimeMeridian pm = getPrimeMeridian(param);
             if (null != pm && null != ell) {
@@ -449,6 +457,12 @@ public class CRSHelper {
                 gd = gd.checkExistingGeodeticDatum();
             }
         }
+        param.remove(ProjKeyParameters.ellps);
+        param.remove(ProjKeyParameters.a);
+        param.remove(ProjKeyParameters.b);
+        param.remove(ProjKeyParameters.rf);
+        param.remove(PrjKeyParameters.SPHEROIDREFNAME);
+        param.remove(ProjKeyParameters.pm);
         return gd;
     }
 
@@ -463,18 +477,24 @@ public class CRSHelper {
      */
     private static VerticalDatum getVerticalDatum(Map<String, String> param) {
         String datumName = param.remove(PrjKeyParameters.VERTDATUM);
-        VerticalDatum vd;
+        String authCode = param.remove(PrjKeyParameters.VERTDATUMREFNAME);
+        String vertType = param.remove(PrjKeyParameters.VERTDATUMTYPE);
+        VerticalDatum vd = null;
+        Identifier id = new Identifier(VerticalDatum.class);
         if (null != datumName) {
             vd = VerticalDatum.datumFromName.get(datumName.toLowerCase());
-        } else {
-            int type = (int) Double.parseDouble(param.remove(PrjKeyParameters.VERTDATUMTYPE));
-            String authorityName = param.remove(PrjKeyParameters.VERTDATUMAUTHORITY);
-            String authorityCode = param.remove(PrjKeyParameters.VERTDATUMCODE);
-            Identifier id = new Identifier(authorityName, authorityCode, datumName);
+            id = new Identifier(VerticalDatum.class, datumName);
+        }
+        if (vd == null && authCode != null) {
+            String[] authNameWithKey = authCode.split(":");
+            id = datumName != null ? new Identifier(authNameWithKey[0], authNameWithKey[1], datumName)
+                    : new Identifier(authNameWithKey[0], authNameWithKey[1], Identifiable.UNKNOWN);
             vd = VerticalDatum.getDatum(id);
-            if (vd == null) {
-                vd = new VerticalDatum(id, null, "", "", VerticalDatum.getType(type), "", null);
-            }
+
+        }
+        if (vd == null && vertType != null) {
+            int type = (int) Double.parseDouble(vertType);
+            vd = new VerticalDatum(id, null, "", "", VerticalDatum.getType(type), "", null);
         }
         return vd;
     }
@@ -498,40 +518,34 @@ public class CRSHelper {
                         crs.addGridTransformation(GeodeticDatum.WGS84, Identity.IDENTITY);
                     } else {
                         try {
-                        if (grid.equals("ntf_r93.gsb")) {
-                            // Use a transformation based on IGN grid that is the official way to convert coordinates from NTF to RGF93.
-                            if (crs.getDatum().equals(GeodeticDatum.NTF)) {
-                                crs.addGridTransformation(
-                                        GeodeticDatum.RGF93,
-                                        new CoordinateOperationSequence(
-                                        new Identifier(CoordinateOperation.class, "NTF" + " to " + "RGF93"),
-                                        new LongitudeRotation(GeodeticDatum.NTF.getPrimeMeridian().getLongitudeFromGreenwichInRadians()),
-                                        new Geographic2Geocentric(GeodeticDatum.NTF.getEllipsoid()),
-                                        new FrenchGeocentricNTF2RGF(),
-                                        new Geocentric2Geographic(GeodeticDatum.RGF93.getEllipsoid()),
-                                        new LongitudeRotation(-GeodeticDatum.RGF93.getPrimeMeridian().getLongitudeFromGreenwichInRadians())));
-                            } else if (crs.getDatum().equals(GeodeticDatum.NTF_PARIS)) {
-                                crs.addGridTransformation(
-                                        GeodeticDatum.RGF93,
-                                        new CoordinateOperationSequence(
-                                        new Identifier(CoordinateOperation.class, "NTF" + " to " + "RGF93"),
-                                        GeodeticDatum.NTF_PARIS.getCoordinateOperations(GeodeticDatum.NTF).get(0),
-                                        new LongitudeRotation(GeodeticDatum.NTF.getPrimeMeridian().getLongitudeFromGreenwichInRadians()),
-                                        new Geographic2Geocentric(GeodeticDatum.NTF.getEllipsoid()),
-                                        new FrenchGeocentricNTF2RGF(),
-                                        new Geocentric2Geographic(GeodeticDatum.RGF93.getEllipsoid()),
-                                        new LongitudeRotation(-GeodeticDatum.RGF93.getPrimeMeridian().getLongitudeFromGreenwichInRadians())));
+                            if (grid.equals("ntf_r93.gsb")) {
+                                // Use a transformation based on IGN grid that is the official way to convert coordinates from NTF to RGF93.
+                                if (crs.getDatum().equals(GeodeticDatum.NTF)) {
+                                    crs.addGridTransformation(
+                                            GeodeticDatum.RGF93,
+                                            new CoordinateOperationSequence(
+                                            new Identifier(CoordinateOperation.class, "NTF" + " to " + "RGF93"),
+                                            new LongitudeRotation(GeodeticDatum.NTF.getPrimeMeridian().getLongitudeFromGreenwichInRadians()),
+                                            new Geographic2Geocentric(GeodeticDatum.NTF.getEllipsoid()),
+                                            new FrenchGeocentricNTF2RGF(),
+                                            new Geocentric2Geographic(GeodeticDatum.RGF93.getEllipsoid()),
+                                            new LongitudeRotation(-GeodeticDatum.RGF93.getPrimeMeridian().getLongitudeFromGreenwichInRadians())));
+                                } else if (crs.getDatum().equals(GeodeticDatum.NTF_PARIS)) {
+                                    crs.addGridTransformation(
+                                            GeodeticDatum.RGF93,
+                                            new CoordinateOperationSequence(
+                                            new Identifier(CoordinateOperation.class, "NTF" + " to " + "RGF93"),
+                                            GeodeticDatum.NTF_PARIS.getCoordinateOperations(GeodeticDatum.NTF).get(0),
+                                            new LongitudeRotation(GeodeticDatum.NTF.getPrimeMeridian().getLongitudeFromGreenwichInRadians()),
+                                            new Geographic2Geocentric(GeodeticDatum.NTF.getEllipsoid()),
+                                            new FrenchGeocentricNTF2RGF(),
+                                            new Geocentric2Geographic(GeodeticDatum.RGF93.getEllipsoid()),
+                                            new LongitudeRotation(-GeodeticDatum.RGF93.getPrimeMeridian().getLongitudeFromGreenwichInRadians())));
+                                }
                             }
-                        }
                             NTv2GridShiftTransformation gt = NTv2GridShiftTransformation.createNTv2GridShiftTransformation(grid);
                             gt.setMode(NTv2GridShiftTransformation.SPEED);
                             crs.addGridTransformation(GeodeticDatum.datumFromName.get(gt.getToDatum()), gt);
-                        } catch (IOException ex) {
-                            LOGGER.error("Cannot find the nadgrid " + grid + ".", ex);
-                        } catch (URISyntaxException ex) {
-                            LOGGER.error("Cannot find the nadgrid " + grid + ".", ex);
-                        } catch (NullPointerException ex) {
-                            LOGGER.error("Cannot find the nadgrid " + grid + ".", ex);
                         } catch (Exception ex) {
                             LOGGER.error("Cannot find the nadgrid " + grid + ".", ex);
                         }
@@ -556,28 +570,37 @@ public class CRSHelper {
         String a = param.remove(ProjKeyParameters.a);
         String b = param.remove(ProjKeyParameters.b);
         String rf = param.remove(ProjKeyParameters.rf);
+        String authorityCode = param.remove(PrjKeyParameters.SPHEROIDREFNAME);
+        Ellipsoid ellps = null;
 
         if (null != ellipsoidName) {
-            ellipsoidName = ellipsoidName.replaceAll("[^a-zA-Z0-9]", "");
-            return Ellipsoid.ellipsoidFromName.get(ellipsoidName.toLowerCase());
-        } else if (null != a && (null != b || null != rf)) {
+            ellps = Ellipsoid.ellipsoidFromName.get(ellipsoidName.replaceAll("[^a-zA-Z0-9]", "").toLowerCase());
+        }
+        if (ellps == null && authorityCode != null) {
+            String[] authNameWithKey = authorityCode.split(":");
+            Identifier id = ellipsoidName != null ? new Identifier(authNameWithKey[0], authNameWithKey[1], ellipsoidName)
+                    : new Identifier(authNameWithKey[0], authNameWithKey[1], Identifiable.UNKNOWN);
+            ellps = Ellipsoid.getEllipsoid(id);
+        }
+        if (ellps == null && null != a && (null != b || null != rf)) {
             double a_ = Double.parseDouble(a);
             if (null != b) {
                 double b_ = Double.parseDouble(b);
-                return Ellipsoid.createEllipsoidFromSemiMinorAxis(a_, b_);
+                ellps = Ellipsoid.createEllipsoidFromSemiMinorAxis(a_, b_);
             } else {
                 double rf_ = Double.parseDouble(rf);
-                return Ellipsoid.createEllipsoidFromInverseFlattening(a_, rf_);
+                ellps = Ellipsoid.createEllipsoidFromInverseFlattening(a_, rf_);
             }
-        } else {
-            LOGGER.warn("Ellipsoid cannot be defined");
-            return null;
         }
+        if (ellps == null) {
+            LOGGER.warn("Ellipsoid cannot be defined");
+        }
+        return ellps;
     }
 
     /**
-     * Creates a {@link org.cts.op.projection.Projection} from a projection
-     * type (ie lcc, tmerc), an ellipsoid and a map of parameters.
+     * Creates a {@link org.cts.op.projection.Projection} from a projection type
+     * (ie lcc, tmerc), an ellipsoid and a map of parameters.
      *
      * @param projectionName name of the projection type
      * @param ell ellipsoid used in the projection
@@ -652,7 +675,7 @@ public class CRSHelper {
         } else if (projectionName.equalsIgnoreCase(ProjValueParameters.CASS)) {
             return new CassiniSoldner(ell, map);
         } else if (projectionName.equalsIgnoreCase(ProjValueParameters.OMERC)) {
-            if (alpha==90 && gamma==90) {
+            if (alpha == 90 && gamma == 90) {
                 return new SwissObliqueMercator(ell, map);
             }
             return new ObliqueMercator(ell, map);

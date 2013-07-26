@@ -55,6 +55,12 @@ import org.cts.util.AngleFormat;
 public class PrimeMeridian extends IdentifiableComponent {
 
     /**
+     * primems is a {@link HashMap} that registered all PrimeMeridians using
+     * their identifiers as key.
+     */
+    private final static Map<Identifier, PrimeMeridian> primems = new HashMap<Identifier, PrimeMeridian>();
+
+    /**
      * Greenwich Meridian.
      */
     public static final PrimeMeridian GREENWICH =
@@ -160,8 +166,7 @@ public class PrimeMeridian extends IdentifiableComponent {
      * decimal degrees.
      */
     private PrimeMeridian(String name, double ddLongitude) {
-        super(new Identifier(PrimeMeridian.class, name));
-        this.ddLongitude = ddLongitude;
+        this(new Identifier(PrimeMeridian.class, name), ddLongitude);
     }
 
     /**
@@ -175,6 +180,24 @@ public class PrimeMeridian extends IdentifiableComponent {
     private PrimeMeridian(Identifier identifier, double ddLongitude) {
         super(identifier);
         this.ddLongitude = ddLongitude;
+        this.registerPrimeMeridian();
+    }
+
+    /**
+     * Register a PrimeMeridian in {@link HashMap} {@code primems} using its
+     * {@link Identifier} as a key.
+     */
+    private void registerPrimeMeridian() {
+        primems.put(getIdentifier(), this);
+    }
+
+    /**
+     * Returns the PrimeMeridian from its idEPSG identifier.
+     *
+     * @param idEPSG the EPSG identifier of the prime meridian
+     */
+    public static PrimeMeridian getPrimeMeridian(Identifier idEPSG) {
+        return primems.get(idEPSG);
     }
 
     /**

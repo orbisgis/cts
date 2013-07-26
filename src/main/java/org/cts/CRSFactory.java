@@ -96,7 +96,7 @@ public class CRSFactory {
                     Registry registry = getRegistryManager().getRegistry(registryNameWithCode[0]);
                     Map<String, String> crsParameters = registry.getParameters(registryNameWithCode[1]);
                     if (crsParameters != null) {
-                        crs = CRSHelper.createCoordinateReferenceSystem(new Identifier(registryNameWithCode[0], registryNameWithCode[1], crsParameters.get("title")), crsParameters);
+                        crs = CRSHelper.createCoordinateReferenceSystem(new Identifier(registryNameWithCode[0], registryNameWithCode[1], crsParameters.remove("title")), crsParameters);
                     }
                     if (crs != null) {
                         CRSPOOL.put(authorityAndSrid, crs);

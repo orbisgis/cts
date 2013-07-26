@@ -31,6 +31,7 @@
  */
 package org.cts.cs;
 
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,7 +47,7 @@ public class Axis {
     /**
      * The map that allows CTS to get Axes from their name.
      */
-    private static Map<Direction, Map<String, Axis>> axisFromDirAndName = new HashMap<Direction, Map<String, Axis>>();
+    private static Map<Direction, Map<String, Axis>> axisFromDirAndName = new EnumMap<Direction, Map<String, Axis>>(Direction.class);
 
     /**
      * Easting axis. Used for planimetric coordinate system, generally in pair
