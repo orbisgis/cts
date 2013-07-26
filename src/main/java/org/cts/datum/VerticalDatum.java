@@ -462,6 +462,25 @@ public class VerticalDatum extends AbstractDatum {
         }
     }
 
+    public static int getTypeNumber(Type type) {
+        switch (type) {
+            case OTHER_SURFACE:
+                return 2000;
+            case ORTHOMETRIC:
+                return 2001;
+            case ELLIPSOIDAL:
+                return 2002;
+            case BAROMETRIC:
+                return 2003;
+            case GEOIDAL:
+                return 2005;
+            case DEPTH:
+                return 2006;
+            default:
+                return 0;
+        }
+    }
+
     /**
      * Return the operation converting altitude of the vertical datum into
      * ellipsoidal height.
