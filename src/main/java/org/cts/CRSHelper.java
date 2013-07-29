@@ -340,7 +340,8 @@ public class CRSHelper {
         if (unit == null && sunitAuth != null) {
             String[] authNameWithKey = sunitAuth.split(":");
             id = new Identifier(authNameWithKey[0], authNameWithKey[1], sunit);
-            unit = Unit.unitMap.get(id);
+            // Unit unit = Unit.unitMap.get(id);
+            unit = (Unit) IdentifiableComponent.getComponent(id);
         }
         if (unit == null && sunitval != null) {
             id = id == null ? new Identifier(Unit.class, sunit) : id;
@@ -425,7 +426,8 @@ public class CRSHelper {
             String[] authNameWithKey = authCode.split(":");
             Identifier id = pmName != null ? new Identifier(authNameWithKey[0], authNameWithKey[1], pmName)
                     : new Identifier(authNameWithKey[0], authNameWithKey[1], Identifiable.UNKNOWN);
-            pm = PrimeMeridian.getPrimeMeridian(id);
+            //pm = PrimeMeridian.getPrimeMeridian(id);
+            pm = (PrimeMeridian) IdentifiableComponent.getComponent(id);
         }
         if (pm == null) {
             pm = PrimeMeridian.GREENWICH;
@@ -455,7 +457,8 @@ public class CRSHelper {
             String[] authNameWithKey = authCode.split(":");
             Identifier id = datumName != null ? new Identifier(authNameWithKey[0], authNameWithKey[1], datumName)
                     : new Identifier(authNameWithKey[0], authNameWithKey[1], Identifiable.UNKNOWN);
-            gd = GeodeticDatum.getDatum(id);
+            //gd = GeodeticDatum.getDatum(id);
+            gd = (GeodeticDatum) IdentifiableComponent.getComponent(id);
         }
         if (gd == null) {
             Ellipsoid ell = getEllipsoid(param);
@@ -498,7 +501,7 @@ public class CRSHelper {
             String[] authNameWithKey = authCode.split(":");
             id = datumName != null ? new Identifier(authNameWithKey[0], authNameWithKey[1], datumName)
                     : new Identifier(authNameWithKey[0], authNameWithKey[1], Identifiable.UNKNOWN);
-            vd = VerticalDatum.getDatum(id);
+            vd = (VerticalDatum) IdentifiableComponent.getComponent(id);
 
         }
         if (vd == null && vertType != null) {
@@ -589,7 +592,7 @@ public class CRSHelper {
             String[] authNameWithKey = authorityCode.split(":");
             Identifier id = ellipsoidName != null ? new Identifier(authNameWithKey[0], authNameWithKey[1], ellipsoidName)
                     : new Identifier(authNameWithKey[0], authNameWithKey[1], Identifiable.UNKNOWN);
-            ellps = Ellipsoid.getEllipsoid(id);
+            ellps = (Ellipsoid) IdentifiableComponent.getComponent(id);
         }
         if (ellps == null && null != a && (null != b || null != rf)) {
             double a_ = Double.parseDouble(a);

@@ -32,6 +32,7 @@
 package org.cts.datum;
 
 import org.cts.CTSTestCase;
+import org.cts.IdentifiableComponent;
 import org.cts.Identifier;
 import org.cts.cs.GeographicExtent;
 import static org.junit.Assert.*;
@@ -109,6 +110,6 @@ public class GeodeticDatumTest extends CTSTestCase {
     @Test
     public void testGetDatum() {
         Identifier id = new Identifier("EPSG", "6171", "Réseau géodésique français 1993", "RGF93");
-        assertTrue("test de getDatum(id)", getDatum(id).equals(RGF93));
+        assertTrue("test de getDatum(id)", IdentifiableComponent.getComponent(id).equals(RGF93));
     }
 }

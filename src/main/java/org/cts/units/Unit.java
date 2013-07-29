@@ -55,10 +55,6 @@ public class Unit extends IdentifiableComponent implements java.io.Serializable 
             new HashMap<Quantity, Map<String, Unit>>();
     // A table containing base units for each quantity Class
     private static Map<Quantity, Unit> baseUnits = new HashMap<Quantity, Unit>();
-    /**
-     * A Map containing all Units linked to their identifier.
-     */
-    public static Map<Identifier, Unit> unitMap = new HashMap<Identifier, Unit>();
 
     /**
      * Static method returning a Unit from its symbol and quantity Class.
@@ -200,7 +196,6 @@ public class Unit extends IdentifiableComponent implements java.io.Serializable 
         if (scale == 1d && offset == 0d) {
             baseUnits.put(quantity, this);
         }
-        unitMap.put(this.getIdentifier(), this);
     }
 
     /**

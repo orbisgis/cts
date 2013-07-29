@@ -31,7 +31,6 @@
  */
 package org.cts.datum;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -59,12 +58,6 @@ import org.cts.op.transformation.SevenParameterTransformation;
  * @author Michaël Michaud, Jules Party
  */
 public class GeodeticDatum extends AbstractDatum {
-
-    /**
-     * datums is a {@link HashMap} that registered all GeodeticDatums using
-     * their identifiers as key.
-     */
-    private final static Map<Identifier, GeodeticDatum> datums = new HashMap<Identifier, GeodeticDatum>();
     /**
      * datumFromName associates each datum to a short string used to recognize
      * it in CTS.
@@ -212,31 +205,6 @@ public class GeodeticDatum extends AbstractDatum {
         super(identifier, extent, origin, epoch);
         this.ellipsoid = ellipsoid;
         this.primeMeridian = primeMeridian;
-        this.registerDatum();
-    }
-
-    /**
-     * Register a datum in {@link HashMap} {@code datums} using its
-     * {@link Identifier} as a key.
-     */
-    private void registerDatum() {
-        datums.put(getIdentifier(), this);
-    }
-
-    /**
-     * Returns a collection of all the registered geodetic datums.
-     */
-    public static Collection<GeodeticDatum> getAvailableDatums() {
-        return datums.values();
-    }
-
-    /**
-     * Returns the Datum from its idEPSG identifier.
-     *
-     * @param idEPSG the EPSG identifier of the datum
-     */
-    public static GeodeticDatum getDatum(Identifier idEPSG) {
-        return datums.get(idEPSG);
     }
 
     /**

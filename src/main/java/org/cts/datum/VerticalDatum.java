@@ -31,7 +31,6 @@
  */
 package org.cts.datum;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -49,9 +48,6 @@ import org.cts.op.transformation.Altitude2EllipsoidalHeight;
  * @author Michaël Michaud, Jules Party
  */
 public class VerticalDatum extends AbstractDatum {
-
-    private final static Map<Identifier, VerticalDatum> datums =
-            new HashMap<Identifier, VerticalDatum>();
     /**
      * datumFromName associates each datum to a short string used to recognize
      * it in CTS.
@@ -373,21 +369,6 @@ public class VerticalDatum extends AbstractDatum {
     private final Ellipsoid ellps;
 
     /**
-     * Creates a new Datum.
-     *
-     * @param name name of this vertical datum
-     */
-    public VerticalDatum(String name) {
-        super(new Identifier(VerticalDatum.class, name),
-                GeographicExtent.WORLD, null, null);
-        this.type = Type.GEOIDAL;
-        this.registerDatum();
-        this.alti2ellpsHeight = null;
-        this.ellps = null;
-        //addCoordinateOperation(WGS84VD, altitude2EllipsoidalHeight);
-    }
-
-    /**
      * Creates a new VerticalDatum.
      *
      * @param identifier identifier.
@@ -417,7 +398,6 @@ public class VerticalDatum extends AbstractDatum {
             this.alti2ellpsHeight = null;
             this.ellps = null;
         }
-        this.registerDatum();
     }
 
     /**
@@ -433,7 +413,6 @@ public class VerticalDatum extends AbstractDatum {
         this.type = Type.ELLIPSOIDAL;
         this.alti2ellpsHeight = Identity.IDENTITY;
         this.ellps = ellps;
-        this.registerDatum();
     }
 
     /**
@@ -487,28 +466,6 @@ public class VerticalDatum extends AbstractDatum {
      */
     public CoordinateOperation getAltiToEllpsHeight() {
         return alti2ellpsHeight;
-    }
-
-    /**
-     * Register a datum in {@link HashMap} {@code datums} using its
-     * {@link Identifier} as a key.
-     */
-    private void registerDatum() {
-        datums.put(getIdentifier(), this);
-    }
-
-    /**
-     * Return a collection of all the registered vertical datums.
-     */
-    public static Collection<VerticalDatum> getAvailableDatums() {
-        return datums.values();
-    }
-
-    /**
-     * Return the Datum with idEPSG identifier.
-     */
-    public static VerticalDatum getDatum(Identifier identifier) {
-        return datums.get(identifier);
     }
 
     /**

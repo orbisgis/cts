@@ -31,7 +31,10 @@
  */
 package org.cts;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import org.apache.log4j.Logger;
 
 /**
  * IdentifiableComponent is a helper class used as a parent class for components
@@ -44,6 +47,8 @@ import java.util.List;
 public class IdentifiableComponent implements Identifiable {
 
     private Identifier identifier;
+    static final Logger LOGGER = Logger.getLogger(CRSHelper.class);
+    private static Map<Identifier, IdentifiableComponent> registry = new HashMap<Identifier, IdentifiableComponent>();
 
     /**
      * Return this component's Identifier
@@ -170,6 +175,19 @@ public class IdentifiableComponent implements Identifiable {
      */
     public IdentifiableComponent(Identifier identifier) {
         this.identifier = identifier;
+        this.registerComponent();
+    }
+
+    private void registerComponent() {
+        if (!registry.containsKey(getIdentifier())) {
+            registry.put(getIdentifier(), this);
+        } else {
+            LOGGER.warn("A component has already been register for key " + getAuthorityName() + ":" + getAuthorityKey() + ".");
+        }
+    }
+
+    public static IdentifiableComponent getComponent(Identifier id) {
+        return registry.get(id);
     }
 
     /**
