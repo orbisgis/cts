@@ -39,6 +39,7 @@ import org.cts.crs.CompoundCRS;
 import org.cts.crs.CoordinateReferenceSystem;
 import org.cts.crs.GeodeticCRS;
 import org.cts.crs.Geographic2DCRS;
+import org.cts.crs.Geographic3DCRS;
 import org.cts.crs.ProjectedCRS;
 import org.cts.crs.VerticalCRS;
 import org.cts.datum.Ellipsoid;
@@ -86,10 +87,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         CompoundCRS sourceCRS = new CompoundCRS(new Identifier(CompoundCRS.class, "RGF93 Lambert93 + IGN69"),
                 (ProjectedCRS) cRSFactory.getCRS("IGNF:LAMB93"),
                 new VerticalCRS(new Identifier("EPSG", "5720", "IGN69"), VerticalDatum.IGN69, VerticalCRS.ALTITUDE_CS));
-        CompoundCRS targetCRS = new CompoundCRS(new Identifier(CompoundCRS.class, "RGF93 + GRS80 ellipsoidal height"),
-                RGF93crs, new VerticalCRS(new Identifier("EPSG", "5019", "GRS80 ellipsoidal height"),
-                new VerticalDatum(new Identifier(VerticalDatum.class), null, null, Ellipsoid.GRS80),
-                VerticalCRS.HEIGHT_CS));
+        Geographic3DCRS targetCRS = new Geographic3DCRS(new Identifier("EPSG", "4171", "RGF93"), GeodeticDatum.RGF93);
         double[] inputPoint = new double[]{750000, 7000000, 100};
         double[] expectedPoint = new double[]{50.09631762, 3.69807131, 144.492};
         double[] outputPoint = transform(sourceCRS, targetCRS, inputPoint);

@@ -124,6 +124,25 @@ public final class CoordinateOperationFactory {
         if (target == null) {
             throw new IllegalArgumentException("The target CRS must not be null");
         }
+        if (source instanceof CompoundCRS) {
+            if (target instanceof CompoundCRS) {
+                return createCoordinateOperations((CompoundCRS) source, (CompoundCRS) target);
+            } else {
+                try {
+                    CompoundCRS targt = CompoundCRS.toCompoundCRS(target);
+                    return createCoordinateOperations((CompoundCRS) source, targt);
+                } catch (CRSException ex) {
+                    throw new IllegalArgumentException("There cannot be operations between CompoundCRS and " + target.getClass() + ".");
+                }
+            }
+        } else if (target instanceof CompoundCRS) {
+            try {
+                CompoundCRS sourc = CompoundCRS.toCompoundCRS(source);
+                return createCoordinateOperations(sourc, (CompoundCRS) target);
+            } catch (CRSException ex) {
+                throw new IllegalArgumentException("There cannot be operations between CompoundCRS and " + target.getClass() + ".");
+            }
+        }
         List<CoordinateOperation> opList = source.getCRSTransformations(target);
         if (opList != null) {
             return opList;

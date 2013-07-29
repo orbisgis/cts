@@ -252,6 +252,18 @@ public class CompoundCRS extends GeodeticCRS {
         return new CoordinateOperationSequence(new Identifier(
                 CoordinateOperationSequence.class), ops);
     }
+  
+    public static CompoundCRS toCompoundCRS(GeodeticCRS crs) throws CRSException {
+        if (crs instanceof Geographic3DCRS) {
+            Geographic2DCRS horCRS = new Geographic2DCRS(crs.getIdentifier(), crs.getDatum(), new CoordinateSystem(
+                    new Axis[]{crs.getCoordinateSystem().getAxis(0), crs.getCoordinateSystem().getAxis(1)},
+                    new Unit[]{crs.getCoordinateSystem().getUnit(0), crs.getCoordinateSystem().getUnit(1)}));
+            VerticalCRS verCRS = new VerticalCRS(new Identifier(VerticalCRS.class), new VerticalDatum(new Identifier(VerticalDatum.class), "", "", crs.getDatum().getEllipsoid()));
+            return new CompoundCRS(crs.getIdentifier(), horCRS, verCRS);
+        } else {
+            throw new CRSException("Only Geographic3DCRS can be transformed onto CompoundCRS.");
+        }
+    }
 
     /**
      * Return a String representation of this Datum.

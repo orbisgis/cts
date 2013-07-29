@@ -98,6 +98,19 @@ public class VerticalCRS extends IdentifiableComponent implements
     }
 
     /**
+     * Create a new VerticalCRS.
+     *
+     * @param identifier the identifier of the VerticalCRS
+     * @param datum the datum associated with the VerticalCRS
+     * @param cs the coordinate system associated with the VerticalCRS
+     */
+    public VerticalCRS(Identifier identifier, VerticalDatum datum) {
+        super(identifier);
+        this.verticalDatum = datum;
+        this.coordinateSystem = HEIGHT_CS;
+    }
+
+    /**
      * @see CoordinateReferenceSystem#getProjection()
      */
     @Override

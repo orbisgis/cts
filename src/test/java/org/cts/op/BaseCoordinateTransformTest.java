@@ -61,13 +61,7 @@ public class BaseCoordinateTransformTest extends CTSTestCase {
      */
     public double[] transform(GeodeticCRS sourceCRS, GeodeticCRS targetCRS, double[] inputPoint) throws IllegalCoordinateException {
         List<CoordinateOperation> ops;
-        if (sourceCRS instanceof CompoundCRS && targetCRS instanceof CompoundCRS) {
-            CompoundCRS srcCRS = (CompoundCRS) sourceCRS;
-            CompoundCRS tgtCRS = (CompoundCRS) targetCRS;
-            ops = CoordinateOperationFactory.createCoordinateOperations(srcCRS, tgtCRS);
-        } else {
-            ops = CoordinateOperationFactory.createCoordinateOperations(sourceCRS, targetCRS);
-        }
+        ops = CoordinateOperationFactory.createCoordinateOperations(sourceCRS, targetCRS);
         if (!ops.isEmpty()) {
             if (verbose) {
                 System.out.println(ops.get(0));
