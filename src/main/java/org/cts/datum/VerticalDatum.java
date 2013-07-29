@@ -165,7 +165,7 @@ public class VerticalDatum extends AbstractDatum {
             new GeographicExtent("Guyane", 2, 6, -55, -51),
             "", "", Type.GEOIDAL, "ggguy00.txt", GeodeticDatum.RGF93);
     public final static VerticalDatum SHOM53 = new VerticalDatum(
-            new Identifier("EPSG", "5191", "Mayotte SHOM 1953 dans RGM04", "SHOM53"),
+            new Identifier(VerticalDatum.class, "Mayotte SHOM 1953 dans RGM04", "SHOM53"),
             new GeographicExtent("Mayotte", -13.095, -12.42, 44.91, 45.405),
             "", "", Type.GEOIDAL, "ggm04v1.txt", GeodeticDatum.RGF93);
     public final static VerticalDatum IGN62KER = new VerticalDatum(
@@ -257,7 +257,7 @@ public class VerticalDatum extends AbstractDatum {
             new GeographicExtent("Tupai", -152, -151.75, -16.5, -16),
             "", "", Type.GEOIDAL, "ggpf02-Tupai.mnt", GeodeticDatum.RGF93);
     public final static VerticalDatum RAR07 = new VerticalDatum(
-            new Identifier("EPSG", "5156", "Reunion 1989", "RAR07"),
+            new Identifier(VerticalDatum.class, "Référence des Altitudes Réunionnaises 2007", "RAR07"),
             new GeographicExtent("Reunion", 55.14, 55.94, -21.5, -20.75),
             "", "", Type.GEOIDAL, "RAR07.mnt", GeodeticDatum.RGF93);
     public final static VerticalDatum IGN88GTBTold = new VerticalDatum(
