@@ -507,6 +507,11 @@ public final class PrjMatcher {
                         case 1:
                             params.put(PrjKeyParameters.AXIS2, info.get(0));
                             params.put(PrjKeyParameters.AXIS2TYPE, info.get(1));
+                            indexAxis++;
+                            break;
+                        case 2:
+                            params.put(PrjKeyParameters.AXIS3, info.get(0));
+                            params.put(PrjKeyParameters.AXIS3TYPE, info.get(1));
                             indexAxis = 0;
                             break;
                         default:
@@ -519,6 +524,8 @@ public final class PrjMatcher {
         for (int i = 1; i < ll.size(); i++) {
             matchAnyNode(ll.get(i), matchers);
         }
+
+        indexAxis = 0;
     }
 
     /**

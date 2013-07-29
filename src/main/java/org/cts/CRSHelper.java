@@ -42,6 +42,7 @@ import org.cts.crs.CoordinateReferenceSystem;
 import org.cts.crs.GeocentricCRS;
 import org.cts.crs.GeodeticCRS;
 import org.cts.crs.Geographic2DCRS;
+import org.cts.crs.Geographic3DCRS;
 import org.cts.crs.ProjectedCRS;
 import org.cts.crs.VerticalCRS;
 import org.cts.cs.Axis;
@@ -129,7 +130,11 @@ public class CRSHelper {
             crs = new GeocentricCRS(identifier, geodeticDatum, cs);
         } else if (sproj.equals(ProjValueParameters.LONGLAT)) {
             CoordinateSystem cs = getCoordinateSystem(parameters, 3);
-            crs = new Geographic2DCRS(identifier, geodeticDatum, cs);
+            if (cs.getDimension() == 2) {
+                crs = new Geographic2DCRS(identifier, geodeticDatum, cs);
+            } else {
+                crs = new Geographic3DCRS(identifier, geodeticDatum, cs);
+            }
         } else {
             CoordinateSystem cs = getCoordinateSystem(parameters, 4);
             Projection proj = getProjection(sproj, geodeticDatum.getEllipsoid(),
@@ -196,7 +201,7 @@ public class CRSHelper {
                 dim = 3;
                 break;
             case 3:
-                dim = 2;
+                dim = param.get(PrjKeyParameters.AXIS3) != null ? 3 : 2;
                 quant = Quantity.ANGLE;
                 break;
             case 4:
@@ -268,6 +273,10 @@ public class CRSHelper {
                         saxistype = param.remove(PrjKeyParameters.AXIS2TYPE);
                         defaultAxis = Axis.LATITUDE;
                         break;
+                    case 2:
+                        saxis = param.remove(PrjKeyParameters.AXIS3);
+                        saxistype = param.remove(PrjKeyParameters.AXIS3TYPE);
+                        defaultAxis = Axis.HEIGHT;
                     default:
                         throw new CRSException("Wrong argument index: " + index + ". Parameter shall be 1 or 2.");
                 }
