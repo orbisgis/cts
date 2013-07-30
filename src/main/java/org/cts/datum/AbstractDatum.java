@@ -31,17 +31,10 @@
  */
 package org.cts.datum;
 
-import java.util.*;
 
 import org.cts.IdentifiableComponent;
 import org.cts.Identifier;
 import org.cts.cs.Extent;
-import org.cts.op.CoordinateOperation;
-import org.cts.op.CoordinateOperationSequence;
-import org.cts.op.Geocentric2Geographic;
-import org.cts.op.Geographic2Geocentric;
-import org.cts.op.LongitudeRotation;
-import org.cts.op.NonInvertibleOperationException;
 
 /**
  * A datum (plural datums) is a reference from which measurements are made.<p>
@@ -72,11 +65,6 @@ public abstract class AbstractDatum extends IdentifiableComponent
      * The realization epoch of this Datum as a String.
      */
     private String epoch;
-    /**
-     * A map of known transformations from this Datum to other {@linkplain Datum datums}.
-     */
-    private Map<Datum, List<CoordinateOperation>> datumTransformations =
-            new HashMap<Datum, List<CoordinateOperation>>();
 
     /**
      * Creates a new Datum.
@@ -119,101 +107,10 @@ public abstract class AbstractDatum extends IdentifiableComponent
     }
 
     /**
-     * Add a Transformation to another Datum.
-     *
-     * @param datum the target datum of the transformation to add
-     * @param coordOp the transformation linking this Datum and the
-     * target <code>datum</code>
-     */
-    public void addCoordinateOperation(Datum datum, CoordinateOperation coordOp) {
-        if (datumTransformations.get(datum) == null) {
-            datumTransformations.put(datum, new ArrayList<CoordinateOperation>());
-        }
-        if (!datumTransformations.get(datum).contains(coordOp)) {
-            datumTransformations.get(datum).add(coordOp);
-        }
-    }
-
-    /**
-     * Get a transformation to another datum.
-     *
-     * @param datum the datum that must be a target for returned transformation
-     */
-    public List<CoordinateOperation> getCoordinateOperations(Datum datum) {
-        if (datumTransformations.get(datum) == null) {
-            if (!getCoordinateOperations(GeodeticDatum.WGS84).isEmpty() && !GeodeticDatum.WGS84.getCoordinateOperations(datum).isEmpty()) {
-                try {
-                    List<CoordinateOperation> opList = new ArrayList<CoordinateOperation>();
-                    List<CoordinateOperation> opListInv = new ArrayList<CoordinateOperation>();
-                    if (!getToWGS84().equals(datum.getToWGS84())) {
-                        opList.add(new LongitudeRotation(getPrimeMeridian().getLongitudeFromGreenwichInRadians()));
-                        opList.add(new Geographic2Geocentric(getEllipsoid()));
-                        opList.add(getToWGS84());
-                        opList.add(datum.getToWGS84().inverse());
-                        opList.add(new Geocentric2Geographic(datum.getEllipsoid()));
-                        opList.add(new LongitudeRotation(-datum.getPrimeMeridian().getLongitudeFromGreenwichInRadians()));
-                        opListInv.add(new LongitudeRotation(datum.getPrimeMeridian().getLongitudeFromGreenwichInRadians()));
-                        opListInv.add(new Geographic2Geocentric(datum.getEllipsoid()));
-                        opListInv.add(datum.getToWGS84());
-                        opListInv.add(getToWGS84().inverse());
-                        opListInv.add(new Geocentric2Geographic(getEllipsoid()));
-                        opListInv.add(new LongitudeRotation(-getPrimeMeridian().getLongitudeFromGreenwichInRadians()));
-                    } else if (!getEllipsoid().equals(datum.getEllipsoid()) && !getPrimeMeridian().equals(datum.getPrimeMeridian())) {
-                        opList.add(new LongitudeRotation(getPrimeMeridian().getLongitudeFromGreenwichInRadians()));
-                        opList.add(new Geographic2Geocentric(getEllipsoid()));
-                        opList.add(new Geocentric2Geographic(datum.getEllipsoid()));
-                        opList.add(new LongitudeRotation(-datum.getPrimeMeridian().getLongitudeFromGreenwichInRadians()));
-                        opListInv.add(new LongitudeRotation(datum.getPrimeMeridian().getLongitudeFromGreenwichInRadians()));
-                        opListInv.add(new Geographic2Geocentric(datum.getEllipsoid()));
-                        opListInv.add(new Geocentric2Geographic(getEllipsoid()));
-                        opListInv.add(new LongitudeRotation(-getPrimeMeridian().getLongitudeFromGreenwichInRadians()));
-                    } else if (!getPrimeMeridian().equals(datum.getPrimeMeridian())) {
-                        opList.add(new LongitudeRotation(getPrimeMeridian().getLongitudeFromGreenwichInRadians()));
-                        opList.add(new LongitudeRotation(-datum.getPrimeMeridian().getLongitudeFromGreenwichInRadians()));
-                        opListInv.add(new LongitudeRotation(datum.getPrimeMeridian().getLongitudeFromGreenwichInRadians()));
-                        opListInv.add(new LongitudeRotation(-getPrimeMeridian().getLongitudeFromGreenwichInRadians()));
-                    } else if (!getEllipsoid().equals(datum.getEllipsoid())) {
-                        opList.add(new Geographic2Geocentric(getEllipsoid()));
-                        opList.add(new Geocentric2Geographic(datum.getEllipsoid()));
-                        opListInv.add(new Geographic2Geocentric(datum.getEllipsoid()));
-                        opListInv.add(new Geocentric2Geographic(getEllipsoid()));
-                    }
-                    CoordinateOperation op = new CoordinateOperationSequence(
-                            new Identifier(CoordinateOperationSequence.class, getName() + " to " + datum.getName()),
-                            opList);
-                    CoordinateOperation opInv = new CoordinateOperationSequence(
-                            new Identifier(CoordinateOperationSequence.class, datum.getName() + " to " + getName()),
-                            opListInv);
-                    addCoordinateOperation(datum, op);
-                    ((AbstractDatum) datum).addCoordinateOperation(datum, opInv);
-                } catch (NonInvertibleOperationException e) {
-                    /* The geocentric transformation should always be inversible.
-                     * Moreover, add the transformation to the target datum is useful
-                     * for further calulation but not essential, so if the inversion
-                     * fails it has no importance
-                     */
-                }
-            } else {
-                datumTransformations.put(datum, new ArrayList<CoordinateOperation>());
-            }
-        }
-        return datumTransformations.get(datum);
-    }
-
-    /**
      * Returns a String representation of this Datum.
      */
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(getIdentifier().toString());
-        sb.append(" [");
-        for (Iterator<Datum> it = datumTransformations.keySet().iterator(); it.hasNext();) {
-            sb.append("").append(it.next().getShortName());
-            if (it.hasNext()) {
-                sb.append(" - ");
-            }
-        }
-        sb.append("]");
-        return sb.toString();
+        return getIdentifier().toString();
     }
 }
