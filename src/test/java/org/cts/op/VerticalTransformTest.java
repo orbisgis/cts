@@ -774,7 +774,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
 
     @Test
     public void testCompdCRS() throws CRSException, IllegalCoordinateException {
-        String prjString = "COMPD_CS[\"NTF (Paris) / France II + NGF IGN69\",\n"
+        String prjString = "COMPD_CS[\"RGF93 / Lambert-93 + IGN69\",\n"
                 + "    PROJCS[\"RGF93 / Lambert-93\",\n"
                 + "        GEOGCS[\"RGF93\",\n"
                 + "            DATUM[\"Reseau_Geodesique_Francais_1993\",\n"
@@ -799,17 +799,15 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
                 + "        AUTHORITY[\"EPSG\",\"2154\"],\n"
                 + "        AXIS[\"X\",EAST],\n"
                 + "        AXIS[\"Y\",NORTH]],\n"
-                + "    VERT_CS[\"NGF IGN69\",\n"
+                + "    VERT_CS[\"IGN69\",\n"
                 + "        VERT_DATUM[\"Nivellement General de la France - IGN69\",2005,\n"
                 + "            AUTHORITY[\"EPSG\",\"5119\"]],\n"
                 + "        UNIT[\"m\",1.0],\n"
-                + "        AXIS[\"Gravity-related height\",UP],\n"
-                + "        AUTHORITY[\"EPSG\",\"5720\"]],\n"
-                + "    AUTHORITY[\"EPSG\",\"7402\"]]";
+                + "        AXIS[\"Gravity-related height\",UP]]]";
         CoordinateReferenceSystem scrs = cRSFactory.createFromPrj(prjString);
         assertTrue(scrs instanceof CompoundCRS);
         CompoundCRS sourceCRS = (CompoundCRS) scrs;
-        prjString = "COMPD_CS[\"NTF (Paris) / France II + NGF IGN69\",\n"
+        prjString = "COMPD_CS[\"RGF93 + IGN69\",\n"
                 + "     GEOGCS[\"RGF93\",\n"
                 + "        DATUM[\"Reseau_Geodesique_Francais_1993\",\n"
                 + "            SPHEROID[\"GRS 1980\",6378137,298.257222101,\n"
@@ -821,13 +819,11 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
                 + "        UNIT[\"degree\",0.01745329251994328,\n"
                 + "            AUTHORITY[\"EPSG\",\"9122\"]],\n"
                 + "        AUTHORITY[\"EPSG\",\"4171\"]],\n"
-                + "    VERT_CS[\"NGF IGN69\",\n"
+                + "    VERT_CS[\"IGN69\",\n"
                 + "        VERT_DATUM[\"Hauteur ellipsoidale - GRS80\",2002,\n"
                 + "            AUTHORITY[\"EPSG\",\"5019\"]],\n"
                 + "        UNIT[\"m\",1.0],\n"
-                + "        AXIS[\"Ellipsoidal height\",UP],\n"
-                + "        AUTHORITY[\"EPSG\",\"5720\"]],\n"
-                + "    AUTHORITY[\"EPSG\",\"7402\"]]";
+                + "        AXIS[\"Ellipsoidal height\",UP]]]";
         CoordinateReferenceSystem tcrs = cRSFactory.createFromPrj(prjString);
         assertTrue(tcrs instanceof CompoundCRS);
         CompoundCRS targetCRS = (CompoundCRS) tcrs;
@@ -845,8 +841,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
                 + "    VERT_DATUM[\"Hauteur ellipsoidale - GRS80\",2002,\n"
                 + "        AUTHORITY[\"EPSG\",\"5019\"]],\n"
                 + "    UNIT[\"m\",1.0],\n"
-                + "    AXIS[\"Ellipsoidal height\",UP],\n"
-                + "    AUTHORITY[\"EPSG\",\"5720\"]]";
+                + "    AXIS[\"Ellipsoidal height\",UP]]";
         CoordinateReferenceSystem crs = cRSFactory.createFromPrj(prjString);
         assertTrue(crs instanceof VerticalCRS);
         VerticalCRS vcrs = (VerticalCRS) crs;
