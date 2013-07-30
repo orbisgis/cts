@@ -53,6 +53,9 @@ public class PrjKeyParameters {
     public static final String VERTCS = "vert_cs";
     //Internal key parameters used by the parser
     public static final String VERTUNITVAL = "vertunitval";
+    public static final String GEOGUNITREFNAME = "geogunitrefname";
+    public static final String GEOGUNIT = "geogunit";
+    public static final String GEOGUNITVAL = "geogunitval";
     public static final String NAME = "name";
     public static final String REFNAME = "refname";
     public static final String GEOGREFNAME = "geogrefname";

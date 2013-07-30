@@ -93,11 +93,10 @@ public final class PrjWriter {
                 addDatum(crs.getDatum(), w);
                 w.append(',');
                 addPrimeMeridian(crs.getDatum().getPrimeMeridian(), w);
-                w.append(',');
             }
             if (pr) {
                 Projection proj = crs.getProjection();
-                w.append("PROJECTION[\"");
+                w.append("],PROJECTION[\"");
                 w.append(proj.getName());
                 w.append("\"],PARAMETER[\"").append(Parameter.LATITUDE_OF_ORIGIN).append("\",");
                 if (isInteger(fromRadianToDegree(proj.getLatitudeOfOrigin()), 1E-11)) {
@@ -145,8 +144,9 @@ public final class PrjWriter {
                 } else {
                     w.append(proj.getFalseNorthing());
                 }
-                w.append("]],");
+                w.append("]");
             }
+            w.append(',');
             addUnit(crs.getCoordinateSystem().getUnit(0), w);
             w.append(',');
             for (int i = 0; i < crs.getCoordinateSystem().getDimension(); i++) {

@@ -864,7 +864,7 @@ public class Ellipsoid extends IdentifiableComponent {
     }
 
     /**
-     * Returns true if this GeodeticDatum can be considered as equals to another
+     * Returns true if this Ellipsoid can be considered as equals to another
      * one. Ellipsoid equals method is based on a comparison of the object
      * dimensions with a sensibility of 0.1 mm.
      *

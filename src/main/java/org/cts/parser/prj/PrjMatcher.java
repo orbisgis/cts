@@ -35,8 +35,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.cts.IdentifiableComponent;
+import org.cts.Identifier;
 import org.cts.parser.proj.ProjKeyParameters;
 import org.cts.parser.proj.ProjValueParameters;
+import org.cts.units.Quantity;
+import org.cts.units.Unit;
 
 /**
  * This class is used to get values from parameter in the prj file.
@@ -98,10 +102,39 @@ public final class PrjMatcher {
         } else {
             parseCompdcs(ll);
         }
+        cleanUnits();
+        return params;
+    }
 
-        // clean up params
+    /**
+     * Check the units defined in the WKT and correct the values of parameters
+     * in consequences. The values of parameters in OGC WKT are expressed in the
+     * unit defined in the WKT, but the CRSHelper only deal with meters and
+     * degrees.
+     */
+    private void cleanUnits() {
+        String units = params.get(ProjKeyParameters.units);
         String unitval = params.get(ProjKeyParameters.to_meter);
-        if (unitval != null) {
+        String unitAuth = params.get(PrjKeyParameters.UNITREFNAME);
+        Unit unit = Unit.getUnit(Quantity.LENGTH, units);
+        if (unitAuth != null) {
+            String[] unitRefname = unitAuth.split(":");
+            if (unit == null) {
+                unit = (Unit) IdentifiableComponent.getComponent(new Identifier(unitRefname[0], unitRefname[1], ""));
+            }
+        }
+        if (unit != null && !unit.equals(Unit.METER) && unit.getQuantity().equals(Quantity.LENGTH)) {
+            String x0 = params.remove(ProjKeyParameters.x_0);
+            if (x0 != null) {
+                x0 = Double.toString(unit.toBaseUnit(Double.valueOf(x0)));
+                params.put(ProjKeyParameters.x_0, x0);
+            }
+            String y0 = params.remove(ProjKeyParameters.y_0);
+            if (y0 != null) {
+                y0 = Double.toString(unit.toBaseUnit(Double.valueOf(y0)));
+                params.put(ProjKeyParameters.y_0, y0);
+            }
+        } else if (unitval != null && !Unit.METER.equals(unit)) {
             String x0 = params.remove(ProjKeyParameters.x_0);
             if (x0 != null) {
                 x0 = Double.toString(Double.valueOf(x0) * Double.valueOf(unitval));
@@ -113,7 +146,103 @@ public final class PrjMatcher {
                 params.put(ProjKeyParameters.y_0, y0);
             }
         }
-        return params;
+
+        units = params.get(PrjKeyParameters.GEOGUNIT);
+        unitval = params.get(PrjKeyParameters.GEOGUNITVAL);
+        unitAuth = params.get(PrjKeyParameters.GEOGUNITREFNAME);
+        unit = Unit.getUnit(Quantity.ANGLE, units);
+        if (unitAuth != null) {
+            String[] unitRefname = unitAuth.split(":");
+            if (unit == null) {
+                unit = (Unit) IdentifiableComponent.getComponent(new Identifier(unitRefname[0], unitRefname[1], ""));
+            }
+        }
+        if (Unit.DEGREE.equals(unit)) {
+            return;
+        }
+        if (unit != null) {
+            String lon0 = params.remove(ProjKeyParameters.lon_0);
+            if (lon0 != null) {
+                lon0 = Double.toString(Unit.DEGREE.fromBaseUnit(unit.toBaseUnit(Double.valueOf(lon0))));
+                params.put(ProjKeyParameters.lon_0, lon0);
+            }
+            String lat0 = params.remove(ProjKeyParameters.lat_0);
+            if (lat0 != null) {
+                lat0 = Double.toString(Unit.DEGREE.fromBaseUnit(unit.toBaseUnit(Double.valueOf(lat0))));
+                params.put(ProjKeyParameters.lat_0, lat0);
+            }
+            String lat1 = params.remove(ProjKeyParameters.lat_1);
+            if (lat1 != null) {
+                lat1 = Double.toString(Unit.DEGREE.fromBaseUnit(unit.toBaseUnit(Double.valueOf(lat1))));
+                params.put(ProjKeyParameters.lat_1, lat1);
+            }
+            String lat2 = params.remove(ProjKeyParameters.lat_2);
+            if (lat2 != null) {
+                lat2 = Double.toString(Unit.DEGREE.fromBaseUnit(unit.toBaseUnit(Double.valueOf(lat2))));
+                params.put(ProjKeyParameters.lat_2, lat2);
+            }
+            String lat_ts = params.remove(ProjKeyParameters.lat_ts);
+            if (lat_ts != null) {
+                lat_ts = Double.toString(Unit.DEGREE.fromBaseUnit(unit.toBaseUnit(Double.valueOf(lat_ts))));
+                params.put(ProjKeyParameters.lat_ts, lat_ts);
+            }
+            String lonc = params.remove(ProjKeyParameters.lonc);
+            if (lonc != null) {
+                lonc = Double.toString(Unit.DEGREE.fromBaseUnit(unit.toBaseUnit(Double.valueOf(lonc))));
+                params.put(ProjKeyParameters.lonc, lonc);
+            }
+            String alpha = params.remove(ProjKeyParameters.alpha);
+            if (alpha != null) {
+                alpha = Double.toString(Unit.DEGREE.fromBaseUnit(unit.toBaseUnit(Double.valueOf(alpha))));
+                params.put(ProjKeyParameters.alpha, alpha);
+            }
+            String gamma = params.remove(ProjKeyParameters.gamma);
+            if (gamma != null) {
+                gamma = Double.toString(Unit.DEGREE.fromBaseUnit(unit.toBaseUnit(Double.valueOf(gamma))));
+                params.put(ProjKeyParameters.gamma, gamma);
+            }
+        } else if (unitval != null) {
+            String lon0 = params.remove(ProjKeyParameters.lon_0);
+            if (lon0 != null) {
+                lon0 = Double.toString(Unit.DEGREE.fromBaseUnit(Double.valueOf(lon0) * Double.valueOf(unitval)));
+                params.put(ProjKeyParameters.lon_0, lon0);
+            }
+            String lat0 = params.remove(ProjKeyParameters.lat_0);
+            if (lat0 != null) {
+                lat0 = Double.toString(Unit.DEGREE.fromBaseUnit(Double.valueOf(lat0) * Double.valueOf(unitval)));
+                params.put(ProjKeyParameters.lat_0, lat0);
+            }
+            String lat1 = params.remove(ProjKeyParameters.lat_1);
+            if (lat1 != null) {
+                lat1 = Double.toString(Unit.DEGREE.fromBaseUnit(Double.valueOf(lat1) * Double.valueOf(unitval)));
+                params.put(ProjKeyParameters.lat_1, lat1);
+            }
+            String lat2 = params.remove(ProjKeyParameters.lat_2);
+            if (lat2 != null) {
+                lat2 = Double.toString(Unit.DEGREE.fromBaseUnit(Double.valueOf(lat2) * Double.valueOf(unitval)));
+                params.put(ProjKeyParameters.lat_2, lat2);
+            }
+            String lat_ts = params.remove(ProjKeyParameters.lat_ts);
+            if (lat_ts != null) {
+                lat_ts = Double.toString(Unit.DEGREE.fromBaseUnit(Double.valueOf(lat_ts) * Double.valueOf(unitval)));
+                params.put(ProjKeyParameters.lat_ts, lat_ts);
+            }
+            String lonc = params.remove(ProjKeyParameters.lonc);
+            if (lonc != null) {
+                lonc = Double.toString(Unit.DEGREE.fromBaseUnit(Double.valueOf(lonc) * Double.valueOf(unitval)));
+                params.put(ProjKeyParameters.lonc, lonc);
+            }
+            String alpha = params.remove(ProjKeyParameters.alpha);
+            if (alpha != null) {
+                alpha = Double.toString(Unit.DEGREE.fromBaseUnit(Double.valueOf(alpha) * Double.valueOf(unitval)));
+                params.put(ProjKeyParameters.alpha, alpha);
+            }
+            String gamma = params.remove(ProjKeyParameters.gamma);
+            if (gamma != null) {
+                gamma = Double.toString(Unit.DEGREE.fromBaseUnit(Double.valueOf(gamma) * Double.valueOf(unitval)));
+                params.put(ProjKeyParameters.gamma, gamma);
+            }
+        }
     }
 
     /**
@@ -154,9 +283,12 @@ public final class PrjMatcher {
             @Override
             public void run(List<PrjElement> list) {
                 List<String> info = getUnit(list);
+                params.put(PrjKeyParameters.GEOGUNIT, params.remove(ProjKeyParameters.units));
+                params.put(PrjKeyParameters.GEOGUNITVAL, params.remove(ProjKeyParameters.to_meter));
                 params.put(ProjKeyParameters.units, info.get(0));
                 params.put(ProjKeyParameters.to_meter, info.get(1));
                 if (info.size() > 2) {
+                    params.put(PrjKeyParameters.GEOGUNITREFNAME, params.remove(PrjKeyParameters.UNITREFNAME));
                     params.put(PrjKeyParameters.UNITREFNAME, info.get(2));
                 }
             }

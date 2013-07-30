@@ -282,4 +282,34 @@ public class Unit extends IdentifiableComponent implements java.io.Serializable 
         return getName() + " (" + quantity
                 + (scale != 1.0 ? " : " + scale + getBaseUnit().getSymbol() : "") + ")";
     }
+
+    /**
+     * Returns true if this Unit can be considered as equals to another
+     * one.
+     *
+     * @param o the object to compare this Unit against
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o instanceof Unit) {
+            Unit unit = (Unit) o;
+            return quantity.equals(unit.getQuantity()) && (scale == unit.getScale()) && (offset == unit.getOffset());
+        }
+        return false;
+    }
+
+    /**
+     * Returns the hash code for this Unit.
+     */
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 59 * hash + (this.quantity != null ? this.quantity.hashCode() : 0);
+        hash = 59 * hash + (int) (Double.doubleToLongBits(this.scale) ^ (Double.doubleToLongBits(this.scale) >>> 32));
+        hash = 59 * hash + (int) (Double.doubleToLongBits(this.offset) ^ (Double.doubleToLongBits(this.offset) >>> 32));
+        return hash;
+    }
 }
