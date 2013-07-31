@@ -258,6 +258,7 @@ public final class PrjMatcher {
         } else {
             parseString(ll.get(0), PrjKeyParameters.NAME);
         }
+        indexAxis = 0;
 
         PrjNodeMatcher[] matchers;
         matchers = new PrjNodeMatcher[6];
@@ -360,7 +361,7 @@ public final class PrjMatcher {
                     case 1:
                         params.put(PrjKeyParameters.AXIS2, info.get(0));
                         params.put(PrjKeyParameters.AXIS2TYPE, info.get(1));
-                        indexAxis = 0;
+                        indexAxis++;
                         break;
                     default:
                         throw new PrjParserException("Failed to parse PRJ. Found '" + list + "', completely unexpected!");
@@ -372,6 +373,8 @@ public final class PrjMatcher {
             matchAnyNode(ll.get(i), matchers);
         }
     }
+    private boolean isHorizontalCRS = false;
+    private boolean isVerticalCRS = false;
 
     /**
      * Read the informations contains in the COMPD_CS node and put it into the
@@ -392,7 +395,12 @@ public final class PrjMatcher {
 
             @Override
             public void run(List<PrjElement> list) {
-                parseGeogcs(list, false);
+                if (!isHorizontalCRS) {
+                    parseGeogcs(list, false);
+                    isHorizontalCRS = true;
+                } else {
+                    throw new PrjParserException("Failed to parse PRJ, because of multiple horizontal CRS definition.");
+                }
             }
         };
         matchers[1] = new PrjNodeMatcher() {
@@ -403,7 +411,12 @@ public final class PrjMatcher {
 
             @Override
             public void run(List<PrjElement> list) {
-                parseProjcs(list, false);
+                if (!isHorizontalCRS) {
+                    parseProjcs(list, false);
+                    isHorizontalCRS = true;
+                } else {
+                    throw new PrjParserException("Failed to parse PRJ, because of multiple horizontal CRS definition.");
+                }
             }
         };
         matchers[2] = new PrjNodeMatcher() {
@@ -414,7 +427,12 @@ public final class PrjMatcher {
 
             @Override
             public void run(List<PrjElement> list) {
-                parseVertcs(list, false);
+                if (!isVerticalCRS) {
+                    parseVertcs(list, false);
+                    isVerticalCRS = true;
+                } else {
+                    throw new PrjParserException("Failed to parse PRJ, because of multiple vertical CRS definition.");
+                }
             }
         };
         matchers[3] = new PrjNodeMatcher() {
@@ -433,6 +451,9 @@ public final class PrjMatcher {
         for (int i = 1; i < ll.size(); i++) {
             matchAnyNode(ll.get(i), matchers);
         }
+        if (!isHorizontalCRS || !isVerticalCRS) {
+            throw new PrjParserException("Failed to parse PRJ. Missing definition for an horizontal CRS or for a VerticalCRS.");
+        }
     }
 
     /**
@@ -444,6 +465,7 @@ public final class PrjMatcher {
     private void parseGeoccs(List<PrjElement> ll) {
         parseString(ll.get(0), PrjKeyParameters.NAME);
         params.put(ProjKeyParameters.proj, ProjValueParameters.GEOCENT);
+        indexAxis = 0;
 
         PrjNodeMatcher[] matchers;
         matchers = new PrjNodeMatcher[5];
@@ -520,7 +542,7 @@ public final class PrjMatcher {
                     case 2:
                         params.put(PrjKeyParameters.AXIS3, info.get(0));
                         params.put(PrjKeyParameters.AXIS3TYPE, info.get(1));
-                        indexAxis = 0;
+                        indexAxis++;
                         break;
                     default:
                         throw new PrjParserException("Failed to parse PRJ. Found '" + list + "', completely unexpected!");
@@ -549,6 +571,7 @@ public final class PrjMatcher {
         if (!params.containsKey(ProjKeyParameters.proj)) {
             params.put(ProjKeyParameters.proj, ProjValueParameters.LONGLAT);
         }
+        indexAxis = 0;
 
         PrjNodeMatcher[] matchers;
         matchers = new PrjNodeMatcher[5];
@@ -644,7 +667,7 @@ public final class PrjMatcher {
                         case 2:
                             params.put(PrjKeyParameters.AXIS3, info.get(0));
                             params.put(PrjKeyParameters.AXIS3TYPE, info.get(1));
-                            indexAxis = 0;
+                            indexAxis++;
                             break;
                         default:
                             throw new PrjParserException("Failed to parse PRJ. Found '" + list + "', completely unexpected!");
@@ -673,6 +696,7 @@ public final class PrjMatcher {
         } else {
             parseString(ll.get(0), PrjKeyParameters.NAME);
         }
+        indexAxis = 0;
 
         PrjNodeMatcher[] matchers;
         matchers = new PrjNodeMatcher[4];
@@ -739,8 +763,15 @@ public final class PrjMatcher {
             @Override
             public void run(List<PrjElement> list) {
                 List<String> info = getAxis(list);
-                params.put(PrjKeyParameters.VERTAXIS, info.get(0));
-                params.put(PrjKeyParameters.VERTAXISTYPE, info.get(1));
+                switch (indexAxis) {
+                    case 0:
+                        params.put(PrjKeyParameters.VERTAXIS, info.get(0));
+                        params.put(PrjKeyParameters.VERTAXISTYPE, info.get(1));
+                        indexAxis++;
+                        break;
+                    default:
+                        throw new PrjParserException("Failed to parse PRJ. Found '" + list + "', completely unexpected!");
+                }
             }
         };
 
