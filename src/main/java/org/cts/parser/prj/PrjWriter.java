@@ -260,7 +260,7 @@ public final class PrjWriter {
      * @param tol the tolerance of the equality
      */
     private static boolean isInteger(double a, double tol) {
-        return (Math.abs(a - ((double) Math.round(a))) < tol);
+        return (Math.abs(a - Math.rint(a)) < tol);
     }
 
     /**

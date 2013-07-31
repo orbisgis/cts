@@ -136,11 +136,23 @@ public class GeocentricTranslation extends AbstractCoordinateOperation implement
     public String toWKT() {
         StringBuilder w = new StringBuilder();
         w.append(",TOWGS84[");
-        w.append((int) tx);
+        if (Math.abs(tx - Math.rint(tx)) < 1e-9) {
+            w.append((int) tx);
+        } else {
+            w.append(tx);
+        }
         w.append(',');
-        w.append((int) ty);
+        if (Math.abs(ty - Math.rint(ty)) < 1e-9) {
+            w.append((int) ty);
+        } else {
+            w.append(ty);
+        }
         w.append(',');
-        w.append((int) tz);
+        if (Math.abs(tz - Math.rint(tz)) < 1e-9) {
+            w.append((int) tz);
+        } else {
+            w.append(tz);
+        }
         w.append(",0,0,0,0]");
         return w.toString();
     }

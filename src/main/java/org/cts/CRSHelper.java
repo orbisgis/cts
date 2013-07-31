@@ -340,7 +340,6 @@ public class CRSHelper {
         if (unit == null && sunitAuth != null) {
             String[] authNameWithKey = sunitAuth.split(":");
             id = new Identifier(authNameWithKey[0], authNameWithKey[1], sunit);
-            // Unit unit = Unit.unitMap.get(id);
             unit = (Unit) IdentifiableComponent.getComponent(id);
         }
         if (unit == null && sunitval != null) {
@@ -426,7 +425,6 @@ public class CRSHelper {
             String[] authNameWithKey = authCode.split(":");
             Identifier id = pmName != null ? new Identifier(authNameWithKey[0], authNameWithKey[1], pmName)
                     : new Identifier(authNameWithKey[0], authNameWithKey[1], Identifiable.UNKNOWN);
-            //pm = PrimeMeridian.getPrimeMeridian(id);
             pm = (PrimeMeridian) IdentifiableComponent.getComponent(id);
         }
         if (pm == null) {
@@ -457,7 +455,6 @@ public class CRSHelper {
             String[] authNameWithKey = authCode.split(":");
             Identifier id = datumName != null ? new Identifier(authNameWithKey[0], authNameWithKey[1], datumName)
                     : new Identifier(authNameWithKey[0], authNameWithKey[1], Identifiable.UNKNOWN);
-            //gd = GeodeticDatum.getDatum(id);
             gd = (GeodeticDatum) IdentifiableComponent.getComponent(id);
         }
         if (gd == null) {

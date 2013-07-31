@@ -210,7 +210,7 @@ public class Axis {
                 direction = Direction.UP;
             } else if (dir.equals("DOWN")) {
                 direction = Direction.DOWN;
-            } else if (dir.equals("OTHER")) {
+            } else {
                 direction = Direction.OTHER;
             }
         }

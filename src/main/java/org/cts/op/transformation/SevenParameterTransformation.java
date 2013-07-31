@@ -423,19 +423,46 @@ public class SevenParameterTransformation extends AbstractCoordinateOperation im
     public String toWKT() {
         StringBuilder w = new StringBuilder();
         w.append(",TOWGS84[");
-        w.append((int) tx);
+        if (Math.abs(tx - Math.rint(tx)) < 1e-9) {
+            w.append((int) tx);
+        } else {
+            w.append(tx);
+        }
         w.append(',');
-        w.append((int) ty);
+        if (Math.abs(ty - Math.rint(ty)) < 1e-9) {
+            w.append((int) ty);
+        } else {
+            w.append(ty);
+        }
         w.append(',');
-        w.append((int) tz);
+        if (Math.abs(tz - Math.rint(tz)) < 1e-9) {
+            w.append((int) tz);
+        } else {
+            w.append(tz);
+        }
         w.append(',');
-        w.append((int) rx);
+        double rxn = rx * 3600 * 180 / Math.PI;
+        if (Math.abs(rxn - Math.rint(rxn)) < 1e-9) {
+            w.append((int) rxn);
+        } else {
+            w.append(rxn);
+        }
         w.append(',');
-        w.append((int) ry);
+        double ryn = ry * 3600 * 180 / Math.PI;
+        if (Math.abs(ryn - Math.rint(ryn)) < 1e-9) {
+            w.append((int) ryn);
+        } else {
+            w.append(ryn);
+        }
         w.append(',');
-        w.append((int) rz);
+        double rzn = rz * 3600 * 180 / Math.PI;
+        if (Math.abs(rzn - Math.rint(rzn)) < 1e-9) {
+            w.append((int) rzn);
+        } else {
+            w.append(rzn);
+        }
         w.append(',');
-        w.append((scale == 1 ? "0" : scale));
+        w.append(Math.rint((scale - 1) * 1e15) / 1e9);
         w.append("]");
         return w.toString();
     }
