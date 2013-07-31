@@ -838,7 +838,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
 
     @Test
     public void testVerticalCRS() throws CRSException, IllegalCoordinateException {
-        String prjString = "VERT_CS[\"NGF IGN69\",\n"
+        String prjString = "VERT_CS[\"GRS80VCS\",\n"
                 + "    VERT_DATUM[\"Hauteur ellipsoidale - GRS80\",2002,\n"
                 + "        AUTHORITY[\"EPSG\",\"5019\"]],\n"
                 + "    UNIT[\"m\",1.0],\n"

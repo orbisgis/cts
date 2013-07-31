@@ -180,12 +180,21 @@ public class CompoundCRS extends GeodeticCRS {
             Altitude2EllipsoidalHeight transfo = (Altitude2EllipsoidalHeight) verticalCRS.getDatum().getAltiToEllpsHeight();
             if (!horizontalCRS.getDatum().equals(transfo.getAssociatedDatum())) {
                 ops.add(MemorizeCoordinate.memoZ);
-                ops.add(horizontalCRS.getDatum().getCoordinateOperations(transfo.getAssociatedDatum()).get(0));
-                ops.add(UnitConversion.createUnitConverter(Unit.RADIAN, Unit.DEGREE, Unit.METER, Unit.METER));
-                ops.add(LoadMemorizeCoordinate.loadZ);
-                ops.add(transfo);
-                ops.add(UnitConversion.createUnitConverter(Unit.DEGREE, Unit.RADIAN, Unit.METER, Unit.METER));
-                ops.add(transfo.getAssociatedDatum().getCoordinateOperations(horizontalCRS.getDatum()).get(0));
+                if (horizontalCRS.getGridTransformations(transfo.getAssociatedDatum()) != null) {
+                    ops.add(horizontalCRS.getGridTransformations(transfo.getAssociatedDatum()).get(0));
+                    ops.add(UnitConversion.createUnitConverter(Unit.RADIAN, Unit.DEGREE, Unit.METER, Unit.METER));
+                    ops.add(LoadMemorizeCoordinate.loadZ);
+                    ops.add(transfo);
+                    ops.add(UnitConversion.createUnitConverter(Unit.DEGREE, Unit.RADIAN, Unit.METER, Unit.METER));
+                    ops.add(horizontalCRS.getGridTransformations(transfo.getAssociatedDatum()).get(0).inverse());
+                } else {
+                    ops.add(horizontalCRS.getDatum().getCoordinateOperations(transfo.getAssociatedDatum()).get(0));
+                    ops.add(UnitConversion.createUnitConverter(Unit.RADIAN, Unit.DEGREE, Unit.METER, Unit.METER));
+                    ops.add(LoadMemorizeCoordinate.loadZ);
+                    ops.add(transfo);
+                    ops.add(UnitConversion.createUnitConverter(Unit.DEGREE, Unit.RADIAN, Unit.METER, Unit.METER));
+                    ops.add(transfo.getAssociatedDatum().getCoordinateOperations(horizontalCRS.getDatum()).get(0));
+                }
             } else {
                 ops.add(UnitConversion.createUnitConverter(Unit.RADIAN, Unit.DEGREE, Unit.METER, Unit.METER));
                 ops.add(transfo);
@@ -219,7 +228,11 @@ public class CompoundCRS extends GeodeticCRS {
             ops.add(MemorizeCoordinate.memoX);
             ops.add(MemorizeCoordinate.memoY);
             if (!horizontalCRS.getDatum().equals(transfo.getAssociatedDatum())) {
-                ops.add(horizontalCRS.getDatum().getCoordinateOperations(transfo.getAssociatedDatum()).get(0));
+                if (horizontalCRS.getGridTransformations(transfo.getAssociatedDatum()) != null) {
+                    ops.add(horizontalCRS.getGridTransformations(transfo.getAssociatedDatum()).get(0));
+                } else {
+                    ops.add(horizontalCRS.getDatum().getCoordinateOperations(transfo.getAssociatedDatum()).get(0));
+                }
             }
             ops.add(UnitConversion.createUnitConverter(Unit.RADIAN, Unit.DEGREE, Unit.METER, Unit.METER));
             ops.add(transfo.inverse());
