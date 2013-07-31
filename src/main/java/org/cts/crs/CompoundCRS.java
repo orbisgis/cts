@@ -39,6 +39,7 @@ import org.cts.op.NonInvertibleOperationException;
 import org.cts.units.Unit;
 import org.cts.cs.Axis;
 import org.cts.cs.CoordinateSystem;
+import org.cts.datum.GeodeticDatum;
 import org.cts.datum.VerticalDatum;
 import org.cts.op.CoordinateOperationSequence;
 import org.cts.op.CoordinateSwitch;
@@ -115,6 +116,18 @@ public class CompoundCRS extends GeodeticCRS {
     @Override
     public int getDimension() {
         return 3;
+    }
+
+    /**
+     * Return the list of nadgrids transformation defined for the horizontal CRS
+     * of this CompoundCRS that used the datum in parameter as target datum.
+     *
+     * @param datum the datum that must be a target for returned nadgrid
+     * transformation
+     */
+    @Override
+    public List<CoordinateOperation> getGridTransformations(GeodeticDatum datum) {
+        return horizontalCRS.getGridTransformations(datum);
     }
 
     /**
@@ -251,18 +264,6 @@ public class CompoundCRS extends GeodeticCRS {
         }
         return new CoordinateOperationSequence(new Identifier(
                 CoordinateOperationSequence.class), ops);
-    }
-  
-    public static CompoundCRS toCompoundCRS(GeodeticCRS crs) throws CRSException {
-        if (crs instanceof Geographic3DCRS) {
-            Geographic2DCRS horCRS = new Geographic2DCRS(crs.getIdentifier(), crs.getDatum(), new CoordinateSystem(
-                    new Axis[]{crs.getCoordinateSystem().getAxis(0), crs.getCoordinateSystem().getAxis(1)},
-                    new Unit[]{crs.getCoordinateSystem().getUnit(0), crs.getCoordinateSystem().getUnit(1)}));
-            VerticalCRS verCRS = new VerticalCRS(new Identifier(VerticalCRS.class), new VerticalDatum(new Identifier(VerticalDatum.class), "", "", crs.getDatum().getEllipsoid()));
-            return new CompoundCRS(crs.getIdentifier(), horCRS, verCRS);
-        } else {
-            throw new CRSException("Only Geographic3DCRS can be transformed onto CompoundCRS.");
-        }
     }
 
     /**

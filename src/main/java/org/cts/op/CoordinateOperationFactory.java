@@ -63,49 +63,6 @@ public final class CoordinateOperationFactory {
     public final static int UNIT_OP = 256; // ex. heights from meters to feet
 
     /**
-     * Create a {@link org.cts.CoordinateOperation} from a source
-     * {@link org.cts.crs.CompoundCRS} to a target
-     * {@link org.cts.crs.CompoundCRS}.
-     */
-    public static List<CoordinateOperation> createCoordinateOperations(
-            CompoundCRS source, CompoundCRS target) {
-        if (source == null) {
-            throw new IllegalArgumentException("The source CRS must not be null");
-        }
-        if (target == null) {
-            throw new IllegalArgumentException("The target CRS must not be null");
-        }
-        List<CoordinateOperation> opList = source.getCRSTransformations(target);
-        if (opList != null) {
-            return opList;
-        } else {
-            opList = new ArrayList<CoordinateOperation>();
-            GeodeticDatum sourceDatum = source.getHorizontalCRS().getDatum();
-            if (sourceDatum == null) {
-                LOG.warn(source.getName() + " has no Geodetic Datum");
-                throw new IllegalArgumentException("The source datum must not be null");
-            }
-            GeodeticDatum targetDatum = target.getHorizontalCRS().getDatum();
-            if (targetDatum == null) {
-                LOG.warn(target.getName() + " has no Geodetic Datum");
-                throw new IllegalArgumentException("The target datum must not be null");
-            }
-            if (source.getHorizontalCRS().getGridTransformations(targetDatum) != null) {
-                addNadgridsOperationDir(sourceDatum, source, targetDatum, target, source.getHorizontalCRS().getGridTransformations(targetDatum), opList);
-            } else if (target.getHorizontalCRS().getGridTransformations(sourceDatum) != null) {
-                addNadgridsOperationInv(sourceDatum, source, targetDatum, target, target.getHorizontalCRS().getGridTransformations(sourceDatum), opList);
-            }
-            if (sourceDatum.equals(targetDatum)) {
-                addCoordinateOperations(sourceDatum, source, target, opList);
-            } else {
-                addCoordinateOperations(sourceDatum, source, targetDatum, target, opList);
-            }
-            source.addCRSTransformation(target, opList);
-        }
-        return opList;
-    }
-
-    /**
      * Create a CoordinateOperation from a source
      * {@link org.cts.crs.GeodeticCRS} to a target
      * {@link org.cts.crs.GeodeticCRS}. Remember that
@@ -123,25 +80,6 @@ public final class CoordinateOperationFactory {
         }
         if (target == null) {
             throw new IllegalArgumentException("The target CRS must not be null");
-        }
-        if (source instanceof CompoundCRS) {
-            if (target instanceof CompoundCRS) {
-                return createCoordinateOperations((CompoundCRS) source, (CompoundCRS) target);
-            } else {
-                try {
-                    CompoundCRS targt = CompoundCRS.toCompoundCRS(target);
-                    return createCoordinateOperations((CompoundCRS) source, targt);
-                } catch (CRSException ex) {
-                    throw new IllegalArgumentException("There cannot be operations between CompoundCRS and " + target.getClass() + ".");
-                }
-            }
-        } else if (target instanceof CompoundCRS) {
-            try {
-                CompoundCRS sourc = CompoundCRS.toCompoundCRS(source);
-                return createCoordinateOperations(sourc, (CompoundCRS) target);
-            } catch (CRSException ex) {
-                throw new IllegalArgumentException("There cannot be operations between CompoundCRS and " + target.getClass() + ".");
-            }
         }
         List<CoordinateOperation> opList = source.getCRSTransformations(target);
         if (opList != null) {

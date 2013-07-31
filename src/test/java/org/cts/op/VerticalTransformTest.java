@@ -37,6 +37,7 @@ import org.cts.IllegalCoordinateException;
 import org.cts.crs.CRSException;
 import org.cts.crs.CompoundCRS;
 import org.cts.crs.CoordinateReferenceSystem;
+import org.cts.crs.GeocentricCRS;
 import org.cts.crs.GeodeticCRS;
 import org.cts.crs.Geographic2DCRS;
 import org.cts.crs.Geographic3DCRS;
@@ -846,5 +847,34 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         assertTrue(crs instanceof VerticalCRS);
         VerticalCRS vcrs = (VerticalCRS) crs;
         assertTrue(vcrs.getDatum().getEllipsoid().equals(Ellipsoid.GRS80));
+    }
+
+    @Test
+    public void testGeocentricCRS() throws CRSException, IllegalCoordinateException {
+        CompoundCRS sourceCRS = new CompoundCRS(new Identifier(CompoundCRS.class, "NTF LAMB2E + IGN69"),
+                (ProjectedCRS) cRSFactory.getCRS("IGNF:LAMBE"),
+                new VerticalCRS(new Identifier("EPSG", "5720", "IGN69"), VerticalDatum.IGN69, VerticalCRS.ALTITUDE_CS));
+        String prjString = "GEOCCS[\"RGF93 (geocentric)\",\n"
+                + "    DATUM[\"Reseau Geodesique Francais 1993\",\n"
+                + "        SPHEROID[\"GRS 1980\",6378137.0,298.257222101,\n"
+                + "            AUTHORITY[\"EPSG\",\"7019\"]],\n"
+                + "        TOWGS84[0.0,0.0,0.0,0.0,0.0,0.0,0.0],\n"
+                + "        AUTHORITY[\"EPSG\",\"6171\"]],\n"
+                + "    PRIMEM[\"Greenwich\",0.0,\n"
+                + "        AUTHORITY[\"EPSG\",\"8901\"]],\n"
+                + "    UNIT[\"m\",1.0],\n"
+                + "    AXIS[\"Geocentric X\",OTHER],\n"
+                + "    AXIS[\"Geocentric Y\",EAST],\n"
+                + "    AXIS[\"Geocentric Z\",NORTH],\n"
+                + "    AUTHORITY[\"EPSG\",\"4370\"]]";
+        CoordinateReferenceSystem tcrs = cRSFactory.createFromPrj(prjString);
+        assertTrue(tcrs instanceof GeocentricCRS);
+        GeocentricCRS targetCRS = (GeocentricCRS) tcrs;
+        double[] inputPoint = new double[]{650000, 2300000, 100};
+        double[] expectedPoint = new double[]{4294839.989, 225283.135, 4694418.993};
+        double[] outputPoint = transform(sourceCRS, targetCRS, inputPoint);
+        double[] checkPoint = transform(targetCRS, sourceCRS, expectedPoint);
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", checkPoint, inputPoint, 1E-3));
     }
 }

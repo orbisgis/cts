@@ -372,7 +372,7 @@ public class SevenParameterTransformation extends AbstractCoordinateOperation im
                 rotationConvention, linearized, precision) {
             @Override
             public double[] transform(double[] coord) throws IllegalCoordinateException {
-                if (coord.length != 3) {
+                if (coord.length < 3) {
                     throw new CoordinateDimensionException(coord, 3);
                 }
                 double rotationSign = (rotationConvention == POSITION_VECTOR) ? 1.0 : -1.0;
@@ -389,6 +389,12 @@ public class SevenParameterTransformation extends AbstractCoordinateOperation im
                 coord[1] = (1.0 / scale) * (y * (1 + sry * sry) + x * (srz + srx * sry) - z * (srx - sry * srz)) / (1 + srx * srx + sry * sry + srz * srz);
                 coord[2] = (1.0 / scale) * (z * (1 + srz * srz) + y * (srx + sry * srz) - x * (sry - srx * srz)) / (1 + srx * srx + sry * sry + srz * srz);
                 return coord;
+            }
+
+            @Override
+            public CoordinateOperation inverse() throws NonInvertibleOperationException {
+                return new SevenParameterTransformation(tx, ty, tz, rx, ry, rz, scale,
+                        rotationConvention, linearized, precision);
             }
         };
     }
