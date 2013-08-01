@@ -148,6 +148,18 @@ public class GeodeticDatum extends AbstractDatum {
             Ellipsoid.GRS80,
             new GeographicExtent("St-Martin St-Barth", 17.8, 18.2, -63.2, -62.5),
             "",  "");
+    public final static GeodeticDatum NAD27 = new GeodeticDatum(
+            new Identifier("EPSG", "6267", "North American Datum 1927", "NAD27"),
+            PrimeMeridian.GREENWICH,
+            Ellipsoid.CLARKE1866,
+            GeographicExtent.WORLD,
+            "",  "");
+    public final static GeodeticDatum NAD83 = new GeodeticDatum(
+            new Identifier("EPSG", "6269", "North American Datum 1983", "NAD83"),
+            PrimeMeridian.GREENWICH,
+            Ellipsoid.GRS80,
+            GeographicExtent.WORLD,
+            "",  "");
 
     static {
         WGS84.setDefaultToWGS84Operation(Identity.IDENTITY);
@@ -170,6 +182,8 @@ public class GeodeticDatum extends AbstractDatum {
         datumFromName.put("ntf", NTF);
         datumFromName.put("rgf93", RGF93);
         datumFromName.put("ed50", ED50);
+        datumFromName.put("nad27", NAD27);
+        datumFromName.put("nad83", NAD83);
     }
 
     /**

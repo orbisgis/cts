@@ -106,7 +106,10 @@ public class ProjParser {
                 // in the "epsg" file, the crs name can only be read in the
                 // comment line preceding the projection definition
                 crsName = line.substring(1).trim();
-            } else if (line.startsWith("<") && line.endsWith(">")) {
+            } else if (line.startsWith("<")) {
+                while (!line.endsWith(">")) {
+                    line = line + " " + br.readLine();
+                }
                 String[] tokens = regex.split(line);
                 Map<String, String> v = new HashMap<String, String>();
                 String crsID;

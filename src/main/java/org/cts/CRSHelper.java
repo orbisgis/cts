@@ -66,6 +66,7 @@ import org.cts.parser.prj.PrjKeyParameters;
 import org.cts.parser.proj.ProjKeyParameters;
 import org.cts.parser.proj.ProjValueParameters;
 import org.cts.units.*;
+import org.cts.util.AngleFormat;
 
 /**
  * This class is used to define a new
@@ -629,13 +630,13 @@ public class CRSHelper {
         String sk_0 = param.remove("k_0");
         String sx_0 = param.remove("x_0");
         String sy_0 = param.remove("y_0");
-        double lat_0 = slat_0 != null ? Double.parseDouble(slat_0) : 0.;
-        double lat_1 = slat_1 != null ? Double.parseDouble(slat_1) : 0.;
-        double lat_2 = slat_2 != null ? Double.parseDouble(slat_2) : 0.;
-        double lat_ts = slat_ts != null ? Double.parseDouble(slat_ts) : 0.;
-        double lon_0 = slon_0 != null ? Double.parseDouble(slon_0) : slonc != null ? Double.parseDouble(slonc) : 0.;
-        double alpha = salpha != null ? Double.parseDouble(salpha) : 0.;
-        double gamma = sgamma != null ? Double.parseDouble(sgamma) : 0.;
+        double lat_0 = slat_0 != null ? AngleFormat.parseAngle(slat_0) : 0.;
+        double lat_1 = slat_1 != null ? AngleFormat.parseAngle(slat_1) : 0.;
+        double lat_2 = slat_2 != null ? AngleFormat.parseAngle(slat_2) : 0.;
+        double lat_ts = slat_ts != null ? AngleFormat.parseAngle(slat_ts) : 0.;
+        double lon_0 = slon_0 != null ? AngleFormat.parseAngle(slon_0) : slonc != null ? AngleFormat.parseAngle(slonc) : 0.;
+        double alpha = salpha != null ? AngleFormat.parseAngle(salpha) : 0.;
+        double gamma = sgamma != null ? AngleFormat.parseAngle(sgamma) : 0.;
         if (sk != null && sk_0 != null) {
             if (!sk.equals(sk_0)) {
                 LOGGER.warn("Two different scales factor at origin are defined, the one chosen for the projection is k_0");
