@@ -294,6 +294,20 @@ public class Identifier implements Identifiable {
     }
 
     /**
+     * Returns a WKT representation of the identifier.
+     *
+     */
+    public String toWKT() {
+        StringBuilder w = new StringBuilder();
+        w.append("AUTHORITY[\"");
+        w.append(this.getAuthorityName());
+        w.append("\",\"");
+        w.append(this.getAuthorityKey());
+        w.append("\"]");
+        return w.toString();
+    }
+
+    /**
      * Returns true if object is equals to this. Test equality between codes
      * (namespace + id), then between aliases.
      *

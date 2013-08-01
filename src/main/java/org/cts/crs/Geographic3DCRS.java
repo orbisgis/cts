@@ -33,6 +33,7 @@ package org.cts.crs;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.cts.Identifiable;
 
 import org.cts.Identifier;
 import org.cts.cs.Axis;
@@ -219,5 +220,31 @@ public class Geographic3DCRS extends GeodeticCRS {
         }
         return new CoordinateOperationSequence(new Identifier(
                 CoordinateOperationSequence.class), ops);
+    }
+
+    /**
+     * Returns a WKT representation of the geographic 3D CRS.
+     *
+     */
+    public String toWKT() {
+        StringBuilder w = new StringBuilder();
+        w.append("GEOGCS[\"");
+        w.append(this.getName());
+        w.append("\",");
+        w.append(this.getDatum().toWKT());
+        w.append(',');
+        w.append(this.getDatum().getPrimeMeridian().toWKT());
+        w.append(',');
+        w.append(this.getCoordinateSystem().getUnit(0).toWKT());
+        for (int i = 0; i < this.getCoordinateSystem().getDimension(); i++) {
+            w.append(',');
+            w.append(this.getCoordinateSystem().getAxis(i).toWKT());
+        }
+        if (!this.getAuthorityName().startsWith(Identifiable.LOCAL)) {
+            w.append(',');
+            w.append(this.getIdentifier().toWKT());
+        }
+        w.append(']');
+        return w.toString();
     }
 }

@@ -15,29 +15,6 @@
  */
 package org.cts.parser.prj;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.cts.Identifiable;
-import org.cts.IllegalCoordinateException;
-
-import org.cts.op.CoordinateOperation;
-import org.cts.Parameter;
-import org.cts.crs.CompoundCRS;
-import org.cts.crs.CoordinateReferenceSystem;
-import org.cts.crs.GeocentricCRS;
-import org.cts.crs.ProjectedCRS;
-import org.cts.crs.VerticalCRS;
-import org.cts.cs.Axis;
-import org.cts.datum.Datum;
-import org.cts.datum.Ellipsoid;
-import org.cts.datum.PrimeMeridian;
-import org.cts.datum.VerticalDatum;
-import org.cts.op.Identity;
-import org.cts.op.UnitConversion;
-import org.cts.op.projection.Projection;
-import org.cts.op.transformation.GeoTransformation;
-import org.cts.units.Unit;
-
 /**
  *
  * @author Antoine Gourlay, Erwan Bocher, Jules Party
@@ -45,211 +22,22 @@ import org.cts.units.Unit;
 public final class PrjWriter {
 
     /**
-     * Convert a CRS to a WKT representation
+     * Return a String representing the number round to the given tolerance. If
+     * the input double is equal to an integer using the given tolerance, this
+     * method return a number without the ".0".
      *
-     * @param crs
-     * @return
+     * @param number the double to transform
+     * @param tol the tolerance
      */
-    public static String crsToWKT(CoordinateReferenceSystem crs) {
-        Datum datum = crs.getDatum();
-
+    public static String roundToString(double number, double tol) {
         StringBuilder w = new StringBuilder();
-        boolean pr = crs instanceof ProjectedCRS;
-
-        if (crs instanceof CompoundCRS) {
-            w.append("COMPD_CS[\"");
-            w.append(crs.getName());
-            w.append("\",");
-            w.append(crsToWKT(((CompoundCRS) crs).getHorizontalCRS()));
-            w.append(',');
-            w.append(crsToWKT(((CompoundCRS) crs).getVerticalCRS()));
-            if (!crs.getAuthorityName().startsWith(Identifiable.LOCAL)) {
-                w.append(',');
-                addAuthority(crs, w);
-            }
-            w.append(']');
+        if (isInteger(number, tol)) {
+            w.append(Math.round(number));
         } else {
-            if (crs instanceof VerticalCRS) {
-                w.append("VERT_CS[\"");
-                w.append(crs.getName());
-                w.append("\",");
-                addVertDatum((VerticalDatum) crs.getDatum(), w);
-                w.append(',');
-            } else {
-                // projected or not projection
-                if (pr) {
-                    w.append("PROJCS[\"");
-                    w.append(crs.getName());
-                    w.append("\",GEOGCS[\"");
-                    w.append(datum.getShortName());
-                } else if (crs instanceof GeocentricCRS) {
-                    w.append("GEOCCS[\"");
-                    w.append(crs.getName());
-                } else {
-                    w.append("GEOGCS[\"");
-                    w.append(crs.getName());
-                }
-                w.append("\",");
-                addDatum(crs.getDatum(), w);
-                w.append(',');
-                addPrimeMeridian(crs.getDatum().getPrimeMeridian(), w);
-            }
-            if (pr) {
-                Projection proj = crs.getProjection();
-                w.append("],PROJECTION[\"");
-                w.append(proj.getName());
-                w.append("\"],PARAMETER[\"").append(Parameter.LATITUDE_OF_ORIGIN).append("\",");
-                if (isInteger(fromRadianToDegree(proj.getLatitudeOfOrigin()), 1E-11)) {
-                    w.append(Math.round(fromRadianToDegree(proj.getLatitudeOfOrigin())));
-                } else {
-                    w.append(fromRadianToDegree(proj.getLatitudeOfOrigin()));
-                }
-                if (proj.getStandardParallel1() != 0.0) {
-                    w.append("],PARAMETER[\"").append(Parameter.STANDARD_PARALLEL_1).append("\",");
-                    if (isInteger(fromRadianToDegree(proj.getStandardParallel1()), 1E-11)) {
-                        w.append(Math.round(fromRadianToDegree(proj.getStandardParallel1())));
-                    } else {
-                        w.append(fromRadianToDegree(proj.getStandardParallel1()));
-                    }
-                }
-                if (proj.getStandardParallel2() != 0.0) {
-                    w.append("],PARAMETER[\"").append(Parameter.STANDARD_PARALLEL_2).append("\",");
-                    if (isInteger(fromRadianToDegree(proj.getStandardParallel2()), 1E-11)) {
-                        w.append(Math.round(fromRadianToDegree(proj.getStandardParallel2())));
-                    } else {
-                        w.append(fromRadianToDegree(proj.getStandardParallel2()));
-                    }
-                }
-                w.append("],PARAMETER[\"").append(Parameter.CENTRAL_MERIDIAN).append("\",");
-                if (isInteger(proj.getCentralMeridian(), 1E-11)) {
-                    w.append(Math.round(proj.getCentralMeridian()));
-                } else {
-                    w.append(proj.getCentralMeridian());
-                }
-                w.append("],PARAMETER[\"").append(Parameter.SCALE_FACTOR).append("\",");
-                if (isInteger(proj.getScaleFactor(), 1E-11)) {
-                    w.append(Math.round(proj.getScaleFactor()));
-                } else {
-                    w.append(proj.getScaleFactor());
-                }
-                w.append("],PARAMETER[\"").append(Parameter.FALSE_EASTING).append("\",");
-                if (isInteger(proj.getFalseEasting(), 1E-11)) {
-                    w.append(Math.round(proj.getFalseEasting()));
-                } else {
-                    w.append(proj.getFalseEasting());
-                }
-                w.append("],PARAMETER[\"").append(Parameter.FALSE_NORTHING).append("\",");
-                if (isInteger(proj.getFalseNorthing(), 1E-11)) {
-                    w.append(Math.round(proj.getFalseNorthing()));
-                } else {
-                    w.append(proj.getFalseNorthing());
-                }
-                w.append("]");
-            }
-            w.append(',');
-            addUnit(crs.getCoordinateSystem().getUnit(0), w);
-            w.append(',');
-            for (int i = 0; i < crs.getCoordinateSystem().getDimension(); i++) {
-                addAxis(crs.getCoordinateSystem().getAxis(i), w);
-                w.append(',');
-            }
-            addAuthority(crs, w);
-            w.append(']');
+            double res = 1/tol;
+            w.append(Math.rint(number * res) / res);
         }
         return w.toString();
-    }
-
-    private static void addAuthority(Identifiable obj, StringBuilder w) {
-        w.append("AUTHORITY[\"");
-        w.append(obj.getAuthorityName());
-        w.append("\",\"");
-        w.append(obj.getAuthorityKey());
-        w.append("\"]");
-    }
-
-    private static void addAxis(Axis axis, StringBuilder w) {
-        w.append("AXIS[\"");
-        w.append(axis.getName());
-        w.append("\",");
-        w.append(axis.getDirection());
-        w.append(']');
-    }
-
-    private static void addUnit(Unit unit, StringBuilder w) {
-        w.append("UNIT[\"");
-        w.append(unit.getName());
-        w.append("\",");
-        if (isInteger(1. / unit.getScale(), 1E-11)) {
-            w.append(Math.round(1. / unit.getScale()));
-        } else {
-            w.append(1. / unit.getScale());
-        }
-        if (!unit.getAuthorityName().startsWith(Identifiable.LOCAL)) {
-            w.append(',');
-            addAuthority(unit, w);
-        }
-        w.append(']');
-    }
-
-    private static void addPrimeMeridian(PrimeMeridian pm, StringBuilder w) {
-        w.append("PRIMEM[\"");
-        w.append(pm.getName());
-        w.append("\",");
-        w.append(pm.getLongitudeFromGreenwichInDegrees());
-        if (!pm.getAuthorityName().startsWith(Identifiable.LOCAL)) {
-            w.append(',');
-            addAuthority(pm, w);
-        }
-        w.append(']');
-    }
-
-    private static void addSpheroid(Ellipsoid ellps, StringBuilder w) {
-        w.append("SPHEROID[\"");
-        w.append(ellps.getName());
-        w.append("\",");
-        w.append(ellps.getSemiMajorAxis());
-        w.append(',');
-        if (ellps.getInverseFlattening() != Double.POSITIVE_INFINITY) {
-            w.append(ellps.getInverseFlattening());
-        } else {
-            w.append(0);
-        }
-        if (!ellps.getAuthorityName().startsWith(Identifiable.LOCAL)) {
-            w.append(',');
-            addAuthority(ellps, w);
-        }
-        w.append(']');
-    }
-
-    private static void addDatum(Datum datum, StringBuilder w) {
-        w.append("DATUM[\"");
-        w.append(datum.getName());
-        w.append("\",");
-        addSpheroid(datum.getEllipsoid(), w);
-        CoordinateOperation towgs84 = datum.getToWGS84();
-        if ((towgs84 != null) && (towgs84 instanceof GeoTransformation)) {
-            GeoTransformation geoTransformation = (GeoTransformation) towgs84;
-            w.append(geoTransformation.toWKT());
-        } else if (towgs84 instanceof Identity) {
-            w.append(",TOWGS84[0,0,0,0,0,0,0]");
-        }
-        if (!datum.getAuthorityName().startsWith(Identifiable.LOCAL)) {
-            w.append(',');
-            addAuthority(datum, w);
-        }
-        w.append(']');
-    }
-
-    private static void addVertDatum(VerticalDatum vd, StringBuilder w) {
-        w.append("VERT_DATUM[\"");
-        w.append(vd.getName());
-        w.append("\",");
-        w.append(VerticalDatum.getTypeNumber(vd.getType()));
-        if (!vd.getAuthorityName().startsWith(Identifiable.LOCAL)) {
-            w.append(',');
-            addAuthority(vd, w);
-        }
-        w.append(']');
     }
 
     /**
@@ -261,22 +49,6 @@ public final class PrjWriter {
      */
     private static boolean isInteger(double a, double tol) {
         return (Math.abs(a - Math.rint(a)) < tol);
-    }
-
-    /**
-     * Converts the input value from radian to degree.
-     *
-     * @param alpha the value (in radians) to convert
-     */
-    private static double fromRadianToDegree(double alpha) {
-        UnitConversion op = UnitConversion.createUnitConverter(Unit.RADIAN, Unit.DEGREE);
-        double result = 0;
-        try {
-            result = op.transform(new double[]{alpha})[0];
-        } catch (IllegalCoordinateException ex) {
-            Logger.getLogger(PrjWriter.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return result;
     }
 
     /**

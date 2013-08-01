@@ -33,6 +33,7 @@ package org.cts.datum;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.cts.Identifiable;
 
 import org.cts.IdentifiableComponent;
 import org.cts.Identifier;
@@ -306,6 +307,24 @@ public class PrimeMeridian extends IdentifiableComponent {
         } else {
             return this;
         }
+    }
+
+    /**
+     * Returns a WKT representation of the prime meridian.
+     *
+     */
+    public String toWKT() {
+        StringBuilder w = new StringBuilder();
+        w.append("PRIMEM[\"");
+        w.append(this.getName());
+        w.append("\",");
+        w.append(this.getLongitudeFromGreenwichInDegrees());
+        if (!this.getAuthorityName().startsWith(Identifiable.LOCAL)) {
+            w.append(',');
+            w.append(this.getIdentifier().toWKT());
+        }
+        w.append(']');
+        return w.toString();
     }
 
     /**

@@ -218,6 +218,20 @@ public class Axis {
     }
 
     /**
+     * Returns a WKT representation of the axis.
+     *
+     */
+    public String toWKT() {
+        StringBuilder w = new StringBuilder();
+        w.append("AXIS[\"");
+        w.append(this.getName());
+        w.append("\",");
+        w.append(this.getDirection());
+        w.append(']');
+        return w.toString();
+    }
+
+    /**
      * Return a String representation of this Axis.
      */
     @Override

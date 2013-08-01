@@ -85,4 +85,10 @@ public interface CoordinateReferenceSystem extends Identifiable {
      * projection is defined for this CRS.
      */
     public Projection getProjection();
+
+    /**
+     * Returns a WKT representation of the CoordinateReferenceSystem.
+     *
+     */
+    public String toWKT();
 }

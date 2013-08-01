@@ -40,6 +40,7 @@ import java.util.Map;
 import org.cts.*;
 import org.cts.cs.GeographicExtent;
 import org.cts.op.*;
+import org.cts.op.transformation.GeoTransformation;
 import org.cts.op.transformation.GeocentricTranslation;
 import org.cts.op.transformation.SevenParameterTransformation;
 
@@ -428,6 +429,31 @@ public class GeodeticDatum extends AbstractDatum {
         } else {
             return this;
         }
+    }
+
+    /**
+     * Returns a WKT representation of the geodetic datum.
+     *
+     */
+    public String toWKT() {
+        StringBuilder w = new StringBuilder();
+        w.append("DATUM[\"");
+        w.append(this.getName());
+        w.append("\",");
+        w.append(this.getEllipsoid().toWKT());
+        CoordinateOperation towgs84 = this.getToWGS84();
+        if ((towgs84 != null) && (towgs84 instanceof GeoTransformation)) {
+            GeoTransformation geoTransformation = (GeoTransformation) towgs84;
+            w.append(geoTransformation.toWKT());
+        } else if (towgs84 instanceof Identity) {
+            w.append(",TOWGS84[0,0,0,0,0,0,0]");
+        }
+        if (!this.getAuthorityName().startsWith(Identifiable.LOCAL)) {
+            w.append(',');
+            w.append(this.getIdentifier().toWKT());
+        }
+        w.append(']');
+        return w.toString();
     }
 
     /**

@@ -37,6 +37,7 @@ import java.util.Map;
 import org.cts.Identifiable;
 import org.cts.IdentifiableComponent;
 import org.cts.Identifier;
+import org.cts.parser.prj.PrjWriter;
 import static org.cts.units.Quantity.*;
 
 /**
@@ -272,6 +273,24 @@ public class Unit extends IdentifiableComponent implements java.io.Serializable 
      */
     public boolean isComparable(Unit anotherUnit) {
         return quantity.equals(anotherUnit.getQuantity());
+    }
+
+    /**
+     * Returns a WKT representation of the unit.
+     *
+     */
+    public String toWKT() {
+        StringBuilder w = new StringBuilder();
+        w.append("UNIT[\"");
+        w.append(this.getName());
+        w.append("\",");
+        w.append(PrjWriter.roundToString(this.getScale(), 1e-11));
+        if (!this.getAuthorityName().startsWith(Identifiable.LOCAL)) {
+            w.append(',');
+            w.append(this.getIdentifier().toWKT());
+        }
+        w.append(']');
+        return w.toString();
     }
 
     /**

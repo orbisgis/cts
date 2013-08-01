@@ -42,6 +42,7 @@ import static java.lang.Math.tan;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.cts.Identifiable;
 
 import org.cts.IdentifiableComponent;
 import org.cts.Identifier;
@@ -838,6 +839,30 @@ public class Ellipsoid extends IdentifiableComponent {
                 + arc_coeff[2] * sin(4 * latitude)
                 + arc_coeff[3] * sin(6 * latitude)
                 + arc_coeff[4] * sin(8 * latitude);
+    }
+
+    /**
+     * Returns a WKT representation of the ellipsoid.
+     *
+     */
+    public String toWKT() {
+        StringBuilder w = new StringBuilder();
+        w.append("SPHEROID[\"");
+        w.append(this.getName());
+        w.append("\",");
+        w.append(this.getSemiMajorAxis());
+        w.append(',');
+        if (this.getInverseFlattening() != Double.POSITIVE_INFINITY) {
+            w.append(this.getInverseFlattening());
+        } else {
+            w.append(0);
+        }
+        if (!this.getAuthorityName().startsWith(Identifiable.LOCAL)) {
+            w.append(',');
+            w.append(this.getIdentifier().toWKT());
+        }
+        w.append(']');
+        return w.toString();
     }
 
     /**

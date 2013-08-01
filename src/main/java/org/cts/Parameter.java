@@ -59,12 +59,12 @@ public class Parameter {
     /**
      * Key to access azimuth of the initial line of oblique projections.
      */
-    public static final String AZIMUTH_OF_INITIAL_LINE = "azimuth of the initial line";
+    public static final String AZIMUTH = "azimuth";
     /**
      * Key to access angle from the rectified grid to the skew (oblique) grid of
      * oblique projections.
      */
-    public static final String ANGLE_RECTIFIED_TO_OBLIQUE = "angle from the rectified grid to the skew (oblique) grid";
+    public static final String RECTIFIED_GRID_ANGLE = "rectified grid angle";
     /**
      * Key to access scale factor, one possible parameter of the projection.
      */

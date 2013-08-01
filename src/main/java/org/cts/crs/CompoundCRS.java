@@ -33,6 +33,7 @@ package org.cts.crs;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.cts.Identifiable;
 import org.cts.op.CoordinateOperation;
 import org.cts.Identifier;
 import org.cts.op.NonInvertibleOperationException;
@@ -277,6 +278,26 @@ public class CompoundCRS extends GeodeticCRS {
         }
         return new CoordinateOperationSequence(new Identifier(
                 CoordinateOperationSequence.class), ops);
+    }
+
+    /**
+     * Returns a WKT representation of the compound CRS.
+     *
+     */
+    public String toWKT() {
+        StringBuilder w = new StringBuilder();
+        w.append("COMPD_CS[\"");
+        w.append(this.getName());
+        w.append("\",");
+        w.append(this.getHorizontalCRS().toWKT());
+        w.append(',');
+        w.append(this.getVerticalCRS().toWKT());
+        if (!this.getAuthorityName().startsWith(Identifiable.LOCAL)) {
+            w.append(',');
+            w.append(this.getIdentifier());
+        }
+        w.append(']');
+        return w.toString();
     }
 
     /**

@@ -35,6 +35,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.cts.Identifiable;
 import org.cts.op.CoordinateOperation;
 import org.cts.Identifier;
 import org.cts.cs.GeographicExtent;
@@ -495,5 +496,23 @@ public class VerticalDatum extends AbstractDatum {
             return eH2A.getAssociatedDatum().getPrimeMeridian();
         }
         return null;
+    }
+
+    /**
+     * Returns a WKT representation of the vertical datum.
+     *
+     */
+    public String toWKT() {
+        StringBuilder w = new StringBuilder();
+        w.append("VERT_DATUM[\"");
+        w.append(this.getName());
+        w.append("\",");
+        w.append(VerticalDatum.getTypeNumber(this.getType()));
+        if (!this.getAuthorityName().startsWith(Identifiable.LOCAL)) {
+            w.append(',');
+            w.append(this.getIdentifier().toWKT());
+        }
+        w.append(']');
+        return w.toString();
     }
 }

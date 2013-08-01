@@ -93,8 +93,8 @@ public class ObliqueMercator extends Projection {
         super(OMERC, ellipsoid, parameters);
         lonc = getCentralMeridian();
         latc = getLatitudeOfOrigin();
-        alphac = getAzimuthOfInitialLine();
-        gammac = getAngleRectifiedToOblique();
+        alphac = getAzimuth();
+        gammac = getRectifiedGridAngle();
         FE = getFalseEasting();
         FN = getFalseNorthing();
         kc = getScaleFactor();

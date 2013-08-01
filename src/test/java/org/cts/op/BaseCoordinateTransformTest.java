@@ -33,10 +33,8 @@ package org.cts.op;
 
 import org.cts.CTSTestCase;
 import org.cts.IllegalCoordinateException;
-import org.cts.crs.CompoundCRS;
 import org.cts.crs.CoordinateReferenceSystem;
 import org.cts.crs.GeodeticCRS;
-import org.cts.parser.prj.PrjWriter;
 
 import java.util.List;
 
@@ -78,6 +76,6 @@ public class BaseCoordinateTransformTest extends CTSTestCase {
      * @param crs
      */
     public void printCRStoWKT(CoordinateReferenceSystem crs) {
-        System.out.println(PrjWriter.crsToWKT(crs));
+        System.out.println(crs.toWKT());
     }
 }

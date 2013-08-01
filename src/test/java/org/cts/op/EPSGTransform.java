@@ -33,7 +33,6 @@ package org.cts.op;
 
 import org.cts.crs.CoordinateReferenceSystem;
 import org.cts.crs.GeodeticCRS;
-import org.cts.parser.prj.PrjWriter;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
@@ -51,7 +50,7 @@ public class EPSGTransform extends BaseCoordinateTransformTest {
         double[] pointDest = new double[]{584173.736, 2594514.828, 0};
         double tolerance = 10E-7;
         CoordinateReferenceSystem inputCRS = cRSFactory.getCRS(csNameSrc);
-        System.out.println(PrjWriter.crsToWKT(inputCRS));
+        System.out.println(inputCRS.toWKT());
         CoordinateReferenceSystem outputCRS = cRSFactory.getCRS(csNameDest);
         verbose=true;
         double[] result = transform((GeodeticCRS) inputCRS, (GeodeticCRS) outputCRS, pointSource);

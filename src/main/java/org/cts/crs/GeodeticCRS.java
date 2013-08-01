@@ -229,6 +229,12 @@ public abstract class GeodeticCRS extends IdentifiableComponent
             throws NonInvertibleOperationException;
 
     /**
+     * Returns a WKT representation of the geodetic CRS.
+     *
+     */
+    public abstract String toWKT();
+
+    /**
      * Return a String representation of this Datum.
      */
     @Override

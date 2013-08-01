@@ -75,15 +75,15 @@ public final class AngleFormat {
             + // degrees, capturing, MANDATORY ('0', '0.0' or '.0'),
             "([\\d]+(?:[\\.,]\\d*)?|[\\.,]\\d+)"
             + // units, capturing optional initial (d[egree]d[egré]g[rado]...)
-            "[\\s]*(?:\u00B0|([dDgG])[\\w]*\\.?)?[\\s]*"
+            "[\\s]*(?:\u00B0|([dDgG])[a-zA-Z]*\\.?)?[\\s]*"
             + // minutes, capturing, optional
             "([\\d]+(?:[\\.,]\\d*)?)?"
             + // units, capturing optional initial (m[in.])
-            "[\\s]*(?:'|([mM])[\\w]*\\.?)?[\\s]*"
+            "[\\s]*(?:'|([mM])[a-zA-Z]*\\.?)?[\\s]*"
             + // minutes, capturing, optional
             "([\\d]+(?:[\\.,]\\d*)?)?"
             + // units, capturing optional initial (m[in.])
-            "[\\s]*(?:\"|([sS])[\\w]*\\.?)?[\\s]*"
+            "[\\s]*(?:\"|([sS])[a-zA-Z]*\\.?)?[\\s]*"
             + // hemisphere, capturing, optional (caution, the s for south may have
             // been captured by the second units group
             "([NSEWOnsewo])?"

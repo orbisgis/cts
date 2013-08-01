@@ -87,7 +87,7 @@ public class Krovak extends Projection {
         double lat0 = getLatitudeOfOrigin();
         FE = getFalseEasting();
         FN = getFalseNorthing();
-        alphac = getAzimuthOfInitialLine();
+        alphac = getAzimuth();
         double kp = getScaleFactor();
         latp = 78.5 * PI / 180;
         double a = ellipsoid.getSemiMajorAxis();

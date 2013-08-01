@@ -650,8 +650,8 @@ public class CRSHelper {
         map.put(Parameter.STANDARD_PARALLEL_1, new Measure(lat_1, Unit.DEGREE));
         map.put(Parameter.STANDARD_PARALLEL_2, new Measure(lat_2, Unit.DEGREE));
         map.put(Parameter.LATITUDE_OF_TRUE_SCALE, new Measure(lat_ts, Unit.DEGREE));
-        map.put(Parameter.AZIMUTH_OF_INITIAL_LINE, new Measure(alpha, Unit.DEGREE));
-        map.put(Parameter.ANGLE_RECTIFIED_TO_OBLIQUE, new Measure(gamma, Unit.DEGREE));
+        map.put(Parameter.AZIMUTH, new Measure(alpha, Unit.DEGREE));
+        map.put(Parameter.RECTIFIED_GRID_ANGLE, new Measure(gamma, Unit.DEGREE));
         map.put(Parameter.SCALE_FACTOR, new Measure(k_0, Unit.UNIT));
         map.put(Parameter.FALSE_EASTING, new Measure(x_0, Unit.METER));
         map.put(Parameter.FALSE_NORTHING, new Measure(y_0, Unit.METER));
