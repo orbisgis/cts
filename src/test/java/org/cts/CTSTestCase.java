@@ -43,6 +43,7 @@ import org.cts.registry.IGNFRegistry;
 import org.cts.registry.Nad27Registry;
 import org.cts.registry.Nad83Registry;
 import org.cts.registry.RegistryManager;
+import org.cts.registry.worldRegistry;
 import org.junit.BeforeClass;
 
 /**
@@ -67,6 +68,7 @@ public class CTSTestCase {
         registryManager.addRegistry(new ESRIRegistry());
         registryManager.addRegistry(new Nad27Registry());
         registryManager.addRegistry(new Nad83Registry());
+        registryManager.addRegistry(new worldRegistry());
 
         // Disable log4j outputs.
         List<Logger> loggers = Collections.<Logger>list(LogManager.getCurrentLoggers());

@@ -173,6 +173,22 @@ public class RegistryParserTest extends CTSTestCase {
     }
 
     @Test
+    public void testReadworldFile() throws Exception {
+        Map<String, String> parameters = getParameters("world", "levant");
+        //<levant> # Levant
+	//proj=lcc ellps=clrk66 lat_1=34d39'N lon_0=37d21'E
+	//x_0=500000 y_0=300000 k_0=0.9996256
+	//no_defs <>
+        assertTrue(parameters.get(ProjKeyParameters.proj).equals("lcc"));
+        assertTrue(parameters.get(ProjKeyParameters.k_0).equals("0.9996256"));
+        assertTrue(parameters.get(ProjKeyParameters.lon_0).equals("37d21'E"));
+        assertTrue(parameters.get(ProjKeyParameters.lat_1).equals("34d39'N"));
+        assertTrue(parameters.get(ProjKeyParameters.x_0).equals("500000"));
+        assertTrue(parameters.get(ProjKeyParameters.y_0).equals("300000"));
+        assertTrue(parameters.get(ProjKeyParameters.ellps).equals("clrk66"));
+    }
+
+    @Test
     public void testRegisteryCaseInsensitive() throws Exception {
         Map<String, String> parameters = getParameters("IGnF", "AmSt63");
         assertTrue(parameters != null);

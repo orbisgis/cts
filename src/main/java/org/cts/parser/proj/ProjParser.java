@@ -108,6 +108,13 @@ public class ProjParser {
                 crsName = line.substring(1).trim();
             } else if (line.startsWith("<")) {
                 while (!line.endsWith(">")) {
+                    int i = line.indexOf('#');
+                    if (i != -1) {
+                        // in the "world" file, the crs name can only be read in
+                        // a comment following the key tag
+                        crsName = line.substring(i+2);
+                        line = line.substring(0, i-1);
+                    }
                     line = line + " " + br.readLine();
                 }
                 String[] tokens = regex.split(line);
