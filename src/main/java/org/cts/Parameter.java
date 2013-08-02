@@ -41,19 +41,23 @@ public class Parameter {
      */
     public static final String CENTRAL_MERIDIAN = "central meridian";
     /**
-     * Key to access latitude of origin, one possible parameter of the projection.
+     * Key to access latitude of origin, one possible parameter of the
+     * projection.
      */
     public static final String LATITUDE_OF_ORIGIN = "latitude of origin";
     /**
-     * Key to access the first standard parallel of secant conformal conic projections.
+     * Key to access the first standard parallel of secant conformal conic
+     * projections.
      */
     public static final String STANDARD_PARALLEL_1 = "standard parallel 1";
     /**
-     * Key to access the second standard parallel of secant conformal conic projections.
+     * Key to access the second standard parallel of secant conformal conic
+     * projections.
      */
     public static final String STANDARD_PARALLEL_2 = "standard parallel 2";
     /**
-     * Key to access latitude of true scale, one possible parameter of the projection.
+     * Key to access latitude of true scale, one possible parameter of the
+     * projection.
      */
     public static final String LATITUDE_OF_TRUE_SCALE = "latitude of true scale";
     /**

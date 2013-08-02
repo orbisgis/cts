@@ -44,11 +44,11 @@ import java.util.Map;
  * @author Michaël Michaud, Jules Party
  */
 public class Axis {
+
     /**
      * The map that allows CTS to get Axes from their name.
      */
     private static Map<Direction, Map<String, Axis>> axisFromDirAndName = new EnumMap<Direction, Map<String, Axis>>(Direction.class);
-
     /**
      * Easting axis. Used for planimetric coordinate system, generally in pair
      * with northing.

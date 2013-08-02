@@ -99,7 +99,7 @@ public class FrenchGeocentricNTF2RGF extends AbstractCoordinateOperation {
                 GRID3D = new IGNGeographicGrid(is, false);
             }
         } catch (Exception e) {
-            throw new Exception(e.getMessage()+"\nThis problem occured when trying to load the gr3df97a.txt grid file, using this path : "+gridPath);
+            throw new Exception(e.getMessage() + "\nThis problem occured when trying to load the gr3df97a.txt grid file, using this path : " + gridPath);
         }
     }
 
@@ -118,7 +118,7 @@ public class FrenchGeocentricNTF2RGF extends AbstractCoordinateOperation {
             is = FrenchGeocentricNTF2RGF.class.getClassLoader().getResourceAsStream("org/cts/op/transformation/grids/gr3df97a.txt");
             GRID3D = new IGNGeographicGrid(is, false);
         } catch (Exception e) {
-            throw new Exception(e.getMessage()+"\nThis problem occured when trying to load the gr3df97a.txt grid file, using this path : "+gridPath);
+            throw new Exception(e.getMessage() + "\nThis problem occured when trying to load the gr3df97a.txt grid file, using this path : " + gridPath);
         }
     }
 

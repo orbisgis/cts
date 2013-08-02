@@ -33,8 +33,8 @@ package org.cts.crs;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.cts.Identifiable;
 
+import org.cts.Identifiable;
 import org.cts.Identifier;
 import org.cts.cs.Axis;
 import org.cts.cs.CoordinateSystem;
@@ -42,13 +42,22 @@ import org.cts.datum.GeodeticDatum;
 import org.cts.op.CoordinateOperation;
 import org.cts.op.CoordinateOperationSequence;
 import org.cts.op.CoordinateSwitch;
+import org.cts.op.OppositeCoordinate;
 import org.cts.op.UnitConversion;
 import org.cts.op.projection.Projection;
 import org.cts.units.Unit;
 
-import static org.cts.cs.Axis.*;
-import org.cts.op.OppositeCoordinate;
-import static org.cts.units.Unit.*;
+import static org.cts.cs.Axis.HEIGHT;
+import static org.cts.cs.Axis.LATITUDE;
+import static org.cts.cs.Axis.LONGITUDE;
+import static org.cts.cs.Axis.Direction.DOWN;
+import static org.cts.cs.Axis.Direction.EAST;
+import static org.cts.cs.Axis.Direction.SOUTH;
+import static org.cts.cs.Axis.Direction.WEST;
+import static org.cts.units.Unit.DEGREE;
+import static org.cts.units.Unit.GRAD;
+import static org.cts.units.Unit.METER;
+import static org.cts.units.Unit.RADIAN;
 
 /**
  * <p> A Geographic CoordinateReferenceSystem is a reference system based on a
@@ -67,8 +76,8 @@ public class Geographic3DCRS extends GeodeticCRS {
             new Axis[]{LATITUDE, LONGITUDE, HEIGHT}, new Unit[]{RADIAN,
         RADIAN, METER});
     /**
-     * A 3D {@link CoordinateSystem} whose first {@link Axis} contains longitude,
-     * second {@link Axis} contains latitude and third axis contains
+     * A 3D {@link CoordinateSystem} whose first {@link Axis} contains
+     * longitude, second {@link Axis} contains latitude and third axis contains
      * ellipsoidal height. The units used by these axes are radian and meter.
      */
     public static CoordinateSystem LONLATH_RRM_CS = new CoordinateSystem(
@@ -101,8 +110,8 @@ public class Geographic3DCRS extends GeodeticCRS {
             new Axis[]{LATITUDE, LONGITUDE, HEIGHT}, new Unit[]{GRAD,
         GRAD, METER});
     /**
-     * A 3D {@link CoordinateSystem} whose first {@link Axis} contains longitude,
-     * second {@link Axis} contains latitude and third axis contains
+     * A 3D {@link CoordinateSystem} whose first {@link Axis} contains
+     * longitude, second {@link Axis} contains latitude and third axis contains
      * ellipsoidal height. The units used by these axes are grad and meter.
      */
     public static CoordinateSystem LONLATH_GGM_CS = new CoordinateSystem(
@@ -179,18 +188,18 @@ public class Geographic3DCRS extends GeodeticCRS {
     public CoordinateOperation toGeographicCoordinateConverter() {
         List<CoordinateOperation> ops = new ArrayList<CoordinateOperation>();
         for (int i = 0; i < 3; i++) {
-            if (getCoordinateSystem().getAxis(i).getDirection() == Axis.Direction.SOUTH
-                    || getCoordinateSystem().getAxis(i).getDirection() == Axis.Direction.WEST
-                    || getCoordinateSystem().getAxis(i).getDirection() == Axis.Direction.DOWN) {
+            if (getCoordinateSystem().getAxis(i).getDirection() == SOUTH
+                    || getCoordinateSystem().getAxis(i).getDirection() == WEST
+                    || getCoordinateSystem().getAxis(i).getDirection() == DOWN) {
                 ops.add(new OppositeCoordinate(i));
             }
         }
         // Convert from source unit to radians
-        ops.add(UnitConversion.createUnitConverter(getCoordinateSystem().getUnit(0), Unit.RADIAN,
-                getCoordinateSystem().getUnit(2), Unit.METER));
+        ops.add(UnitConversion.createUnitConverter(getCoordinateSystem().getUnit(0), RADIAN,
+                getCoordinateSystem().getUnit(2), METER));
         // switch from LON/LAT to LAT/LON coordinate if necessary
-        if (getCoordinateSystem().getAxis(0).getDirection() == Axis.Direction.EAST
-                    || getCoordinateSystem().getAxis(0).getDirection() == Axis.Direction.WEST) {
+        if (getCoordinateSystem().getAxis(0).getDirection() == EAST
+                || getCoordinateSystem().getAxis(0).getDirection() == WEST) {
             ops.add(CoordinateSwitch.SWITCH_LAT_LON);
         }
         return new CoordinateOperationSequence(new Identifier(
@@ -204,17 +213,17 @@ public class Geographic3DCRS extends GeodeticCRS {
     public CoordinateOperation fromGeographicCoordinateConverter() {
         List<CoordinateOperation> ops = new ArrayList<CoordinateOperation>();
         // switch from LON/LAT to LAT/LON coordinate if necessary
-        if (getCoordinateSystem().getAxis(0).getDirection() == Axis.Direction.EAST
-                    || getCoordinateSystem().getAxis(0).getDirection() == Axis.Direction.WEST) {
+        if (getCoordinateSystem().getAxis(0).getDirection() == EAST
+                || getCoordinateSystem().getAxis(0).getDirection() == WEST) {
             ops.add(CoordinateSwitch.SWITCH_LAT_LON);
         }
         // Convert from radian to this coordinate system's units
-        ops.add(UnitConversion.createUnitConverter(Unit.RADIAN, getCoordinateSystem().getUnit(0),
-                Unit.METER, getCoordinateSystem().getUnit(2)));
+        ops.add(UnitConversion.createUnitConverter(RADIAN, getCoordinateSystem().getUnit(0),
+                METER, getCoordinateSystem().getUnit(2)));
         for (int i = 0; i < 3; i++) {
-            if (getCoordinateSystem().getAxis(i).getDirection() == Axis.Direction.SOUTH
-                    || getCoordinateSystem().getAxis(i).getDirection() == Axis.Direction.WEST
-                    || getCoordinateSystem().getAxis(i).getDirection() == Axis.Direction.DOWN) {
+            if (getCoordinateSystem().getAxis(i).getDirection() == SOUTH
+                    || getCoordinateSystem().getAxis(i).getDirection() == WEST
+                    || getCoordinateSystem().getAxis(i).getDirection() == DOWN) {
                 ops.add(new OppositeCoordinate(i));
             }
         }

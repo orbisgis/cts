@@ -62,7 +62,7 @@ public class MillerCylindrical extends Projection {
             lon0, // the reference longitude (from the datum prime meridian)
             FE, // false easting
             FN, // false northing
-            n; // projection expnent
+            n; // projection exponent
     protected final double[] invcoeff;
 
     /**

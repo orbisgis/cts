@@ -64,10 +64,10 @@ public class GeographicGrid implements Grid {
      */
     int scale = 1;
     /**
-     * 3-dimensions float array. Float values has been choosen because quantities
-     * represented in a grid may vary from small quantities (rotation) to
-     * greater quantities (translation), but never need a great precision (6
-     * digits are generally sufficient).
+     * 3-dimensions float array. Float values has been choosen because
+     * quantities represented in a grid may vary from small quantities
+     * (rotation) to greater quantities (translation), but never need a great
+     * precision (6 digits are generally sufficient).
      */
     protected double[][][] values;
     /**

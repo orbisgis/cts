@@ -33,8 +33,10 @@ package org.cts.op;
 
 import org.cts.crs.CoordinateReferenceSystem;
 import org.cts.crs.GeodeticCRS;
-import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -52,7 +54,7 @@ public class EPSGTransform extends BaseCoordinateTransformTest {
         CoordinateReferenceSystem inputCRS = cRSFactory.getCRS(csNameSrc);
         System.out.println(inputCRS.toWKT());
         CoordinateReferenceSystem outputCRS = cRSFactory.getCRS(csNameDest);
-        verbose=true;
+        verbose = true;
         double[] result = transform((GeodeticCRS) inputCRS, (GeodeticCRS) outputCRS, pointSource);
         assertTrue(checkEquals2D("EPSG:4326 to EPSG:27582 ", result, pointDest, tolerance));
     }
@@ -66,7 +68,7 @@ public class EPSGTransform extends BaseCoordinateTransformTest {
         double tolerance = 0.0001;
         CoordinateReferenceSystem inputCRS = cRSFactory.getCRS(csNameSrc);
         CoordinateReferenceSystem outputCRS = cRSFactory.getCRS(csNameDest);
-        verbose=true;
+        verbose = true;
         double[] result = transform((GeodeticCRS) inputCRS, (GeodeticCRS) outputCRS, pointSource);
         assertTrue(checkEquals2D("EPSG:27582 to EPSG:4326", result, pointDest, tolerance));
     }

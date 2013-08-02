@@ -31,12 +31,13 @@
  */
 package org.cts.op;
 
-import org.cts.crs.CoordinateReferenceSystem;
-import org.cts.crs.GeodeticCRS;
-import org.junit.Test;
-
 import java.io.FileReader;
 import java.io.LineNumberReader;
+
+import org.cts.crs.CoordinateReferenceSystem;
+import org.cts.crs.GeodeticCRS;
+
+import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
 

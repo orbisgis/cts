@@ -33,8 +33,8 @@ package org.cts.crs;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.cts.Identifiable;
 
+import org.cts.Identifiable;
 import org.cts.Identifier;
 import org.cts.cs.Axis;
 import org.cts.cs.CoordinateSystem;
@@ -43,14 +43,19 @@ import org.cts.op.ChangeCoordinateDimension;
 import org.cts.op.CoordinateOperation;
 import org.cts.op.CoordinateOperationSequence;
 import org.cts.op.CoordinateSwitch;
+import org.cts.op.OppositeCoordinate;
 import org.cts.op.UnitConversion;
 import org.cts.op.projection.Projection;
 import org.cts.units.Unit;
 
 import static org.cts.cs.Axis.LATITUDE;
 import static org.cts.cs.Axis.LONGITUDE;
-import org.cts.op.OppositeCoordinate;
-import static org.cts.units.Unit.*;
+import static org.cts.cs.Axis.Direction.EAST;
+import static org.cts.cs.Axis.Direction.SOUTH;
+import static org.cts.cs.Axis.Direction.WEST;
+import static org.cts.units.Unit.RADIAN;
+import static org.cts.units.Unit.DEGREE;
+import static org.cts.units.Unit.GRAD;
 
 /**
  * <p> A Geographic CoordinateReferenceSystem is a reference system based on a
@@ -155,19 +160,19 @@ public class Geographic2DCRS extends GeodeticCRS {
     public CoordinateOperation toGeographicCoordinateConverter() {
         List<CoordinateOperation> ops = new ArrayList<CoordinateOperation>();
         for (int i = 0; i < 2; i++) {
-            if (getCoordinateSystem().getAxis(i).getDirection() == Axis.Direction.SOUTH
-                    || getCoordinateSystem().getAxis(i).getDirection() == Axis.Direction.WEST) {
+            if (getCoordinateSystem().getAxis(i).getDirection() == SOUTH
+                    || getCoordinateSystem().getAxis(i).getDirection() == WEST) {
                 ops.add(new OppositeCoordinate(i));
             }
         }
         // Convert from source unit to radians
-        ops.add(UnitConversion.createUnitConverter(getCoordinateSystem().getUnit(0), Unit.RADIAN));
+        ops.add(UnitConversion.createUnitConverter(getCoordinateSystem().getUnit(0), RADIAN));
         // Add a third value to transform the geographic2D coord into a
         // geographic3D coord
         ops.add(ChangeCoordinateDimension.TO3D);
         // switch from LON/LAT to LAT/LON coordinate if necessary
-        if (getCoordinateSystem().getAxis(0).getDirection() == Axis.Direction.EAST
-                    || getCoordinateSystem().getAxis(0).getDirection() == Axis.Direction.WEST) {
+        if (getCoordinateSystem().getAxis(0).getDirection() == EAST
+                || getCoordinateSystem().getAxis(0).getDirection() == WEST) {
             ops.add(CoordinateSwitch.SWITCH_LAT_LON);
         }
         return new CoordinateOperationSequence(new Identifier(
@@ -184,16 +189,15 @@ public class Geographic2DCRS extends GeodeticCRS {
         // geographic2D coord
         ops.add(ChangeCoordinateDimension.TO2D);
         // switch from LON/LAT to LAT/LON coordinate if necessary
-        if (getCoordinateSystem().getAxis(0).getDirection() == Axis.Direction.EAST
-                    || getCoordinateSystem().getAxis(0).getDirection() == Axis.Direction.WEST) {
+        if (getCoordinateSystem().getAxis(0).getDirection() == EAST
+                || getCoordinateSystem().getAxis(0).getDirection() == WEST) {
             ops.add(CoordinateSwitch.SWITCH_LAT_LON);
         }
         // Convert from radian to this coordinate system's units
-        ops.add(UnitConversion.createUnitConverter(Unit.RADIAN,
-                getCoordinateSystem().getUnit(0)));
+        ops.add(UnitConversion.createUnitConverter(RADIAN, getCoordinateSystem().getUnit(0)));
         for (int i = 0; i < 2; i++) {
-            if (getCoordinateSystem().getAxis(i).getDirection() == Axis.Direction.SOUTH
-                    || getCoordinateSystem().getAxis(i).getDirection() == Axis.Direction.WEST) {
+            if (getCoordinateSystem().getAxis(i).getDirection() == SOUTH
+                    || getCoordinateSystem().getAxis(i).getDirection() == WEST) {
                 ops.add(new OppositeCoordinate(i));
             }
         }

@@ -34,10 +34,12 @@ package org.cts.units;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.cts.Identifiable;
 import org.cts.IdentifiableComponent;
 import org.cts.Identifier;
 import org.cts.parser.prj.PrjWriter;
+
 import static org.cts.units.Quantity.*;
 
 /**
@@ -303,8 +305,7 @@ public class Unit extends IdentifiableComponent implements java.io.Serializable 
     }
 
     /**
-     * Returns true if this Unit can be considered as equals to another
-     * one.
+     * Returns true if this Unit can be considered as equals to another one.
      *
      * @param o the object to compare this Unit against
      */

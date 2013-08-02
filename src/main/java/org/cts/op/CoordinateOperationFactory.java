@@ -37,7 +37,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import org.cts.Identifier;
-import org.cts.crs.*;
+import org.cts.crs.GeodeticCRS;
 import org.cts.datum.GeodeticDatum;
 import org.cts.op.transformation.NTv2GridShiftTransformation;
 

@@ -34,6 +34,7 @@ package org.cts;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.log4j.Logger;
 
 /**
@@ -59,7 +60,7 @@ public class IdentifiableComponent implements Identifiable {
 
     /**
      * Change this component's Identifier
-     * 
+     *
      * @param identifier the new identifier of the component
      */
     protected void setIdentifier(Identifier identifier) {
@@ -114,7 +115,7 @@ public class IdentifiableComponent implements Identifiable {
     /**
      * Change the short string used to identify unambiguously the object. The
      * string must have a maximum of 16 characters to fit menus with ease.
-     * 
+     *
      * @param uiName the new short name of the component
      */
     @Override
@@ -132,7 +133,7 @@ public class IdentifiableComponent implements Identifiable {
 
     /**
      * Change the remarks. Be careful, this method will delete former remarks.
-     * 
+     *
      * @param remarks the new remarks of the component
      */
     @Override
@@ -142,7 +143,7 @@ public class IdentifiableComponent implements Identifiable {
 
     /**
      * Add remarks.
-     * 
+     *
      * @param new_remark the remark to add to the component
      */
     @Override

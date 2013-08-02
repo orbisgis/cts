@@ -33,21 +33,23 @@ package org.cts.crs;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.cts.Identifiable;
 import org.cts.IdentifiableComponent;
 import org.cts.Identifier;
 import org.cts.cs.Axis;
 import org.cts.cs.CoordinateSystem;
 import org.cts.datum.VerticalDatum;
+import org.cts.op.CoordinateOperation;
+import org.cts.op.CoordinateOperationSequence;
+import org.cts.op.OppositeCoordinate;
+import org.cts.op.UnitConversion;
 import org.cts.op.projection.Projection;
 import org.cts.units.Unit;
 
 import static org.cts.cs.Axis.ALTITUDE;
 import static org.cts.cs.Axis.HEIGHT;
-import org.cts.op.CoordinateOperation;
-import org.cts.op.CoordinateOperationSequence;
-import org.cts.op.OppositeCoordinate;
-import org.cts.op.UnitConversion;
+import static org.cts.cs.Axis.Direction.DOWN;
 import static org.cts.units.Unit.METER;
 
 /**
@@ -168,11 +170,11 @@ public class VerticalCRS extends IdentifiableComponent implements
     public CoordinateOperation toGeographicCoordinateConverter() {
         List<CoordinateOperation> ops = new ArrayList<CoordinateOperation>();
         // change the sign if the axis is oriented down
-        if (getCoordinateSystem().getAxis(0).getDirection() == Axis.Direction.DOWN) {
+        if (getCoordinateSystem().getAxis(0).getDirection() == DOWN) {
             ops.add(new OppositeCoordinate(0));
         }
         // Convert from source unit to meters
-        ops.add(UnitConversion.createUnitConverter(getCoordinateSystem().getUnit(0), Unit.METER));
+        ops.add(UnitConversion.createUnitConverter(getCoordinateSystem().getUnit(0), METER));
         return new CoordinateOperationSequence(new Identifier(
                 CoordinateOperationSequence.class), ops);
     }
@@ -183,9 +185,9 @@ public class VerticalCRS extends IdentifiableComponent implements
     public CoordinateOperation fromGeographicCoordinateConverter() {
         List<CoordinateOperation> ops = new ArrayList<CoordinateOperation>();
         // Convert from meters to source unit
-        ops.add(UnitConversion.createUnitConverter(getCoordinateSystem().getUnit(0), Unit.METER));
+        ops.add(UnitConversion.createUnitConverter(getCoordinateSystem().getUnit(0), METER));
         // change the sign if the axis is oriented down
-        if (getCoordinateSystem().getAxis(0).getDirection() == Axis.Direction.DOWN) {
+        if (getCoordinateSystem().getAxis(0).getDirection() == DOWN) {
             ops.add(new OppositeCoordinate(0));
         }
         return new CoordinateOperationSequence(new Identifier(

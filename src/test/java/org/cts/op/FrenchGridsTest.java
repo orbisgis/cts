@@ -31,14 +31,15 @@
  */
 package org.cts.op;
 
+import org.cts.IllegalCoordinateException;
 import org.cts.crs.CoordinateReferenceSystem;
 import org.cts.crs.GeodeticCRS;
+
 import org.junit.Test;
 
 import java.io.FileReader;
 import java.io.LineNumberReader;
 import java.util.List;
-import org.cts.IllegalCoordinateException;
 
 import static org.junit.Assert.assertTrue;
 
@@ -82,7 +83,7 @@ public class FrenchGridsTest extends BaseCoordinateTransformTest {
             double csNameDest_X_Blegg = parseNumber(values[5]);
             double csNameDest_Y_Blegg = parseNumber(values[6]);
             double tolerance = parseNumber(values[7]);
-            int index = ((int) parseNumber(id) ) % 2;
+            int index = ((int) parseNumber(id)) % 2;
             CoordinateReferenceSystem inputCRS = cRSFactory.getCRS(csNameSrc);
             CoordinateReferenceSystem outputCRS = cRSFactory.getCRS(csNameDest);
             double[] pointSource = new double[]{csNameSrc_X, csNameSrc_Y, 0};
@@ -105,7 +106,8 @@ public class FrenchGridsTest extends BaseCoordinateTransformTest {
     }
 
     /**
-     * Parses a number from a String. If the string is empty returns {@link java.lang.Double#NaN}.
+     * Parses a number from a String. If the string is empty returns
+     * {@link java.lang.Double#NaN}.
      *
      * @param numStr
      * @return the number as a double

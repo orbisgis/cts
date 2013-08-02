@@ -34,7 +34,7 @@ public final class PrjWriter {
         if (isInteger(number, tol)) {
             w.append(Math.round(number));
         } else {
-            double res = 1/tol;
+            double res = 1 / tol;
             w.append(Math.rint(number * res) / res);
         }
         return w.toString();

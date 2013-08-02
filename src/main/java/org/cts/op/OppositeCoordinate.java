@@ -61,7 +61,7 @@ public class OppositeCoordinate extends AbstractCoordinateOperation {
 
     /**
      * Apply the OppositeCoordinate transformation to input coordinates.
-     * 
+     *
      * @param coord is an array containing one, two or three ordinates
      * @throws IllegalCoordinateException
      */

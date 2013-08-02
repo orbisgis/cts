@@ -33,8 +33,8 @@ package org.cts.crs;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.cts.Identifiable;
 
+import org.cts.Identifiable;
 import org.cts.Identifier;
 import org.cts.cs.CoordinateSystem;
 import org.cts.datum.GeodeticDatum;
@@ -50,8 +50,8 @@ import org.cts.op.NonInvertibleOperationException;
  * <p> A geocentric CoordinateReferenceSystem is a 3D cartesian coordinate
  * system centered on the Earth center of mass. </p>
  * <p> Note that the Earth center of mass is not something easily identifiable,
- * especially before the advent of space geodesy, which partially explains
- * there are so many datums, and therefore, so many CoordinateReferenceSystems</p>
+ * especially before the advent of space geodesy, which partially explains there
+ * are so many datums, and therefore, so many CoordinateReferenceSystems</p>
  *
  * @author Michaël Michaud
  */

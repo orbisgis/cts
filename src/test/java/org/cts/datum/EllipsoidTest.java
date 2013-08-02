@@ -33,9 +33,13 @@ package org.cts.datum;
 
 import org.cts.CTSTestCase;
 import org.cts.Identifier;
-import static org.junit.Assert.*;
+
 import org.junit.Test;
+
 import static org.cts.datum.Ellipsoid.*;
+
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 /**
  *

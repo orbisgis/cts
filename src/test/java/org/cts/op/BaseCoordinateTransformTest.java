@@ -44,9 +44,7 @@ import java.util.List;
  */
 public class BaseCoordinateTransformTest extends CTSTestCase {
 
-    
     protected boolean verbose = false;
-    
 
     /**
      * Transform a point from a CRS to another CRS

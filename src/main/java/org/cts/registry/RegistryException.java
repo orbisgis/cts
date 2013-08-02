@@ -33,6 +33,7 @@ package org.cts.registry;
 
 /**
  * A class to return an exception when a registry fail
+ *
  * @author ebocher
  */
 public class RegistryException extends Exception {

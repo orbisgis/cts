@@ -196,7 +196,8 @@ public class CoordinateOperationSequence extends AbstractCoordinateOperation {
      * <code>this</code>. Tests equality between the length of the sequences and
      * then the equality of each CoordinateOperation.
      *
-     * @param object The object to compare this CoordinateOperationSequence against
+     * @param object The object to compare this CoordinateOperationSequence
+     * against
      */
     @Override
     public boolean equals(Object o) {

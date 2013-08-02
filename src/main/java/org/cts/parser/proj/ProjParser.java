@@ -40,6 +40,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
+
 import org.cts.registry.Registry;
 
 /**
@@ -112,8 +113,8 @@ public class ProjParser {
                     if (i != -1) {
                         // in the "world" file, the crs name can only be read in
                         // a comment following the key tag
-                        crsName = line.substring(i+2);
-                        line = line.substring(0, i-1);
+                        crsName = line.substring(i + 2);
+                        line = line.substring(0, i - 1);
                     }
                     line = line + " " + br.readLine();
                 }

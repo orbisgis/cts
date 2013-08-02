@@ -32,10 +32,13 @@
 package org.cts.registry;
 
 import java.util.Map;
+
 import org.cts.CTSTestCase;
 import org.cts.parser.proj.ProjKeyParameters;
-import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -176,9 +179,9 @@ public class RegistryParserTest extends CTSTestCase {
     public void testReadworldFile() throws Exception {
         Map<String, String> parameters = getParameters("world", "levant");
         //<levant> # Levant
-	//proj=lcc ellps=clrk66 lat_1=34d39'N lon_0=37d21'E
-	//x_0=500000 y_0=300000 k_0=0.9996256
-	//no_defs <>
+        //proj=lcc ellps=clrk66 lat_1=34d39'N lon_0=37d21'E
+        //x_0=500000 y_0=300000 k_0=0.9996256
+        //no_defs <>
         assertTrue(parameters.get(ProjKeyParameters.proj).equals("lcc"));
         assertTrue(parameters.get(ProjKeyParameters.k_0).equals("0.9996256"));
         assertTrue(parameters.get(ProjKeyParameters.lon_0).equals("37d21'E"));

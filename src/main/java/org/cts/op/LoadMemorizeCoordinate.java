@@ -43,7 +43,6 @@ import org.cts.IllegalCoordinateException;
 public class LoadMemorizeCoordinate extends AbstractCoordinateOperation {
 
     private final int indexSaved;
-    
     public static CoordinateOperation loadX = new LoadMemorizeCoordinate(0);
     public static CoordinateOperation loadY = new LoadMemorizeCoordinate(1);
     public static CoordinateOperation loadZ = new LoadMemorizeCoordinate(2);
@@ -74,8 +73,8 @@ public class LoadMemorizeCoordinate extends AbstractCoordinateOperation {
     public double[] transform(double[] coord)
             throws IllegalCoordinateException {
         double[] cc = new double[coord.length - 1];
-        System.arraycopy(coord, 0, cc, 0, coord.length-1);
-        cc[indexSaved] = coord[coord.length-1];
+        System.arraycopy(coord, 0, cc, 0, coord.length - 1);
+        cc[indexSaved] = coord[coord.length - 1];
         return cc;
     }
 }

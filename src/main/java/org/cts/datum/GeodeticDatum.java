@@ -37,9 +37,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.cts.*;
+import org.cts.Identifiable;
+import org.cts.Identifier;
 import org.cts.cs.GeographicExtent;
-import org.cts.op.*;
+import org.cts.op.CoordinateOperation;
+import org.cts.op.CoordinateOperationSequence;
+import org.cts.op.Geocentric2Geographic;
+import org.cts.op.Geographic2Geocentric;
+import org.cts.op.Identity;
+import org.cts.op.LongitudeRotation;
+import org.cts.op.NonInvertibleOperationException;
 import org.cts.op.transformation.GeoTransformation;
 import org.cts.op.transformation.GeocentricTranslation;
 import org.cts.op.transformation.SevenParameterTransformation;
@@ -62,13 +69,15 @@ import org.cts.op.transformation.SevenParameterTransformation;
  * @author Michaël Michaud, Jules Party
  */
 public class GeodeticDatum extends AbstractDatum {
+
     /**
      * datumFromName associates each datum to a short string used to recognize
      * it in CTS.
      */
     public static final Map<String, GeodeticDatum> datumFromName = new HashMap<String, GeodeticDatum>();
     /**
-     * A map of known transformations from this Datum to other {@linkplain Datum datums}.
+     * A map of known transformations from this Datum to other
+     * {@linkplain Datum datums}.
      */
     private Map<Datum, List<CoordinateOperation>> datumTransformations =
             new HashMap<Datum, List<CoordinateOperation>>();
@@ -135,31 +144,31 @@ public class GeodeticDatum extends AbstractDatum {
             PrimeMeridian.GREENWICH,
             Ellipsoid.GRS80,
             new GeographicExtent("Guadeloupe", 15.875, 16.625, -61.85, -61.075),
-            "",  "");
+            "", "");
     public final static GeodeticDatum WGS84MART = new GeodeticDatum(
             new Identifier(GeodeticDatum.class, "Martinique : WGS84", "WGS84GUAD"),
             PrimeMeridian.GREENWICH,
             Ellipsoid.GRS80,
             new GeographicExtent("Martinique", 14.25, 15.025, -61.25, -60.725),
-            "",  "");
+            "", "");
     public final static GeodeticDatum WGS84SBSM = new GeodeticDatum(
             new Identifier(GeodeticDatum.class, "St-Martin St-Barth : WGS84", "WGS84SBSM"),
             PrimeMeridian.GREENWICH,
             Ellipsoid.GRS80,
             new GeographicExtent("St-Martin St-Barth", 17.8, 18.2, -63.2, -62.5),
-            "",  "");
+            "", "");
     public final static GeodeticDatum NAD27 = new GeodeticDatum(
             new Identifier("EPSG", "6267", "North American Datum 1927", "NAD27"),
             PrimeMeridian.GREENWICH,
             Ellipsoid.CLARKE1866,
             GeographicExtent.WORLD,
-            "",  "");
+            "", "1927");
     public final static GeodeticDatum NAD83 = new GeodeticDatum(
             new Identifier("EPSG", "6269", "North American Datum 1983", "NAD83"),
             PrimeMeridian.GREENWICH,
             Ellipsoid.GRS80,
             GeographicExtent.WORLD,
-            "",  "");
+            "", "1983");
 
     static {
         WGS84.setDefaultToWGS84Operation(Identity.IDENTITY);
@@ -361,8 +370,7 @@ public class GeodeticDatum extends AbstractDatum {
                     new Identifier(CoordinateOperation.class, getName() + " to " + targetDatum.getName()),
                     new Geographic2Geocentric(targetDatum.getEllipsoid()),
                     new Geocentric2Geographic(getEllipsoid())));
-        }
-        // Fifth case : this datum and WGS84 are equivalent
+        } // Fifth case : this datum and WGS84 are equivalent
         else if (toOtherDatum == Identity.IDENTITY) {
             this.addCoordinateOperation(targetDatum, Identity.IDENTITY);
             targetDatum.addCoordinateOperation(this, Identity.IDENTITY);
@@ -373,8 +381,8 @@ public class GeodeticDatum extends AbstractDatum {
      * Add a Transformation to another Datum.
      *
      * @param datum the target datum of the transformation to add
-     * @param coordOp the transformation linking this Datum and the
-     * target <code>datum</code>
+     * @param coordOp the transformation linking this Datum and the target
+     * <code>datum</code>
      */
     public void addCoordinateOperation(Datum datum, CoordinateOperation coordOp) {
         if (datumTransformations.get(datum) == null) {

@@ -303,7 +303,7 @@ public class IGNVerticalGrid extends GeographicGrid {
                 if (i != 0) {
                     i--;
                 } else {
-                    i = rowNumber -1;
+                    i = rowNumber - 1;
                     j++;
                 }
                 incr[0] = i;

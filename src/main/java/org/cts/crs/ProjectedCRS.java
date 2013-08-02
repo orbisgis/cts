@@ -33,8 +33,8 @@ package org.cts.crs;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.cts.Identifiable;
 
+import org.cts.Identifiable;
 import org.cts.Identifier;
 import org.cts.cs.Axis;
 import org.cts.cs.CoordinateSystem;
@@ -44,13 +44,16 @@ import org.cts.op.CoordinateOperation;
 import org.cts.op.CoordinateOperationSequence;
 import org.cts.op.CoordinateSwitch;
 import org.cts.op.NonInvertibleOperationException;
+import org.cts.op.OppositeCoordinate;
 import org.cts.op.UnitConversion;
 import org.cts.op.projection.Projection;
 import org.cts.units.Unit;
 
 import static org.cts.cs.Axis.EASTING;
 import static org.cts.cs.Axis.NORTHING;
-import org.cts.op.OppositeCoordinate;
+import static org.cts.cs.Axis.Direction.NORTH;
+import static org.cts.cs.Axis.Direction.SOUTH;
+import static org.cts.cs.Axis.Direction.WEST;
 import static org.cts.units.Unit.METER;
 
 /**
@@ -153,21 +156,21 @@ public class ProjectedCRS extends GeodeticCRS {
 
         List<CoordinateOperation> ops = new ArrayList<CoordinateOperation>();
         for (int i = 0; i < 2; i++) {
-            if (getCoordinateSystem().getAxis(i).getDirection() == Axis.Direction.SOUTH
-                    || getCoordinateSystem().getAxis(i).getDirection() == Axis.Direction.WEST) {
+            if (getCoordinateSystem().getAxis(i).getDirection() == SOUTH
+                    || getCoordinateSystem().getAxis(i).getDirection() == WEST) {
                 ops.add(new OppositeCoordinate(i));
             }
         }
         // Convert units
-        if (getCoordinateSystem().getUnit(0) != Unit.METER) {
+        if (getCoordinateSystem().getUnit(0) != METER) {
             ops.add(UnitConversion.createUnitConverter(getCoordinateSystem().getUnit(0), METER));
         }
         // Add a third value to transform the geographic2D coord into a
         // geographic3D coord
         ops.add(ChangeCoordinateDimension.TO3D);
         // switch easting/northing coordinate if necessary
-        if (getCoordinateSystem().getAxis(0).getDirection() == Axis.Direction.NORTH
-                    || getCoordinateSystem().getAxis(0).getDirection() == Axis.Direction.SOUTH) {
+        if (getCoordinateSystem().getAxis(0).getDirection() == NORTH
+                || getCoordinateSystem().getAxis(0).getDirection() == SOUTH) {
             ops.add(CoordinateSwitch.SWITCH_LAT_LON);
         }
         // Apply the inverse projection
@@ -188,18 +191,17 @@ public class ProjectedCRS extends GeodeticCRS {
         // Projection
         ops.add(projection);
         // switch easting/northing coordinate if necessary
-        if (getCoordinateSystem().getAxis(0).getDirection() == Axis.Direction.NORTH
-                    || getCoordinateSystem().getAxis(0).getDirection() == Axis.Direction.SOUTH) {
+        if (getCoordinateSystem().getAxis(0).getDirection() == NORTH
+                || getCoordinateSystem().getAxis(0).getDirection() == SOUTH) {
             ops.add(CoordinateSwitch.SWITCH_LAT_LON);
         }
         // Unit conversion
-        if (getCoordinateSystem().getUnit(0) != Unit.METER) {
-            ops.add(UnitConversion.createUnitConverter(Unit.METER,
-                    getCoordinateSystem().getUnit(0)));
+        if (getCoordinateSystem().getUnit(0) != METER) {
+            ops.add(UnitConversion.createUnitConverter(METER, getCoordinateSystem().getUnit(0)));
         }
         for (int i = 0; i < 2; i++) {
-            if (getCoordinateSystem().getAxis(i).getDirection() == Axis.Direction.SOUTH
-                    || getCoordinateSystem().getAxis(i).getDirection() == Axis.Direction.WEST) {
+            if (getCoordinateSystem().getAxis(i).getDirection() == SOUTH
+                    || getCoordinateSystem().getAxis(i).getDirection() == WEST) {
                 ops.add(new OppositeCoordinate(i));
             }
         }
@@ -253,8 +255,6 @@ public class ProjectedCRS extends GeodeticCRS {
         }
         if (o instanceof GeodeticCRS) {
             GeodeticCRS crs = (GeodeticCRS) o;
-            System.out.println(this);
-            System.out.println(crs);
             if (!getType().equals(crs.getType())) {
                 return false;
             }

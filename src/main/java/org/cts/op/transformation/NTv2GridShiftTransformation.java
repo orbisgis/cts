@@ -237,7 +237,8 @@ public class NTv2GridShiftTransformation extends AbstractCoordinateOperation {
 
     /**
      * Unload the grid shift file used by this transformation.
-     * @throws IOException 
+     *
+     * @throws IOException
      */
     public void unload() throws IOException {
         gsf.unload();

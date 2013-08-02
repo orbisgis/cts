@@ -35,10 +35,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.cts.Identifiable;
-import org.cts.op.CoordinateOperation;
 import org.cts.Identifier;
 import org.cts.cs.GeographicExtent;
+import org.cts.op.CoordinateOperation;
 import org.cts.op.Identity;
 import org.cts.op.transformation.Altitude2EllipsoidalHeight;
 
@@ -49,6 +50,7 @@ import org.cts.op.transformation.Altitude2EllipsoidalHeight;
  * @author Michaël Michaud, Jules Party
  */
 public class VerticalDatum extends AbstractDatum {
+
     /**
      * datumFromName associates each datum to a short string used to recognize
      * it in CTS.

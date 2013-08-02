@@ -185,7 +185,7 @@ public class IGNGeographicGrid extends GeographicGrid {
         if (stt.hasMoreTokens()) {
             token = stt.nextToken();
             ymin = Double.parseDouble(token);
-            y0 =ymin;
+            y0 = ymin;
         } else {
             throw new Exception("Missing minimum latitude in line : " + gr1);
         }
@@ -261,10 +261,10 @@ public class IGNGeographicGrid extends GeographicGrid {
                 double lon = Double.parseDouble(gg[1]);
                 double lat = Double.parseDouble(gg[2]);
                 double[] t = new double[dim];
-                for (int i=0;i<dim;i++) {
-                    t[i] = Double.parseDouble(gg[3+i]);
+                for (int i = 0; i < dim; i++) {
+                    t[i] = Double.parseDouble(gg[3 + i]);
                 }
-                String prec = gg[3+dim];
+                String prec = gg[3 + dim];
                 nbdec = Math.max(nbdec, gg[3].split("\\.")[1].length());
                 System.arraycopy(t, 0, values[(int) Math.rint((lat - y0) / dy)][(int) Math.rint((lon - x0) / dx)], 0, dim);
             } catch (NumberFormatException nfe) {

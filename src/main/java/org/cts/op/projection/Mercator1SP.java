@@ -65,7 +65,7 @@ public class Mercator1SP extends Projection {
             lon0, // the reference longitude (from the datum prime meridian)
             FE, // the false easting
             FN, // the false northing
-            n; // projection expnent
+            n; // projection exponent
     protected final double[] invcoeff;
 
     /**

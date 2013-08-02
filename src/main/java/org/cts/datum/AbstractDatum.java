@@ -31,7 +31,6 @@
  */
 package org.cts.datum;
 
-
 import org.cts.IdentifiableComponent;
 import org.cts.Identifier;
 import org.cts.cs.Extent;

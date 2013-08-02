@@ -32,6 +32,7 @@
 package org.cts.util;
 
 import org.cts.CTSTestCase;
+
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;

@@ -43,7 +43,6 @@ import org.cts.IllegalCoordinateException;
 public class MemorizeCoordinate extends AbstractCoordinateOperation {
 
     private final int indexSaved;
-    
     public static CoordinateOperation memoX = new MemorizeCoordinate(0);
     public static CoordinateOperation memoY = new MemorizeCoordinate(1);
     public static CoordinateOperation memoZ = new MemorizeCoordinate(2);
@@ -55,7 +54,7 @@ public class MemorizeCoordinate extends AbstractCoordinateOperation {
      * @param dim final dimension of the new coordinate
      */
     public MemorizeCoordinate(int index) {
-        super(new Identifier(MemorizeCoordinate.class, "Save the " + (index+1) + "e coordinate"));
+        super(new Identifier(MemorizeCoordinate.class, "Save the " + (index + 1) + "e coordinate"));
         this.indexSaved = index;
     }
 
@@ -69,7 +68,7 @@ public class MemorizeCoordinate extends AbstractCoordinateOperation {
     @Override
     public double[] transform(double[] coord)
             throws IllegalCoordinateException {
-        double[] cc = new double[Math.max(coord.length+1, 4)];
+        double[] cc = new double[Math.max(coord.length + 1, 4)];
         System.arraycopy(coord, 0, cc, 0, Math.min(coord.length, cc.length));
         cc[Math.max(coord.length, 3)] = coord[indexSaved];
         return cc;

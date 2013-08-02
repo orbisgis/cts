@@ -67,7 +67,7 @@ public class CoordinateSystem {
 
     /**
      * Return the {@link Axis} with index i of this CoordinateSystem.
-     * 
+     *
      * @param i index of the {@link Axis} to return
      */
     public Axis getAxis(int i) throws ArrayIndexOutOfBoundsException {
@@ -81,7 +81,7 @@ public class CoordinateSystem {
 
     /**
      * Return the {@link Unit} for Axis with index i of this CoordinateSystem.
-     * 
+     *
      * @param i index of the {@link Axis} for which Unit is returned
      */
     public Unit getUnit(int i) throws ArrayIndexOutOfBoundsException {

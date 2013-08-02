@@ -35,16 +35,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.cts.crs.CRSException;
-import org.cts.crs.CompoundCRS;
 
-import org.cts.crs.CoordinateReferenceSystem;
-import org.cts.crs.GeocentricCRS;
-import org.cts.crs.GeodeticCRS;
-import org.cts.crs.Geographic2DCRS;
-import org.cts.crs.Geographic3DCRS;
-import org.cts.crs.ProjectedCRS;
-import org.cts.crs.VerticalCRS;
+import org.cts.crs.*;
 import org.cts.cs.Axis;
 import org.cts.cs.CoordinateSystem;
 import org.cts.datum.Ellipsoid;

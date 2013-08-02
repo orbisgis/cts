@@ -32,19 +32,20 @@
 package org.cts.parser.prj;
 
 import java.io.File;
-import org.cts.CRSFactory;
+
 import org.cts.CTSTestCase;
 import org.cts.crs.CoordinateReferenceSystem;
-import static org.junit.Assert.*;
+
 import org.junit.Test;
+
+import static org.junit.Assert.assertNotNull;
 
 /**
  * This class is used to test the prj reader and writer.
  *
  * @author ebocher
  */
-public class IOPrjTest extends CTSTestCase{
-
+public class IOPrjTest extends CTSTestCase {
 
     @Test
     public void readPrjNTF_Lambert_II_etendu() throws Exception {

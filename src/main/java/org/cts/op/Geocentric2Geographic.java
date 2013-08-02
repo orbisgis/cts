@@ -76,9 +76,9 @@ public class Geocentric2Geographic extends AbstractCoordinateOperation {
      */
     private Ellipsoid ellipsoid;
     /**
-     * Stop condition for the Geocentric to Geographic
-     * transformation algorithm. epsilon is a value in radian, 1E-11 is the
-     * default epsilon and it means that error is less than 1E-4 m.
+     * Stop condition for the Geocentric to Geographic transformation algorithm.
+     * epsilon is a value in radian, 1E-11 is the default epsilon and it means
+     * that error is less than 1E-4 m.
      */
     private double epsilon;
 
@@ -172,11 +172,11 @@ public class Geocentric2Geographic extends AbstractCoordinateOperation {
     public String toString() {
         return getName() + " (" + ellipsoid.getName() + ")";
     }
-        
-        public Ellipsoid getEllipsoid() {
-            return ellipsoid;
-        }
-    
+
+    public Ellipsoid getEllipsoid() {
+        return ellipsoid;
+    }
+
     /**
      * Returns true if object is equals to
      * <code>this</code>. Tests equality between the ellipsoid used by the

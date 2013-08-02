@@ -33,6 +33,7 @@ package org.cts.op;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import org.cts.datum.Ellipsoid;
 import org.cts.Parameter;
 import org.cts.crs.CoordinateReferenceSystem;
@@ -41,9 +42,11 @@ import org.cts.op.projection.CylindricalEqualArea;
 import org.cts.op.projection.MillerCylindrical;
 import org.cts.units.Measure;
 import org.cts.units.Unit;
+
+import org.junit.Test;
+
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import org.junit.Test;
 
 /**
  * This class contains tests that uses CRS not present in registries and thus
@@ -135,10 +138,10 @@ public class SpecialCoordinateTransformTest extends BaseCoordinateTransformTest 
         assertTrue(checkEquals2D("MILL dir--> ", result, pointDest, tolerance));
         assertTrue(checkEquals2D("MILL inv--> ", check, pointSource, tolerance));
     }
-    
+
     //Read and write authority
     // @Test
-    public void test27572PRJTo3857EPSG()throws Exception{
+    public void test27572PRJTo3857EPSG() throws Exception {
         String prj = "PROJCS[\"NTF (Paris) / Lambert zone II\",GEOGCS[\"NTF (Paris)\","
                 + "DATUM[\"Nouvelle_Triangulation_Francaise_Paris\","
                 + "SPHEROID[\"Clarke 1880 (IGN)\",6378249.2,293.4660212936269,"

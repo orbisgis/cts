@@ -32,20 +32,14 @@
 package org.cts.op;
 
 import static java.lang.Math.PI;
+
 import org.cts.Identifier;
 import org.cts.IllegalCoordinateException;
-import org.cts.crs.CRSException;
-import org.cts.crs.CompoundCRS;
-import org.cts.crs.CoordinateReferenceSystem;
-import org.cts.crs.GeocentricCRS;
-import org.cts.crs.GeodeticCRS;
-import org.cts.crs.Geographic2DCRS;
-import org.cts.crs.Geographic3DCRS;
-import org.cts.crs.ProjectedCRS;
-import org.cts.crs.VerticalCRS;
+import org.cts.crs.*;
 import org.cts.datum.Ellipsoid;
 import org.cts.datum.GeodeticDatum;
 import org.cts.datum.VerticalDatum;
+
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
@@ -55,7 +49,7 @@ import org.junit.Test;
  * @author Jules Party
  */
 public class VerticalTransformTest extends BaseCoordinateTransformTest {
-    
+
     Geographic2DCRS RGF93crs = new Geographic2DCRS(new Identifier("EPSG", "4171", "RGF93"), GeodeticDatum.RGF93);
 
     @Test
@@ -325,7 +319,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
 
     @Test
     public void testBORASAU01() throws Exception {
-        CompoundCRS crs = new CompoundCRS(new Identifier(CompoundCRS.class, "RGF93 + Bora Bora SAU 2001"),RGF93crs,
+        CompoundCRS crs = new CompoundCRS(new Identifier(CompoundCRS.class, "RGF93 + Bora Bora SAU 2001"), RGF93crs,
                 new VerticalCRS(new Identifier("EPSG", "5607", "Bora Bora SAU 2001"), VerticalDatum.BORASAU01, VerticalCRS.ALTITUDE_CS));
         double[] inputPoint = new double[]{-16.5, -151.7, 100};
         double[] expectedPoint = new double[]{-16.5 * PI / 180, -151.7 * PI / 180, 109.954};

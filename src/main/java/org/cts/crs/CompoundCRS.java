@@ -33,23 +33,24 @@ package org.cts.crs;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.cts.Identifiable;
-import org.cts.op.CoordinateOperation;
 import org.cts.Identifier;
-import org.cts.op.NonInvertibleOperationException;
-import org.cts.units.Unit;
 import org.cts.cs.Axis;
 import org.cts.cs.CoordinateSystem;
 import org.cts.datum.GeodeticDatum;
 import org.cts.datum.VerticalDatum;
+import org.cts.op.CoordinateOperation;
 import org.cts.op.CoordinateOperationSequence;
 import org.cts.op.CoordinateSwitch;
 import org.cts.op.Identity;
 import org.cts.op.LoadMemorizeCoordinate;
 import org.cts.op.MemorizeCoordinate;
+import org.cts.op.NonInvertibleOperationException;
 import org.cts.op.OppositeCoordinate;
 import org.cts.op.UnitConversion;
 import org.cts.op.transformation.Altitude2EllipsoidalHeight;
+import org.cts.units.Unit;
 
 /**
  * A compound CoordinateReferenceSystem is a

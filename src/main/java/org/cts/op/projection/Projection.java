@@ -35,9 +35,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import org.cts.datum.Ellipsoid;
+
 import org.cts.Identifier;
 import org.cts.Parameter;
+import org.cts.datum.Ellipsoid;
 import org.cts.op.AbstractCoordinateOperation;
 import org.cts.parser.prj.PrjWriter;
 import org.cts.units.Measure;
@@ -276,11 +277,11 @@ public abstract class Projection extends AbstractCoordinateOperation {
         }
         w.append("],PARAMETER[\"").append(Parameter.CENTRAL_MERIDIAN).append("\",");
         w.append(PrjWriter.roundToString(AngleFormat.rad2deg(this.getCentralMeridian()), 1e-11));
-        if (this.getAzimuth()!= 0.0) {
+        if (this.getAzimuth() != 0.0) {
             w.append("],PARAMETER[\"").append(Parameter.AZIMUTH).append("\",");
             w.append(PrjWriter.roundToString(AngleFormat.rad2deg(this.getAzimuth()), 1e-11));
         }
-        if (this.getRectifiedGridAngle()!= 0.0) {
+        if (this.getRectifiedGridAngle() != 0.0) {
             w.append("],PARAMETER[\"").append(Parameter.RECTIFIED_GRID_ANGLE).append("\",");
             w.append(PrjWriter.roundToString(AngleFormat.rad2deg(this.getRectifiedGridAngle()), 1e-11));
         }

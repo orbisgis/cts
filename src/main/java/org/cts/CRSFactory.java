@@ -36,12 +36,12 @@ import java.nio.charset.Charset;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
-import org.cts.registry.RegistryException;
 
 import org.cts.crs.CRSException;
 import org.cts.crs.CoordinateReferenceSystem;
 import org.cts.parser.prj.PrjParser;
 import org.cts.registry.Registry;
+import org.cts.registry.RegistryException;
 import org.cts.registry.RegistryManager;
 
 /**
@@ -136,8 +136,7 @@ public class CRSFactory {
     }
 
     /**
-     * Check if the registry name (ie EPSG, IGNF...) is
-     * supported.
+     * Check if the registry name (ie EPSG, IGNF...) is supported.
      *
      * @param registryName (ex : ESPG, IGNF, ESRI)
      */
@@ -164,7 +163,7 @@ public class CRSFactory {
             String[] authorityNameWithKey = refname.split(":");
             return CRSHelper.createCoordinateReferenceSystem(new Identifier(authorityNameWithKey[0], authorityNameWithKey[1], name), prjParameters);
         } else {
-            return CRSHelper.createCoordinateReferenceSystem(new Identifier(name, name, name), prjParameters);
+            return CRSHelper.createCoordinateReferenceSystem(new Identifier(CoordinateReferenceSystem.class, name), prjParameters);
         }
     }
 

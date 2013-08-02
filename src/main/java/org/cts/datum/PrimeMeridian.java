@@ -33,8 +33,8 @@ package org.cts.datum;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.cts.Identifiable;
 
+import org.cts.Identifiable;
 import org.cts.IdentifiableComponent;
 import org.cts.Identifier;
 import org.cts.util.AngleFormat;
@@ -271,8 +271,8 @@ public class PrimeMeridian extends IdentifiableComponent {
     /**
      * Check if
      * <code>this</code> is equals to one of the predefined PrimeMeridian
-     * (Greenwich, Paris,&hellip;). Return the predifined PrimeMeridian that matches if
-     * exists, otherwise return
+     * (Greenwich, Paris,&hellip;). Return the predifined PrimeMeridian that
+     * matches if exists, otherwise return
      * <code>this</code>.
      */
     private PrimeMeridian checkExistingPrimeMeridian() {
@@ -328,7 +328,8 @@ public class PrimeMeridian extends IdentifiableComponent {
     }
 
     /**
-     * Return a String representation of this <code>PrimeMeridian</code>.
+     * Return a String representation of this
+     * <code>PrimeMeridian</code>.
      */
     @Override
     public String toString() {

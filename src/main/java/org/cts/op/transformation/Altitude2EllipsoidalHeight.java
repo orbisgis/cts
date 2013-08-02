@@ -63,8 +63,8 @@ public class Altitude2EllipsoidalHeight extends AbstractCoordinateOperation {
      */
     private String gridFileName;
     /**
-     * The geodetic datum associated to this transformation. The latitude
-     * and longitude of the coordinate must be expressed in this datum to obtain
+     * The geodetic datum associated to this transformation. The latitude and
+     * longitude of the coordinate must be expressed in this datum to obtain
      * good results.
      */
     private GeodeticDatum associatedDatum;

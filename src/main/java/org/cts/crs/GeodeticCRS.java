@@ -148,7 +148,8 @@ public abstract class GeodeticCRS extends IdentifiableComponent
      * {@link GeodeticDatum}.
      *
      * @param gd the target GeodeticDatum of the nadgrid transformation to add
-     * @param coordOp the transformation linking this CRS and the *      * target <code>gd</code>
+     * @param coordOp the transformation linking this CRS and the target
+     * <code>gd</code>
      */
     public void addGridTransformation(GeodeticDatum gd, CoordinateOperation coordOp) {
         if (nadgridsTransformations.get(gd) == null) {
@@ -187,7 +188,8 @@ public abstract class GeodeticCRS extends IdentifiableComponent
      * Add a transformation for this CRS to the CRS in parameter.
      *
      * @param crs the target crs of the transformation to add
-     * @param opList the list of operations linking <code>this</code> *      * and <code>crs</code>
+     * @param opList the list of operations linking <code>this</code> and
+     * <code>crs</code>
      */
     public void addCRSTransformation(CoordinateReferenceSystem crs, List<CoordinateOperation> opList) {
         crsTransformations.put(crs, opList);

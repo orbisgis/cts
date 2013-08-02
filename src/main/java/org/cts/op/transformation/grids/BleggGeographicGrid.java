@@ -90,7 +90,7 @@ public class BleggGeographicGrid extends GeographicGrid {
      */
     public BleggGeographicGrid(InputStream is) throws Exception {
         DataInputStream dis = new DataInputStream(is);
-        this.dim=1;
+        this.dim = 1;
         int pos = 0;
         try {
             // Reading file format signature

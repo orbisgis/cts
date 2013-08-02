@@ -42,8 +42,8 @@ import static java.lang.Math.tan;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.cts.Identifiable;
 
+import org.cts.Identifiable;
 import org.cts.IdentifiableComponent;
 import org.cts.Identifier;
 
@@ -496,9 +496,9 @@ public class Ellipsoid extends IdentifiableComponent {
 
     /**
      * Check if
-     * <code>this</code> is equals to one of the predefined Ellipsoid
-     * (GRS80, WGS84,&hellip;). Return the predifined Ellipsoid that matches if
-     * exists, otherwise return
+     * <code>this</code> is equals to one of the predefined Ellipsoid (GRS80,
+     * WGS84,&hellip;). Return the predifined Ellipsoid that matches if exists,
+     * otherwise return
      * <code>this</code>.
      */
     private Ellipsoid checkExistingEllipsoid() {
@@ -756,7 +756,7 @@ public class Ellipsoid extends IdentifiableComponent {
      * @return the curvilinear abscissa of this latitude on the meridian arc
      */
     public double curvilinearAbscissa(double latitude) {
-        if (arc_coeff==null) {
+        if (arc_coeff == null) {
             initMeridianArcCoefficients();
         }
         return arc_coeff[0] * latitude
