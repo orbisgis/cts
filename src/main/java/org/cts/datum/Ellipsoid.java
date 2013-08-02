@@ -378,41 +378,11 @@ public class Ellipsoid extends IdentifiableComponent {
     }
 
     /**
-     * Get coefficients for the direct UTM projection.
-     */
-    public double[] getDirectUTMCoeff() {
-        if (dir_utm_coeff == null) {
-            initDirectUTMCoefficients();
-        }
-        return dir_utm_coeff;
-    }
-
-    /**
-     * Get coefficients for the inverse UTM projection.
-     */
-    public double[] getInverseUTMCoeff() {
-        if (inv_utm_coeff == null) {
-            initInverseUTMCoefficients();
-        }
-        return inv_utm_coeff;
-    }
-
-    /**
      * Get k coefficients computed with an iterative method.
      */
     public double[] getKCoeff(int max) {
         initKCoeff(max);
         return kk;
-    }
-
-    /**
-     * Get coefficients for the inverse Mercator projection.
-     */
-    public double[] getInverseMercatorCoeff() {
-        if (inv_merc_coeff == null) {
-            initInverseMercatorCoefficients();
-        }
-        return inv_merc_coeff;
     }
 
     /**
@@ -586,51 +556,6 @@ public class Ellipsoid extends IdentifiableComponent {
         arc_coeff[2] = e4 * 15 / 256 + e6 * 45 / 1024 + e8 * 525 / 16384;
         arc_coeff[3] = -e6 * 35 / 3072 - e8 * 175 / 12288;
         arc_coeff[4] = e8 * 315 / 131072;
-    }
-    
-    /**
-     * Initialize the coefficients for the direct UTM projection.
-     */
-    private void initDirectUTMCoefficients() {
-        double e4 = e2 * e2;
-        double e6 = e4 * e2;
-        double e8 = e4 * e4;
-        dir_utm_coeff = new double[5];
-        dir_utm_coeff[0] = 1.0 - e2 * 1 / 4 - e4 * 3 / 64 - e6 * 5 / 256 - e8 * 175 / 16384;
-        dir_utm_coeff[1] = e2 * 1 / 8 - e4 * 1 / 96 - e6 * 9 / 1024 - e8 * 901 / 184320;
-        dir_utm_coeff[2] = e4 * 13 / 768 + e6 * 17 / 5120 - e8 * 311 / 737280;
-        dir_utm_coeff[3] = e6 * 61 / 15360 + e8 * 899 / 430080;
-        dir_utm_coeff[4] = e8 * 49561 / 41287680;
-    }
-    
-    /**
-     * Initialize the coefficients for the inverse UTM projection.
-     */
-    private void initInverseUTMCoefficients() {
-        double e4 = e2 * e2;
-        double e6 = e4 * e2;
-        double e8 = e4 * e4;
-        inv_utm_coeff = new double[5];
-        inv_utm_coeff[0] = 1.0 - e2 * 1 / 4 - e4 * 3 / 64 - e6 * 5 / 256 - e8 * 175 / 16384;
-        inv_utm_coeff[1] = e2 * 1 / 8 + e4 * 1 / 48 + e6 * 7 / 2048 + e8 * 1 / 61440;
-        inv_utm_coeff[2] = e4 * 1 / 768 + e6 * 3 / 1280 + e8 * 559 / 368640;
-        inv_utm_coeff[3] = e6 * 17 / 30720 + e8 * 283 / 430080;
-        inv_utm_coeff[4] = e8 * 4397 / 41287680;
-    }
-    
-    /**
-     * Initialize the coefficients for the inverse Mercator projection.
-     */
-    private void initInverseMercatorCoefficients() {
-        double e4 = e2 * e2;
-        double e6 = e4 * e2;
-        double e8 = e4 * e4;
-        inv_merc_coeff = new double[5];
-        inv_merc_coeff[0] = 1.0;
-        inv_merc_coeff[1] = e2 * 1 / 2 + e4 * 5 / 24 + e6 * 1 / 12 + e8 * 13 / 360;
-        inv_merc_coeff[2] = e4 * 7 / 48 + e6 * 29 / 240 + e8 * 811 / 11520;
-        inv_merc_coeff[3] = e6 * 7 / 120 + e8 * 81 / 1120;
-        inv_merc_coeff[4] = e8 * 4279 / 161280;
     }
 
     /**

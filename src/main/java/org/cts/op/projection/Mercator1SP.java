@@ -66,6 +66,7 @@ public class Mercator1SP extends Projection {
             FE, // the false easting
             FN, // the false northing
             n; // projection expnent
+    protected final double[] invcoeff;
 
     /**
      * Create a new Mercator 1SP Projection corresponding to the
@@ -93,6 +94,27 @@ public class Mercator1SP extends Projection {
         }
         double a = getSemiMajorAxis();
         n = k0 * a;
+        invcoeff = getInverseMercatorCoeff(ellipsoid);
+    }
+
+    /**
+     * Return the coefficients for the inverse Mercator projection associated
+     * with the ellipsoid in parameter.
+     *
+     * @param ellps the projected ellipsoid
+     */
+    public static double[] getInverseMercatorCoeff(Ellipsoid ellps) {
+        double e2 = ellps.getSquareEccentricity();
+        double e4 = e2 * e2;
+        double e6 = e4 * e2;
+        double e8 = e4 * e4;
+        double[] inv_merc_coeff = new double[5];
+        inv_merc_coeff[0] = 1.0;
+        inv_merc_coeff[1] = e2 * 1 / 2 + e4 * 5 / 24 + e6 * 1 / 12 + e8 * 13 / 360;
+        inv_merc_coeff[2] = e4 * 7 / 48 + e6 * 29 / 240 + e8 * 811 / 11520;
+        inv_merc_coeff[3] = e6 * 7 / 120 + e8 * 81 / 1120;
+        inv_merc_coeff[4] = e8 * 4279 / 161280;
+        return inv_merc_coeff;
     }
 
     /**
@@ -163,7 +185,7 @@ public class Mercator1SP extends Projection {
                 double ki = PI / 2 - 2 * atan(t);
                 double lat = ki;
                 for (int i = 1; i < 5; i++) {
-                    lat += ellipsoid.getInverseMercatorCoeff()[i] * sin(2 * i * ki);
+                    lat += invcoeff[i] * sin(2 * i * ki);
                 }
                 coord[1] = (coord[0] - FE) / n + lon0;
                 coord[0] = lat;

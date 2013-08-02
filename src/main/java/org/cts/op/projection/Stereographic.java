@@ -70,6 +70,7 @@ public class Stereographic extends Projection {
             a, // semi major axis
             e, // eccentricity of the ellipsoid
             e2; // square eccentricity of the ellipsoid
+    protected final double[] invcoeff;
     private double PI_2 = PI / 2;
 
     /**
@@ -100,6 +101,7 @@ public class Stereographic extends Projection {
             k0 = getScaleFactor();
         }
         a = getSemiMajorAxis();
+        invcoeff = Mercator1SP.getInverseMercatorCoeff(ellipsoid);
     }
 
     /**
@@ -188,7 +190,7 @@ public class Stereographic extends Projection {
                 }
                 double lat = ki;
                 for (int i = 1; i < 5; i++) {
-                    lat += ellipsoid.getInverseMercatorCoeff()[i] * sin(2 * i * ki);
+                    lat += invcoeff[i] * sin(2 * i * ki);
                 }
                 if (lat0 < 0) {
                     coord[1] = lon0 + atan2(coord[0] - FE, coord[1] - FN);

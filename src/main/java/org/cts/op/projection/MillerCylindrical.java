@@ -63,6 +63,7 @@ public class MillerCylindrical extends Projection {
             FE, // false easting
             FN, // false northing
             n; // projection expnent
+    protected final double[] invcoeff;
 
     /**
      * Create a new Miller Cylindrical Projection corresponding to the
@@ -82,6 +83,7 @@ public class MillerCylindrical extends Projection {
         double k0 = getScaleFactor();
         double a = getSemiMajorAxis();
         n = k0 * a;
+        invcoeff = Mercator1SP.getInverseMercatorCoeff(ellipsoid);
     }
 
     /**
@@ -154,7 +156,7 @@ public class MillerCylindrical extends Projection {
                 double ki = PI / 2 - 2 * atan(t);
                 double lat = ki;
                 for (int i = 1; i < 5; i++) {
-                    lat += ellipsoid.getInverseMercatorCoeff()[i] * sin(2 * i * ki);
+                    lat += invcoeff[i] * sin(2 * i * ki);
                 }
                 coord[1] = (coord[0] - FE) / n + lon0;
                 coord[0] = lat / 0.8;

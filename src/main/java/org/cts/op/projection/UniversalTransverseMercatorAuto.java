@@ -75,8 +75,8 @@ public class UniversalTransverseMercatorAuto extends Projection {
         lat0 = 0.0;
         n = 0.9996 * ellipsoid.getSemiMajorAxis();
         xs = 500000;
-        dircoeff = ellipsoid.getDirectUTMCoeff();
-        invcoeff = ellipsoid.getInverseUTMCoeff();
+        dircoeff = UniversalTransverseMercator.getDirectUTMCoeff(ellipsoid);
+        invcoeff = UniversalTransverseMercator.getInverseUTMCoeff(ellipsoid);
     }
 
     public int getZone(double[] coord) {
