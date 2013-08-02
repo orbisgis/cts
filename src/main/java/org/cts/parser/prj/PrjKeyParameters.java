@@ -77,4 +77,5 @@ public class PrjKeyParameters {
     public static final String AXIS3TYPE = "axis3type";
     public static final String VERTAXIS = "vertaxis";
     public static final String VERTAXISTYPE = "vertaxistype";
+    public static final String PMVALUE = "pmvalue";
 }

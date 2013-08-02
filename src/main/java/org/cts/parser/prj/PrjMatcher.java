@@ -939,14 +939,16 @@ public final class PrjMatcher {
      */
     private void parsePrimeM(List<PrjElement> ll) {
         String pm = getString(ll.get(0));
-        pm = pm.replaceAll("[^a-zA-Z0-9]", "");
-        String prm = PrjValueParameters.PRIMEMERIDIANNAMES.get(pm.toLowerCase());
+        String prm = PrjValueParameters.PRIMEMERIDIANNAMES.get(pm.replaceAll("[^a-zA-Z0-9]", "").toLowerCase());
         if (prm != null) {
             params.put(ProjKeyParameters.pm, prm);
         } else {
-            parseNumber(ll.get(1), ProjKeyParameters.pm);
-            String auth = getAuthority(matchNode(ll.get(2), PrjKeyParameters.AUTHORITY));
-            params.put(PrjKeyParameters.PRIMEMREFNAME, auth);
+            params.put(ProjKeyParameters.pm, pm);
+            parseNumber(ll.get(1), PrjKeyParameters.PMVALUE);
+            if (ll.size() > 2) {
+                String auth = getAuthority(matchNode(ll.get(2), PrjKeyParameters.AUTHORITY));
+                params.put(PrjKeyParameters.PRIMEMREFNAME, auth);
+            }
         }
     }
 

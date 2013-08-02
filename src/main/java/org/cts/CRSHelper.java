@@ -399,25 +399,36 @@ public class CRSHelper {
      */
     private static PrimeMeridian getPrimeMeridian(Map<String, String> param) {
         String pmName = param.remove(ProjKeyParameters.pm);
+        String pmValueWKT = param.remove(PrjKeyParameters.PMVALUE);
         String authCode = param.remove(PrjKeyParameters.PRIMEMREFNAME);
+        Identifier id;
+        if (authCode != null) {
+            String[] authNameWithKey = authCode.split(":");
+            id = pmName != null ? new Identifier(authNameWithKey[0], authNameWithKey[1], pmName)
+                    : new Identifier(authNameWithKey[0], authNameWithKey[1], Identifiable.UNKNOWN);
+        } else {
+            id = pmName != null ? new Identifier(PrimeMeridian.class, pmName)
+                    : new Identifier(PrimeMeridian.class);
+        }
         PrimeMeridian pm = null;
         if (null != pmName) {
             pm = PrimeMeridian.primeMeridianFromName.get(pmName.toLowerCase());
             if (pm == null) {
                 try {
                     double pmdd = Double.parseDouble(pmName);
-                    pm = PrimeMeridian.createPrimeMeridianFromDDLongitude(
-                            new Identifier(PrimeMeridian.class), pmdd);
+                    pm = PrimeMeridian.createPrimeMeridianFromDDLongitude(id, pmdd);
                 } catch (NumberFormatException ex) {
-                    LOGGER.error(pmName + " prime meridian is not parsable");
-                    return null;
+                    try {
+                        double pmdd = Double.parseDouble(pmValueWKT);
+                        pm = PrimeMeridian.createPrimeMeridianFromDDLongitude(id, pmdd);
+                    } catch (NumberFormatException e) {
+                        LOGGER.error(pmName + " prime meridian is not parsable");
+                        return null;
+                    }
                 }
             }
         }
         if (pm == null && authCode != null) {
-            String[] authNameWithKey = authCode.split(":");
-            Identifier id = pmName != null ? new Identifier(authNameWithKey[0], authNameWithKey[1], pmName)
-                    : new Identifier(authNameWithKey[0], authNameWithKey[1], Identifiable.UNKNOWN);
             pm = (PrimeMeridian) IdentifiableComponent.getComponent(id);
         }
         if (pm == null) {
