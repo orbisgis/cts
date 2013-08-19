@@ -167,14 +167,14 @@ public class Geographic2DCRS extends GeodeticCRS {
         }
         // Convert from source unit to radians
         ops.add(UnitConversion.createUnitConverter(getCoordinateSystem().getUnit(0), RADIAN));
-        // Add a third value to transform the geographic2D coord into a
-        // geographic3D coord
-        ops.add(ChangeCoordinateDimension.TO3D);
         // switch from LON/LAT to LAT/LON coordinate if necessary
         if (getCoordinateSystem().getAxis(0).getDirection() == EAST
                 || getCoordinateSystem().getAxis(0).getDirection() == WEST) {
             ops.add(CoordinateSwitch.SWITCH_LAT_LON);
         }
+        // Add a third value to transform the geographic2D coord into a
+        // geographic3D coord
+        ops.add(ChangeCoordinateDimension.TO3D);
         return new CoordinateOperationSequence(new Identifier(
                 CoordinateOperationSequence.class), ops);
     }

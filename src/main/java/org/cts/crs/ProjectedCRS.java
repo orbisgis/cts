@@ -165,9 +165,6 @@ public class ProjectedCRS extends GeodeticCRS {
         if (getCoordinateSystem().getUnit(0) != METER) {
             ops.add(UnitConversion.createUnitConverter(getCoordinateSystem().getUnit(0), METER));
         }
-        // Add a third value to transform the geographic2D coord into a
-        // geographic3D coord
-        ops.add(ChangeCoordinateDimension.TO3D);
         // switch easting/northing coordinate if necessary
         if (getCoordinateSystem().getAxis(0).getDirection() == NORTH
                 || getCoordinateSystem().getAxis(0).getDirection() == SOUTH) {
@@ -175,6 +172,9 @@ public class ProjectedCRS extends GeodeticCRS {
         }
         // Apply the inverse projection
         ops.add(projection.inverse());
+        // Add a third value to transform the geographic2D coord into a
+        // geographic3D coord
+        ops.add(ChangeCoordinateDimension.TO3D);
         return new CoordinateOperationSequence(new Identifier(
                 CoordinateOperationSequence.class), ops);
     }

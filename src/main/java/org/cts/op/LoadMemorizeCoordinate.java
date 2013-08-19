@@ -54,7 +54,7 @@ public class LoadMemorizeCoordinate extends AbstractCoordinateOperation {
      * @param dim final dimension of the new coordinate
      */
     public LoadMemorizeCoordinate(int index) {
-        super(new Identifier(MemorizeCoordinate.class, "Load the last saved coordinate in the position " + index));
+        super(new Identifier(LoadMemorizeCoordinate.class, "Load the last saved coordinate in the position " + index));
         this.indexSaved = index;
     }
 
