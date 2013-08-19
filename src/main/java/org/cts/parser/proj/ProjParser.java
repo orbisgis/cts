@@ -186,18 +186,9 @@ public class ProjParser {
             Set<String> codes = new HashSet<String>();
             String line;
             while (null != (line = br.readLine())) {
-                if (line.startsWith("#")) {
-                } else if (line.startsWith("<") && line.endsWith(">")) {
-                    String[] tokens = regex.split(line);
-                    for (String token : tokens) {
-                        if (token.startsWith("<") && token.endsWith(">")
-                                && token.length() > 2) {
-                            codes.add(token.substring(1, token.length() - 1));
-                        } else if (token.equals("<>")) {
-                            break;
-                        } else {
-                        }
-                    }
+                if (line.startsWith("<")) {
+                    String token = regex.split(line, 2)[0];
+                    codes.add(token.substring(1, token.length() - 1));
                 }
             }
             return codes;
