@@ -48,7 +48,6 @@ import org.cts.op.CoordinateOperationSequence;
 import org.cts.op.Geocentric2Geographic;
 import org.cts.op.Geographic2Geocentric;
 import org.cts.op.Identity;
-import org.cts.op.LongitudeRotation;
 import org.cts.op.projection.*;
 import org.cts.op.transformation.FrenchGeocentricNTF2RGF;
 import org.cts.op.transformation.GeocentricTranslation;
@@ -538,22 +537,18 @@ public class CRSHelper {
                                             GeodeticDatum.RGF93,
                                             new CoordinateOperationSequence(
                                             new Identifier(CoordinateOperation.class, "NTF" + " to " + "RGF93"),
-                                            new LongitudeRotation(GeodeticDatum.NTF.getPrimeMeridian().getLongitudeFromGreenwichInRadians()),
                                             new Geographic2Geocentric(GeodeticDatum.NTF.getEllipsoid()),
                                             new FrenchGeocentricNTF2RGF(),
-                                            new Geocentric2Geographic(GeodeticDatum.RGF93.getEllipsoid()),
-                                            new LongitudeRotation(-GeodeticDatum.RGF93.getPrimeMeridian().getLongitudeFromGreenwichInRadians())));
+                                            new Geocentric2Geographic(GeodeticDatum.RGF93.getEllipsoid())));
                                 } else if (crs.getDatum().equals(GeodeticDatum.NTF_PARIS)) {
                                     crs.addGridTransformation(
                                             GeodeticDatum.RGF93,
                                             new CoordinateOperationSequence(
                                             new Identifier(CoordinateOperation.class, "NTF" + " to " + "RGF93"),
                                             GeodeticDatum.NTF_PARIS.getCoordinateOperations(GeodeticDatum.NTF).get(0),
-                                            new LongitudeRotation(GeodeticDatum.NTF.getPrimeMeridian().getLongitudeFromGreenwichInRadians()),
                                             new Geographic2Geocentric(GeodeticDatum.NTF.getEllipsoid()),
                                             new FrenchGeocentricNTF2RGF(),
-                                            new Geocentric2Geographic(GeodeticDatum.RGF93.getEllipsoid()),
-                                            new LongitudeRotation(-GeodeticDatum.RGF93.getPrimeMeridian().getLongitudeFromGreenwichInRadians())));
+                                            new Geocentric2Geographic(GeodeticDatum.RGF93.getEllipsoid())));
                                 }
                             }
                             NTv2GridShiftTransformation gt = NTv2GridShiftTransformation.createNTv2GridShiftTransformation(grid);
