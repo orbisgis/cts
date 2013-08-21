@@ -306,7 +306,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
     public void testSaintPierreEtMiquelonTransfo() throws Exception {
         CompoundCRS crs = new CompoundCRS(new Identifier(CompoundCRS.class, "RGF93 + Danger 1950"), RGF93crs,
                 new VerticalCRS(new Identifier("EPSG", "5792", "Danger 1950"), VerticalDatum.DANGER50, VerticalCRS.ALTITUDE_CS));
-        CompoundCRS crs2 = new CompoundCRS(new Identifier("EPSG", "7400", "STPM50UTM21 + Danger 1950"),
+        CompoundCRS crs2 = new CompoundCRS(new Identifier(CompoundCRS.class, "STPM50UTM21 + Danger 1950"),
                 (GeodeticCRS) cRSFactory.getCRS("IGNF:STPM50UTM21"),
                 new VerticalCRS(new Identifier("EPSG", "5792", "Danger 1950"), VerticalDatum.DANGER50, VerticalCRS.ALTITUDE_CS));
         double[] inputPoint = new double[]{46.8, -56.2, 100};

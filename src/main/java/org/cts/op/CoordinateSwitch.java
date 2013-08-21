@@ -85,7 +85,7 @@ public class CoordinateSwitch extends AbstractCoordinateOperation {
      * @param pos1 position of the ordinate to switch to pos2
      * @param pos2 position of the ordinate to switch to pos1
      */
-    private CoordinateSwitch(int pos1, int pos2) {
+    public CoordinateSwitch(int pos1, int pos2) {
         super(new Identifier(CoordinateSwitch.class));
         this.pos1 = pos1;
         this.pos2 = pos2;

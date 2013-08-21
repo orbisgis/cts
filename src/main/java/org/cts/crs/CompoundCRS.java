@@ -53,6 +53,7 @@ import org.cts.op.transformation.Altitude2EllipsoidalHeight;
 import org.cts.units.Unit;
 
 import static org.cts.op.CoordinateOperationSequence.cleverAdd;
+import org.cts.op.IterativeTransformation;
 
 /**
  * A compound CoordinateReferenceSystem is a
@@ -183,22 +184,83 @@ public class CompoundCRS extends GeodeticCRS {
         } else if (verticalCRS.getDatum().getAltiToEllpsHeight() instanceof Altitude2EllipsoidalHeight) {
             Altitude2EllipsoidalHeight transfo = (Altitude2EllipsoidalHeight) verticalCRS.getDatum().getAltiToEllpsHeight();
             if (!horizontalCRS.getDatum().equals(transfo.getAssociatedDatum())) {
+
+                ops.add(MemorizeCoordinate.memoX); // We must save this value to check that the longitude obtained after calculation of the height is close enough to the original value
+                ops.add(MemorizeCoordinate.memoY); // We must save this value to check that the latitude obtained after calculation of the height is close enough to the original value
+
                 ops.add(MemorizeCoordinate.memoZ);
                 if (horizontalCRS.getGridTransformations(transfo.getAssociatedDatum()) != null) {
                     ops.add(horizontalCRS.getGridTransformations(transfo.getAssociatedDatum()).get(0));
                     ops.add(UnitConversion.createUnitConverter(Unit.RADIAN, Unit.DEGREE, Unit.METER, Unit.METER));
                     ops.add(LoadMemorizeCoordinate.loadZ);
+
+                    ops.add(MemorizeCoordinate.memoZ); // We must keep this value in memory in the eventuallity of an iterativ process
+
                     ops.add(transfo);
                     ops.add(UnitConversion.createUnitConverter(Unit.DEGREE, Unit.RADIAN, Unit.METER, Unit.METER));
                     ops.add(horizontalCRS.getGridTransformations(transfo.getAssociatedDatum()).get(0).inverse());
+
+                    CoordinateOperationSequence seq = new CoordinateOperationSequence(new Identifier(CoordinateOperationSequence.class),
+                            new CoordinateSwitch(4, 5),
+                            new CoordinateSwitch(3, 4),
+                            LoadMemorizeCoordinate.loadY,
+                            LoadMemorizeCoordinate.loadX,
+                            MemorizeCoordinate.memoX,
+                            MemorizeCoordinate.memoY,
+                            new CoordinateSwitch(3, 4),
+                            new CoordinateSwitch(4, 5),
+                            horizontalCRS.getGridTransformations(transfo.getAssociatedDatum()).get(0),
+                            UnitConversion.createUnitConverter(Unit.RADIAN, Unit.DEGREE, Unit.METER, Unit.METER),
+                            LoadMemorizeCoordinate.loadZ,
+                            MemorizeCoordinate.memoZ,
+                            transfo,
+                            UnitConversion.createUnitConverter(Unit.DEGREE, Unit.RADIAN, Unit.METER, Unit.METER),
+                            horizontalCRS.getGridTransformations(transfo.getAssociatedDatum()).get(0).inverse()
+                            );
+                    try {
+                        ops.add(new IterativeTransformation(seq, new int[]{3, 4}, new int[]{0, 1}, new double[]{1e-11, 1e-11}));
+                    } catch (Exception ex) {
+                    }
+
                 } else {
                     ops.add(horizontalCRS.getDatum().getCoordinateOperations(transfo.getAssociatedDatum()).get(0));
                     ops.add(UnitConversion.createUnitConverter(Unit.RADIAN, Unit.DEGREE, Unit.METER, Unit.METER));
                     ops.add(LoadMemorizeCoordinate.loadZ);
+
+                    ops.add(MemorizeCoordinate.memoZ); // We must keep this value in memory in the eventuallity of an iterativ process
+
                     ops.add(transfo);
                     ops.add(UnitConversion.createUnitConverter(Unit.DEGREE, Unit.RADIAN, Unit.METER, Unit.METER));
                     ops.add(transfo.getAssociatedDatum().getCoordinateOperations(horizontalCRS.getDatum()).get(0));
+
+                    CoordinateOperationSequence seq = new CoordinateOperationSequence(new Identifier(CoordinateOperationSequence.class),
+                            new CoordinateSwitch(4, 5),
+                            new CoordinateSwitch(3, 4),
+                            LoadMemorizeCoordinate.loadY,
+                            LoadMemorizeCoordinate.loadX,
+                            MemorizeCoordinate.memoX,
+                            MemorizeCoordinate.memoY,
+                            new CoordinateSwitch(3, 4),
+                            new CoordinateSwitch(4, 5),
+                            horizontalCRS.getDatum().getCoordinateOperations(transfo.getAssociatedDatum()).get(0),
+                            UnitConversion.createUnitConverter(Unit.RADIAN, Unit.DEGREE, Unit.METER, Unit.METER),
+                            LoadMemorizeCoordinate.loadZ,
+                            MemorizeCoordinate.memoZ,
+                            transfo,
+                            UnitConversion.createUnitConverter(Unit.DEGREE, Unit.RADIAN, Unit.METER, Unit.METER),
+                            transfo.getAssociatedDatum().getCoordinateOperations(horizontalCRS.getDatum()).get(0)
+                            );
+                    try {
+                        ops.add(new IterativeTransformation(seq, new int[]{3, 4}, new int[]{0, 1}, new double[]{1e-11, 1e-11}));
+                    } catch (Exception ex) {
+                    }
+
                 }
+
+                ops.add(LoadMemorizeCoordinate.loadY); // In fact, it deletes the memorized value of altitude
+                ops.add(LoadMemorizeCoordinate.loadY); // We use the original value for a greater precision
+                ops.add(LoadMemorizeCoordinate.loadX); // We use the original value for a greater precision
+
             } else {
                 ops = cleverAdd(ops, UnitConversion.createUnitConverter(Unit.RADIAN, Unit.DEGREE, Unit.METER, Unit.METER));
                 ops.add(transfo);

@@ -143,23 +143,40 @@ public class FrenchGeocentricNTF2RGF extends AbstractCoordinateOperation {
         // Find a rough position on GRS 80
         coordi = GEOC2GEOG.transform(coordi);
 
-        // Get decimal degree coordinates for grid interpolation
-        coordi = RAD2DD.transform(coordi);
+        double oldLon = 10;
+        double oldLat = 10;
 
         // Definitive translation parameters are initialized with mean
         // translation parameters
         double tx = -168.0;
         double ty = -60.0;
         double tz = 320.0;
-        // Get the definitive translation parameters from the grids
-        try {
-            double[] t = GRID3D.bilinearInterpolation(coordi[0], coordi[1]);
-            tx = t[0];
-            ty = t[1];
-            tz = t[2];
-        } catch (OutOfExtentException e) {
-            throw new IllegalCoordinateException(e.getMessage());
+
+        while (Math.max(Math.abs(oldLon - coordi[0]), Math.abs(oldLat - coordi[1])) > 1e-11) {
+
+            oldLon = coordi[0];
+            oldLat = coordi[1];
+
+            // Get decimal degree coordinates for grid interpolation
+            coordi = RAD2DD.transform(coordi);
+
+            // Get the definitive translation parameters from the grids
+            try {
+                double[] t = GRID3D.bilinearInterpolation(coordi[0], coordi[1]);
+                tx = t[0];
+                ty = t[1];
+                tz = t[2];
+            } catch (OutOfExtentException e) {
+                throw new IllegalCoordinateException(e.getMessage());
+            }
+
+            coordi[0] = tx + coord[0];
+            coordi[1] = ty + coord[1];
+            coordi[2] = tz + coord[2];
+
+            coordi = GEOC2GEOG.transform(coordi);
         }
+
         // Apply definitive translation
         coord[0] = tx + coord[0];
         coord[1] = ty + coord[1];

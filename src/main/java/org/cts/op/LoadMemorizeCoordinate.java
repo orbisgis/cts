@@ -70,8 +70,10 @@ public class LoadMemorizeCoordinate extends AbstractCoordinateOperation {
      * compatible with this <code>CoordinateOperation</code>.
      */
     @Override
-    public double[] transform(double[] coord)
-            throws IllegalCoordinateException {
+    public double[] transform(double[] coord) throws IllegalCoordinateException {
+        if (coord.length < 4) {
+            throw new IllegalCoordinateException("There is no saved value in these coordinates.");
+        }
         double[] cc = new double[coord.length - 1];
         System.arraycopy(coord, 0, cc, 0, coord.length - 1);
         cc[indexSaved] = coord[coord.length - 1];
