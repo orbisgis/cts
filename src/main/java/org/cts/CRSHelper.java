@@ -138,6 +138,12 @@ public class CRSHelper {
             }
         }
         setNadgrids(crs, parameters);
+        // parameters read in the registry or in the WKT by CTS, but not used yet
+        parameters.remove(PrjKeyParameters.GEOGUNIT);
+        parameters.remove(PrjKeyParameters.GEOGUNITVAL);
+        parameters.remove(PrjKeyParameters.GEOGUNITREFNAME);
+        parameters.remove(ProjKeyParameters.wktext);
+        parameters.remove(ProjKeyParameters.no_defs);
         return crs;
     }
 
@@ -166,7 +172,7 @@ public class CRSHelper {
             String[] authorityNameWithKey = refname.split(":");
             id = new Identifier(authorityNameWithKey[0], authorityNameWithKey[1], name);
         } else {
-            id = new Identifier(name, name, name);
+            id = new Identifier(CoordinateReferenceSystem.class, name);
         }
         return id;
     }
@@ -475,6 +481,7 @@ public class CRSHelper {
         param.remove(ProjKeyParameters.rf);
         param.remove(PrjKeyParameters.SPHEROIDREFNAME);
         param.remove(ProjKeyParameters.pm);
+        param.remove(ProjKeyParameters.towgs84);
         return gd;
     }
 

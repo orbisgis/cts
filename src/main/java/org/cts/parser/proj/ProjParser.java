@@ -142,7 +142,12 @@ public class ProjParser {
                         } else {
                             String key = formatKey(token);
                             ProjKeyParameters.checkUnsupported(key);
-                            v.put(key, null);
+                            if (key.equals(ProjKeyParameters.wktext)) {
+                                String[] lines = regex.split(line, 2);
+                                v.put(key, lines[1]);
+                            } else {
+                                v.put(key, null);
+                            }
                         }
                     }
                 }

@@ -39,7 +39,9 @@ import java.util.Set;
 
 import org.cts.crs.CRSException;
 import org.cts.crs.CoordinateReferenceSystem;
+import org.cts.parser.prj.PrjKeyParameters;
 import org.cts.parser.prj.PrjParser;
+import org.cts.parser.proj.ProjKeyParameters;
 import org.cts.registry.Registry;
 import org.cts.registry.RegistryException;
 import org.cts.registry.RegistryManager;
@@ -96,7 +98,8 @@ public class CRSFactory {
                     Registry registry = getRegistryManager().getRegistry(registryNameWithCode[0]);
                     Map<String, String> crsParameters = registry.getParameters(registryNameWithCode[1]);
                     if (crsParameters != null) {
-                        crs = CRSHelper.createCoordinateReferenceSystem(new Identifier(registryNameWithCode[0], registryNameWithCode[1], crsParameters.remove("title")), crsParameters);
+                        crs = CRSHelper.createCoordinateReferenceSystem(new Identifier(registryNameWithCode[0], registryNameWithCode[1],
+                                crsParameters.remove(ProjKeyParameters.title)), crsParameters);
                     }
                     if (crs != null) {
                         CRSPOOL.put(authorityAndSrid, crs);
@@ -157,8 +160,8 @@ public class CRSFactory {
     public CoordinateReferenceSystem createFromPrj(String prjString) throws CRSException {
         PrjParser p = new PrjParser();
         Map<String, String> prjParameters = p.getParameters(prjString);
-        String name = prjParameters.remove("name");
-        String refname = prjParameters.remove("refname");
+        String name = prjParameters.remove(PrjKeyParameters.NAME);
+        String refname = prjParameters.remove(PrjKeyParameters.REFNAME);
         if (refname != null) {
             String[] authorityNameWithKey = refname.split(":");
             return CRSHelper.createCoordinateReferenceSystem(new Identifier(authorityNameWithKey[0], authorityNameWithKey[1], name), prjParameters);
