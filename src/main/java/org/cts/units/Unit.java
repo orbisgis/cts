@@ -34,6 +34,9 @@ package org.cts.units;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import org.cts.Identifiable;
+import org.cts.IdentifiableComponent;
+import org.cts.Identifier;
 import static org.cts.units.Quantity.*;
 
 /**
@@ -43,10 +46,9 @@ import static org.cts.units.Quantity.*;
  * what one can do with them, but rather a simple definition for conversion
  * purposes as used ni geodesy. See JSR-275 for a complete package.
  *
- * @author Michaël Michaud
- * @version 0.1 (2007-09-10)
+ * @author Michaël Michaud, Jules Party
  */
-public class Unit implements java.io.Serializable {
+public class Unit extends IdentifiableComponent implements java.io.Serializable {
 
     // A table containing tables mapping symbols to unit for each quantity Class
     private static Map<Quantity, Map<String, Unit>> map =
@@ -80,27 +82,34 @@ public class Unit implements java.io.Serializable {
     public static Unit getBaseUnit(Quantity quantity) {
         return baseUnits.get(quantity);
     }
-    // Units used in Geodetic domain
-    private ArrayList<String> names = new ArrayList<String>();
 
+    /**
+     * Return a list of the names of the unit (ex : metre, meter).
+     */
     public ArrayList<String> getNames() {
+        ArrayList<String> names = new ArrayList<String>();
+        for (Identifiable id:getAliases()) {
+            if (!names.contains(id.getName())) {
+                names.add(id.getName());
+            }
+        }
         return names;
     }
-    public static final Unit RADIAN = new Unit(ANGLE, "radian", "rad");
-    public static final Unit DEGREE = new Unit(ANGLE, "degree", Math.PI / 180d, "\u00B0");
-    public static final Unit ARC_MINUTE = new Unit(ANGLE, "minute", Math.PI / 10800d, "'");
-    public static final Unit ARC_SECOND = new Unit(ANGLE, "second", Math.PI / 648000d, "\"");
-    public static final Unit GRAD = new Unit(ANGLE, "grad", Math.PI / 200d, "g");
+    public static final Unit RADIAN = new Unit(ANGLE, new Identifier("EPSG", "9101", "radian", "rad"));
+    public static final Unit DEGREE = new Unit(ANGLE, Math.PI / 180d, new Identifier("EPSG", "9122", "degree", "\u00B0"));
+    public static final Unit ARC_MINUTE = new Unit(ANGLE, Math.PI / 10800d, new Identifier("EPSG", "9103", "minute", "'"));
+    public static final Unit ARC_SECOND = new Unit(ANGLE, Math.PI / 648000d, new Identifier("EPSG", "9104", "second", "\""));
+    public static final Unit GRAD = new Unit(ANGLE, Math.PI / 200d, new Identifier("EPSG", "9105", "grad", "g"));
     public static final Unit METER;
-    public static final Unit MILLIMETER = new Unit(LENGTH, "millimeter", 0.001, "mm");
-    public static final Unit CENTIMETER = new Unit(LENGTH, "centimeter", 0.01, "cm");
-    public static final Unit DECIMETER = new Unit(LENGTH, "decimeter", 0.1, "dm");
-    public static final Unit KILOMETER = new Unit(LENGTH, "kilometer", 1000d, "km");
-    public static final Unit FOOT = new Unit(LENGTH, "foot", 0.3048, "ft");
-    public static final Unit USFOOT = new Unit(LENGTH, "foot_us", 1200/3937, "us-ft");
-    public static final Unit YARD = new Unit(LENGTH, "yard", 0.9144, "yd");
-    public static final Unit UNIT = new Unit(NODIM, "", "");
-    public static final Unit SECOND = new Unit(TIME, "second", "s");
+    public static final Unit MILLIMETER;
+    public static final Unit CENTIMETER;
+    public static final Unit DECIMETER;
+    public static final Unit KILOMETER;
+    public static final Unit FOOT = new Unit(LENGTH, 0.3048, new Identifier("EPSG", "9002", "foot", "ft"));
+    public static final Unit USFOOT = new Unit(LENGTH, 1200 / 3937, new Identifier("EPSG", "9003", "foot_us", "us-ft"));
+    public static final Unit YARD = new Unit(LENGTH, 0.9144, new Identifier("EPSG", "9096", "yard", "yd"));
+    public static final Unit UNIT = new Unit(NODIM, new Identifier(Unit.class));
+    public static final Unit SECOND = new Unit(TIME, new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, "second", "s"));
     public static final ArrayList<Unit> units = new ArrayList<Unit>();
 
     static {
@@ -110,12 +119,26 @@ public class Unit implements java.io.Serializable {
         units.add(ARC_SECOND);
         units.add(GRAD);
 
-        ArrayList<String> unitNames = new ArrayList<String>();
-        unitNames.add("meter");
-        unitNames.add("metre");
-        METER = new Unit(LENGTH, unitNames, "m");
-
-
+        Identifier id = new Identifier("EPSG", "9001", "metre", "m");
+        ArrayList<Identifiable> aliases = new ArrayList<Identifiable>();
+        aliases.add(id);
+        METER = new Unit(LENGTH, new Identifier("EPSG", "9001", "meter", "m", "", aliases));
+        id = new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, "millimetre", "mm");
+        aliases = new ArrayList<Identifiable>();
+        aliases.add(id);
+        MILLIMETER = new Unit(LENGTH, 0.001, new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, "millimeter", "mm", "", aliases));
+        id = new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, "centimetre", "cm");
+        aliases = new ArrayList<Identifiable>();
+        aliases.add(id);
+        CENTIMETER = new Unit(LENGTH, 0.01, new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, "centimeter", "cm", "", aliases));
+        id = new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, "decimetre", "dm");
+        aliases = new ArrayList<Identifiable>();
+        aliases.add(id);
+        DECIMETER = new Unit(LENGTH, 0.1, new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, "decimeter", "dm", "", aliases));
+        id = new Identifier("EPSG", "9036", "kilometre", "km");
+        aliases = new ArrayList<Identifiable>();
+        aliases.add(id);
+        KILOMETER = new Unit(LENGTH, 1000d, new Identifier("EPSG", "9036", "kilometer", "km", "", aliases));
 
         units.add(METER);
         units.add(MILLIMETER);
@@ -129,109 +152,76 @@ public class Unit implements java.io.Serializable {
         units.add(SECOND);
     }
     private Quantity quantity;
-    private String name;
     private double scale;
     private double offset = 0d;  // used for temperature units
-    private String symbol;
 
     /**
-     * Creates a base unit for this quantity.
+     * Creates a base unit for this quantity. The name of the identifier should
+     * be the name of the unit and the short name of the identifier, the symbol
+     * of this unit.
      *
      * @param quantity the quantity measured by this unit
-     * @param name the name of the unit
-     * @param symbol the symbol representing this unit
+     * @param id the identifier of this unit
      */
-    public Unit(Quantity quantity, String name, String symbol) {
-        this(quantity, name, 1d, 0d, symbol);
+    public Unit(Quantity quantity, Identifier id) {
+        this(quantity, 1d, 0d, id);
     }
 
     /**
-     * Creates a base unit for this quantity.
+     * Creates a new unit for this quantity. The name of the identifier should
+     * be the name of the unit and the short name of the identifier, the symbol
+     * of this unit.
      *
      * @param quantity the quantity measured by this unit
-     * @param name the name of the unit
-     * @param symbol the symbol representing this unit
-     */
-    public Unit(Quantity quantity, ArrayList<String> names, String symbol) {
-        this(quantity, names, 1d, 0d, symbol);
-    }
-
-    /**
-     * Creates a new unit for this quantity.
-     *
-     * @param quantity the quantity measured by this
-     * unitDATUM["D_NTF",SPHEROID["Clarke_1880_IGN",6378249.2,293.46602]]
-     * @param name the name of the unit
      * @param scale the scale factor of this unit compared to the base unit
-     * @param symbol the symbol representing this unit
+     * @param id the identifier of this unit
      */
-    public Unit(Quantity quantity, String name, double scale, String symbol) {
-        this(quantity, name, scale, 0d, symbol);
+    public Unit(Quantity quantity, double scale, Identifier id) {
+        this(quantity, scale, 0d, id);
     }
 
     /**
-     * Creates a new unit for this quantity.
-     *
-     * @param quantity the quantity measured by this
-     * unitDATUM["D_NTF",SPHEROID["Clarke_1880_IGN",6378249.2,293.46602]]
-     * @param name the name of the unit
-     * @param scale the scale factor of this unit compared to the base unit
-     * @param symbol the symbol representing this unit
-     */
-    public Unit(Quantity quantity, ArrayList<String> names, double scale, String symbol) {
-        this(quantity, names, scale, 0d, symbol);
-    }
-
-    /**
-     * Creates a new Unit for the Quantity Q.
+     * Creates a new Unit for the Quantity Q. The name of the identifier should
+     * be the name of the unit and the short name of the identifier, the symbol
+     * of this unit.
      *
      * @param quantity the quantity measured by this unit
-     * @param name the name of the unit
      * @param scale the scale factor of this unit compared to the base unit
      * @param offset the shift factor of this unit compared to the base unit
-     * @param symbol the symbol representing this unit
+     * @param id the identifier of this unit
      */
-    public Unit(Quantity quantity, String name, double scale, double offset, String symbol) {
+    public Unit(Quantity quantity, double scale, double offset,
+            Identifier id) {
+        super(id);
         this.quantity = quantity;
-        this.name = name;
         this.scale = scale;
         this.offset = offset;
-        this.symbol = symbol;
         this.registerUnit();
     }
 
     /**
-     * Creates a new Unit for the Quantity Q.
-     *
-     * @param quantity the quantity measured by this unit
-     * @param name the name of the unit
-     * @param scale the scale factor of this unit compared to the base unit
-     * @param offset the shift factor of this unit compared to the base unit
-     * @param symbol the symbol representing this unit
+     * Register the unit in a map, using its symbol (ie its short name) as a
+     * key. If the unit is a base unit, the method also register it in a
+     * specific map for base units, this time the key is the quantity of the
+     * unit.
      */
-    public Unit(Quantity quantity, ArrayList<String> names, double scale, double offset, String symbol) {
-        this.quantity = quantity;
-        this.names = names;
-        if (names != null & names.size() > 0) {
-            this.name = names.get(0);
-        }
-        this.scale = scale;
-        this.offset = offset;
-        this.symbol = symbol;
-        this.registerUnit();
-    }
-
     private void registerUnit() {
         Map<String, Unit> unts = map.get(quantity);
         if (unts == null) {
             map.put(quantity, new HashMap<String, Unit>());
         }
-        map.get(quantity).put(symbol, this);
+        map.get(quantity).put(getShortName(), this);
         if (scale == 1d && offset == 0d) {
             baseUnits.put(quantity, this);
         }
     }
 
+    /**
+     * Returns the unit corresponding to the name in parameters. Returns null if
+     * the name is not registered.
+     *
+     * @param name the name of the desired unit
+     */
     public static Unit getUnit(String name) {
         for (Unit unit : units) {
             if (unit.getNames().isEmpty()) {
@@ -257,13 +247,6 @@ public class Unit implements java.io.Serializable {
     }
 
     /**
-     * Returns the name of this unit of measure.
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
      * Returns the scale of this unit compared to the base unit.
      */
     public double getScale() {
@@ -279,6 +262,8 @@ public class Unit implements java.io.Serializable {
 
     /**
      * Convert a measure from this unit into base unit(s).
+     * 
+     * @param measure the measure to convert into base unit
      */
     public double toBaseUnit(double measure) {
         return measure * scale + offset;
@@ -286,6 +271,8 @@ public class Unit implements java.io.Serializable {
 
     /**
      * Convert a measure from base unit(s) into this unit.
+     * 
+     * @param measure the measure to convert into this unit
      */
     public double fromBaseUnit(double measure) {
         return (measure - offset) / scale;
@@ -295,11 +282,13 @@ public class Unit implements java.io.Serializable {
      * Return the preferred symbol to use with this unit.
      */
     public String getSymbol() {
-        return symbol;
+        return getShortName();
     }
 
     /**
-     * Set factor or scale
+     * Set factor or scale.
+     * 
+     * @param scale the scale to set to the unit.
      */
     public void setScale(double scale) {
         this.scale = scale;
@@ -312,26 +301,26 @@ public class Unit implements java.io.Serializable {
      */
     public Unit getBaseUnit() {
         Unit baseUnit = baseUnits.get(quantity);
-        return baseUnits == null ? new Unit(quantity, "unknown", "") : baseUnit;
+        return baseUnits == null ? new Unit(quantity,
+                new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, Identifier.UNKNOWN, "")) : baseUnit;
     }
 
     /**
-     * Is comparable returns true if quantity measured by this unit and quantity
-     * measured by anotherUnit are equals.
+     * Returns true if quantity measured by this unit and quantity measured by
+     * anotherUnit are equals.
      *
      * @param anotherUnit another unit
-     * @return true if this unit is comparable with anotherUnit
      */
     public boolean isComparable(Unit anotherUnit) {
         return quantity.equals(anotherUnit.getQuantity());
     }
 
     /**
-     * String representation of this Unit
+     * String representation of this Unit.
      */
     @Override
     public String toString() {
-        return name + " (" + quantity
+        return getName() + " (" + quantity
                 + (scale != 1.0 ? " : " + scale + getBaseUnit().getSymbol() : "") + ")";
     }
 }

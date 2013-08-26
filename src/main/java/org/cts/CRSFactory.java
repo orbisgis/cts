@@ -160,20 +160,12 @@ public class CRSFactory {
         Map<String, String> prjParameters = p.getParameters(prjString);
         String name = prjParameters.remove("name");
         String refname = prjParameters.remove("refname");
-        CoordinateReferenceSystem crs;
         if (refname != null) {
-            crs = CRSPOOL.get(refname);
-            if (crs == null) {
-                String[] authorityNameWithKey = refname.split(":");
-                crs = CRSHelper.createCoordinateReferenceSystem(new Identifier(authorityNameWithKey[0], authorityNameWithKey[1], name), prjParameters);            
-                if (crs != null) {
-                    CRSPOOL.put(refname, crs);
-                }
-            }
+            String[] authorityNameWithKey = refname.split(":");
+            return CRSHelper.createCoordinateReferenceSystem(new Identifier(authorityNameWithKey[0], authorityNameWithKey[1], name), prjParameters);
         } else {
-            crs = CRSHelper.createCoordinateReferenceSystem(new Identifier(name, name, name), prjParameters);
+            return CRSHelper.createCoordinateReferenceSystem(new Identifier(name, name, name), prjParameters);
         }
-        return crs;
     }
 
     /**
