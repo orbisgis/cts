@@ -31,12 +31,29 @@
  */
 package org.cts.crs;
 
-import org.cts.op.CoordinateOperation;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.cts.Identifiable;
 import org.cts.Identifier;
-import org.cts.op.NonInvertibleOperationException;
-import org.cts.units.Unit;
 import org.cts.cs.Axis;
 import org.cts.cs.CoordinateSystem;
+import org.cts.datum.GeodeticDatum;
+import org.cts.datum.VerticalDatum;
+import org.cts.op.CoordinateOperation;
+import org.cts.op.CoordinateOperationSequence;
+import org.cts.op.CoordinateSwitch;
+import org.cts.op.Identity;
+import org.cts.op.LoadMemorizeCoordinate;
+import org.cts.op.MemorizeCoordinate;
+import org.cts.op.NonInvertibleOperationException;
+import org.cts.op.OppositeCoordinate;
+import org.cts.op.UnitConversion;
+import org.cts.op.transformation.Altitude2EllipsoidalHeight;
+import org.cts.units.Unit;
+
+import static org.cts.op.CoordinateOperationSequence.cleverAdd;
+import org.cts.op.IterativeTransformation;
 
 /**
  * A compound CoordinateReferenceSystem is a
@@ -45,18 +62,22 @@ import org.cts.cs.CoordinateSystem;
  * horizontal coordinates and a {@link org.cts.crs.VerticalCRS} for the z
  * coordinate.
  *
- * @author Michaël Michaud
+ * @author Michaël Michaud, Jules Party
  */
-public abstract class CompoundCRS extends GeodeticCRS {
+public class CompoundCRS extends GeodeticCRS {
 
     private GeodeticCRS horizontalCRS;
     private VerticalCRS verticalCRS;
 
     /**
      * Create a new GeodeticCRS.
+     *
+     * @param identifier the identifier of the CompoundCRS
+     * @param horizontalCRS the horizontal part of the CompoundCRS
+     * @param verticalCRS the vertical part of the CompoundCRS
      */
-    protected CompoundCRS(Identifier identifier, GeodeticCRS horizontalCRS,
-            VerticalCRS verticalCRS) {
+    public CompoundCRS(Identifier identifier, GeodeticCRS horizontalCRS,
+            VerticalCRS verticalCRS) throws CRSException {
         super(identifier, horizontalCRS.getDatum(), new CoordinateSystem(
                 new Axis[]{horizontalCRS.getCoordinateSystem().getAxis(0),
             horizontalCRS.getCoordinateSystem().getAxis(1),
@@ -64,11 +85,16 @@ public abstract class CompoundCRS extends GeodeticCRS {
                 new Unit[]{horizontalCRS.getCoordinateSystem().getUnit(0),
             horizontalCRS.getCoordinateSystem().getUnit(1),
             verticalCRS.getCoordinateSystem().getUnit(0)}));
+        if (!(horizontalCRS instanceof ProjectedCRS || horizontalCRS instanceof Geographic2DCRS)) {
+            throw new CRSException("The horizontalCRS must be a ProjectedCRS or a Geographic2DCRS. The "
+                    + horizontalCRS.getClass() + " cannot be used as horizontalCRS.");
+        }
+        this.horizontalCRS = horizontalCRS;
         this.verticalCRS = verticalCRS;
     }
 
     /**
-     * Return this CoordinateReferenceSystem Type
+     * Return this CoordinateReferenceSystem Type.
      */
     @Override
     public Type getType() {
@@ -76,14 +102,14 @@ public abstract class CompoundCRS extends GeodeticCRS {
     }
 
     /**
-     * @return the horizonal part of this CoordinateReferenceSystem
+     * Return the horizonal part of this CoordinateReferenceSystem.
      */
     public GeodeticCRS getHorizontalCRS() {
         return horizontalCRS;
     }
 
     /**
-     * @return the vertical part of this CoordinateReferenceSystem
+     * Return the vertical part of this CoordinateReferenceSystem.
      */
     public VerticalCRS getVerticalCRS() {
         return verticalCRS;
@@ -98,6 +124,18 @@ public abstract class CompoundCRS extends GeodeticCRS {
     }
 
     /**
+     * Return the list of nadgrids transformation defined for the horizontal CRS
+     * of this CompoundCRS that used the datum in parameter as target datum.
+     *
+     * @param datum the datum that must be a target for returned nadgrid
+     * transformation
+     */
+    @Override
+    public List<CoordinateOperation> getGridTransformations(GeodeticDatum datum) {
+        return horizontalCRS.getGridTransformations(datum);
+    }
+
+    /**
      * Creates a CoordinateOperation object to convert coordinates from this
      * CoordinateReferenceSystem to a GeographicReferenceSystem based on the
      * same horizonal datum and vertical datum, and using normal SI units in the
@@ -106,8 +144,135 @@ public abstract class CompoundCRS extends GeodeticCRS {
     @Override
     public CoordinateOperation toGeographicCoordinateConverter()
             throws NonInvertibleOperationException {
-        // To BE DONE
-        return null;
+        List<CoordinateOperation> ops = new ArrayList<CoordinateOperation>();
+        for (int i = 0; i < 3; i++) {
+            if (getCoordinateSystem().getAxis(i).getDirection() == Axis.Direction.SOUTH
+                    || getCoordinateSystem().getAxis(i).getDirection() == Axis.Direction.WEST
+                    || getCoordinateSystem().getAxis(i).getDirection() == Axis.Direction.DOWN) {
+                ops.add(new OppositeCoordinate(i));
+            }
+        }
+        if (horizontalCRS instanceof Geographic2DCRS) {
+            // Convert from source unit to radians and meters.
+            if (getCoordinateSystem().getUnit(0) != Unit.RADIAN || getCoordinateSystem().getUnit(2) != Unit.METER) {
+                ops.add(UnitConversion.createUnitConverter(getCoordinateSystem().getUnit(0), Unit.RADIAN, getCoordinateSystem().getUnit(2),
+                        Unit.METER));
+            }
+            // switch from LON/LAT to LAT/LON or northing/easting coordinate if necessary
+            if (getCoordinateSystem().getAxis(0).getDirection() == Axis.Direction.EAST
+                    || getCoordinateSystem().getAxis(0).getDirection() == Axis.Direction.WEST) {
+                ops.add(CoordinateSwitch.SWITCH_LAT_LON);
+            }
+        } else {
+            // Convert units
+            if (getCoordinateSystem().getUnit(0) != Unit.METER || getCoordinateSystem().getUnit(2) != Unit.METER) {
+                ops.add(UnitConversion.createUnitConverter(getCoordinateSystem().getUnit(0), Unit.METER, getCoordinateSystem().getUnit(2),
+                        Unit.METER));
+            }
+            // switch easting/northing coordinate if necessary
+            if (getCoordinateSystem().getAxis(0).getDirection() == Axis.Direction.NORTH
+                    || getCoordinateSystem().getAxis(0).getDirection() == Axis.Direction.SOUTH) {
+                ops.add(CoordinateSwitch.SWITCH_LAT_LON);
+            }
+            // Apply the inverse projection
+            ops.add(horizontalCRS.getProjection().inverse());
+        }
+        if (verticalCRS.getDatum().getType().equals(VerticalDatum.Type.ELLIPSOIDAL)
+                && !horizontalCRS.getDatum().getEllipsoid().equals(verticalCRS.getDatum().getEllipsoid())) {
+            System.out.println("Unsupported operation for this CRS : " + this);
+            //TO DO
+        } else if (verticalCRS.getDatum().getAltiToEllpsHeight() instanceof Altitude2EllipsoidalHeight) {
+            Altitude2EllipsoidalHeight transfo = (Altitude2EllipsoidalHeight) verticalCRS.getDatum().getAltiToEllpsHeight();
+            if (!horizontalCRS.getDatum().equals(transfo.getAssociatedDatum())) {
+
+                ops.add(MemorizeCoordinate.memoX); // We must save this value to check that the longitude obtained after calculation of the height is close enough to the original value
+                ops.add(MemorizeCoordinate.memoY); // We must save this value to check that the latitude obtained after calculation of the height is close enough to the original value
+
+                ops.add(MemorizeCoordinate.memoZ);
+                if (horizontalCRS.getGridTransformations(transfo.getAssociatedDatum()) != null) {
+                    ops.add(horizontalCRS.getGridTransformations(transfo.getAssociatedDatum()).get(0));
+                    ops.add(UnitConversion.createUnitConverter(Unit.RADIAN, Unit.DEGREE, Unit.METER, Unit.METER));
+                    ops.add(LoadMemorizeCoordinate.loadZ);
+
+                    ops.add(MemorizeCoordinate.memoZ); // We must keep this value in memory in the eventuallity of an iterativ process
+
+                    ops.add(transfo);
+                    ops.add(UnitConversion.createUnitConverter(Unit.DEGREE, Unit.RADIAN, Unit.METER, Unit.METER));
+                    ops.add(horizontalCRS.getGridTransformations(transfo.getAssociatedDatum()).get(0).inverse());
+
+                    CoordinateOperationSequence seq = new CoordinateOperationSequence(new Identifier(CoordinateOperationSequence.class),
+                            new CoordinateSwitch(4, 5),
+                            new CoordinateSwitch(3, 4),
+                            LoadMemorizeCoordinate.loadY,
+                            LoadMemorizeCoordinate.loadX,
+                            MemorizeCoordinate.memoX,
+                            MemorizeCoordinate.memoY,
+                            new CoordinateSwitch(3, 4),
+                            new CoordinateSwitch(4, 5),
+                            horizontalCRS.getGridTransformations(transfo.getAssociatedDatum()).get(0),
+                            UnitConversion.createUnitConverter(Unit.RADIAN, Unit.DEGREE, Unit.METER, Unit.METER),
+                            LoadMemorizeCoordinate.loadZ,
+                            MemorizeCoordinate.memoZ,
+                            transfo,
+                            UnitConversion.createUnitConverter(Unit.DEGREE, Unit.RADIAN, Unit.METER, Unit.METER),
+                            horizontalCRS.getGridTransformations(transfo.getAssociatedDatum()).get(0).inverse()
+                            );
+                    try {
+                        ops.add(new IterativeTransformation(seq, new int[]{3, 4}, new int[]{0, 1}, new double[]{1e-11, 1e-11}));
+                    } catch (Exception ex) {
+                    }
+
+                } else {
+                    ops.add(horizontalCRS.getDatum().getCoordinateOperations(transfo.getAssociatedDatum()).get(0));
+                    ops.add(UnitConversion.createUnitConverter(Unit.RADIAN, Unit.DEGREE, Unit.METER, Unit.METER));
+                    ops.add(LoadMemorizeCoordinate.loadZ);
+
+                    ops.add(MemorizeCoordinate.memoZ); // We must keep this value in memory in the eventuallity of an iterativ process
+
+                    ops.add(transfo);
+                    ops.add(UnitConversion.createUnitConverter(Unit.DEGREE, Unit.RADIAN, Unit.METER, Unit.METER));
+                    ops.add(transfo.getAssociatedDatum().getCoordinateOperations(horizontalCRS.getDatum()).get(0));
+
+                    CoordinateOperationSequence seq = new CoordinateOperationSequence(new Identifier(CoordinateOperationSequence.class),
+                            new CoordinateSwitch(4, 5),
+                            new CoordinateSwitch(3, 4),
+                            LoadMemorizeCoordinate.loadY,
+                            LoadMemorizeCoordinate.loadX,
+                            MemorizeCoordinate.memoX,
+                            MemorizeCoordinate.memoY,
+                            new CoordinateSwitch(3, 4),
+                            new CoordinateSwitch(4, 5),
+                            horizontalCRS.getDatum().getCoordinateOperations(transfo.getAssociatedDatum()).get(0),
+                            UnitConversion.createUnitConverter(Unit.RADIAN, Unit.DEGREE, Unit.METER, Unit.METER),
+                            LoadMemorizeCoordinate.loadZ,
+                            MemorizeCoordinate.memoZ,
+                            transfo,
+                            UnitConversion.createUnitConverter(Unit.DEGREE, Unit.RADIAN, Unit.METER, Unit.METER),
+                            transfo.getAssociatedDatum().getCoordinateOperations(horizontalCRS.getDatum()).get(0)
+                            );
+                    try {
+                        ops.add(new IterativeTransformation(seq, new int[]{3, 4}, new int[]{0, 1}, new double[]{1e-11, 1e-11}));
+                    } catch (Exception ex) {
+                    }
+
+                }
+
+                ops.add(LoadMemorizeCoordinate.loadY); // In fact, it deletes the memorized value of altitude
+                ops.add(LoadMemorizeCoordinate.loadY); // We use the original value for a greater precision
+                ops.add(LoadMemorizeCoordinate.loadX); // We use the original value for a greater precision
+
+            } else {
+                ops = cleverAdd(ops, UnitConversion.createUnitConverter(Unit.RADIAN, Unit.DEGREE, Unit.METER, Unit.METER));
+                ops.add(transfo);
+                ops.add(UnitConversion.createUnitConverter(Unit.DEGREE, Unit.RADIAN, Unit.METER, Unit.METER));
+            }
+        } else if (verticalCRS.getDatum().getType().equals(VerticalDatum.Type.ELLIPSOIDAL)) {
+            ops = cleverAdd(ops, Identity.IDENTITY);
+        } else {
+            System.out.println("Unsupported operation for this CRS : " + this);
+        }
+        return new CoordinateOperationSequence(new Identifier(
+                CoordinateOperationSequence.class), ops);
     }
 
     /**
@@ -119,8 +284,85 @@ public abstract class CompoundCRS extends GeodeticCRS {
     @Override
     public CoordinateOperation fromGeographicCoordinateConverter()
             throws NonInvertibleOperationException {
-        // To BE DONE
-        return null;
+        List<CoordinateOperation> ops = new ArrayList<CoordinateOperation>();
+        if (verticalCRS.getDatum().getType().equals(VerticalDatum.Type.ELLIPSOIDAL)
+                && !horizontalCRS.getDatum().getEllipsoid().equals(verticalCRS.getDatum().getEllipsoid())) {
+            System.out.println("Unsupported operation for this CRS : " + this);
+            // TO DO
+        } else if (verticalCRS.getDatum().getAltiToEllpsHeight() instanceof Altitude2EllipsoidalHeight) {
+            Altitude2EllipsoidalHeight transfo = (Altitude2EllipsoidalHeight) verticalCRS.getDatum().getAltiToEllpsHeight();
+            ops.add(MemorizeCoordinate.memoX);
+            ops.add(MemorizeCoordinate.memoY);
+            if (!horizontalCRS.getDatum().equals(transfo.getAssociatedDatum())) {
+                if (horizontalCRS.getGridTransformations(transfo.getAssociatedDatum()) != null) {
+                    ops.add(horizontalCRS.getGridTransformations(transfo.getAssociatedDatum()).get(0));
+                } else {
+                    ops.add(horizontalCRS.getDatum().getCoordinateOperations(transfo.getAssociatedDatum()).get(0));
+                }
+            }
+            ops.add(UnitConversion.createUnitConverter(Unit.RADIAN, Unit.DEGREE, Unit.METER, Unit.METER));
+            ops.add(transfo.inverse());
+            ops.add(LoadMemorizeCoordinate.loadY);
+            ops.add(LoadMemorizeCoordinate.loadX);
+        } else if (verticalCRS.getDatum().getType().equals(VerticalDatum.Type.ELLIPSOIDAL)) {
+            ops.add(Identity.IDENTITY);
+        } else {
+            System.out.println("Unsupported operation for this CRS : " + this);
+        }
+        if (horizontalCRS instanceof Geographic2DCRS) {
+            // Convert from source unit to radians and meters.
+            if (getCoordinateSystem().getUnit(0) != Unit.RADIAN || getCoordinateSystem().getUnit(2) != Unit.METER) {
+                ops = cleverAdd(ops, UnitConversion.createUnitConverter(Unit.RADIAN, getCoordinateSystem().getUnit(0),
+                        Unit.METER, getCoordinateSystem().getUnit(2)));
+            }
+            // switch from LON/LAT to LAT/LON coordinate if necessary
+            if (getCoordinateSystem().getAxis(0).getDirection() == Axis.Direction.EAST
+                    || getCoordinateSystem().getAxis(0).getDirection() == Axis.Direction.WEST) {
+                ops = cleverAdd(ops, CoordinateSwitch.SWITCH_LAT_LON);
+            }
+        } else {
+            // Apply the inverse projection
+            ops.add(horizontalCRS.getProjection());
+            // Convert units
+            if (getCoordinateSystem().getUnit(0) != Unit.METER || getCoordinateSystem().getUnit(2) != Unit.METER) {
+                ops = cleverAdd(ops, UnitConversion.createUnitConverter(Unit.METER, getCoordinateSystem().getUnit(0),
+                        Unit.METER, getCoordinateSystem().getUnit(2)));
+            }
+            // switch easting/northing coordinate if necessary
+            if (getCoordinateSystem().getAxis(0).getDirection() == Axis.Direction.NORTH
+                    || getCoordinateSystem().getAxis(0).getDirection() == Axis.Direction.SOUTH) {
+                ops = cleverAdd(ops, CoordinateSwitch.SWITCH_LAT_LON);
+            }
+        }
+        for (int i = 0; i < 3; i++) {
+            if (getCoordinateSystem().getAxis(i).getDirection() == Axis.Direction.SOUTH
+                    || getCoordinateSystem().getAxis(i).getDirection() == Axis.Direction.WEST
+                    || getCoordinateSystem().getAxis(i).getDirection() == Axis.Direction.DOWN) {
+                ops = cleverAdd(ops, new OppositeCoordinate(i));
+            }
+        }
+        return new CoordinateOperationSequence(new Identifier(
+                CoordinateOperationSequence.class), ops);
+    }
+
+    /**
+     * Returns a WKT representation of the compound CRS.
+     *
+     */
+    public String toWKT() {
+        StringBuilder w = new StringBuilder();
+        w.append("COMPD_CS[\"");
+        w.append(this.getName());
+        w.append("\",");
+        w.append(this.getHorizontalCRS().toWKT());
+        w.append(',');
+        w.append(this.getVerticalCRS().toWKT());
+        if (!this.getAuthorityName().startsWith(Identifiable.LOCAL)) {
+            w.append(',');
+            w.append(this.getIdentifier());
+        }
+        w.append(']');
+        return w.toString();
     }
 
     /**

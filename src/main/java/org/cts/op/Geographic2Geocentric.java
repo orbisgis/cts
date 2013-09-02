@@ -124,7 +124,7 @@ public class Geographic2Geocentric extends AbstractCoordinateOperation {
     @Override
     public double[] transform(double[] coord)
             throws IllegalCoordinateException {
-        if (coord.length < 2 || coord.length > 3) {
+        if (coord.length < 2) {
             throw new CoordinateDimensionException(coord, 3);
         } else if (coord.length == 2) {
             coord = new double[]{coord[0], coord[1], 0.0};
@@ -132,7 +132,7 @@ public class Geographic2Geocentric extends AbstractCoordinateOperation {
         double lat = coord[0];
         double lon = coord[1];
         double height = 0.0;
-        if (coord.length == 3 && !Double.isNaN(coord[2])) {
+        if (coord.length > 2 && !Double.isNaN(coord[2])) {
             height = coord[2];
         }
         double N = ellipsoid.transverseRadiusOfCurvature(lat);
@@ -156,5 +156,38 @@ public class Geographic2Geocentric extends AbstractCoordinateOperation {
     @Override
     public String toString() {
         return getName() + " (" + ellipsoid.getName() + ")";
+    }
+
+    public Ellipsoid getEllipsoid() {
+        return ellipsoid;
+    }
+
+    /**
+     * Returns true if object is equals to
+     * <code>this</code>. Tests equality between the ellipsoid used by the
+     * transformation.
+     *
+     * @param object The object to compare this Geographic2Geocentric against
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o instanceof Geographic2Geocentric) {
+            Geographic2Geocentric gg2gc = (Geographic2Geocentric) o;
+            return getEllipsoid().equals(gg2gc.getEllipsoid());
+        }
+        return false;
+    }
+
+    /**
+     * Returns the hash code for this Geographic2Geocentric.
+     */
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 19 * hash + (this.ellipsoid != null ? this.ellipsoid.hashCode() : 0);
+        return hash;
     }
 }

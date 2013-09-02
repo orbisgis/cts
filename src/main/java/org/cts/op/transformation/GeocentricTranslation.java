@@ -101,7 +101,7 @@ public class GeocentricTranslation extends AbstractCoordinateOperation implement
      */
     @Override
     public double[] transform(double[] coord) throws IllegalCoordinateException {
-        if (coord.length != 3) {
+        if (coord.length < 3) {
             throw new CoordinateDimensionException(coord, 3);
         }
         coord[0] = tx + coord[0];
@@ -136,11 +136,23 @@ public class GeocentricTranslation extends AbstractCoordinateOperation implement
     public String toWKT() {
         StringBuilder w = new StringBuilder();
         w.append(",TOWGS84[");
-        w.append((int) tx);
+        if (Math.abs(tx - Math.rint(tx)) < 1e-9) {
+            w.append((int) tx);
+        } else {
+            w.append(tx);
+        }
         w.append(',');
-        w.append((int) ty);
+        if (Math.abs(ty - Math.rint(ty)) < 1e-9) {
+            w.append((int) ty);
+        } else {
+            w.append(ty);
+        }
         w.append(',');
-        w.append((int) tz);
+        if (Math.abs(tz - Math.rint(tz)) < 1e-9) {
+            w.append((int) tz);
+        } else {
+            w.append(tz);
+        }
         w.append(",0,0,0,0]");
         return w.toString();
     }
@@ -148,7 +160,7 @@ public class GeocentricTranslation extends AbstractCoordinateOperation implement
     /**
      * Returns true if object is equals to
      * <code>this</code>. Tests equality between the references of both object,
-     * then tests if the three translation values (tx, ty and tz) used by both
+     * then tests if the three translation values (tx, ty and tz) used by each
      * Geocentric Translation are equals.
      *
      * @param object The object to compare this ProjectedCRS against

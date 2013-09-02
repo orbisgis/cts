@@ -58,9 +58,9 @@ public class Identity extends AbstractCoordinateOperation {
 
     /**
      * Apply the identity transformation to input coordinates.
-     * 
+     *
      * @param coord is an array containing one, two or three ordinates
-     * @throws IllegalCoordinateException 
+     * @throws IllegalCoordinateException
      */
     @Override
     public double[] transform(double[] coord) throws IllegalCoordinateException {

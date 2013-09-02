@@ -57,6 +57,7 @@ public interface CoordinateReferenceSystem extends Identifiable {
      * Coordinate Reference System Type.
      */
     public static enum Type {
+
         GEOCENTRIC, GEOGRAPHIC3D, GEOGRAPHIC2D, PROJECTED, VERTICAL, COMPOUND, ENGINEERING
     };
 
@@ -85,4 +86,10 @@ public interface CoordinateReferenceSystem extends Identifiable {
      * projection is defined for this CRS.
      */
     public Projection getProjection();
+
+    /**
+     * Returns a WKT representation of the CoordinateReferenceSystem.
+     *
+     */
+    public String toWKT();
 }

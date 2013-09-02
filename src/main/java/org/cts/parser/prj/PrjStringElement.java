@@ -37,18 +37,32 @@ package org.cts.parser.prj;
  */
 public class PrjStringElement extends AbstractPrjElement {
 
+    /**
+     * The value of the PrjStringElement.
+     */
     private String value;
 
+    /**
+     * Create a new PrjStringElement.
+     *
+     * @param value the value of the new element
+     */
     PrjStringElement(String value) {
         super();
         this.value = value;
 
     }
 
+    /**
+     * Return the value of the PrjStringElement.
+     */
     public String getValue() {
         return value;
     }
 
+    /**
+     * Return a String representation of the PrjStringElement.
+     */
     @Override
     public String toString() {
         return "PrjStringElement[" + value + "]";

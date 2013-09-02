@@ -33,8 +33,10 @@ package org.cts.op;
 
 import org.cts.crs.CoordinateReferenceSystem;
 import org.cts.crs.GeodeticCRS;
-import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  * This class contains tests that uses PRJ definition for the CRS
@@ -42,6 +44,7 @@ import org.junit.Test;
  * @author Jules Party
  */
 public class PRJCoordinateTransformationTest extends BaseCoordinateTransformTest {
+
     @Test
     public void testLAMBEtoLAMB93PRJ() throws Exception {
         //IGN data : POINT (931813.94 1786923.891 2525.68) ID5863
@@ -131,7 +134,7 @@ public class PRJCoordinateTransformationTest extends BaseCoordinateTransformTest
         double[] check = transform((GeodeticCRS) outCRS, (GeodeticCRS) srcCRS, expectedPoint);
         assertTrue(checkEquals2D(outCRS + " to " + srcCRS, check, srcPoint, 1E-2));
     }
-    
+
     @Test
     public void testUnitsInPRJ() throws Exception {
         double[] srcPoint = new double[]{-62, 10, 0};

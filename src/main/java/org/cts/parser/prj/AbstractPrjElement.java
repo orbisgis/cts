@@ -40,12 +40,24 @@ import java.util.List;
  */
 public abstract class AbstractPrjElement implements PrjElement {
 
+    /**
+     * The list of the children of this PrjElement.
+     */
     private List<PrjElement> children;
 
+    /**
+     * Create a PrjElement that uses the list of PrjElement in parameter as
+     * children.
+     *
+     * @param children the children of the PrjElement to create
+     */
     AbstractPrjElement(List<PrjElement> children) {
         this.children = children;
     }
 
+    /**
+     * Create a PrjElement without children.
+     */
     AbstractPrjElement() {
         this(Collections.EMPTY_LIST);
     }

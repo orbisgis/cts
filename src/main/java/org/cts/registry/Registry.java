@@ -41,22 +41,20 @@ import java.util.Set;
 public interface Registry {
 
     /**
-     * Return the name of the registry
+     * Return the name of the registry.
      */
     public String getRegistryName();
 
     /**
-     * Return all parameters need to build a CoordinateReferenceSystem
+     * Return all parameters need to build a CoordinateReferenceSystem.
      *
-     * @return
      * @throws RegistryException
      */
     public Map<String, String> getParameters(String code) throws RegistryException;
 
     /**
-     * Return all supported codes for this registry
+     * Return all supported codes for this registry.
      *
-     * @return
      * @throws RegistryException
      */
     public Set<String> getSupportedCodes() throws RegistryException;

@@ -62,16 +62,25 @@ import org.cts.op.transformation.grid.GridShiftFile;
 public class NTv2GridShiftTransformation extends AbstractCoordinateOperation {
 
     static final Logger LOGGER = Logger.getLogger(NTv2GridShiftTransformation.class);
+    /**
+     * The Identifier used for all NTv2 Grid Shift Transformation.
+     */
     private static final Identifier opId =
             new Identifier("EPSG", "9615", "NTv2 Geographic Offset", "NTv2");
     public static final int SPEED = 0;
     public static final int LOW_MEMORY = 1;
     /**
      * if set to true, this class will use a RandomAccessFile to access the
-     * gridded data instead of loading it into memory
+     * gridded data instead of loading it into memory.
      */
     private int mode = 1;
+    /**
+     * The URL used to find the grid associated to the NTv2 transformation.
+     */
     private URL grid_file;
+    /**
+     * The GridShiftFile that define this transformation.
+     */
     private GridShiftFile gsf;
 
     /**
@@ -228,7 +237,8 @@ public class NTv2GridShiftTransformation extends AbstractCoordinateOperation {
 
     /**
      * Unload the grid shift file used by this transformation.
-     * @throws IOException 
+     *
+     * @throws IOException
      */
     public void unload() throws IOException {
         gsf.unload();

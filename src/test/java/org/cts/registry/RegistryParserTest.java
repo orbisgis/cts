@@ -32,10 +32,13 @@
 package org.cts.registry;
 
 import java.util.Map;
+
 import org.cts.CTSTestCase;
 import org.cts.parser.proj.ProjKeyParameters;
-import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -134,6 +137,58 @@ public class RegistryParserTest extends CTSTestCase {
         assertTrue(parameters.get(ProjKeyParameters.ellps).equals("GRS80"));
         assertTrue(parameters.get(ProjKeyParameters.datum).equals("NAD83"));
         assertTrue(parameters.get(ProjKeyParameters.to_meter).equals("0.3048006096012192"));
+    }
+
+    @Test
+    public void testReadNAD27File() throws Exception {
+        Map<String, String> parameters = getParameters("NAD27", "2001");
+        //# 2001: massachusetts mainland: nad27
+        //<2001> proj=lcc  datum=NAD27
+        //lon_0=-71d30 lat_1=42d41 lat_2=41d43 lat_0=41
+        //x_0=182880.3657607315 y_0=0
+        //no_defs <>
+        assertTrue(parameters.get(ProjKeyParameters.proj).equals("lcc"));
+        assertTrue(parameters.get(ProjKeyParameters.lat_0).equals("41"));
+        assertTrue(parameters.get(ProjKeyParameters.lon_0).equals("-71d30"));
+        assertTrue(parameters.get(ProjKeyParameters.lat_1).equals("42d41"));
+        assertTrue(parameters.get(ProjKeyParameters.lat_2).equals("41d43"));
+        assertTrue(parameters.get(ProjKeyParameters.x_0).equals("182880.3657607315"));
+        assertTrue(parameters.get(ProjKeyParameters.y_0).equals("0"));
+        assertTrue(parameters.get(ProjKeyParameters.datum).equals("NAD27"));
+    }
+
+    @Test
+    public void testReadNAD83File() throws Exception {
+        Map<String, String> parameters = getParameters("NAD83", "2112");
+        //# 2112: michigan central/l: nad83
+        //<2112> proj=lcc  datum=NAD83
+        //lon_0=-84d22 lat_1=45d42 lat_2=44d11 lat_0=43d19
+        //x_0=6000000 y_0=0
+        //no_defs <>
+        assertTrue(parameters.get(ProjKeyParameters.proj).equals("lcc"));
+        assertTrue(parameters.get(ProjKeyParameters.lat_0).equals("43d19"));
+        assertTrue(parameters.get(ProjKeyParameters.lon_0).equals("-84d22"));
+        assertTrue(parameters.get(ProjKeyParameters.lat_1).equals("45d42"));
+        assertTrue(parameters.get(ProjKeyParameters.lat_2).equals("44d11"));
+        assertTrue(parameters.get(ProjKeyParameters.x_0).equals("6000000"));
+        assertTrue(parameters.get(ProjKeyParameters.y_0).equals("0"));
+        assertTrue(parameters.get(ProjKeyParameters.datum).equals("NAD83"));
+    }
+
+    @Test
+    public void testReadworldFile() throws Exception {
+        Map<String, String> parameters = getParameters("world", "levant");
+        //<levant> # Levant
+        //proj=lcc ellps=clrk66 lat_1=34d39'N lon_0=37d21'E
+        //x_0=500000 y_0=300000 k_0=0.9996256
+        //no_defs <>
+        assertTrue(parameters.get(ProjKeyParameters.proj).equals("lcc"));
+        assertTrue(parameters.get(ProjKeyParameters.k_0).equals("0.9996256"));
+        assertTrue(parameters.get(ProjKeyParameters.lon_0).equals("37d21'E"));
+        assertTrue(parameters.get(ProjKeyParameters.lat_1).equals("34d39'N"));
+        assertTrue(parameters.get(ProjKeyParameters.x_0).equals("500000"));
+        assertTrue(parameters.get(ProjKeyParameters.y_0).equals("300000"));
+        assertTrue(parameters.get(ProjKeyParameters.ellps).equals("clrk66"));
     }
 
     @Test

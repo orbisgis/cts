@@ -32,48 +32,64 @@
 package org.cts;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+
 import org.cts.registry.EPSGRegistry;
 import org.cts.registry.ESRIRegistry;
 import org.cts.registry.IGNFRegistry;
 import org.cts.registry.Nad27Registry;
 import org.cts.registry.Nad83Registry;
 import org.cts.registry.RegistryManager;
+import org.cts.registry.worldRegistry;
+
 import org.junit.BeforeClass;
 
 /**
  * A main class for all CTS tests
+ *
  * @author Erwan Bocher
  */
 public class CTSTestCase {
 
-    protected Logger LOGGER = Logger.getLogger(CTSTestCase.class);    
+    protected Logger LOGGER = Logger.getLogger(CTSTestCase.class);
     protected static CRSFactory cRSFactory;
-    
+
     /**
-     * This method is used to create the CRSFactory and 
-     * load some default registries.
+     * This method is used to create the CRSFactory and load some default
+     * registries.
      */
     @BeforeClass
-    public static void setup(){    
+    public static void setup() {
         cRSFactory = new CRSFactory();
-        RegistryManager registryManager = cRSFactory.getRegistryManager();        
+        RegistryManager registryManager = cRSFactory.getRegistryManager();
         registryManager.addRegistry(new IGNFRegistry());
         registryManager.addRegistry(new EPSGRegistry());
         registryManager.addRegistry(new ESRIRegistry());
         registryManager.addRegistry(new Nad27Registry());
-        registryManager.addRegistry(new Nad83Registry());        
+        registryManager.addRegistry(new Nad83Registry());
+        registryManager.addRegistry(new worldRegistry());
+
+        // Disable log4j outputs.
+        List<Logger> loggers = Collections.<Logger>list(LogManager.getCurrentLoggers());
+        loggers.add(LogManager.getRootLogger());
+        for (Logger logger : loggers) {
+            logger.setLevel(Level.OFF);
+        }
     }
 
     /**
      * Check if the result point is equal to the target point using an epsilon
      * clause
-     * 
+     *
      * @param test
      * @param o1
      * @param o2
      * @param tol
-     * @return 
      */
     public boolean checkEquals(String test, double o1, double o2, double tol) {
         if (Math.abs(o1 - o2) <= tol) {
@@ -92,7 +108,6 @@ public class CTSTestCase {
      * @param resultPoint
      * @param targetPoint
      * @param epsilon
-     * @return
      */
     protected boolean checkEquals(String test, double[] c1, double[] c2,
             double tol) {
@@ -119,7 +134,6 @@ public class CTSTestCase {
      * @param c1
      * @param c2
      * @param tolerance
-     * @return
      */
     protected boolean checkEquals2D(String test, double[] c1, double[] c2,
             double tolerance) {
@@ -139,10 +153,36 @@ public class CTSTestCase {
     }
 
     /**
+     * Check if the result point is equal in X, Y and Z to the target point
+     * using an epsilon clause
+     *
+     * @param test
+     * @param c1
+     * @param c2
+     * @param tolerance
+     */
+    protected boolean checkEquals3D(String test, double[] c1, double[] c2,
+            double tolerance) {
+        double dx = Math.abs(c1[0] - c2[0]);
+        double dy = Math.abs(c1[1] - c2[1]);
+        double dz = Math.abs(c1[2] - c2[2]);
+        double delta = Math.max(Math.max(dx, dy), dz);
+        boolean isInTol = delta <= tolerance;
+        if (isInTol) {
+            LOGGER.debug("TRUE : From " + test + " Result point : " + Arrays.toString(c1) + " = expected point : "
+                    + Arrays.toString(c2) + " <= " + tolerance);
+            return true;
+        } else {
+            LOGGER.debug("FALSE : From " + test + " Result point : " + Arrays.toString(c1) + " compare to expected point : "
+                    + Arrays.toString(c2) + " = " + (tolerance - delta));
+            return false;
+        }
+    }
+
+    /**
      * Display point values
      *
      * @param coord
-     * @return
      */
     protected String coord2string(double[] coord) {
         if (coord.length == 2) {

@@ -80,7 +80,7 @@ public class Ellipsoid extends IdentifiableComponent {
      */
     private static final double PI_2 = Math.PI / 2.;
     /**
-     * Perfect SPHERE
+     * Perfect SPHERE.
      */
     public static final Ellipsoid SPHERE = createEllipsoidFromSemiMinorAxis(
             new Identifier("EPSG", "7035", "SPHERE"), 6371000.0, 6371000.0);
@@ -229,8 +229,9 @@ public class Ellipsoid extends IdentifiableComponent {
     transient private double[] inv_utm_coeff;
     /**
      * The coefficients used to compute meridian arc length from/to latitude
-     * this second method is taken from <a href="http://www.ngs.noaa.gov/gps-toolbox/Hehl"> here </a>.
-     * It makes it possible to choose the precision of the result.
+     * this second method is taken from <a
+     * href="http://www.ngs.noaa.gov/gps-toolbox/Hehl"> here </a>. It makes it
+     * possible to choose the precision of the result.
      */
     transient private double[] kk;
     /**
@@ -240,7 +241,6 @@ public class Ellipsoid extends IdentifiableComponent {
     /**
      * ellipsoidFromName associates each ellipsoid to a short string used to
      * recognize it in CTS.
-     *
      */
     public static final Map<String, Ellipsoid> ellipsoidFromName = new HashMap<String, Ellipsoid>();
 
@@ -378,41 +378,11 @@ public class Ellipsoid extends IdentifiableComponent {
     }
 
     /**
-     * Get coefficients for the direct UTM projection.
-     */
-    public double[] getDirectUTMCoeff() {
-        if (dir_utm_coeff == null) {
-            initDirectUTMCoefficients();
-        }
-        return dir_utm_coeff;
-    }
-
-    /**
-     * Get coefficients for the inverse UTM projection.
-     */
-    public double[] getInverseUTMCoeff() {
-        if (inv_utm_coeff == null) {
-            initInverseUTMCoefficients();
-        }
-        return inv_utm_coeff;
-    }
-
-    /**
      * Get k coefficients computed with an iterative method.
      */
     public double[] getKCoeff(int max) {
         initKCoeff(max);
         return kk;
-    }
-
-    /**
-     * Get coefficients for the inverse Mercator projection.
-     */
-    public double[] getInverseMercatorCoeff() {
-        if (inv_merc_coeff == null) {
-            initInverseMercatorCoefficients();
-        }
-        return inv_merc_coeff;
     }
 
     /**
@@ -427,7 +397,7 @@ public class Ellipsoid extends IdentifiableComponent {
             double semiMajorAxis,
             double invFlattening)
             throws IllegalArgumentException {
-        Identifier id = new Identifier(Ellipsoid.class, Identifiable.UNKNOWN);
+        Identifier id = new Identifier(Ellipsoid.class);
         Ellipsoid ellps = new Ellipsoid(id, semiMajorAxis,
                 SecondParameter.InverseFlattening, invFlattening);
         return ellps.checkExistingEllipsoid();
@@ -464,7 +434,7 @@ public class Ellipsoid extends IdentifiableComponent {
             double semiMajorAxis,
             double semiMinorAxis)
             throws IllegalArgumentException {
-        Identifier id = new Identifier(Ellipsoid.class, Identifiable.UNKNOWN);
+        Identifier id = new Identifier(Ellipsoid.class);
         Ellipsoid ellps = new Ellipsoid(id, semiMajorAxis,
                 SecondParameter.SemiMinorAxis, semiMinorAxis);
         return ellps.checkExistingEllipsoid();
@@ -501,7 +471,7 @@ public class Ellipsoid extends IdentifiableComponent {
             double semiMajorAxis,
             double eccentricity)
             throws IllegalArgumentException {
-        Identifier id = new Identifier(Ellipsoid.class, Identifiable.UNKNOWN);
+        Identifier id = new Identifier(Ellipsoid.class);
         Ellipsoid ellps = new Ellipsoid(id, semiMajorAxis,
                 SecondParameter.Eccentricity, eccentricity);
         return ellps.checkExistingEllipsoid();
@@ -526,9 +496,9 @@ public class Ellipsoid extends IdentifiableComponent {
 
     /**
      * Check if
-     * <code>this</code> is equals to one of the predefined Ellipsoid
-     * (GRS80, WGS84,&hellip;). Return the predifined Ellipsoid that matches if
-     * exists, otherwise return
+     * <code>this</code> is equals to one of the predefined Ellipsoid (GRS80,
+     * WGS84,&hellip;). Return the predifined Ellipsoid that matches if exists,
+     * otherwise return
      * <code>this</code>.
      */
     private Ellipsoid checkExistingEllipsoid() {
@@ -586,51 +556,6 @@ public class Ellipsoid extends IdentifiableComponent {
         arc_coeff[2] = e4 * 15 / 256 + e6 * 45 / 1024 + e8 * 525 / 16384;
         arc_coeff[3] = -e6 * 35 / 3072 - e8 * 175 / 12288;
         arc_coeff[4] = e8 * 315 / 131072;
-    }
-    
-    /**
-     * Initialize the coefficients for the direct UTM projection.
-     */
-    private void initDirectUTMCoefficients() {
-        double e4 = e2 * e2;
-        double e6 = e4 * e2;
-        double e8 = e4 * e4;
-        dir_utm_coeff = new double[5];
-        dir_utm_coeff[0] = 1.0 - e2 * 1 / 4 - e4 * 3 / 64 - e6 * 5 / 256 - e8 * 175 / 16384;
-        dir_utm_coeff[1] = e2 * 1 / 8 - e4 * 1 / 96 - e6 * 9 / 1024 - e8 * 901 / 184320;
-        dir_utm_coeff[2] = e4 * 13 / 768 + e6 * 17 / 5120 - e8 * 311 / 737280;
-        dir_utm_coeff[3] = e6 * 61 / 15360 + e8 * 899 / 430080;
-        dir_utm_coeff[4] = e8 * 49561 / 41287680;
-    }
-    
-    /**
-     * Initialize the coefficients for the inverse UTM projection.
-     */
-    private void initInverseUTMCoefficients() {
-        double e4 = e2 * e2;
-        double e6 = e4 * e2;
-        double e8 = e4 * e4;
-        inv_utm_coeff = new double[5];
-        inv_utm_coeff[0] = 1.0 - e2 * 1 / 4 - e4 * 3 / 64 - e6 * 5 / 256 - e8 * 175 / 16384;
-        inv_utm_coeff[1] = e2 * 1 / 8 + e4 * 1 / 48 + e6 * 7 / 2048 + e8 * 1 / 61440;
-        inv_utm_coeff[2] = e4 * 1 / 768 + e6 * 3 / 1280 + e8 * 559 / 368640;
-        inv_utm_coeff[3] = e6 * 17 / 30720 + e8 * 283 / 430080;
-        inv_utm_coeff[4] = e8 * 4397 / 41287680;
-    }
-    
-    /**
-     * Initialize the coefficients for the inverse Mercator projection.
-     */
-    private void initInverseMercatorCoefficients() {
-        double e4 = e2 * e2;
-        double e6 = e4 * e2;
-        double e8 = e4 * e4;
-        inv_merc_coeff = new double[5];
-        inv_merc_coeff[0] = 1.0;
-        inv_merc_coeff[1] = e2 * 1 / 2 + e4 * 5 / 24 + e6 * 1 / 12 + e8 * 13 / 360;
-        inv_merc_coeff[2] = e4 * 7 / 48 + e6 * 29 / 240 + e8 * 811 / 11520;
-        inv_merc_coeff[3] = e6 * 7 / 120 + e8 * 81 / 1120;
-        inv_merc_coeff[4] = e8 * 4279 / 161280;
     }
 
     /**
@@ -831,7 +756,7 @@ public class Ellipsoid extends IdentifiableComponent {
      * @return the curvilinear abscissa of this latitude on the meridian arc
      */
     public double curvilinearAbscissa(double latitude) {
-        if (arc_coeff==null) {
+        if (arc_coeff == null) {
             initMeridianArcCoefficients();
         }
         return arc_coeff[0] * latitude
@@ -839,6 +764,30 @@ public class Ellipsoid extends IdentifiableComponent {
                 + arc_coeff[2] * sin(4 * latitude)
                 + arc_coeff[3] * sin(6 * latitude)
                 + arc_coeff[4] * sin(8 * latitude);
+    }
+
+    /**
+     * Returns a WKT representation of the ellipsoid.
+     *
+     */
+    public String toWKT() {
+        StringBuilder w = new StringBuilder();
+        w.append("SPHEROID[\"");
+        w.append(this.getName());
+        w.append("\",");
+        w.append(this.getSemiMajorAxis());
+        w.append(',');
+        if (this.getInverseFlattening() != Double.POSITIVE_INFINITY) {
+            w.append(this.getInverseFlattening());
+        } else {
+            w.append(0);
+        }
+        if (!this.getAuthorityName().startsWith(Identifiable.LOCAL)) {
+            w.append(',');
+            w.append(this.getIdentifier().toWKT());
+        }
+        w.append(']');
+        return w.toString();
     }
 
     /**
@@ -865,7 +814,7 @@ public class Ellipsoid extends IdentifiableComponent {
     }
 
     /**
-     * Returns true if this GeodeticDatum can be considered as equals to another
+     * Returns true if this Ellipsoid can be considered as equals to another
      * one. Ellipsoid equals method is based on a comparison of the object
      * dimensions with a sensibility of 0.1 mm.
      *

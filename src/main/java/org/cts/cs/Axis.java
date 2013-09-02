@@ -31,6 +31,10 @@
  */
 package org.cts.cs;
 
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * One of the fixed reference lines of a {@link CoordinateSystem}.<p> Usually,
  * axis is a term reserved to cartesian coordinate systems made of several
@@ -39,77 +43,95 @@ package org.cts.cs;
  *
  * @author Michaël Michaud, Jules Party
  */
-public enum Axis {
+public class Axis {
 
+    /**
+     * The map that allows CTS to get Axes from their name.
+     */
+    private static Map<Direction, Map<String, Axis>> axisFromDirAndName = new EnumMap<Direction, Map<String, Axis>>(Direction.class);
     /**
      * Easting axis. Used for planimetric coordinate system, generally in pair
      * with northing.
      */
-    EASTING("Easting", "EAST"),
+    public static final Axis EASTING = new Axis("Easting", Direction.EAST);
     /**
      * Northing axis. Used for planimetric coordinate system, generally in pair
      * with easting.
      */
-    NORTHING("Northing", "NORTH"),
+    public static final Axis NORTHING = new Axis("Northing", Direction.NORTH);
     /**
      * Westing axis. Used for planimetric coordinate system, generally in pair
      * with southing.
      */
-    WESTING("Westing", "WEST"),
+    public static final Axis WESTING = new Axis("Westing", Direction.WEST);
     /**
      * Southing axis. Used for planimetric coordinate system, generally in pair
      * with westing.
      */
-    SOUTHING("Southing", "SOUTH"),
+    public static final Axis SOUTHING = new Axis("Southing", Direction.SOUTH);
     /**
      * x axis. Used for planimetric coordinate system, sometimes used in place
      * of easting.
      */
-    x("x", "EAST"),
+    public static final Axis x = new Axis("X", Direction.EAST);
     /**
      * y axis. Used for planimetric coordinate system, sometimes used in place
      * of northing.
      */
-    y("y", "NORTH"),
+    public static final Axis y = new Axis("Y", Direction.NORTH);
     /**
      * Altitude axis. Used for vertical/compound system.
      */
-    ALTITUDE("Altitude", "OTHER"),
+    public static final Axis ALTITUDE = new Axis("Altitude", Direction.UP);
     /**
      * Depth axis. Used for bathymetry.
      */
-    DEPTH("Depth", "OTHER"),
+    public static final Axis DEPTH = new Axis("Depth", Direction.DOWN);
     /**
      * Latitude axis. Used for geographic coordinate system, generally in pair
      * with longitude.
      */
-    LATITUDE("Latitude", "NORTH"),
+    public static final Axis LATITUDE = new Axis("Latitude", Direction.NORTH);
     /**
      * Longitude axis. Used for geographic coordinate system, generally in pair
      * with latitude.
      */
-    LONGITUDE("Longitude", "EAST"),
+    public static final Axis LONGITUDE = new Axis("Longitude", Direction.EAST);
     /**
      * Height axis. Used for 3D ellipsoidal coordinate system, generally with
      * latitude and longitude axes.
      */
-    HEIGHT("Height", "OTHER"),
+    public static final Axis HEIGHT = new Axis("Height", Direction.UP);
     /**
      * X axis. Used for 3D cartesian system, generally with Y and Z axes.
      */
-    X("X", "OTHER"),
+    public static final Axis X = new Axis("X", Direction.OTHER);
     /**
      * Y axis. Used for 3D cartesian system, generally with X and Z axes.
      */
-    Y("Y", "EAST"),
+    public static final Axis Y = new Axis("Y", Direction.EAST);
     /**
      * Z axis. Used for 3D cartesian system, generally with X and Y axes.
      */
-    Z("Z", "NORTH"),
+    public static final Axis Z = new Axis("Z", Direction.NORTH);
     /**
      * Time axis. Not supported in CTS yet.
      */
-    TIME("Time", "OTHER");
+    public static final Axis TIME = new Axis("Time", Direction.OTHER);
+
+    /**
+     * Axis different directions.
+     */
+    public static enum Direction {
+
+        EAST,
+        WEST,
+        NORTH,
+        SOUTH,
+        UP,
+        DOWN,
+        OTHER
+    };
     /**
      * The name of this Axis (X, Y, Z, LONGITUDE, ALTITUDE,&hellip;).
      */
@@ -120,15 +142,38 @@ public enum Axis {
      * <a href =http://trac.osgeo.org/gdal/wiki/rfc20_srs_axes>here</a> for
      * further details.
      */
-    private String direction;
+    private Direction direction;
+
+    /**
+     * Register the axis into the map that allows CTS to get Axes from their
+     * name.
+     */
+    private void registerAxis() {
+        Map<String, Axis> map = axisFromDirAndName.get(getDirection());
+        if (map == null) {
+            axisFromDirAndName.put(getDirection(), new HashMap<String, Axis>());
+        }
+        axisFromDirAndName.get(getDirection()).put(getName().toLowerCase(), this);
+    }
+
+    public static Axis getAxis(Direction dir, String name) {
+        Map<String, Axis> map = axisFromDirAndName.get(dir);
+        if (map == null) {
+            return null;
+        }
+        return map.get(name);
+    }
 
     /**
      * Create a new Axis.
+     *
      * @param name name of this new Axis
+     * @param dir the direction of the axis (EAST, NORTH, UP, DOWN,&hellip;)
      */
-    private Axis(String name, String dir) {
+    public Axis(String name, Direction dir) {
         this.name = name;
         this.direction = dir;
+        this.registerAxis();
     }
 
     /**
@@ -141,8 +186,49 @@ public enum Axis {
     /**
      * Return the direction of this Axis (NORTH, SOUTH, EAST, WEST or OTHER).
      */
-    public String getDirection() {
+    public Direction getDirection() {
         return direction;
+    }
+
+    /**
+     * Return the direction correpsonding to the string in parameter.
+     *
+     * @param dir the name of the direction
+     */
+    public static Direction getDirection(String dir) {
+        Direction direction = null;
+        if (dir != null) {
+            if (dir.equals("EAST")) {
+                direction = Direction.EAST;
+            } else if (dir.equals("NORTH")) {
+                direction = Direction.NORTH;
+            } else if (dir.equals("WEST")) {
+                direction = Direction.WEST;
+            } else if (dir.equals("SOUTH")) {
+                direction = Direction.SOUTH;
+            } else if (dir.equals("UP")) {
+                direction = Direction.UP;
+            } else if (dir.equals("DOWN")) {
+                direction = Direction.DOWN;
+            } else {
+                direction = Direction.OTHER;
+            }
+        }
+        return direction;
+    }
+
+    /**
+     * Returns a WKT representation of the axis.
+     *
+     */
+    public String toWKT() {
+        StringBuilder w = new StringBuilder();
+        w.append("AXIS[\"");
+        w.append(this.getName());
+        w.append("\",");
+        w.append(this.getDirection());
+        w.append(']');
+        return w.toString();
     }
 
     /**

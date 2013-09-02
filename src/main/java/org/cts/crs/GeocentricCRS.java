@@ -34,6 +34,7 @@ package org.cts.crs;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.cts.Identifiable;
 import org.cts.Identifier;
 import org.cts.cs.CoordinateSystem;
 import org.cts.datum.GeodeticDatum;
@@ -49,8 +50,8 @@ import org.cts.op.NonInvertibleOperationException;
  * <p> A geocentric CoordinateReferenceSystem is a 3D cartesian coordinate
  * system centered on the Earth center of mass. </p>
  * <p> Note that the Earth center of mass is not something easily identifiable,
- * especially before the advent of space geodesy, which partially explains
- * there are so many datums, and therefore, so many CoordinateReferenceSystems</p>
+ * especially before the advent of space geodesy, which partially explains there
+ * are so many datums, and therefore, so many CoordinateReferenceSystems</p>
  *
  * @author Michaël Michaud
  */
@@ -105,5 +106,31 @@ public class GeocentricCRS extends GeodeticCRS {
         ops.add(new Geographic2Geocentric(getDatum().getEllipsoid()));
         return new CoordinateOperationSequence(new Identifier(
                 CoordinateOperationSequence.class), ops);
+    }
+
+    /**
+     * Returns a WKT representation of the geocentric CRS.
+     *
+     */
+    public String toWKT() {
+        StringBuilder w = new StringBuilder();
+        w.append("GEOCCS[\"");
+        w.append(this.getName());
+        w.append("\",");
+        w.append(this.getDatum().toWKT());
+        w.append(',');
+        w.append(this.getDatum().getPrimeMeridian().toWKT());
+        w.append(',');
+        w.append(this.getCoordinateSystem().getUnit(0).toWKT());
+        for (int i = 0; i < this.getCoordinateSystem().getDimension(); i++) {
+            w.append(',');
+            w.append(this.getCoordinateSystem().getAxis(i).toWKT());
+        }
+        if (!this.getAuthorityName().startsWith(Identifiable.LOCAL)) {
+            w.append(',');
+            w.append(this.getIdentifier().toWKT());
+        }
+        w.append(']');
+        return w.toString();
     }
 }

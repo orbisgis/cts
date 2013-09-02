@@ -56,7 +56,7 @@ import static org.junit.Assert.assertTrue;
  * @author Erwan Bocher
  */
 public class UserDefinedTransform extends BaseCoordinateTransformTest {
-    
+
     private final LongitudeRotation PARIS2GREENWICH =
             LongitudeRotation.getLongitudeRotationFrom(PrimeMeridian.PARIS);
     private final LongitudeRotation GREENWICH2PARIS =

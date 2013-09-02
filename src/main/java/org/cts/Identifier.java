@@ -50,8 +50,8 @@ import java.util.List;
 public class Identifier implements Identifiable {
 
     /**
-     * Unique integer generated to identify a LOCAL object.
-     * LOCAL refers to a namespace defined in the Identiable interface.
+     * Unique integer generated to identify a LOCAL object. LOCAL refers to a
+     * namespace defined in the Identiable interface.
      */
     private static int localId = 0;
 
@@ -128,6 +128,34 @@ public class Identifier implements Identifiable {
         this(Identifiable.LOCAL + "_" + clazz.getSimpleName(),
                 "" + getNewId(),
                 name, null, null, null);
+    }
+
+    /**
+     * Create a local identifier.
+     *
+     * @param clazz the class of the identified object
+     * @param name the name of the identified object
+     * @param shortName the short name of the identified object
+     */
+    public Identifier(Class clazz, String name, String shortName) {
+        this(Identifiable.LOCAL + "_" + clazz.getSimpleName(),
+                "" + getNewId(),
+                name, shortName, null, null);
+    }
+
+    /**
+     * Create a local identifier.
+     *
+     * @param clazz the class of the identified object
+     * @param name the name of the identified object
+     * @param shortName the short name of the identified object
+     * @param aliases synonyms of this Identifiable
+     */
+    public Identifier(Class clazz, String name, String shortName,
+            List<Identifiable> aliases) {
+        this(Identifiable.LOCAL + "_" + clazz.getSimpleName(),
+                "" + getNewId(),
+                name, shortName, null, aliases);
     }
 
     /**
@@ -208,7 +236,7 @@ public class Identifier implements Identifiable {
      * Change the short string used to identify unambiguously the object. A
      * short name should have less than 16 characters whenever possible, and
      * should never exceed 48 characters.
-     * 
+     *
      * @param shortName the new short name for the Identifier
      */
     @Override
@@ -236,7 +264,7 @@ public class Identifier implements Identifiable {
 
     /**
      * Add remarks.
-     * 
+     *
      * @param new_remark the remark to add to the Identifier's remarks
      */
     @Override
@@ -263,6 +291,20 @@ public class Identifier implements Identifiable {
             aliases = new ArrayList<Identifiable>();
         }
         return aliases.add(alias);
+    }
+
+    /**
+     * Returns a WKT representation of the identifier.
+     *
+     */
+    public String toWKT() {
+        StringBuilder w = new StringBuilder();
+        w.append("AUTHORITY[\"");
+        w.append(this.getAuthorityName());
+        w.append("\",\"");
+        w.append(this.getAuthorityKey());
+        w.append("\"]");
+        return w.toString();
     }
 
     /**

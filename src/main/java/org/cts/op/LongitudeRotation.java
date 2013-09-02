@@ -115,6 +115,39 @@ public class LongitudeRotation extends AbstractCoordinateOperation {
      */
     @Override
     public String toString() {
-        return getName() + " ( " + rotationAngle * 180 / Math.PI + "° )";
+        return getName() + " ( " + rotationAngle * 180 / Math.PI + "\u00B0 )";
+    }
+
+    public double getRotationAngle() {
+        return rotationAngle;
+    }
+
+    /**
+     * Returns true if object is equals to
+     * <code>this</code>. Tests equality between the rotationAngles used by the
+     * transformation.
+     *
+     * @param object The object to compare this LongitudeRotation against
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o instanceof LongitudeRotation) {
+            LongitudeRotation lr = (LongitudeRotation) o;
+            return (getRotationAngle() == lr.getRotationAngle());
+        }
+        return false;
+    }
+
+    /**
+     * Returns the hash code for this LongitudeRotation.
+     */
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 97 * hash + (int) (Double.doubleToLongBits(this.rotationAngle) ^ (Double.doubleToLongBits(this.rotationAngle) >>> 32));
+        return hash;
     }
 }

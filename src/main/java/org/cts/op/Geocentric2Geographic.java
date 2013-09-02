@@ -76,9 +76,9 @@ public class Geocentric2Geographic extends AbstractCoordinateOperation {
      */
     private Ellipsoid ellipsoid;
     /**
-     * Stop condition for the Geocentric to Geographic
-     * transformation algorithm. epsilon is a value in radian, 1E-11 is the
-     * default epsilon and it means that error is less than 1E-4 m.
+     * Stop condition for the Geocentric to Geographic transformation algorithm.
+     * epsilon is a value in radian, 1E-11 is the default epsilon and it means
+     * that error is less than 1E-4 m.
      */
     private double epsilon;
 
@@ -127,7 +127,7 @@ public class Geocentric2Geographic extends AbstractCoordinateOperation {
     @Override
     public double[] transform(double[] coord)
             throws IllegalCoordinateException {
-        if (coord.length != 3) {
+        if (coord.length < 3) {
             throw new CoordinateDimensionException(coord, 3);
         }
         double X = coord[0];
@@ -171,5 +171,38 @@ public class Geocentric2Geographic extends AbstractCoordinateOperation {
     @Override
     public String toString() {
         return getName() + " (" + ellipsoid.getName() + ")";
+    }
+
+    public Ellipsoid getEllipsoid() {
+        return ellipsoid;
+    }
+
+    /**
+     * Returns true if object is equals to
+     * <code>this</code>. Tests equality between the ellipsoid used by the
+     * transformation.
+     *
+     * @param object The object to compare this Geocentric2Geographic against
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o instanceof Geocentric2Geographic) {
+            Geocentric2Geographic gc2gg = (Geocentric2Geographic) o;
+            return getEllipsoid().equals(gc2gg.getEllipsoid());
+        }
+        return false;
+    }
+
+    /**
+     * Returns the hash code for this Geocentric2Geographic.
+     */
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 89 * hash + (this.ellipsoid != null ? this.ellipsoid.hashCode() : 0);
+        return hash;
     }
 }

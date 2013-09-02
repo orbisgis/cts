@@ -37,7 +37,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import org.cts.Identifier;
-import org.cts.crs.*;
+import org.cts.crs.GeodeticCRS;
 import org.cts.datum.GeodeticDatum;
 import org.cts.op.transformation.NTv2GridShiftTransformation;
 
@@ -63,17 +63,6 @@ public final class CoordinateOperationFactory {
     public final static int UNIT_OP = 256; // ex. heights from meters to feet
 
     /**
-     * Create a {@link org.cts.CoordinateOperation} from a source
-     * {@link org.cts.crs.CompoundCRS} to a target
-     * {@link org.cts.crs.CompoundCRS}.
-     */
-    public static List<CoordinateOperation> createCoordinateOperations(
-            CompoundCRS source, CompoundCRS target) {
-        System.out.println("createCoordinateOperations() for compound CRS is not yet implemented");
-        return new ArrayList<CoordinateOperation>();
-    }
-
-    /**
      * Create a CoordinateOperation from a source
      * {@link org.cts.crs.GeodeticCRS} to a target
      * {@link org.cts.crs.GeodeticCRS}. Remember that
@@ -92,10 +81,11 @@ public final class CoordinateOperationFactory {
         if (target == null) {
             throw new IllegalArgumentException("The target CRS must not be null");
         }
-        List<CoordinateOperation> opList = source.getCRSTransformation(target);
+        List<CoordinateOperation> opList = source.getCRSTransformations(target);
         if (opList != null) {
             return opList;
         } else {
+            opList = new ArrayList<CoordinateOperation>();
             GeodeticDatum sourceDatum = source.getDatum();
             if (sourceDatum == null) {
                 LOG.warn(source.getName() + " has no Geodetic Datum");
@@ -107,14 +97,15 @@ public final class CoordinateOperationFactory {
                 throw new IllegalArgumentException("The target datum must not be null");
             }
 
-            if (source.getGridTransformation(targetDatum) != null) {
-                opList = createNadgridsOperationDir(sourceDatum, source, targetDatum, target, source.getGridTransformation(targetDatum));
-            } else if (target.getGridTransformation(sourceDatum) != null) {
-                opList = createNadgridsOperationInv(sourceDatum, source, targetDatum, target, target.getGridTransformation(sourceDatum));
-            } else if (sourceDatum.equals(targetDatum)) {
-                opList = createCoordinateOperations(sourceDatum, source, target);
+            if (source.getGridTransformations(targetDatum) != null) {
+                addNadgridsOperationDir(sourceDatum, source, targetDatum, target, source.getGridTransformations(targetDatum), opList);
+            } else if (target.getGridTransformations(sourceDatum) != null) {
+                addNadgridsOperationInv(sourceDatum, source, targetDatum, target, target.getGridTransformations(sourceDatum), opList);
+            }
+            if (sourceDatum.equals(targetDatum)) {
+                addCoordinateOperations(sourceDatum, source, target, opList);
             } else {
-                opList = createCoordinateOperations(sourceDatum, source, targetDatum, target);
+                addCoordinateOperations(sourceDatum, source, targetDatum, target, opList);
             }
             source.addCRSTransformation(target, opList);
         }
@@ -122,118 +113,108 @@ public final class CoordinateOperationFactory {
     }
 
     /**
-     * Create a CoordinateOperation from a source {@link GeodeticCRS} to a
-     * target {@link GeodeticCRS} based on different {@link org.cts.datum.Datum} and using a
-     * CoordinateOperation to convert coordinates directly from one Geographic
-     * CRS to another without the use of GeocentricCRS. Remember that
-     * {@link GeodeticCRS} includes {@link GeocentricCRS},
+     * Add a CoordinateOperation to the list of CoordinateOperation in
+     * parameter. This CoordinateOperation linked a source {@link GeodeticCRS}
+     * to a target {@link GeodeticCRS} based on different
+     * {@link org.cts.datum.Datum} using a CoordinateOperation to convert
+     * coordinates directly from one Geographic CRS to another without the use
+     * of GeocentricCRS. Remember that {@link GeodeticCRS} includes {@link GeocentricCRS},
      * {@link Geographic2DCRS}, {@link Geographic3DCRS} and
      * {@link ProjectedCRS}, but here the use of {@link GeocentricCRS} is
-     * senseless. NB : This class was made for nadgrids that are
-     * defined only in the parameter of the source CRS for the nadgrids
-     * transformation, it is why there is two createNadgridsOperation,
-     * createNadgridsOperationDir must be use when the nadgrids is defined in
-     * the sourceCRS.
+     * senseless. NB : This class was made for nadgrids that are defined only in
+     * the parameter of the source CRS for the nadgrids transformation, it is
+     * why there is two createNadgridsOperation, createNadgridsOperationDir must
+     * be use when the nadgrids is defined in the sourceCRS.
      *
      * @param sourceDatum the (non null) datum used by source CRS
      * @param source the source geodetic coordinate reference system
      * @param targetDatum the (non null) datum used by target CRS
      * @param target the target geodetic coordinate reference system
      * @param coordOp the transformation between two Geographic CRS
+     * @param opList the list in which the CoordinateOperation must be added
      */
-    private static List<CoordinateOperation> createNadgridsOperationDir(
+    private static void addNadgridsOperationDir(
             GeodeticDatum sourceDatum, GeodeticCRS source,
-            GeodeticDatum targetDatum, GeodeticCRS target, CoordinateOperation coordOp) {
-        List<CoordinateOperation> opList = new ArrayList<CoordinateOperation>();
-        try {
-            if (!(coordOp instanceof NTv2GridShiftTransformation) || (sourceDatum.getShortName().equals(((NTv2GridShiftTransformation) coordOp).getFromDatum()))) {
-                opList.add(new CoordinateOperationSequence(
-                        new Identifier(CoordinateOperationSequence.class, source.getName() + " to " + target.getName()),
-                        source.toGeographicCoordinateConverter(),
-                        coordOp,
-                        target.fromGeographicCoordinateConverter()));
-            } else {
-                NTv2GridShiftTransformation gt = (NTv2GridShiftTransformation) coordOp;
-                GeodeticDatum gtSource = GeodeticDatum.datumFromName.get(gt.getFromDatum());
-                if (sourceDatum.getCoordinateOperations(gtSource).isEmpty()) {
-                    CoordinateOperationSequence opSeq = new CoordinateOperationSequence(
-                            new Identifier(CoordinateOperationSequence.class, sourceDatum.getName() + " to " + gtSource.getName() + " through " + GeodeticDatum.WGS84.getName()),
-                            sourceDatum.getCoordinateOperations(GeodeticDatum.WGS84).get(0),
-                            GeodeticDatum.WGS84.getCoordinateOperations(gtSource).get(0));
-                    sourceDatum.addCoordinateOperation(gtSource, opSeq);
+            GeodeticDatum targetDatum, GeodeticCRS target, List<CoordinateOperation> nadgridsTransformations,
+            List<CoordinateOperation> opList) {
+        for (CoordinateOperation coordOp : nadgridsTransformations) {
+            try {
+                if (!(coordOp instanceof NTv2GridShiftTransformation) || (sourceDatum.getShortName().equals(((NTv2GridShiftTransformation) coordOp).getFromDatum()))) {
+                    opList.add(new CoordinateOperationSequence(
+                            new Identifier(CoordinateOperationSequence.class, source.getName() + " to " + target.getName()),
+                            source.toGeographicCoordinateConverter(),
+                            coordOp,
+                            target.fromGeographicCoordinateConverter()));
+                } else {
+                    NTv2GridShiftTransformation gt = (NTv2GridShiftTransformation) coordOp;
+                    GeodeticDatum gtSource = GeodeticDatum.datumFromName.get(gt.getFromDatum());
+                    opList.add(new CoordinateOperationSequence(
+                            new Identifier(CoordinateOperationSequence.class, sourceDatum.getName() + " to " + targetDatum.getName() + " through " + gt.getName() + " transformation"),
+                            source.toGeographicCoordinateConverter(),
+                            sourceDatum.getCoordinateOperations(gtSource).get(0),
+                            gt,
+                            target.fromGeographicCoordinateConverter()));
                 }
-                opList.add(new CoordinateOperationSequence(
-                        new Identifier(CoordinateOperationSequence.class, sourceDatum.getName() + " to " + targetDatum.getName() + " through " + gt.getName() + " transformation"),
-                        source.toGeographicCoordinateConverter(),
-                        sourceDatum.getCoordinateOperations(gtSource).get(0),
-                        gt,
-                        target.fromGeographicCoordinateConverter()));
+            } catch (NonInvertibleOperationException e) {
+                LOG.warn("Operation from " + source.getName() + " to " + target.getName() + " could not be created");
+                LOG.error("CoordinateOperationFactory", e);
             }
-        } catch (NonInvertibleOperationException e) {
-            LOG.warn("Operation from " + source.getName() + " to " + target.getName() + " could not be created");
-            LOG.error("CoordinateOperationFactory", e);
         }
-        return opList;
     }
 
     /**
-     * Create a CoordinateOperation from a source {@link GeodeticCRS} to a
-     * target {@link GeodeticCRS} based on different {@link org.cts.datum.Datum} and using a
-     * CoordinateOperation to convert coordinates directly from one Geographic
-     * CRS to another without the use of GeocentricCRS. Remember that
-     * {@link GeodeticCRS} includes {@link GeocentricCRS},
+     * Add a CoordinateOperation to the list of CoordinateOperation in
+     * parameter. This CoordinateOperation linked a source {@link GeodeticCRS}
+     * to a target {@link GeodeticCRS} based on different
+     * {@link org.cts.datum.Datum} using a CoordinateOperation to convert
+     * coordinates directly from one Geographic CRS to another without the use
+     * of GeocentricCRS. Remember that {@link GeodeticCRS} includes {@link GeocentricCRS},
      * {@link Geographic2DCRS}, {@link Geographic3DCRS} and
      * {@link ProjectedCRS}, but here the use of {@link GeocentricCRS} is
-     * senseless. NB : This class was made for nadgrids that are
-     * defined only in the parameter of the source CRS for the nadgrids
-     * transformation, it is why there is two createNadgridsOperation,
-     * createNadgridsOperationInv must be use when the nadgrids is defined in
-     * the targetCRS.
+     * senseless. NB : This class was made for nadgrids that are defined only in
+     * the parameter of the source CRS for the nadgrids transformation, it is
+     * why there is two createNadgridsOperation, createNadgridsOperationInv must
+     * be use when the nadgrids is defined in the targetCRS.
      *
      * @param sourceDatum the (non null) datum used by source CRS
      * @param source the source geodetic coordinate reference system
      * @param targetDatum the (non null) datum used by target CRS
      * @param target the target geodetic coordinate reference system
      * @param coordOp the transformation between two Geographic CRS
+     * @param opList the list in which the CoordinateOperation must be added
      */
-    private static List<CoordinateOperation> createNadgridsOperationInv(
+    private static void addNadgridsOperationInv(
             GeodeticDatum sourceDatum, GeodeticCRS source,
-            GeodeticDatum targetDatum, GeodeticCRS target, CoordinateOperation coordOp) {
-        List<CoordinateOperation> opList = new ArrayList<CoordinateOperation>();
-        try {
-            if (!(coordOp instanceof NTv2GridShiftTransformation) || sourceDatum.getShortName().equals(((NTv2GridShiftTransformation) coordOp).getFromDatum())) {
-                opList.add(new CoordinateOperationSequence(
-                        new Identifier(CoordinateOperationSequence.class, source.getName() + " to " + target.getName()),
-                        source.toGeographicCoordinateConverter(),
-                        coordOp.inverse(),
-                        target.fromGeographicCoordinateConverter()));
-            } else {
-                NTv2GridShiftTransformation gt = (NTv2GridShiftTransformation) coordOp;
-                GeodeticDatum gtSource = GeodeticDatum.datumFromName.get(gt.getFromDatum());
-                if (gtSource.getCoordinateOperations(targetDatum).isEmpty()) {
-                    CoordinateOperationSequence opSeq = new CoordinateOperationSequence(
-                            new Identifier(CoordinateOperationSequence.class, gtSource.getName() + " to " + targetDatum.getName() + " through " + GeodeticDatum.WGS84.getName()),
-                            gtSource.getCoordinateOperations(GeodeticDatum.WGS84).get(0),
-                            GeodeticDatum.WGS84.getCoordinateOperations(targetDatum).get(0));
-                    gtSource.addCoordinateOperation(targetDatum, opSeq);
-                    targetDatum.addCoordinateOperation(gtSource, opSeq.inverse());
+            GeodeticDatum targetDatum, GeodeticCRS target, List<CoordinateOperation> nadgridsTransformations,
+            List<CoordinateOperation> opList) {
+        for (CoordinateOperation coordOp : nadgridsTransformations) {
+            try {
+                if (!(coordOp instanceof NTv2GridShiftTransformation) || sourceDatum.getShortName().equals(((NTv2GridShiftTransformation) coordOp).getFromDatum())) {
+                    opList.add(new CoordinateOperationSequence(
+                            new Identifier(CoordinateOperationSequence.class, source.getName() + " to " + target.getName()),
+                            source.toGeographicCoordinateConverter(),
+                            coordOp.inverse(),
+                            target.fromGeographicCoordinateConverter()));
+                } else {
+                    NTv2GridShiftTransformation gt = (NTv2GridShiftTransformation) coordOp;
+                    GeodeticDatum gtSource = GeodeticDatum.datumFromName.get(gt.getFromDatum());
+                    opList.add(new CoordinateOperationSequence(
+                            new Identifier(CoordinateOperationSequence.class, source.getName() + " to " + target.getName()),
+                            source.toGeographicCoordinateConverter(),
+                            gt.inverse(),
+                            gtSource.getCoordinateOperations(targetDatum).get(0),
+                            target.fromGeographicCoordinateConverter()));
                 }
-                opList.add(new CoordinateOperationSequence(
-                        new Identifier(CoordinateOperationSequence.class, source.getName() + " to " + target.getName()),
-                        source.toGeographicCoordinateConverter(),
-                        gt.inverse(),
-                        gtSource.getCoordinateOperations(targetDatum).get(0),
-                        target.fromGeographicCoordinateConverter()));
+            } catch (NonInvertibleOperationException e) {
+                LOG.warn("Operation from " + source.getName() + " to " + target.getName() + " could not be created");
+                LOG.error("CoordinateOperationFactory", e);
             }
-        } catch (NonInvertibleOperationException e) {
-            LOG.warn("Operation from " + source.getName() + " to " + target.getName() + " could not be created");
-            LOG.error("CoordinateOperationFactory", e);
         }
-        return opList;
     }
 
     /**
-     * Create a CoordinateOperation from a source
+     * Add a CoordinateOperation to the list of CoordinateOperation in
+     * parameter. This CoordinateOperation linked a source
      * {@link org.cts.crs.GeodeticCRS} to a target {@link GeodeticCRS} using the
      * same {@link org.cts.datum.GeodeticDatum}. Remember that
      * {@link GeodeticCRS} includes {@link GeocentricCRS},
@@ -243,10 +224,11 @@ public final class CoordinateOperationFactory {
      * @param datum the (non null) common datum of source and target CRS
      * @param source the source geodetic coordinate reference system
      * @param target the target geodetic coordinate reference system
+     * @param opList the list in which the CoordinateOperation must be added
      */
-    private static List<CoordinateOperation> createCoordinateOperations(
-            GeodeticDatum datum, GeodeticCRS source, GeodeticCRS target) {
-        List<CoordinateOperation> opList = new ArrayList<CoordinateOperation>();
+    private static void addCoordinateOperations(
+            GeodeticDatum datum, GeodeticCRS source, GeodeticCRS target,
+            List<CoordinateOperation> opList) {
         try {
             opList.add(new CoordinateOperationSequence(
                     new Identifier(CoordinateOperationSequence.class, source.getName() + " to " + target.getName()),
@@ -256,13 +238,13 @@ public final class CoordinateOperationFactory {
             LOG.warn("Operation from " + source.getName() + " to " + target.getName() + " could not be created");
             LOG.error("CoordinateOperationFactory", e);
         }
-        return opList;
     }
 
     /**
-     * Create a CoordinateOperation from a source {@link GeodeticCRS} to a
-     * target {@link GeodeticCRS} based on different {@link org.cts.datum.Datum}. Remember
-     * that {@link GeodeticCRS} includes {@link GeocentricCRS},
+     * Add a CoordinateOperation to the list of CoordinateOperation in
+     * parameter. This CoordinateOperation linked a source {@link GeodeticCRS}
+     * to a target {@link GeodeticCRS} based on different
+     * {@link org.cts.datum.Datum}. Remember that {@link GeodeticCRS} includes {@link GeocentricCRS},
      * {@link Geographic2DCRS}, {@link Geographic3DCRS} and
      * {@link ProjectedCRS}.
      *
@@ -270,14 +252,15 @@ public final class CoordinateOperationFactory {
      * @param source the source geodetic coordinate reference system
      * @param targetDatum the (non null) datum used by target CRS
      * @param target the target geodetic coordinate reference system
+     * @param opList the list in which the CoordinateOperation must be added
      */
-    private static List<CoordinateOperation> createCoordinateOperations(
+    private static void addCoordinateOperations(
             GeodeticDatum sourceDatum, GeodeticCRS source,
-            GeodeticDatum targetDatum, GeodeticCRS target) {
+            GeodeticDatum targetDatum, GeodeticCRS target,
+            List<CoordinateOperation> opList) {
         // We get registered transformation from source GeodeticDatum to target GeodeticDatum
         // There maybe one or more transformations available.
         List<CoordinateOperation> datumTransformations = sourceDatum.getCoordinateOperations(targetDatum);
-        List<CoordinateOperation> opList = new ArrayList<CoordinateOperation>();
         for (CoordinateOperation datumTf : datumTransformations) {
             try {
                 opList.add(new CoordinateOperationSequence(
@@ -292,20 +275,5 @@ public final class CoordinateOperationFactory {
                 LOG.error("CoordinateOperationFactory", e);
             }
         }
-        if (opList.isEmpty()) {
-            try {
-                opList.add(new CoordinateOperationSequence(
-                        new Identifier(CoordinateOperationSequence.class),
-                        source.toGeographicCoordinateConverter(),
-                        sourceDatum.getCoordinateOperations(GeodeticDatum.WGS84).get(0),
-                        GeodeticDatum.WGS84.getCoordinateOperations(targetDatum).get(0),
-                        target.fromGeographicCoordinateConverter()));
-            } catch (NonInvertibleOperationException e) {
-                LOG.warn("Operation from " + source.getName() + " to " + target.getName()
-                        + " through " + GeodeticDatum.WGS84.getName() + " could not be created");
-                LOG.error("CoordinateOperationFactory", e);
-            }
-        }
-        return opList;
     }
 }

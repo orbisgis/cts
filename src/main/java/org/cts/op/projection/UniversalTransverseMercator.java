@@ -82,8 +82,48 @@ public class UniversalTransverseMercator extends Projection {
         n = k0 * ellipsoid.getSemiMajorAxis();
         xs = FE;
         ys = y0 - n * ellipsoid.curvilinearAbscissa(lat0);
-        dircoeff = ellipsoid.getDirectUTMCoeff();
-        invcoeff = ellipsoid.getInverseUTMCoeff();
+        dircoeff = getDirectUTMCoeff(ellipsoid);
+        invcoeff = getInverseUTMCoeff(ellipsoid);
+    }
+
+    /**
+     * Return the coefficients for the direct UTM projection associated with the
+     * ellipsoid in parameter.
+     *
+     * @param ellps the projected ellipsoid
+     */
+    public static double[] getDirectUTMCoeff(Ellipsoid ellps) {
+        double e2 = ellps.getSquareEccentricity();
+        double e4 = e2 * e2;
+        double e6 = e4 * e2;
+        double e8 = e4 * e4;
+        double[] dir_utm_coeff = new double[5];
+        dir_utm_coeff[0] = 1.0 - e2 * 1 / 4 - e4 * 3 / 64 - e6 * 5 / 256 - e8 * 175 / 16384;
+        dir_utm_coeff[1] = e2 * 1 / 8 - e4 * 1 / 96 - e6 * 9 / 1024 - e8 * 901 / 184320;
+        dir_utm_coeff[2] = e4 * 13 / 768 + e6 * 17 / 5120 - e8 * 311 / 737280;
+        dir_utm_coeff[3] = e6 * 61 / 15360 + e8 * 899 / 430080;
+        dir_utm_coeff[4] = e8 * 49561 / 41287680;
+        return dir_utm_coeff;
+    }
+
+    /**
+     * Return the coefficients for the inverse UTM projection associated with
+     * the ellipsoid in parameter.
+     *
+     * @param ellps the projected ellipsoid
+     */
+    public static double[] getInverseUTMCoeff(Ellipsoid ellps) {
+        double e2 = ellps.getSquareEccentricity();
+        double e4 = e2 * e2;
+        double e6 = e4 * e2;
+        double e8 = e4 * e4;
+        double[] inv_utm_coeff = new double[5];
+        inv_utm_coeff[0] = 1.0 - e2 * 1 / 4 - e4 * 3 / 64 - e6 * 5 / 256 - e8 * 175 / 16384;
+        inv_utm_coeff[1] = e2 * 1 / 8 + e4 * 1 / 48 + e6 * 7 / 2048 + e8 * 1 / 61440;
+        inv_utm_coeff[2] = e4 * 1 / 768 + e6 * 3 / 1280 + e8 * 559 / 368640;
+        inv_utm_coeff[3] = e6 * 17 / 30720 + e8 * 283 / 430080;
+        inv_utm_coeff[4] = e8 * 4397 / 41287680;
+        return inv_utm_coeff;
     }
 
     /**
