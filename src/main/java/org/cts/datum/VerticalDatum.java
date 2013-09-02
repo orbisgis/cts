@@ -33,8 +33,8 @@ package org.cts.datum;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.apache.log4j.Logger;
 
 import org.cts.Identifiable;
 import org.cts.Identifier;
@@ -391,7 +391,7 @@ public class VerticalDatum extends AbstractDatum {
             try {
                 this.alti2ellpsHeight = new Altitude2EllipsoidalHeight(altitudeGrid, gd);
             } catch (Exception ex) {
-                Logger.getLogger(VerticalDatum.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(VerticalDatum.class).error(ex.getMessage());
             }
             this.ellps = gd.getEllipsoid();
         } else if (gd != null && type == Type.ELLIPSOIDAL) {
