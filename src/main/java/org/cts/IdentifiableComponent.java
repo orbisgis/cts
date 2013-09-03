@@ -31,11 +31,14 @@
  */
 package org.cts;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+
 
 /**
  * IdentifiableComponent is a helper class used as a parent class for components
@@ -48,7 +51,7 @@ import org.apache.log4j.Logger;
 public class IdentifiableComponent implements Identifiable {
 
     private Identifier identifier;
-    static final Logger LOGGER = Logger.getLogger(CRSHelper.class);
+    static final Logger LOGGER = LoggerFactory.getLogger(CRSHelper.class);
     private static Map<Identifier, IdentifiableComponent> registry = new HashMap<Identifier, IdentifiableComponent>();
 
     /**

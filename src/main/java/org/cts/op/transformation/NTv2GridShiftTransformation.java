@@ -41,8 +41,6 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import org.apache.log4j.Logger;
-
 import org.cts.CoordinateDimensionException;
 import org.cts.Identifier;
 import org.cts.IllegalCoordinateException;
@@ -51,6 +49,8 @@ import org.cts.op.CoordinateOperation;
 import org.cts.op.NonInvertibleOperationException;
 import org.cts.op.transformation.grid.GridShift;
 import org.cts.op.transformation.grid.GridShiftFile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Geographic Offset by Interpolation of Gridded Data.<p>
@@ -61,7 +61,7 @@ import org.cts.op.transformation.grid.GridShiftFile;
  */
 public class NTv2GridShiftTransformation extends AbstractCoordinateOperation {
 
-    static final Logger LOGGER = Logger.getLogger(NTv2GridShiftTransformation.class);
+    static final Logger LOGGER = LoggerFactory.getLogger(NTv2GridShiftTransformation.class);
     /**
      * The Identifier used for all NTv2 Grid Shift Transformation.
      */
@@ -118,7 +118,7 @@ public class NTv2GridShiftTransformation extends AbstractCoordinateOperation {
         super(opId);
         this.grid_file = ntv2_gridFile;
         if (ntv2_gridFile == null) {
-            LOGGER.warn("No NTv2 Grid file specified.", null);
+            LOGGER.warn("No NTv2 Grid file specified.");
         }
         this.gsf = new GridShiftFile();
     }
