@@ -32,12 +32,6 @@
 package org.cts;
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import org.apache.log4j.Level;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 
 import org.cts.registry.EPSGRegistry;
 import org.cts.registry.ESRIRegistry;
@@ -48,6 +42,8 @@ import org.cts.registry.RegistryManager;
 import org.cts.registry.worldRegistry;
 
 import org.junit.BeforeClass;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A main class for all CTS tests
@@ -56,7 +52,7 @@ import org.junit.BeforeClass;
  */
 public class CTSTestCase {
 
-    protected Logger LOGGER = Logger.getLogger(CTSTestCase.class);
+    protected Logger LOGGER = LoggerFactory.getLogger(CTSTestCase.class);
     protected static CRSFactory cRSFactory;
 
     /**
@@ -74,12 +70,6 @@ public class CTSTestCase {
         registryManager.addRegistry(new Nad83Registry());
         registryManager.addRegistry(new worldRegistry());
 
-        // Disable log4j outputs.
-        List<Logger> loggers = Collections.<Logger>list(LogManager.getCurrentLoggers());
-        loggers.add(LogManager.getRootLogger());
-        for (Logger logger : loggers) {
-            logger.setLevel(Level.OFF);
-        }
     }
 
     /**

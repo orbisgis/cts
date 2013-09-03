@@ -34,7 +34,6 @@ package org.cts.datum;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
 
 import org.cts.Identifiable;
 import org.cts.Identifier;
@@ -42,6 +41,7 @@ import org.cts.cs.GeographicExtent;
 import org.cts.op.CoordinateOperation;
 import org.cts.op.Identity;
 import org.cts.op.transformation.Altitude2EllipsoidalHeight;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>Vertical datum are used to determine elevation. They are generally based
@@ -391,7 +391,7 @@ public class VerticalDatum extends AbstractDatum {
             try {
                 this.alti2ellpsHeight = new Altitude2EllipsoidalHeight(altitudeGrid, gd);
             } catch (Exception ex) {
-                Logger.getLogger(VerticalDatum.class).error(ex.getMessage());
+                LoggerFactory.getLogger(VerticalDatum.class).error(ex.getMessage());
             }
             this.ellps = gd.getEllipsoid();
         } else if (gd != null && type == Type.ELLIPSOIDAL) {

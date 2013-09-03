@@ -34,12 +34,14 @@ package org.cts.op;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+
 
 import org.cts.Identifier;
 import org.cts.crs.GeodeticCRS;
 import org.cts.datum.GeodeticDatum;
 import org.cts.op.transformation.NTv2GridShiftTransformation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * CoordinateOperationFactory is a factory used to create
@@ -51,7 +53,7 @@ import org.cts.op.transformation.NTv2GridShiftTransformation;
  */
 public final class CoordinateOperationFactory {
 
-    private static final Logger LOG = Logger.getLogger(CoordinateOperationFactory.class);
+    private static final Logger LOG = LoggerFactory.getLogger(CoordinateOperationFactory.class);
     public final static int GDATUM_OP = 1; // ex. NTF 2 RGF
     public final static int VDATUM_OP = 2; // ex. height instead of altitude
     public final static int ELLIPSOID_OP = 4; // ex. height instead of altitude

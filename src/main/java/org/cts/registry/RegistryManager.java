@@ -33,7 +33,8 @@ package org.cts.registry;
 
 import java.util.*;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class manages all supported registry. It permits to declare a custom
@@ -43,7 +44,7 @@ import org.apache.log4j.Logger;
  */
 public final class RegistryManager {
 
-    static final Logger LOGGER = Logger.getLogger(RegistryManager.class);
+    static final Logger LOGGER = LoggerFactory.getLogger(RegistryManager.class);
     private final Map<String, Registry> registries = new HashMap<String, Registry>();
     private final List<RegistryManagerListener> listeners = new ArrayList<RegistryManagerListener>();
 

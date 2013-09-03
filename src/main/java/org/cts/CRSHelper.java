@@ -34,8 +34,6 @@ package org.cts;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
-
 import org.cts.crs.*;
 import org.cts.cs.Axis;
 import org.cts.cs.CoordinateSystem;
@@ -58,6 +56,8 @@ import org.cts.parser.proj.ProjKeyParameters;
 import org.cts.parser.proj.ProjValueParameters;
 import org.cts.units.*;
 import org.cts.util.AngleFormat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class is used to define a new
@@ -73,7 +73,7 @@ import org.cts.util.AngleFormat;
  */
 public class CRSHelper {
 
-    static final Logger LOGGER = Logger.getLogger(CRSHelper.class);
+    static final Logger LOGGER = LoggerFactory.getLogger(CRSHelper.class);
 
     /**
      * Creates a new {@link org.cts.crs.CoordinateReferenceSystem} with the

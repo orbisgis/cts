@@ -31,9 +31,11 @@
  */
 package org.cts.registry;
 
-import org.apache.log4j.Logger;
+
 
 import org.cts.parser.proj.ProjParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -41,7 +43,7 @@ import org.cts.parser.proj.ProjParser;
  */
 public abstract class AbstractProjRegistry implements Registry {
 
-    public Logger LOGGER = Logger.getLogger(org.cts.registry.AbstractProjRegistry.class);
+    public Logger LOGGER = LoggerFactory.getLogger(org.cts.registry.AbstractProjRegistry.class);
     /**
      * The parser associated to the PROJ registry.
      */
