@@ -31,16 +31,25 @@
  */
 package org.cts.crs;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.cts.Identifiable;
 import org.cts.IdentifiableComponent;
 import org.cts.Identifier;
 import org.cts.cs.Axis;
 import org.cts.cs.CoordinateSystem;
 import org.cts.datum.VerticalDatum;
+import org.cts.op.CoordinateOperation;
+import org.cts.op.CoordinateOperationSequence;
+import org.cts.op.OppositeCoordinate;
+import org.cts.op.UnitConversion;
 import org.cts.op.projection.Projection;
 import org.cts.units.Unit;
 
 import static org.cts.cs.Axis.ALTITUDE;
 import static org.cts.cs.Axis.HEIGHT;
+import static org.cts.cs.Axis.Direction.DOWN;
 import static org.cts.units.Unit.METER;
 
 /**
@@ -49,20 +58,40 @@ import static org.cts.units.Unit.METER;
  * what is the reference for the vertical ordinate of a 3D point (ex. ellipsoid
  * surface, world geoid, local geoid...).
  *
- * @author Michaël Michaud
+ * @author Michaël Michaud, Jules Party
  */
 public class VerticalCRS extends IdentifiableComponent implements
         CoordinateReferenceSystem {
 
+    /**
+     * A 1D {@link CoordinateSystem} whose {@link Axis} contains the
+     * (ellipsoidal) height. The units used by this axis is meter.
+     */
     public static CoordinateSystem HEIGHT_CS = new CoordinateSystem(
             new Axis[]{HEIGHT}, new Unit[]{METER});
+    /**
+     * A 1D {@link CoordinateSystem} whose {@link Axis} contains the altitude.
+     * The units used by this axis is meter.
+     */
     public static CoordinateSystem ALTITUDE_CS = new CoordinateSystem(
             new Axis[]{ALTITUDE}, new Unit[]{METER});
-    private VerticalDatum verticalDatum;
-    private CoordinateSystem coordinateSystem;
+    /**
+     * The {@link VerticalDatum} to which this
+     * <code>CoordinateReferenceSystem</code> is refering.
+     */
+    private final VerticalDatum verticalDatum;
+    /**
+     * The {@link CoordinateSystem} used by this
+     * <code>CoordinateReferenceSystem</code>.
+     */
+    private final CoordinateSystem coordinateSystem;
 
     /**
      * Create a new VerticalCRS.
+     *
+     * @param identifier the identifier of the VerticalCRS
+     * @param datum the datum associated with the VerticalCRS
+     * @param cs the coordinate system associated with the VerticalCRS
      */
     public VerticalCRS(Identifier identifier, VerticalDatum datum,
             CoordinateSystem cs) {
@@ -71,13 +100,29 @@ public class VerticalCRS extends IdentifiableComponent implements
         this.coordinateSystem = cs;
     }
 
+    /**
+     * Create a new VerticalCRS.
+     *
+     * @param identifier the identifier of the VerticalCRS
+     * @param datum the datum associated with the VerticalCRS
+     * @param cs the coordinate system associated with the VerticalCRS
+     */
+    public VerticalCRS(Identifier identifier, VerticalDatum datum) {
+        super(identifier);
+        this.verticalDatum = datum;
+        this.coordinateSystem = HEIGHT_CS;
+    }
+
+    /**
+     * @see CoordinateReferenceSystem#getProjection()
+     */
     @Override
     public Projection getProjection() {
         return null;
     }
 
     /**
-     * Returns this CoordinateReferenceSystem Type
+     * @see CoordinateReferenceSystem#getType()
      */
     @Override
     public Type getType() {
@@ -85,7 +130,7 @@ public class VerticalCRS extends IdentifiableComponent implements
     }
 
     /**
-     * Returns the coordinate system of this CoordinateReferenceSystem.
+     * @see CoordinateReferenceSystem#getCoordinateSystem()
      */
     @Override
     public CoordinateSystem getCoordinateSystem() {
@@ -117,6 +162,60 @@ public class VerticalCRS extends IdentifiableComponent implements
      */
     public boolean isValid(double[] coord) {
         return verticalDatum.getExtent().isInside(coord);
+    }
+
+    /**
+     * @see GeodeticCRS#toGeographicCoordinateConverter()
+     */
+    public CoordinateOperation toGeographicCoordinateConverter() {
+        List<CoordinateOperation> ops = new ArrayList<CoordinateOperation>();
+        // change the sign if the axis is oriented down
+        if (getCoordinateSystem().getAxis(0).getDirection() == DOWN) {
+            ops.add(new OppositeCoordinate(0));
+        }
+        // Convert from source unit to meters
+        ops.add(UnitConversion.createUnitConverter(getCoordinateSystem().getUnit(0), METER));
+        return new CoordinateOperationSequence(new Identifier(
+                CoordinateOperationSequence.class), ops);
+    }
+
+    /**
+     * @see GeodeticCRS#fromGeographicCoordinateConverter()
+     */
+    public CoordinateOperation fromGeographicCoordinateConverter() {
+        List<CoordinateOperation> ops = new ArrayList<CoordinateOperation>();
+        // Convert from meters to source unit
+        ops.add(UnitConversion.createUnitConverter(getCoordinateSystem().getUnit(0), METER));
+        // change the sign if the axis is oriented down
+        if (getCoordinateSystem().getAxis(0).getDirection() == DOWN) {
+            ops.add(new OppositeCoordinate(0));
+        }
+        return new CoordinateOperationSequence(new Identifier(
+                CoordinateOperationSequence.class), ops);
+    }
+
+    /**
+     * Returns a WKT representation of the vertical CRS.
+     *
+     */
+    public String toWKT() {
+        StringBuilder w = new StringBuilder();
+        w.append("VERT_CS[\"");
+        w.append(this.getName());
+        w.append("\",");
+        w.append(this.getDatum().toWKT());
+        w.append(',');
+        w.append(this.getCoordinateSystem().getUnit(0).toWKT());
+        for (int i = 0; i < this.getCoordinateSystem().getDimension(); i++) {
+            w.append(',');
+            w.append(this.getCoordinateSystem().getAxis(i).toWKT());
+        }
+        if (!this.getAuthorityName().startsWith(Identifiable.LOCAL)) {
+            w.append(',');
+            w.append(this.getIdentifier().toWKT());
+        }
+        w.append(']');
+        return w.toString();
     }
 
     /**

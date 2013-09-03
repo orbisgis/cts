@@ -37,11 +37,11 @@ package org.cts.op.projection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.cts.op.CoordinateOperation;
 import org.cts.Identifier;
 import org.cts.IllegalCoordinateException;
 import org.cts.Parameter;
 import org.cts.datum.Ellipsoid;
+import org.cts.op.CoordinateOperation;
 import org.cts.op.NonInvertibleOperationException;
 import org.cts.units.Measure;
 import org.cts.units.Unit;

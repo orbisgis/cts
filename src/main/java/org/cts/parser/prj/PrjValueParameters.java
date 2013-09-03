@@ -71,6 +71,11 @@ public class PrjValueParameters {
      * in CTS.
      */
     public static final Map<String, String> UNITNAMES = new HashMap<String, String>();
+    /**
+     * A map linking the name of axes used in PRJ file to the short name used in
+     * CTS.
+     */
+    public static final Map<String, String> AXISNAMES = new HashMap<String, String>();
 
     static {
         PARAMNAMES.put("centralmeridian", "lon_0");
@@ -118,8 +123,11 @@ public class PrjValueParameters {
         PROJNAMES.put("lagrange", "lagrng");
         PROJNAMES.put("lambert" + "azimuthal" + "equal" + "area", "laea");
         PROJNAMES.put("lambert" + "conformal" + "conic", "lcc");
+        PROJNAMES.put("lambert" + "conic" + "conformal", "lcc");
         PROJNAMES.put("lambert" + "conformal" + "conic" + "1sp", "lcc");
+        PROJNAMES.put("lambert" + "conic" + "conformal" + "1sp", "lcc");
         PROJNAMES.put("lambert" + "conformal" + "conic" + "2sp", "lcc");
+        PROJNAMES.put("lambert" + "conic" + "conformal" + "2sp", "lcc");
         PROJNAMES.put("lambert" + "equal" + "area" + "conic", "leac");
         PROJNAMES.put("landsat", "lsat");
         PROJNAMES.put("larrivee", "larr");
@@ -191,6 +199,26 @@ public class PrjValueParameters {
         DATUMNAMES.put("europeandatum1950", "ed50");
         DATUMNAMES.put("ntf", "ntf");
         DATUMNAMES.put("ntfparis", "ntfparis");
+        DATUMNAMES.put("nivellementgeneraldelafranceign69", "ign69");
+        DATUMNAMES.put("ign78corsica", "ign78");
+        DATUMNAMES.put("guadeloupe1988", "ign88gtbt");
+        DATUMNAMES.put("ign1992ld", "ign92ld");
+        DATUMNAMES.put("ign1988ls", "ign88ls");
+        DATUMNAMES.put("martinique1987", "ign87mart");
+        DATUMNAMES.put("ign1988mg", "ign88mg");
+        DATUMNAMES.put("ign1988sb", "ign88sb");
+        DATUMNAMES.put("ign1988sm", "ign88sm");
+        DATUMNAMES.put("nivellementgeneralguyanais1977", "ngg77guy");
+        DATUMNAMES.put("mayotte1950", "shom53");
+        DATUMNAMES.put("danger1950", "danger50");
+        DATUMNAMES.put("Bora Bora SAU 2001", "bora");
+        DATUMNAMES.put("huahinesau2001", "huahine");
+        DATUMNAMES.put("ign1966", "ign66tahiti");
+        DATUMNAMES.put("maupitisau2001", "maupiti");
+        DATUMNAMES.put("mooreasau1981", "moorea");
+        DATUMNAMES.put("raiateasau2001", "raiatea");
+        DATUMNAMES.put("tahaasau2001", "tahaa");
+        DATUMNAMES.put("Reunion 1989", "rar07");
         ELLIPSOIDNAMES.put("airy", "airy");
         ELLIPSOIDNAMES.put("airy1830", "airy");
         ELLIPSOIDNAMES.put("austsa", "austsa");
@@ -249,5 +277,18 @@ public class PrjValueParameters {
         UNITNAMES.put("foot", "ft");
         UNITNAMES.put("foot_us", "us-ft");
         UNITNAMES.put("yard", "yd");
+        AXISNAMES.put("geocentricx", "x");
+        AXISNAMES.put("geocentricy", "y");
+        AXISNAMES.put("geocentricz", "z");
+        AXISNAMES.put("x", "x");
+        AXISNAMES.put("y", "y");
+        AXISNAMES.put("z", "z");
+        AXISNAMES.put("easting", "easting");
+        AXISNAMES.put("northing", "northing");
+        AXISNAMES.put("latitude", "latitude");
+        AXISNAMES.put("longitude", "longitude");
+        AXISNAMES.put("geodeticlatitude", "latitude");
+        AXISNAMES.put("geodeticlongitude", "longitude");
+        AXISNAMES.put("gravityrelatedheight", "altitude");
     }
 }

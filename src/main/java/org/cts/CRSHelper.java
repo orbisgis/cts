@@ -31,33 +31,33 @@
  */
 package org.cts;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.cts.crs.CRSException;
 
-import org.cts.crs.CoordinateReferenceSystem;
-import org.cts.crs.GeocentricCRS;
-import org.cts.crs.GeodeticCRS;
-import org.cts.crs.Geographic3DCRS;
-import org.cts.crs.ProjectedCRS;
+import org.cts.crs.*;
 import org.cts.cs.Axis;
 import org.cts.cs.CoordinateSystem;
 import org.cts.datum.Ellipsoid;
 import org.cts.datum.GeodeticDatum;
 import org.cts.datum.PrimeMeridian;
+import org.cts.datum.VerticalDatum;
 import org.cts.op.CoordinateOperation;
+import org.cts.op.CoordinateOperationSequence;
+import org.cts.op.Geocentric2Geographic;
+import org.cts.op.Geographic2Geocentric;
 import org.cts.op.Identity;
 import org.cts.op.projection.*;
+import org.cts.op.transformation.FrenchGeocentricNTF2RGF;
 import org.cts.op.transformation.GeocentricTranslation;
 import org.cts.op.transformation.NTv2GridShiftTransformation;
 import org.cts.op.transformation.SevenParameterTransformation;
+import org.cts.parser.prj.PrjKeyParameters;
 import org.cts.parser.proj.ProjKeyParameters;
 import org.cts.parser.proj.ProjValueParameters;
 import org.cts.units.*;
+import org.cts.util.AngleFormat;
 
 /**
  * This class is used to define a new
@@ -86,60 +86,272 @@ public class CRSHelper {
      */
     public static CoordinateReferenceSystem createCoordinateReferenceSystem(Identifier identifier, Map<String, String> parameters) throws CRSException {
 
+        if ((parameters.get(PrjKeyParameters.PROJCS) != null || parameters.get(PrjKeyParameters.GEOGCS) != null)
+                && parameters.get(PrjKeyParameters.VERTCS) != null) {
+            Identifier id = getIdentifier(parameters);
+            GeodeticCRS horizontalCRS = (GeodeticCRS) CRSHelper.createCoordinateReferenceSystem(id, parameters);
+            id = getIdentifier(parameters);
+            VerticalCRS verticalCRS = (VerticalCRS) CRSHelper.createCoordinateReferenceSystem(id, parameters);
+            return new CompoundCRS(identifier, horizontalCRS, verticalCRS);
+        }
+
         //Get the datum
         GeodeticDatum geodeticDatum = getDatum(parameters);
-        
+
         if (geodeticDatum == null) {
-            throw new CRSException("No datum definition. Cannot create the"
-                    + "CoordinateReferenceSystem");
+            VerticalDatum verticalDatum = getVerticalDatum(parameters);
+            if (verticalDatum == null) {
+                throw new CRSException("No datum definition. Cannot create the "
+                        + "CoordinateReferenceSystem");
+            } else {
+                CoordinateSystem cs = getCoordinateSystem(parameters, 1);
+                return new VerticalCRS(identifier, verticalDatum, cs);
+            }
         }
 
         GeodeticCRS crs;
 
-        String sproj = parameters.get(ProjKeyParameters.proj);
-        String sunit = parameters.get(ProjKeyParameters.units);
-        String stometer = parameters.get(ProjKeyParameters.to_meter);
-        if (null == sproj) {            
+        String sproj = parameters.remove(ProjKeyParameters.proj);
+        if (null == sproj) {
             throw new CRSException("No projection defined for this Coordinate Reference System");
         }
 
         //It's not a projected CRS
         if (sproj.equals(ProjValueParameters.GEOCENT)) {
-            Unit unit = Unit.METER;
-            if (sunit != null) {
-                unit = Unit.getUnit(Quantity.LENGTH, sunit);
-            } else if (stometer != null) {
-                unit = new Unit(Quantity.LENGTH, Double.parseDouble(stometer),
-                        new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, Identifier.UNKNOWN));
-            }
-            CoordinateSystem cs = new CoordinateSystem(new Axis[]{Axis.X,
-                Axis.Y, Axis.Z}, new Unit[]{unit, unit, unit});
-
+            CoordinateSystem cs = getCoordinateSystem(parameters, 2);
             crs = new GeocentricCRS(identifier, geodeticDatum, cs);
         } else if (sproj.equals(ProjValueParameters.LONGLAT)) {
-            CoordinateSystem cs = new CoordinateSystem(new Axis[]{
-                Axis.LONGITUDE, Axis.LATITUDE, Axis.HEIGHT}, new Unit[]{
-                Unit.DEGREE, Unit.DEGREE, Unit.METER});
-            crs = new Geographic3DCRS(identifier, geodeticDatum, cs);
+            CoordinateSystem cs = getCoordinateSystem(parameters, 3);
+            if (cs.getDimension() == 2) {
+                crs = new Geographic2DCRS(identifier, geodeticDatum, cs);
+            } else {
+                crs = new Geographic3DCRS(identifier, geodeticDatum, cs);
+            }
         } else {
+            CoordinateSystem cs = getCoordinateSystem(parameters, 4);
             Projection proj = getProjection(sproj, geodeticDatum.getEllipsoid(),
                     parameters);
             if (null != proj) {
-                Unit unit = Unit.METER;
-                if (sunit!=null) {
-                    unit = Unit.getUnit(Quantity.LENGTH, sunit);
-                } else if (stometer != null) {
-                unit = new Unit(Quantity.LENGTH, Double.parseDouble(stometer),
-                        new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, Identifier.UNKNOWN));
-                }
-                crs = new ProjectedCRS(identifier, geodeticDatum, proj, unit);
+                crs = new ProjectedCRS(identifier, geodeticDatum, cs, proj);
             } else {
-                throw new CRSException("Unknown projection : " + sproj);                
+                throw new CRSException("Unknown projection : " + sproj);
             }
         }
-
         setNadgrids(crs, parameters);
+        // parameters read in the registry or in the WKT by CTS, but not used yet
+        parameters.remove(PrjKeyParameters.GEOGUNIT);
+        parameters.remove(PrjKeyParameters.GEOGUNITVAL);
+        parameters.remove(PrjKeyParameters.GEOGUNITREFNAME);
+        parameters.remove(ProjKeyParameters.wktext);
+        parameters.remove(ProjKeyParameters.no_defs);
         return crs;
+    }
+
+    /**
+     * Returns the {@link org.cts.Identifier} identifier of one of the CRS part
+     * of CoumpoundCRS.
+     *
+     * @param param the map of parameters defining the properties of a CRS
+     */
+    private static Identifier getIdentifier(Map<String, String> param) {
+        Identifier id;
+        String name = param.remove(PrjKeyParameters.PROJCS);
+        String refname = param.remove(PrjKeyParameters.PROJREFNAME);
+        if (name != null) {
+            param.remove(PrjKeyParameters.GEOGCS);
+            param.remove(PrjKeyParameters.GEOGREFNAME);
+        } else {
+            name = param.remove(PrjKeyParameters.GEOGCS);
+            refname = param.remove(PrjKeyParameters.GEOGREFNAME);
+        }
+        if (name == null) {
+            name = param.remove(PrjKeyParameters.VERTCS);
+            refname = param.remove(PrjKeyParameters.VERTREFNAME);
+        }
+        if (refname != null) {
+            String[] authorityNameWithKey = refname.split(":");
+            id = new Identifier(authorityNameWithKey[0], authorityNameWithKey[1], name);
+        } else {
+            id = new Identifier(CoordinateReferenceSystem.class, name);
+        }
+        return id;
+    }
+
+    /**
+     * Returns a {@link org.cts.cs.CoordinateSystem} from parameters.
+     *
+     * @param param the map of parameters defining the properties of a CRS
+     * @param crsType 1 = VerticalCRS, 2 = GeocentricCRS, 3 = Geographic2DCRS, 4
+     * = ProjectedCRS
+     */
+    private static CoordinateSystem getCoordinateSystem(Map<String, String> param, int crsType) throws CRSException {
+        Unit[] units;
+        Axis[] axes;
+        Quantity quant = Quantity.LENGTH;
+        boolean isVert = false;
+        int dim = 0;
+        switch (crsType) {
+            case 1:
+                isVert = true;
+                dim = 1;
+                break;
+            case 2:
+                dim = 3;
+                break;
+            case 3:
+                dim = param.get(PrjKeyParameters.AXIS3) != null ? 3 : 2;
+                quant = Quantity.ANGLE;
+                break;
+            case 4:
+                dim = 2;
+                break;
+        }
+        units = new Unit[dim];
+        axes = new Axis[dim];
+        Unit unit = getUnit(quant, param, isVert);
+        for (int i = 0; i < dim; i++) {
+            units[i] = unit;
+            axes[i] = getAxis(param, crsType, i);
+        }
+        return new CoordinateSystem(axes, units);
+    }
+
+    /**
+     * Returns a {@link org.cts.cs.Axis} from its name or from its other
+     * parameters. By default, it returns an {@link org.cts.cs.Axis} that
+     * corresponds to the given CRS type and index.
+     *
+     * @param param the map of parameters defining the properties of a CRS
+     * @param crsType 1 = VerticalCRS, 2 = GeocentricCRS, 3 = Geographic2DCRS, 4
+     * = ProjectedCRS
+     * @param index the index of the axis to defined (start with 0)
+     */
+    private static Axis getAxis(Map<String, String> param, int crsType, int index) throws CRSException {
+        // crsType = 1 pour vertCRS ; 2 pour GEOCCRS ; 3 pour GEOGCRS ; 4 pour PROJ CRS.
+        Axis axis;
+        Axis defaultAxis = null;
+        String saxis = null;
+        String saxistype = null;
+        switch (crsType) {
+            case 1:
+                saxis = param.remove(PrjKeyParameters.VERTAXIS);
+                saxistype = param.remove(PrjKeyParameters.VERTAXISTYPE);
+                defaultAxis = Axis.HEIGHT;
+                break;
+            case 2:
+                switch (index) {
+                    case 0:
+                        saxis = param.remove(PrjKeyParameters.AXIS1);
+                        saxistype = param.remove(PrjKeyParameters.AXIS1TYPE);
+                        defaultAxis = Axis.X;
+                        break;
+                    case 1:
+                        saxis = param.remove(PrjKeyParameters.AXIS2);
+                        saxistype = param.remove(PrjKeyParameters.AXIS2TYPE);
+                        defaultAxis = Axis.Y;
+                        break;
+                    case 2:
+                        saxis = param.remove(PrjKeyParameters.AXIS3);
+                        saxistype = param.remove(PrjKeyParameters.AXIS3TYPE);
+                        defaultAxis = Axis.Z;
+                        break;
+                    default:
+                        throw new CRSException("Wrong argument index: " + index + ". Parameter shall be between 1 and 3.");
+                }
+                break;
+            case 3:
+                switch (index) {
+                    case 0:
+                        saxis = param.remove(PrjKeyParameters.AXIS1);
+                        saxistype = param.remove(PrjKeyParameters.AXIS1TYPE);
+                        defaultAxis = Axis.LONGITUDE;
+                        break;
+                    case 1:
+                        saxis = param.remove(PrjKeyParameters.AXIS2);
+                        saxistype = param.remove(PrjKeyParameters.AXIS2TYPE);
+                        defaultAxis = Axis.LATITUDE;
+                        break;
+                    case 2:
+                        saxis = param.remove(PrjKeyParameters.AXIS3);
+                        saxistype = param.remove(PrjKeyParameters.AXIS3TYPE);
+                        defaultAxis = Axis.HEIGHT;
+                    default:
+                        throw new CRSException("Wrong argument index: " + index + ". Parameter shall be 1 or 2.");
+                }
+                break;
+            case 4:
+                switch (index) {
+                    case 0:
+                        saxis = param.remove(PrjKeyParameters.AXIS1);
+                        saxistype = param.remove(PrjKeyParameters.AXIS1TYPE);
+                        defaultAxis = Axis.EASTING;
+                        break;
+                    case 1:
+                        saxis = param.remove(PrjKeyParameters.AXIS2);
+                        saxistype = param.remove(PrjKeyParameters.AXIS2TYPE);
+                        defaultAxis = Axis.NORTHING;
+                        break;
+                    default:
+                        throw new CRSException("Wrong argument index: " + index + ". Parameter shall be 1 or 2.");
+                }
+                break;
+            default:
+                throw new CRSException("Wrong argument crsType: " + crsType + ". Parameter shall be between 1 and 4.");
+        }
+        Axis.Direction axistype = Axis.getDirection(saxistype);
+        axis = Axis.getAxis(axistype, saxis);
+        if (axis == null && saxis != null && axistype != null) {
+            axis = new Axis(saxis, axistype);
+        } else {
+            axis = defaultAxis;
+        }
+        return axis;
+    }
+
+    /**
+     * Returns a {@link org.cts.units.Unit} from its name or from its other
+     * parameters. By default, it returns the base unit of the {@link Quantity}
+     * in parameter or DEGREE, if the {@link Quantity} is ANGLE..
+     *
+     * @param quant the quanity of the desired unit (ANGLE for a geographic CRS,
+     * else LENGTH)
+     * @param param the map of parameters defining the properties of a CRS
+     * @param isVertical true if the returned unit shall be used for a
+     * VerticalCRS
+     */
+    private static Unit getUnit(Quantity quant, Map<String, String> param, boolean isVertical) {
+        String sunit;
+        String sunitval;
+        String sunitAuth;
+        Identifier id = null;
+        if (isVertical) {
+            sunit = param.remove(PrjKeyParameters.VERTUNIT);
+            sunitval = param.remove(PrjKeyParameters.VERTUNITVAL);
+            sunitAuth = param.remove(PrjKeyParameters.VERTUNITREFNAME);
+        } else {
+            sunit = param.remove(ProjKeyParameters.units);
+            sunitval = param.remove(ProjKeyParameters.to_meter);
+            sunitAuth = param.remove(PrjKeyParameters.UNITREFNAME);
+        }
+        Unit unit = Unit.getUnit(quant, sunit);
+        sunit = sunit == null ? Identifiable.UNKNOWN : sunit;
+        if (unit == null && sunitAuth != null) {
+            String[] authNameWithKey = sunitAuth.split(":");
+            id = new Identifier(authNameWithKey[0], authNameWithKey[1], sunit);
+            unit = (Unit) IdentifiableComponent.getComponent(id);
+        }
+        if (unit == null && sunitval != null) {
+            id = id == null ? new Identifier(Unit.class, sunit) : id;
+            unit = new Unit(quant, Double.parseDouble(sunitval), id);
+        }
+        if (unit == null) {
+            if (quant == Quantity.ANGLE) {
+                unit = Unit.DEGREE;
+            } else {
+                unit = Unit.getBaseUnit(quant);
+            }
+        }
+        return unit;
     }
 
     /**
@@ -152,7 +364,7 @@ public class CRSHelper {
      */
     private static void setDefaultWGS84Parameters(GeodeticDatum gd, Map<String, String> param) {
         CoordinateOperation op;
-        String towgs84Parameters = param.get(ProjKeyParameters.towgs84);
+        String towgs84Parameters = param.remove(ProjKeyParameters.towgs84);
         if (null == towgs84Parameters) {
             gd.setDefaultToWGS84Operation(Identity.IDENTITY);
             return;
@@ -191,22 +403,40 @@ public class CRSHelper {
      * @param param the map of parameters defining the properties of a CRS
      */
     private static PrimeMeridian getPrimeMeridian(Map<String, String> param) {
-        String pmName = param.get(ProjKeyParameters.pm);
-        PrimeMeridian pm;
+        String pmName = param.remove(ProjKeyParameters.pm);
+        String pmValueWKT = param.remove(PrjKeyParameters.PMVALUE);
+        String authCode = param.remove(PrjKeyParameters.PRIMEMREFNAME);
+        Identifier id;
+        if (authCode != null) {
+            String[] authNameWithKey = authCode.split(":");
+            id = pmName != null ? new Identifier(authNameWithKey[0], authNameWithKey[1], pmName)
+                    : new Identifier(authNameWithKey[0], authNameWithKey[1], Identifiable.UNKNOWN);
+        } else {
+            id = pmName != null ? new Identifier(PrimeMeridian.class, pmName)
+                    : new Identifier(PrimeMeridian.class);
+        }
+        PrimeMeridian pm = null;
         if (null != pmName) {
             pm = PrimeMeridian.primeMeridianFromName.get(pmName.toLowerCase());
             if (pm == null) {
                 try {
                     double pmdd = Double.parseDouble(pmName);
-                    pm = PrimeMeridian.createPrimeMeridianFromDDLongitude(
-                            new Identifier(PrimeMeridian.class,
-                            Identifiable.UNKNOWN), pmdd);
+                    pm = PrimeMeridian.createPrimeMeridianFromDDLongitude(id, pmdd);
                 } catch (NumberFormatException ex) {
-                    LOGGER.error(pmName + " prime meridian is not parsable");
-                    return null;
+                    try {
+                        double pmdd = Double.parseDouble(pmValueWKT);
+                        pm = PrimeMeridian.createPrimeMeridianFromDDLongitude(id, pmdd);
+                    } catch (NumberFormatException e) {
+                        LOGGER.error(pmName + " prime meridian is not parsable");
+                        return null;
+                    }
                 }
             }
-        } else {
+        }
+        if (pm == null && authCode != null) {
+            pm = (PrimeMeridian) IdentifiableComponent.getComponent(id);
+        }
+        if (pm == null) {
             pm = PrimeMeridian.GREENWICH;
         }
         return pm;
@@ -215,8 +445,8 @@ public class CRSHelper {
     /**
      * Returns a {@link GeodeticDatum} from a map of parameters. Try first to
      * obtain the {@link GeodeticDatum} from its name using {@code datum}
-     * keyword. Then if {@code param} does not contain {@code datum}
-     * keyword or if the name is not recognized, it uses
+     * keyword. Then if {@code param} does not contain {@code datum} keyword or
+     * if the name is not recognized, it uses
      * {@code getEllipsoid}, {@code getPrimeMeridian} and
      * {@code setDefaultWGS84Parameters} methods to define the
      * {@link GeodeticDatum}.
@@ -224,11 +454,19 @@ public class CRSHelper {
      * @param param the map of parameters defining the properties of a CRS
      */
     private static GeodeticDatum getDatum(Map<String, String> param) {
-        String datumName = param.get(ProjKeyParameters.datum);
+        String datumName = param.remove(ProjKeyParameters.datum);
+        String authCode = param.remove(PrjKeyParameters.DATUMREFNAME);
         GeodeticDatum gd = null;
         if (null != datumName) {
             gd = GeodeticDatum.datumFromName.get(datumName.toLowerCase());
-        } else {
+        }
+        if (gd == null && authCode != null) {
+            String[] authNameWithKey = authCode.split(":");
+            Identifier id = datumName != null ? new Identifier(authNameWithKey[0], authNameWithKey[1], datumName)
+                    : new Identifier(authNameWithKey[0], authNameWithKey[1], Identifiable.UNKNOWN);
+            gd = (GeodeticDatum) IdentifiableComponent.getComponent(id);
+        }
+        if (gd == null) {
             Ellipsoid ell = getEllipsoid(param);
             PrimeMeridian pm = getPrimeMeridian(param);
             if (null != pm && null != ell) {
@@ -237,7 +475,47 @@ public class CRSHelper {
                 gd = gd.checkExistingGeodeticDatum();
             }
         }
+        param.remove(ProjKeyParameters.ellps);
+        param.remove(ProjKeyParameters.a);
+        param.remove(ProjKeyParameters.b);
+        param.remove(ProjKeyParameters.rf);
+        param.remove(PrjKeyParameters.SPHEROIDREFNAME);
+        param.remove(ProjKeyParameters.pm);
+        param.remove(ProjKeyParameters.towgs84);
         return gd;
+    }
+
+    /**
+     * Returns a {@link VerticalDatum} from a map of parameters. Try first to
+     * obtain the {@link VerticalDatum} from its name using {@code vertdatum}
+     * keyword. Then if {@code param} does not contain {@code vertdatum} keyword
+     * or if the name is not recognized, it tries to get the datum from its
+     * identifier. Last, it defines a {@link VerticalDatum} from its type.
+     *
+     * @param param the map of parameters defining the properties of a CRS
+     */
+    private static VerticalDatum getVerticalDatum(Map<String, String> param) {
+        String datumName = param.remove(PrjKeyParameters.VERTDATUM);
+        String authCode = param.remove(PrjKeyParameters.VERTDATUMREFNAME);
+        String vertType = param.remove(PrjKeyParameters.VERTDATUMTYPE);
+        VerticalDatum vd = null;
+        Identifier id = new Identifier(VerticalDatum.class);
+        if (null != datumName) {
+            vd = VerticalDatum.datumFromName.get(datumName.toLowerCase());
+            id = new Identifier(VerticalDatum.class, datumName);
+        }
+        if (vd == null && authCode != null) {
+            String[] authNameWithKey = authCode.split(":");
+            id = datumName != null ? new Identifier(authNameWithKey[0], authNameWithKey[1], datumName)
+                    : new Identifier(authNameWithKey[0], authNameWithKey[1], Identifiable.UNKNOWN);
+            vd = (VerticalDatum) IdentifiableComponent.getComponent(id);
+
+        }
+        if (vd == null && vertType != null) {
+            int type = (int) Double.parseDouble(vertType);
+            vd = new VerticalDatum(id, null, "", "", VerticalDatum.getType(type), "", null);
+        }
+        return vd;
     }
 
     /**
@@ -249,26 +527,42 @@ public class CRSHelper {
      * @param param the map of parameters defining the properties of a CRS
      */
     private static void setNadgrids(GeodeticCRS crs, Map<String, String> param) {
-        String nadgrids = param.get(ProjKeyParameters.nadgrids);
+        String nadgrids = param.remove(ProjKeyParameters.nadgrids);
         if (nadgrids != null) {
             String[] grids = nadgrids.split(",");
             for (String grid : grids) {
                 if (!grid.equals("null")) {
                     LOGGER.warn("A grid has been founded.");
                     if (grid.equals("@null")) {
-                        crs.getDatum().addCoordinateOperation(GeodeticDatum.WGS84, Identity.IDENTITY);
-                        GeodeticDatum.WGS84.addCoordinateOperation(crs.getDatum(), Identity.IDENTITY);
+                        crs.addGridTransformation(GeodeticDatum.WGS84, Identity.IDENTITY);
                     } else {
                         try {
+                            if (grid.equals("ntf_r93.gsb")) {
+                                // Use a transformation based on IGN grid that is the official way to convert coordinates from NTF to RGF93.
+                                if (crs.getDatum().equals(GeodeticDatum.NTF)) {
+                                    crs.addGridTransformation(
+                                            GeodeticDatum.RGF93,
+                                            new CoordinateOperationSequence(
+                                            new Identifier(CoordinateOperation.class, "NTF" + " to " + "RGF93"),
+                                            new Geographic2Geocentric(GeodeticDatum.NTF.getEllipsoid()),
+                                            new FrenchGeocentricNTF2RGF(),
+                                            new Geocentric2Geographic(GeodeticDatum.RGF93.getEllipsoid())));
+                                } else if (crs.getDatum().equals(GeodeticDatum.NTF_PARIS)) {
+                                    crs.addGridTransformation(
+                                            GeodeticDatum.RGF93,
+                                            new CoordinateOperationSequence(
+                                            new Identifier(CoordinateOperation.class, "NTF" + " to " + "RGF93"),
+                                            GeodeticDatum.NTF_PARIS.getCoordinateOperations(GeodeticDatum.NTF).get(0),
+                                            new Geographic2Geocentric(GeodeticDatum.NTF.getEllipsoid()),
+                                            new FrenchGeocentricNTF2RGF(),
+                                            new Geocentric2Geographic(GeodeticDatum.RGF93.getEllipsoid())));
+                                }
+                            }
                             NTv2GridShiftTransformation gt = NTv2GridShiftTransformation.createNTv2GridShiftTransformation(grid);
                             gt.setMode(NTv2GridShiftTransformation.SPEED);
                             crs.addGridTransformation(GeodeticDatum.datumFromName.get(gt.getToDatum()), gt);
-                        } catch (IOException ex) {
-                            LOGGER.error("Cannot found the nadgrid " + grid + ".", ex);
-                        } catch (URISyntaxException ex) {
-                            LOGGER.error("Cannot found the nadgrid " + grid + ".", ex);
-                        } catch (NullPointerException ex) {
-                            LOGGER.error("Cannot found the nadgrid " + grid + ".", ex);
+                        } catch (Exception ex) {
+                            LOGGER.error("Cannot find the nadgrid " + grid + ".", ex);
                         }
                     }
                 }
@@ -287,42 +581,41 @@ public class CRSHelper {
      * @param param the map of parameters defining the properties of a CRS
      */
     private static Ellipsoid getEllipsoid(Map<String, String> param) {
-        String ellipsoidName = param.get(ProjKeyParameters.ellps);
-        String a = param.get(ProjKeyParameters.a);
-        String b = param.get(ProjKeyParameters.b);
-        String rf = param.get(ProjKeyParameters.rf);
-        String datum = param.get(ProjKeyParameters.datum);
+        String ellipsoidName = param.remove(ProjKeyParameters.ellps);
+        String a = param.remove(ProjKeyParameters.a);
+        String b = param.remove(ProjKeyParameters.b);
+        String rf = param.remove(ProjKeyParameters.rf);
+        String authorityCode = param.remove(PrjKeyParameters.SPHEROIDREFNAME);
+        Ellipsoid ellps = null;
 
         if (null != ellipsoidName) {
-            ellipsoidName = ellipsoidName.replaceAll("[^a-zA-Z0-9]", "");
-            return Ellipsoid.ellipsoidFromName.get(ellipsoidName.toLowerCase());
-        } else if (null != a && (null != b || null != rf)) {
+            ellps = Ellipsoid.ellipsoidFromName.get(ellipsoidName.replaceAll("[^a-zA-Z0-9]", "").toLowerCase());
+        }
+        if (ellps == null && authorityCode != null) {
+            String[] authNameWithKey = authorityCode.split(":");
+            Identifier id = ellipsoidName != null ? new Identifier(authNameWithKey[0], authNameWithKey[1], ellipsoidName)
+                    : new Identifier(authNameWithKey[0], authNameWithKey[1], Identifiable.UNKNOWN);
+            ellps = (Ellipsoid) IdentifiableComponent.getComponent(id);
+        }
+        if (ellps == null && null != a && (null != b || null != rf)) {
             double a_ = Double.parseDouble(a);
             if (null != b) {
                 double b_ = Double.parseDouble(b);
-                return Ellipsoid.createEllipsoidFromSemiMinorAxis(a_, b_);
+                ellps = Ellipsoid.createEllipsoidFromSemiMinorAxis(a_, b_);
             } else {
                 double rf_ = Double.parseDouble(rf);
-                return Ellipsoid.createEllipsoidFromInverseFlattening(a_, rf_);
+                ellps = Ellipsoid.createEllipsoidFromInverseFlattening(a_, rf_);
             }
-
-        } else if (null != datum) {
-            GeodeticDatum gd = getDatum(param);
-            if (gd != null) {
-                return gd.getEllipsoid();
-            } else {
-                LOGGER.warn("The unknown datum do not define an ellipsoid");
-                return null;
-            }
-        } else {
-            LOGGER.warn("Ellipsoid cannot be defined");
-            return null;
         }
+        if (ellps == null) {
+            LOGGER.warn("Ellipsoid cannot be defined");
+        }
+        return ellps;
     }
 
     /**
-     * Creates a {@link org.cts.op.projection.Projection} from a projection
-     * type (ie lcc, tmerc), an ellipsoid and a map of parameters.
+     * Creates a {@link org.cts.op.projection.Projection} from a projection type
+     * (ie lcc, tmerc), an ellipsoid and a map of parameters.
      *
      * @param projectionName name of the projection type
      * @param ell ellipsoid used in the projection
@@ -330,25 +623,25 @@ public class CRSHelper {
      */
     private static Projection getProjection(String projectionName, Ellipsoid ell,
             Map<String, String> param) throws CRSException {
-        String slat_0 = param.get("lat_0");
-        String slat_1 = param.get("lat_1");
-        String slat_2 = param.get("lat_2");
-        String slat_ts = param.get("lat_ts");
-        String slon_0 = param.get("lon_0");
-        String slonc = param.get("lonc");
-        String salpha = param.get("alpha");
-        String sgamma = param.get("gamma");
-        String sk = param.get("k");
-        String sk_0 = param.get("k_0");
-        String sx_0 = param.get("x_0");
-        String sy_0 = param.get("y_0");
-        double lat_0 = slat_0 != null ? Double.parseDouble(slat_0) : 0.;
-        double lat_1 = slat_1 != null ? Double.parseDouble(slat_1) : 0.;
-        double lat_2 = slat_2 != null ? Double.parseDouble(slat_2) : 0.;
-        double lat_ts = slat_ts != null ? Double.parseDouble(slat_ts) : 0.;
-        double lon_0 = slon_0 != null ? Double.parseDouble(slon_0) : slonc != null ? Double.parseDouble(slonc) : 0.;
-        double alpha = salpha != null ? Double.parseDouble(salpha) : 0.;
-        double gamma = sgamma != null ? Double.parseDouble(sgamma) : 0.;
+        String slat_0 = param.remove("lat_0");
+        String slat_1 = param.remove("lat_1");
+        String slat_2 = param.remove("lat_2");
+        String slat_ts = param.remove("lat_ts");
+        String slon_0 = param.remove("lon_0");
+        String slonc = param.remove("lonc");
+        String salpha = param.remove("alpha");
+        String sgamma = param.remove("gamma");
+        String sk = param.remove("k");
+        String sk_0 = param.remove("k_0");
+        String sx_0 = param.remove("x_0");
+        String sy_0 = param.remove("y_0");
+        double lat_0 = slat_0 != null ? AngleFormat.parseAngle(slat_0) : 0.;
+        double lat_1 = slat_1 != null ? AngleFormat.parseAngle(slat_1) : 0.;
+        double lat_2 = slat_2 != null ? AngleFormat.parseAngle(slat_2) : 0.;
+        double lat_ts = slat_ts != null ? AngleFormat.parseAngle(slat_ts) : 0.;
+        double lon_0 = slon_0 != null ? AngleFormat.parseAngle(slon_0) : slonc != null ? AngleFormat.parseAngle(slonc) : 0.;
+        double alpha = salpha != null ? AngleFormat.parseAngle(salpha) : 0.;
+        double gamma = sgamma != null ? AngleFormat.parseAngle(sgamma) : 0.;
         if (sk != null && sk_0 != null) {
             if (!sk.equals(sk_0)) {
                 LOGGER.warn("Two different scales factor at origin are defined, the one chosen for the projection is k_0");
@@ -363,14 +656,14 @@ public class CRSHelper {
         map.put(Parameter.STANDARD_PARALLEL_1, new Measure(lat_1, Unit.DEGREE));
         map.put(Parameter.STANDARD_PARALLEL_2, new Measure(lat_2, Unit.DEGREE));
         map.put(Parameter.LATITUDE_OF_TRUE_SCALE, new Measure(lat_ts, Unit.DEGREE));
-        map.put(Parameter.AZIMUTH_OF_INITIAL_LINE, new Measure(alpha, Unit.DEGREE));
-        map.put(Parameter.ANGLE_RECTIFIED_TO_OBLIQUE, new Measure(gamma, Unit.DEGREE));
+        map.put(Parameter.AZIMUTH, new Measure(alpha, Unit.DEGREE));
+        map.put(Parameter.RECTIFIED_GRID_ANGLE, new Measure(gamma, Unit.DEGREE));
         map.put(Parameter.SCALE_FACTOR, new Measure(k_0, Unit.UNIT));
         map.put(Parameter.FALSE_EASTING, new Measure(x_0, Unit.METER));
         map.put(Parameter.FALSE_NORTHING, new Measure(y_0, Unit.METER));
 
         if (projectionName.equalsIgnoreCase(ProjValueParameters.LCC)) {
-            if (param.get("lat_2") != null) {
+            if (slat_2 != null) {
                 return new LambertConicConformal2SP(ell, map);
             } else {
                 return new LambertConicConformal1SP(ell, map);
@@ -378,7 +671,7 @@ public class CRSHelper {
         } else if (projectionName.equalsIgnoreCase(ProjValueParameters.TMERC)) {
             return new TransverseMercator(ell, map);
         } else if (projectionName.equalsIgnoreCase(ProjValueParameters.UTM)) {
-            int zone = param.get("zone") != null ? Integer.parseInt(param.get("zone")) : 0;
+            int zone = param.get("zone") != null ? Integer.parseInt(param.remove("zone")) : 0;
             lon_0 = (6.0 * (zone - 1) + 183.0) % 360.0;
             lon_0 = (((lon_0 + 180) % 360) - 180); // set lon_0 to -180;180 interval
             y_0 = param.containsKey("south") ? 10000000.0 : 0.0;
@@ -397,7 +690,7 @@ public class CRSHelper {
         } else if (projectionName.equalsIgnoreCase(ProjValueParameters.CASS)) {
             return new CassiniSoldner(ell, map);
         } else if (projectionName.equalsIgnoreCase(ProjValueParameters.OMERC)) {
-            if (alpha==90 && gamma==90) {
+            if (alpha == 90 && gamma == 90) {
                 return new SwissObliqueMercator(ell, map);
             }
             return new ObliqueMercator(ell, map);

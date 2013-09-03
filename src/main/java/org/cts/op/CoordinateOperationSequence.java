@@ -31,6 +31,9 @@
  */
 package org.cts.op;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import org.cts.Identifier;
 import org.cts.IllegalCoordinateException;
 
@@ -64,6 +67,7 @@ public class CoordinateOperationSequence extends AbstractCoordinateOperation {
             CoordinateOperation... sequence) {
         super(identifier);
         this.sequence = sequence;
+        this.sequence = cleanSequence(sequence);
         for (CoordinateOperation op : sequence) {
             precision += op.getPrecision();
         }
@@ -82,6 +86,7 @@ public class CoordinateOperationSequence extends AbstractCoordinateOperation {
             List<CoordinateOperation> list) {
         super(identifier);
         this.sequence = list.toArray(new CoordinateOperation[list.size()]);
+        this.sequence = cleanSequence(sequence);
         for (CoordinateOperation op : sequence) {
             precision += op.getPrecision();
         }
@@ -101,6 +106,7 @@ public class CoordinateOperationSequence extends AbstractCoordinateOperation {
             CoordinateOperation[] sequence, double precision) {
         super(identifier);
         this.sequence = sequence;
+        this.sequence = cleanSequence(sequence);
         this.precision = precision;
     }
 
@@ -117,6 +123,7 @@ public class CoordinateOperationSequence extends AbstractCoordinateOperation {
             List<CoordinateOperation> list, double precision) {
         super(identifier);
         this.sequence = list.toArray(new CoordinateOperation[list.size()]);
+        this.sequence = cleanSequence(sequence);
         this.precision = precision;
     }
 
@@ -164,6 +171,96 @@ public class CoordinateOperationSequence extends AbstractCoordinateOperation {
     }
 
     /**
+     * fusionSequences merge cleverly two list of CoordinateOperations by
+     * removing the last element of the first list and the first of the second
+     * list when one of these is the inverse of the other.
+     *
+     * @param list1 one of the list to merge (it will be the beginning of the
+     * returned list)
+     * @param list2 the other list to merge (it will be the end of the returned
+     * list)
+     */
+    private static List<CoordinateOperation> fusionSequences(List<CoordinateOperation> list1, List<CoordinateOperation> list2) {
+        List<CoordinateOperation> lst1 = new ArrayList<CoordinateOperation>(list1);
+        List<CoordinateOperation> lst2 = new ArrayList<CoordinateOperation>(list2);
+        if (lst1.isEmpty() && lst2.isEmpty()) {
+            lst1.add(Identity.IDENTITY);
+            return lst1;
+        }
+        if (lst1.isEmpty()) {
+            return lst2;
+        }
+        if (lst2.isEmpty()) {
+            return lst1;
+        }
+        CoordinateOperation op1 = lst1.get(lst1.size() - 1);
+        CoordinateOperation op2 = lst2.get(0);
+        if (op1.equals(Identity.IDENTITY)) {
+            lst1.remove(lst1.size() - 1);
+            return fusionSequences(lst1, lst2);
+        }
+        if (op2.equals(Identity.IDENTITY)) {
+            lst2.remove(0);
+            return fusionSequences(lst1, lst2);
+        }
+        try {
+            if (op1.equals(ChangeCoordinateDimension.TO3D) && op2.equals(ChangeCoordinateDimension.TO2D)
+                    || op1.equals(op2.inverse())) {
+                lst1.remove(lst1.size() - 1);
+                lst2.remove(0);
+                return fusionSequences(lst1, lst2);
+            }
+        } catch (NonInvertibleOperationException ex) {
+        }
+        lst1.addAll(lst2);
+
+        return lst1;
+    }
+
+    /**
+     * Returned the sequence of CoordinateOperations cleaned by removing useless
+     * operations as Identity and successive inverse transformations.
+     *
+     * @param sequence the sequence of CoordinateOperation to clean
+     */
+    private static CoordinateOperation[] cleanSequence(CoordinateOperation... sequence) {
+        List<CoordinateOperation> result = new ArrayList<CoordinateOperation>();
+        for (CoordinateOperation op : sequence) {
+            if (op != null && !op.equals(Identity.IDENTITY) && !(op instanceof CoordinateOperationSequence)) {
+                result.add(op);
+            } else if (op instanceof CoordinateOperationSequence) {
+                result = fusionSequences(result, Arrays.asList(((CoordinateOperationSequence) op).getSequence()));
+            }
+        }
+        if (sequence.length > 0 && result.isEmpty()) {
+            result.add(Identity.IDENTITY);
+        }
+        return result.toArray(new CoordinateOperation[result.size()]);
+    }
+
+    /**
+     * cleverAdd add cleverly a CoordinateOperation in a list of
+     * CoordinateOperations by removing the last element of list if it is the
+     * inverse of the element to add. If not, it simply add the
+     * CoordinateOperation at the end of the list. NB1: If
+     * <code>op</code> is the Identity transformation, it is added only if
+     * <code>ops</code> is empty. NB2: If
+     * <code>ops</code> contains only the identity transformation, it is
+     * replaced by
+     * <code>op</code>.
+     *
+     * @param ops the list in which the CoordinateOperation should be added
+     * @param op the CoordinateOperation to add list)
+     */
+    public static List<CoordinateOperation> cleverAdd(List<CoordinateOperation> ops, CoordinateOperation op) {
+        List<CoordinateOperation> result = new ArrayList<CoordinateOperation>(ops);
+        List<CoordinateOperation> addedOp = new ArrayList<CoordinateOperation>();
+        addedOp.add(op);
+        result = fusionSequences(result, addedOp);
+        return result;
+    }
+
+    /**
      * Returns a String representation of this CoordinateOperationSequence. It
      * gives a correct representation of CoordinateOperationSequence nested in a
      * CoordinateOperationSequence, but will not display nicely a third level of
@@ -187,5 +284,42 @@ public class CoordinateOperationSequence extends AbstractCoordinateOperation {
         }
         sb.append("}");
         return sb.toString();
+    }
+
+    /**
+     * Returns true if object is equals to
+     * <code>this</code>. Tests equality between the length of the sequences and
+     * then the equality of each CoordinateOperation.
+     *
+     * @param object The object to compare this CoordinateOperationSequence
+     * against
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o instanceof CoordinateOperationSequence) {
+            CoordinateOperationSequence cooordseq = (CoordinateOperationSequence) o;
+            if (getSequence().length == cooordseq.getSequence().length) {
+                for (int i = 0; i < getSequence().length; i++) {
+                    if (!getSequence()[i].equals(cooordseq.getSequence()[i])) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns the hash code for this CoordinateOperationSequence.
+     */
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 67 * hash + Arrays.deepHashCode(this.sequence);
+        return hash;
     }
 }

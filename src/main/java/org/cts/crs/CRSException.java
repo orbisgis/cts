@@ -54,15 +54,15 @@ public class CRSException extends Exception {
     public CRSException(Exception ex) {
         super(ex);
     }
-    
+
     /**
-     * Build a coordinate reference system exception based on a message and
-     * an exception.
-     * 
+     * Build a coordinate reference system exception based on a message and an
+     * exception.
+     *
      * @param message
-     * @param ex 
+     * @param ex
      */
-    public CRSException(String message, Exception ex){
+    public CRSException(String message, Exception ex) {
         super(message, ex);
     }
 }

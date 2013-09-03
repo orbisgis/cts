@@ -40,6 +40,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
+
 import org.cts.registry.Registry;
 
 /**
@@ -48,12 +49,29 @@ import org.cts.registry.Registry;
  */
 public class ProjParser {
 
+    /**
+     * The registry parse by this parser.
+     */
     private final Registry registry;
 
+    /**
+     * Create a new ProjParser for the given registry.
+     *
+     * @param registry the registry to parse
+     */
     public ProjParser(Registry registry) {
         this.registry = registry;
     }
 
+    /**
+     * Read all parameters from the registry
+     *
+     * @param crsCode the code corresponding to the information that must be
+     * extracted from the registry
+     * @param regex the pattern used to split the line that describes the
+     * coordinate system
+     * @throws IOException
+     */
     public Map<String, String> readParameters(String crsCode, Pattern regexPattern)
             throws IOException {
         InputStream inStr = Registry.class.getResourceAsStream(registry.getRegistryName());
@@ -75,10 +93,10 @@ public class ProjParser {
      * Read all parameters from the registry
      *
      * @param br
-     * @param nameOfCRS
+     * @param nameOfCRS the code corresponding to the information that must be
+     * extracted from the registry
      * @param regex the pattern used to split the line that describes the
      * coordinate system
-     * @return
      * @throws IOException
      */
     private Map<String, String> readRegistry(BufferedReader br, String nameOfCRS, Pattern regex) throws IOException {
@@ -89,7 +107,17 @@ public class ProjParser {
                 // in the "epsg" file, the crs name can only be read in the
                 // comment line preceding the projection definition
                 crsName = line.substring(1).trim();
-            } else if (line.startsWith("<") && line.endsWith(">")) {
+            } else if (line.startsWith("<")) {
+                while (!line.endsWith(">")) {
+                    int i = line.indexOf('#');
+                    if (i != -1) {
+                        // in the "world" file, the crs name can only be read in
+                        // a comment following the key tag
+                        crsName = line.substring(i + 2);
+                        line = line.substring(0, i - 1);
+                    }
+                    line = line + " " + br.readLine();
+                }
                 String[] tokens = regex.split(line);
                 Map<String, String> v = new HashMap<String, String>();
                 String crsID;
@@ -114,7 +142,12 @@ public class ProjParser {
                         } else {
                             String key = formatKey(token);
                             ProjKeyParameters.checkUnsupported(key);
-                            v.put(key, null);
+                            if (key.equals(ProjKeyParameters.wktext)) {
+                                String[] lines = regex.split(line, 2);
+                                v.put(key, lines[1]);
+                            } else {
+                                v.put(key, null);
+                            }
                         }
                     }
                 }
@@ -134,7 +167,6 @@ public class ProjParser {
      * Remove + char if exists
      *
      * @param key
-     * @return
      */
     private static String formatKey(String key) {
         String formatKey = key;
@@ -148,7 +180,6 @@ public class ProjParser {
      * Return the list of all codes defined by this registry
      *
      * @param regex pattern
-     * @return
      */
     public Set<String> getSupportedCodes(Pattern regex) throws IOException {
         InputStream inStr = Registry.class.getResourceAsStream(registry.getRegistryName());
@@ -160,18 +191,9 @@ public class ProjParser {
             Set<String> codes = new HashSet<String>();
             String line;
             while (null != (line = br.readLine())) {
-                if (line.startsWith("#")) {
-                } else if (line.startsWith("<") && line.endsWith(">")) {
-                    String[] tokens = regex.split(line);
-                    for (String token : tokens) {
-                        if (token.startsWith("<") && token.endsWith(">")
-                                && token.length() > 2) {
-                            codes.add(token.substring(1, token.length() - 1));
-                        } else if (token.equals("<>")) {
-                            break;
-                        } else {
-                        }
-                    }
+                if (line.startsWith("<")) {
+                    String token = regex.split(line, 2)[0];
+                    codes.add(token.substring(1, token.length() - 1));
                 }
             }
             return codes;

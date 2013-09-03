@@ -44,6 +44,9 @@ import java.util.regex.Pattern;
  */
 public class Nad83Registry extends AbstractProjRegistry {
 
+    /**
+     * The regex that must be used to parse NAD83 registry.
+     */
     static final Pattern NAD83_REGEX = Pattern.compile("\\s+");
 
     @Override
@@ -52,7 +55,7 @@ public class Nad83Registry extends AbstractProjRegistry {
     }
 
     @Override
-    public Map<String, String> getParameters(String code) throws RegistryException{
+    public Map<String, String> getParameters(String code) throws RegistryException {
         try {
             Map<String, String> crsParameters = projParser.readParameters(code, NAD83_REGEX);
             return crsParameters;
@@ -62,7 +65,7 @@ public class Nad83Registry extends AbstractProjRegistry {
     }
 
     @Override
-    public Set<String> getSupportedCodes() throws RegistryException{
+    public Set<String> getSupportedCodes() throws RegistryException {
         try {
             return projParser.getSupportedCodes(NAD83_REGEX);
         } catch (IOException ex) {

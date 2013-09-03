@@ -31,7 +31,11 @@
  */
 package org.cts;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
 
 /**
  * IdentifiableComponent is a helper class used as a parent class for components
@@ -44,6 +48,8 @@ import java.util.List;
 public class IdentifiableComponent implements Identifiable {
 
     private Identifier identifier;
+    static final Logger LOGGER = Logger.getLogger(CRSHelper.class);
+    private static Map<Identifier, IdentifiableComponent> registry = new HashMap<Identifier, IdentifiableComponent>();
 
     /**
      * Return this component's Identifier
@@ -54,7 +60,7 @@ public class IdentifiableComponent implements Identifiable {
 
     /**
      * Change this component's Identifier
-     * 
+     *
      * @param identifier the new identifier of the component
      */
     protected void setIdentifier(Identifier identifier) {
@@ -109,7 +115,7 @@ public class IdentifiableComponent implements Identifiable {
     /**
      * Change the short string used to identify unambiguously the object. The
      * string must have a maximum of 16 characters to fit menus with ease.
-     * 
+     *
      * @param uiName the new short name of the component
      */
     @Override
@@ -127,7 +133,7 @@ public class IdentifiableComponent implements Identifiable {
 
     /**
      * Change the remarks. Be careful, this method will delete former remarks.
-     * 
+     *
      * @param remarks the new remarks of the component
      */
     @Override
@@ -137,7 +143,7 @@ public class IdentifiableComponent implements Identifiable {
 
     /**
      * Add remarks.
-     * 
+     *
      * @param new_remark the remark to add to the component
      */
     @Override
@@ -170,6 +176,19 @@ public class IdentifiableComponent implements Identifiable {
      */
     public IdentifiableComponent(Identifier identifier) {
         this.identifier = identifier;
+        this.registerComponent();
+    }
+
+    private void registerComponent() {
+        if (!registry.containsKey(getIdentifier())) {
+            registry.put(getIdentifier(), this);
+        } else {
+            LOGGER.warn("A component has already been register for key " + getAuthorityName() + ":" + getAuthorityKey() + ".");
+        }
+    }
+
+    public static IdentifiableComponent getComponent(Identifier id) {
+        return registry.get(id);
     }
 
     /**

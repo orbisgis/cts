@@ -31,12 +31,9 @@
  */
 package org.cts.datum;
 
-import java.util.*;
-
 import org.cts.IdentifiableComponent;
 import org.cts.Identifier;
 import org.cts.cs.Extent;
-import org.cts.op.CoordinateOperation;
 
 /**
  * A datum (plural datums) is a reference from which measurements are made.<p>
@@ -67,11 +64,6 @@ public abstract class AbstractDatum extends IdentifiableComponent
      * The realization epoch of this Datum as a String.
      */
     private String epoch;
-    /**
-     * A map of known transformations from this Datum to other {@linkplain Datum datums}.
-     */
-    private Map<Datum, List<CoordinateOperation>> datumTransformations =
-            new HashMap<Datum, List<CoordinateOperation>>();
 
     /**
      * Creates a new Datum.
@@ -114,46 +106,10 @@ public abstract class AbstractDatum extends IdentifiableComponent
     }
 
     /**
-     * Add a Transformation to another Datum.
-     *
-     * @param datum the target datum of the transformation to add
-     * @param coordOp the transformation linking this Datum and the
-     * target <code>datum</code>
-     */
-    public void addCoordinateOperation(Datum datum, CoordinateOperation coordOp) {
-        if (datumTransformations.get(datum) == null) {
-            datumTransformations.put(datum, new ArrayList<CoordinateOperation>());
-        }
-        datumTransformations.get(datum).add(coordOp);
-    }
-
-    /**
-     * Get a transformation to another datum.
-     *
-     * @param datum the datum that must be a target for returned transformation
-     */
-    public List<CoordinateOperation> getCoordinateOperations(Datum datum) {
-        if (datumTransformations.get(datum) == null) {
-            return new ArrayList<CoordinateOperation>();
-        } else {
-            return datumTransformations.get(datum);
-        }
-    }
-
-    /**
      * Returns a String representation of this Datum.
      */
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(getIdentifier().toString());
-        sb.append(" [");
-        for (Iterator<Datum> it = datumTransformations.keySet().iterator(); it.hasNext();) {
-            sb.append("").append(it.next().getShortName());
-            if (it.hasNext()) {
-                sb.append(" - ");
-            }
-        }
-        sb.append("]");
-        return sb.toString();
+        return getIdentifier().toString();
     }
 }

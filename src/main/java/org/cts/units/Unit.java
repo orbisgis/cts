@@ -34,9 +34,12 @@ package org.cts.units;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.cts.Identifiable;
 import org.cts.IdentifiableComponent;
 import org.cts.Identifier;
+import org.cts.parser.prj.PrjWriter;
+
 import static org.cts.units.Quantity.*;
 
 /**
@@ -88,7 +91,7 @@ public class Unit extends IdentifiableComponent implements java.io.Serializable 
      */
     public ArrayList<String> getNames() {
         ArrayList<String> names = new ArrayList<String>();
-        for (Identifiable id:getAliases()) {
+        for (Identifiable id : getAliases()) {
             if (!names.contains(id.getName())) {
                 names.add(id.getName());
             }
@@ -108,48 +111,30 @@ public class Unit extends IdentifiableComponent implements java.io.Serializable 
     public static final Unit FOOT = new Unit(LENGTH, 0.3048, new Identifier("EPSG", "9002", "foot", "ft"));
     public static final Unit USFOOT = new Unit(LENGTH, 1200 / 3937, new Identifier("EPSG", "9003", "foot_us", "us-ft"));
     public static final Unit YARD = new Unit(LENGTH, 0.9144, new Identifier("EPSG", "9096", "yard", "yd"));
-    public static final Unit UNIT = new Unit(NODIM, new Identifier(Unit.class));
-    public static final Unit SECOND = new Unit(TIME, new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, "second", "s"));
-    public static final ArrayList<Unit> units = new ArrayList<Unit>();
+    public static final Unit UNIT = new Unit(NODIM, new Identifier(Unit.class, "no dimension", ""));
+    public static final Unit SECOND = new Unit(TIME, new Identifier(Unit.class, "second", "s"));
 
     static {
-        units.add(RADIAN);
-        units.add(DEGREE);
-        units.add(ARC_MINUTE);
-        units.add(ARC_SECOND);
-        units.add(GRAD);
-
         Identifier id = new Identifier("EPSG", "9001", "metre", "m");
         ArrayList<Identifiable> aliases = new ArrayList<Identifiable>();
         aliases.add(id);
         METER = new Unit(LENGTH, new Identifier("EPSG", "9001", "meter", "m", "", aliases));
-        id = new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, "millimetre", "mm");
+        id = new Identifier(Unit.class, "millimetre", "mm");
         aliases = new ArrayList<Identifiable>();
         aliases.add(id);
-        MILLIMETER = new Unit(LENGTH, 0.001, new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, "millimeter", "mm", "", aliases));
-        id = new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, "centimetre", "cm");
+        MILLIMETER = new Unit(LENGTH, 0.001, new Identifier(Unit.class, "millimeter", "mm", aliases));
+        id = new Identifier(Unit.class, "centimetre", "cm");
         aliases = new ArrayList<Identifiable>();
         aliases.add(id);
-        CENTIMETER = new Unit(LENGTH, 0.01, new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, "centimeter", "cm", "", aliases));
-        id = new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, "decimetre", "dm");
+        CENTIMETER = new Unit(LENGTH, 0.01, new Identifier(Unit.class, "centimeter", "cm", aliases));
+        id = new Identifier(Unit.class, "decimetre", "dm");
         aliases = new ArrayList<Identifiable>();
         aliases.add(id);
-        DECIMETER = new Unit(LENGTH, 0.1, new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, "decimeter", "dm", "", aliases));
+        DECIMETER = new Unit(LENGTH, 0.1, new Identifier(Unit.class, "decimeter", "dm", aliases));
         id = new Identifier("EPSG", "9036", "kilometre", "km");
         aliases = new ArrayList<Identifiable>();
         aliases.add(id);
         KILOMETER = new Unit(LENGTH, 1000d, new Identifier("EPSG", "9036", "kilometer", "km", "", aliases));
-
-        units.add(METER);
-        units.add(MILLIMETER);
-        units.add(CENTIMETER);
-        units.add(DECIMETER);
-        units.add(KILOMETER);
-        units.add(FOOT);
-        units.add(USFOOT);
-        units.add(YARD);
-        units.add(UNIT);
-        units.add(SECOND);
     }
     private Quantity quantity;
     private double scale;
@@ -200,10 +185,10 @@ public class Unit extends IdentifiableComponent implements java.io.Serializable 
     }
 
     /**
-     * Register the unit in a map, using its symbol (ie its short name) as a
-     * key. If the unit is a base unit, the method also register it in a
-     * specific map for base units, this time the key is the quantity of the
-     * unit.
+     * Register the unit in different maps, one uses the unit's symbol (ie its
+     * short name) as a key, and another its identifier. Moreover, if the unit
+     * is a base unit, the method also register it in a specific map for base
+     * units, this time the key is the quantity of the unit.
      */
     private void registerUnit() {
         Map<String, Unit> unts = map.get(quantity);
@@ -214,29 +199,6 @@ public class Unit extends IdentifiableComponent implements java.io.Serializable 
         if (scale == 1d && offset == 0d) {
             baseUnits.put(quantity, this);
         }
-    }
-
-    /**
-     * Returns the unit corresponding to the name in parameters. Returns null if
-     * the name is not registered.
-     *
-     * @param name the name of the desired unit
-     */
-    public static Unit getUnit(String name) {
-        for (Unit unit : units) {
-            if (unit.getNames().isEmpty()) {
-                if (unit.getName().toLowerCase().equals(name)) {
-                    return unit;
-                }
-            } else {
-                for (String oneName : unit.getNames()) {
-                    if (oneName.toLowerCase().equals(name)) {
-                        return unit;
-                    }
-                }
-            }
-        }
-        return null;
     }
 
     /**
@@ -262,7 +224,7 @@ public class Unit extends IdentifiableComponent implements java.io.Serializable 
 
     /**
      * Convert a measure from this unit into base unit(s).
-     * 
+     *
      * @param measure the measure to convert into base unit
      */
     public double toBaseUnit(double measure) {
@@ -271,7 +233,7 @@ public class Unit extends IdentifiableComponent implements java.io.Serializable 
 
     /**
      * Convert a measure from base unit(s) into this unit.
-     * 
+     *
      * @param measure the measure to convert into this unit
      */
     public double fromBaseUnit(double measure) {
@@ -287,7 +249,7 @@ public class Unit extends IdentifiableComponent implements java.io.Serializable 
 
     /**
      * Set factor or scale.
-     * 
+     *
      * @param scale the scale to set to the unit.
      */
     public void setScale(double scale) {
@@ -302,7 +264,7 @@ public class Unit extends IdentifiableComponent implements java.io.Serializable 
     public Unit getBaseUnit() {
         Unit baseUnit = baseUnits.get(quantity);
         return baseUnits == null ? new Unit(quantity,
-                new Identifier(Identifier.UNKNOWN, Identifier.UNKNOWN, Identifier.UNKNOWN, "")) : baseUnit;
+                new Identifier(Unit.class, Identifiable.UNKNOWN, "")) : baseUnit;
     }
 
     /**
@@ -316,11 +278,58 @@ public class Unit extends IdentifiableComponent implements java.io.Serializable 
     }
 
     /**
+     * Returns a WKT representation of the unit.
+     *
+     */
+    public String toWKT() {
+        StringBuilder w = new StringBuilder();
+        w.append("UNIT[\"");
+        w.append(this.getName());
+        w.append("\",");
+        w.append(PrjWriter.roundToString(this.getScale(), 1e-11));
+        if (!this.getAuthorityName().startsWith(Identifiable.LOCAL)) {
+            w.append(',');
+            w.append(this.getIdentifier().toWKT());
+        }
+        w.append(']');
+        return w.toString();
+    }
+
+    /**
      * String representation of this Unit.
      */
     @Override
     public String toString() {
         return getName() + " (" + quantity
                 + (scale != 1.0 ? " : " + scale + getBaseUnit().getSymbol() : "") + ")";
+    }
+
+    /**
+     * Returns true if this Unit can be considered as equals to another one.
+     *
+     * @param o the object to compare this Unit against
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o instanceof Unit) {
+            Unit unit = (Unit) o;
+            return quantity.equals(unit.getQuantity()) && (scale == unit.getScale()) && (offset == unit.getOffset());
+        }
+        return false;
+    }
+
+    /**
+     * Returns the hash code for this Unit.
+     */
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 59 * hash + (this.quantity != null ? this.quantity.hashCode() : 0);
+        hash = 59 * hash + (int) (Double.doubleToLongBits(this.scale) ^ (Double.doubleToLongBits(this.scale) >>> 32));
+        hash = 59 * hash + (int) (Double.doubleToLongBits(this.offset) ^ (Double.doubleToLongBits(this.offset) >>> 32));
+        return hash;
     }
 }

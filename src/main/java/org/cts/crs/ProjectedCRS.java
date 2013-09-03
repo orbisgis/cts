@@ -34,6 +34,7 @@ package org.cts.crs;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.cts.Identifiable;
 import org.cts.Identifier;
 import org.cts.cs.Axis;
 import org.cts.cs.CoordinateSystem;
@@ -43,12 +44,16 @@ import org.cts.op.CoordinateOperation;
 import org.cts.op.CoordinateOperationSequence;
 import org.cts.op.CoordinateSwitch;
 import org.cts.op.NonInvertibleOperationException;
+import org.cts.op.OppositeCoordinate;
 import org.cts.op.UnitConversion;
 import org.cts.op.projection.Projection;
 import org.cts.units.Unit;
 
 import static org.cts.cs.Axis.EASTING;
 import static org.cts.cs.Axis.NORTHING;
+import static org.cts.cs.Axis.Direction.NORTH;
+import static org.cts.cs.Axis.Direction.SOUTH;
+import static org.cts.cs.Axis.Direction.WEST;
 import static org.cts.units.Unit.METER;
 
 /**
@@ -62,15 +67,15 @@ public class ProjectedCRS extends GeodeticCRS {
 
     /**
      * A 2D {@link CoordinateSystem} whose first {@link Axis} contains easting
-     * and second {@link Axis} contains northing. The unit used by these axes
-     * is meter.
+     * and second {@link Axis} contains northing. The unit used by these axes is
+     * meter.
      */
     public static CoordinateSystem EN_CS = new CoordinateSystem(new Axis[]{
         EASTING, NORTHING}, new Unit[]{METER, METER});
     /**
      * A 2D {@link CoordinateSystem} whose first {@link Axis} contains northing
-     * and second {@link Axis} contains easting. The unit used by these axes
-     * is meter.
+     * and second {@link Axis} contains easting. The unit used by these axes is
+     * meter.
      */
     public static CoordinateSystem NE_CS = new CoordinateSystem(new Axis[]{
         NORTHING, EASTING}, new Unit[]{METER, METER});
@@ -150,19 +155,26 @@ public class ProjectedCRS extends GeodeticCRS {
             throws NonInvertibleOperationException {
 
         List<CoordinateOperation> ops = new ArrayList<CoordinateOperation>();
+        for (int i = 0; i < 2; i++) {
+            if (getCoordinateSystem().getAxis(i).getDirection() == SOUTH
+                    || getCoordinateSystem().getAxis(i).getDirection() == WEST) {
+                ops.add(new OppositeCoordinate(i));
+            }
+        }
         // Convert units
-        if (getCoordinateSystem().getUnit(0) != Unit.METER) {
+        if (getCoordinateSystem().getUnit(0) != METER) {
             ops.add(UnitConversion.createUnitConverter(getCoordinateSystem().getUnit(0), METER));
         }
-        // Add a third value to transform the geographic2D coord into a
-        // geographic3D coord
-        ops.add(ChangeCoordinateDimension.TO3D);
         // switch easting/northing coordinate if necessary
-        if (getCoordinateSystem().getAxis(0) != EASTING) {
+        if (getCoordinateSystem().getAxis(0).getDirection() == NORTH
+                || getCoordinateSystem().getAxis(0).getDirection() == SOUTH) {
             ops.add(CoordinateSwitch.SWITCH_LAT_LON);
         }
         // Apply the inverse projection
         ops.add(projection.inverse());
+        // Add a third value to transform the geographic2D coord into a
+        // geographic3D coord
+        ops.add(ChangeCoordinateDimension.TO3D);
         return new CoordinateOperationSequence(new Identifier(
                 CoordinateOperationSequence.class), ops);
     }
@@ -179,16 +191,52 @@ public class ProjectedCRS extends GeodeticCRS {
         // Projection
         ops.add(projection);
         // switch easting/northing coordinate if necessary
-        if (getCoordinateSystem().getAxis(0) != EASTING) {
+        if (getCoordinateSystem().getAxis(0).getDirection() == NORTH
+                || getCoordinateSystem().getAxis(0).getDirection() == SOUTH) {
             ops.add(CoordinateSwitch.SWITCH_LAT_LON);
         }
         // Unit conversion
-        if (getCoordinateSystem().getUnit(0) != Unit.METER) {
-            ops.add(UnitConversion.createUnitConverter(Unit.METER,
-                    getCoordinateSystem().getUnit(0)));
+        if (getCoordinateSystem().getUnit(0) != METER) {
+            ops.add(UnitConversion.createUnitConverter(METER, getCoordinateSystem().getUnit(0)));
+        }
+        for (int i = 0; i < 2; i++) {
+            if (getCoordinateSystem().getAxis(i).getDirection() == SOUTH
+                    || getCoordinateSystem().getAxis(i).getDirection() == WEST) {
+                ops.add(new OppositeCoordinate(i));
+            }
         }
         return new CoordinateOperationSequence(new Identifier(
                 CoordinateOperationSequence.class), ops);
+    }
+
+    /**
+     * Returns a WKT representation of the projected CRS.
+     *
+     */
+    public String toWKT() {
+        StringBuilder w = new StringBuilder();
+        w.append("PROJCS[\"");
+        w.append(this.getName());
+        w.append("\",GEOGCS[\"");
+        w.append(this.getDatum().getShortName());
+        w.append("\",");
+        w.append(this.getDatum().toWKT());
+        w.append(',');
+        w.append(this.getDatum().getPrimeMeridian().toWKT());
+        w.append("],");
+        w.append(this.getProjection().toWKT());
+        w.append(',');
+        w.append(this.getCoordinateSystem().getUnit(0).toWKT());
+        for (int i = 0; i < this.getCoordinateSystem().getDimension(); i++) {
+            w.append(',');
+            w.append(this.getCoordinateSystem().getAxis(i).toWKT());
+        }
+        if (!this.getAuthorityName().startsWith(Identifiable.LOCAL)) {
+            w.append(',');
+            w.append(this.getIdentifier().toWKT());
+        }
+        w.append(']');
+        return w.toString();
     }
 
     /**
@@ -205,14 +253,17 @@ public class ProjectedCRS extends GeodeticCRS {
         if (this == o) {
             return true;
         }
-        if (o instanceof ProjectedCRS) {
-            ProjectedCRS crs = (ProjectedCRS) o;
+        if (o instanceof GeodeticCRS) {
+            GeodeticCRS crs = (GeodeticCRS) o;
+            if (!getType().equals(crs.getType())) {
+                return false;
+            }
             if (getIdentifier().equals(crs.getIdentifier())) {
                 return true;
             }
             boolean nadgrids;
-            if (getGridTransformations()== null) {
-                if (crs.getGridTransformations()== null) {
+            if (getGridTransformations() == null) {
+                if (crs.getGridTransformations() == null) {
                     nadgrids = true;
                 } else {
                     nadgrids = false;
@@ -220,7 +271,6 @@ public class ProjectedCRS extends GeodeticCRS {
             } else {
                 nadgrids = getGridTransformations().equals(crs.getGridTransformations());
             }
-
             return getDatum().equals(crs.getDatum()) && getProjection().equals(crs.getProjection())
                     && getCoordinateSystem().equals(crs.getCoordinateSystem()) && nadgrids;
         } else {
@@ -234,7 +284,7 @@ public class ProjectedCRS extends GeodeticCRS {
     @Override
     public int hashCode() {
         int hash = 3;
-        hash = 97 * hash + (this.projection != null ? this.projection.hashCode() : 0);
+        hash = 59 * hash + (this.projection != null ? this.projection.hashCode() : 0);
         return hash;
     }
 }

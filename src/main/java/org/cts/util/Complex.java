@@ -40,20 +40,22 @@ package org.cts.util;
 public final class Complex extends Number {
 
     /**
-     * complex unit i; it holds i*i = -1
+     * Complex unit i. It holds i*i = -1.
      */
     public static final Complex i = new Complex(0.0, 1.0);
     public static final Complex ONE = new Complex(1.0, 0.0); // added by mm on
     // 2009-01-18
     /**
-     * complex unit j; it holds j*j = -1
+     * Real part of this complex.
      */
-    // public static final Complex j = new Complex(0.0,1.0);
-    private double re; // real part
-    private double im; // imaginery part
+    private double re;
+    /**
+     * Imaginery part of this complex.
+     */
+    private double im;
 
     /**
-     * constructs a complex number from real part and imaginary part.
+     * Constructs a complex number from real part and imaginary part.
      *
      * @param re real part
      * @param im imaginary part
@@ -64,14 +66,14 @@ public final class Complex extends Number {
     }
 
     /**
-     * constructs complex number zero.
+     * Constructs complex number zero.
      */
     public Complex() {
         this(0.0, 0.0);
     }
 
     /**
-     * constructs a complex number with imaginary part zero.
+     * Constructs a complex number with imaginary part zero.
      *
      * @param re real part
      */
@@ -80,7 +82,7 @@ public final class Complex extends Number {
     }
 
     /**
-     * copy constructor.
+     * Copy the complex number in parameter.
      *
      * @param z complex number
      */
@@ -89,31 +91,31 @@ public final class Complex extends Number {
     }
 
     /**
-     * constructs a complex number with magnitude one and arbitrary argument.
+     * Returns a complex number with magnitude one and arbitrary argument.
      *
      * @param phi argument
      */
-    // public Complex(double phi) {
-    // this(Math.cos(phi), Math.sin(phi));
-    // }
     public static Complex createComplexFromA(double phi) {
         return new Complex(Math.cos(phi), Math.sin(phi));
     }
 
     /**
-     * constructs a complex number from radius/magnitude and argument.
+     * Returns a complex number from radius/magnitude and argument.
      *
      * @param radius radius
      * @param phi argument
      */
-    // public Complex(double radius, double phi) {
-    // this(radius * Math.cos(phi), radius * Math.sin(phi));
-    // }
     public static Complex createComplexFromRA(double radius, double phi) {
         return new Complex(radius * Math.cos(phi), radius * Math.sin(phi));
     }
 
     // added by mmichaud on 2009-01-12
+    /**
+     * Returns true if the object in parameter is equals to
+     * <code>this</code>.
+     *
+     * @param obj
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Complex) {
@@ -125,6 +127,9 @@ public final class Complex extends Number {
         return false;
     }
 
+    /**
+     * Returns the hash code for this Complex.
+     */
     @Override
     public int hashCode() {
         int hash = 7;
@@ -144,28 +149,28 @@ public final class Complex extends Number {
     }
 
     /**
-     * @return real part of the complex number
+     * Returns the real part of the complex number.
      */
     public double re() {
         return re;
     }
 
     /**
-     * @return imaginary part of the complex number
+     * Returns the imaginary part of the complex number.
      */
     public double im() {
         return im;
     }
 
     /**
-     * @return conjugate complex number.
+     * Returns the conjugate complex number.
      */
     public Complex conj() {
         return new Complex(re(), -im());
     }
 
     /**
-     * @return true, if imaginary part of complex number is (numerically) zero.
+     * Return true, if imaginary part of complex number is (numerically) zero.
      * [MM] : for geodetic calculations, a value strictly lesser than 1.E-12 can
      * be considered as null
      */
@@ -174,7 +179,7 @@ public final class Complex extends Number {
     }
 
     /**
-     * @return magnitude of complex number.
+     * Return magnitude of complex number.
      */
     public double mag() {
         // return Math.sqrt(re*re + im*im);
@@ -222,7 +227,7 @@ public final class Complex extends Number {
     }
 
     /**
-     * @return argument
+     * Returns the argument of this complex number.
      */
     public double arg() {
         return Math.atan2(im, re);
@@ -376,7 +381,7 @@ public final class Complex extends Number {
     }
 
     /**
-     * Computes hyperbolic sine
+     * Computes hyperbolic sine.
      *
      * @param z complex argument
      * @return hyperbolic sine
@@ -386,7 +391,7 @@ public final class Complex extends Number {
     }
 
     /**
-     * Computes hyperbolic cosine
+     * Computes hyperbolic cosine.
      *
      * @param z complex argument
      * @return hyperbolic cosine
@@ -398,7 +403,7 @@ public final class Complex extends Number {
     }
 
     /**
-     * Computes hyperbolic tangent
+     * Computes hyperbolic tangent.
      *
      * @param z complex argument
      * @return hyperbolic tangent
@@ -408,7 +413,7 @@ public final class Complex extends Number {
     }
 
     /**
-     * Computes hyperbolic tangent of a double using complex arithmetic
+     * Computes hyperbolic tangent of a double using complex arithmetic.
      *
      * @param x double argument
      * @return hyperbolic tangent
@@ -430,14 +435,6 @@ public final class Complex extends Number {
         return new Complex(i.times(-0.5).times(Complex.ln(frac)));
     }
 
-    // has been included in Math class since java 5.0
-	/*
-     * public static double sinh(double x) {
-     * return(0.5*(Math.exp(x)-Math.exp(-x))); }
-     * 
-     * public static double cosh(double x) {
-     * return(0.5*(Math.exp(x)+Math.exp(-x))); }
-     */
     /**
      * Computes complex exponential.
      *
@@ -457,7 +454,6 @@ public final class Complex extends Number {
      * @return complex logarithm
      */
     public static Complex ln(Complex z) {
-        // double _re = Math.log(z.mag())/Math.log(Math.E);
         double _re = Math.log(z.mag());
         double _im = z.arg();
         return new Complex(_re, _im);
@@ -513,40 +509,7 @@ public final class Complex extends Number {
     }
 
     /**
-     * @param ell a reference ellipsoid.
-     * @param phi the ellipsoidal latitude
-     * @param dlam delta lambda, the difference between an ellipsoidal longitude
-     * and the longitude of the central meridian of a given GK/UTM strip.
-     * @return the complex latitude (argument for complex arc-length
-     * computation)
-     */
-    /*
-     * static Complex complexLatitude(Ellipsoid ell, Angle phi, Angle dlam)
-     * throws Msg { double q = atanh(Math.sin(phi.rad()))- ell.e() *
-     * atanh(ell.e()*Math.sin(phi.rad())); Complex w = new
-     * Complex(q,dlam.rad()); Complex b = new Complex(0.0,0.0); for(int
-     * i=0;i<10;i++) b =
-     * asin(tanh(w.plus(atanh(sin(b).times(ell.e())).times(ell.e())))); return
-     * b; }
-     */
-    /**
-     * The inverse problem to methode complexLatitude(): compute ellipsoidal
-     * latitude phi (in real part) and delta_lambda (in imaginary part) from
-     * complex latitude.
-     *
-     * @param the reference ellipsoid
-     * @param b the complex latitude
-     * @param a complex number containing phi/delta_lambda (in radians)
-     */
-    /*
-     * static Complex phi_dlam(Ellipsoid ell, Complex b) throws Msg { Complex w
-     * = atanh(sin(b)).minus(atanh(sin(b).times(ell.e())).times(ell.e()));
-     * double phi=0.0; for(int i=0;i<10;i++) phi =
-     * Math.asin(Math.tanh(w.re()+ell.e()*atanh(ell.e()*Math.sin(phi)))); return
-     * new Complex(phi,w.im()); }
-     */
-    /**
-     * @return string representation of this.
+     * Returns string representation of this.
      */
     @Override
     public String toString() {

@@ -44,6 +44,9 @@ import java.util.regex.Pattern;
  */
 public class EPSGRegistry extends AbstractProjRegistry implements Registry {
 
+    /**
+     * The regex that must be used to parse EPSG registry.
+     */
     static final Pattern EPSG_REGEX = Pattern.compile("\\s+|<>");
 
     @Override
@@ -52,7 +55,7 @@ public class EPSGRegistry extends AbstractProjRegistry implements Registry {
     }
 
     @Override
-    public Map<String, String> getParameters(String code) throws RegistryException{
+    public Map<String, String> getParameters(String code) throws RegistryException {
         try {
             Map<String, String> crsParameters = projParser.readParameters(code, EPSG_REGEX);
             return crsParameters;

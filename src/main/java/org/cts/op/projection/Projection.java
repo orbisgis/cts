@@ -35,12 +35,15 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import org.cts.datum.Ellipsoid;
+
 import org.cts.Identifier;
 import org.cts.Parameter;
+import org.cts.datum.Ellipsoid;
 import org.cts.op.AbstractCoordinateOperation;
+import org.cts.parser.prj.PrjWriter;
 import org.cts.units.Measure;
 import org.cts.units.Unit;
+import org.cts.util.AngleFormat;
 
 /**
  * A map projection is any method used in cartography (mapmaking) to represent
@@ -59,8 +62,8 @@ public abstract class Projection extends AbstractCoordinateOperation {
         new Parameter(Parameter.STANDARD_PARALLEL_1, new Measure(0, Unit.DEGREE)),
         new Parameter(Parameter.STANDARD_PARALLEL_2, new Measure(0, Unit.DEGREE)),
         new Parameter(Parameter.LATITUDE_OF_TRUE_SCALE, new Measure(0, Unit.DEGREE)),
-        new Parameter(Parameter.AZIMUTH_OF_INITIAL_LINE, new Measure(0, Unit.DEGREE)),
-        new Parameter(Parameter.ANGLE_RECTIFIED_TO_OBLIQUE, new Measure(0, Unit.DEGREE)),
+        new Parameter(Parameter.AZIMUTH, new Measure(0, Unit.DEGREE)),
+        new Parameter(Parameter.RECTIFIED_GRID_ANGLE, new Measure(0, Unit.DEGREE)),
         new Parameter(Parameter.SCALE_FACTOR, new Measure(1, Unit.UNIT)),
         new Parameter(Parameter.LATITUDE_OF_ORIGIN, new Measure(0, Unit.DEGREE))};
 
@@ -199,16 +202,16 @@ public abstract class Projection extends AbstractCoordinateOperation {
     /**
      * Return the azimuth of the initial line of oblique projections.
      */
-    public double getAzimuthOfInitialLine() {
-        return parameters.get(Parameter.AZIMUTH_OF_INITIAL_LINE).getSValue();
+    public double getAzimuth() {
+        return parameters.get(Parameter.AZIMUTH).getSValue();
     }
 
     /**
      * Return the angle from the rectified grid to the skew (oblique) grid of
      * oblique projections.
      */
-    public double getAngleRectifiedToOblique() {
-        return parameters.get(Parameter.ANGLE_RECTIFIED_TO_OBLIQUE).getSValue();
+    public double getRectifiedGridAngle() {
+        return parameters.get(Parameter.RECTIFIED_GRID_ANGLE).getSValue();
     }
 
     /**
@@ -253,6 +256,44 @@ public abstract class Projection extends AbstractCoordinateOperation {
      * <code>Projection</code>.
      */
     public abstract Orientation getOrientation();
+
+    /**
+     * Returns a WKT representation of the projection.
+     *
+     */
+    public String toWKT() {
+        StringBuilder w = new StringBuilder();
+        w.append("PROJECTION[\"");
+        w.append(this.getName());
+        w.append("\"],PARAMETER[\"").append(Parameter.LATITUDE_OF_ORIGIN).append("\",");
+        w.append(PrjWriter.roundToString(AngleFormat.rad2deg(this.getLatitudeOfOrigin()), 1e-11));
+        if (this.getStandardParallel1() != 0.0) {
+            w.append("],PARAMETER[\"").append(Parameter.STANDARD_PARALLEL_1).append("\",");
+            w.append(PrjWriter.roundToString(AngleFormat.rad2deg(this.getStandardParallel1()), 1e-11));
+        }
+        if (this.getStandardParallel2() != 0.0) {
+            w.append("],PARAMETER[\"").append(Parameter.STANDARD_PARALLEL_2).append("\",");
+            w.append(PrjWriter.roundToString(AngleFormat.rad2deg(this.getStandardParallel2()), 1e-11));
+        }
+        w.append("],PARAMETER[\"").append(Parameter.CENTRAL_MERIDIAN).append("\",");
+        w.append(PrjWriter.roundToString(AngleFormat.rad2deg(this.getCentralMeridian()), 1e-11));
+        if (this.getAzimuth() != 0.0) {
+            w.append("],PARAMETER[\"").append(Parameter.AZIMUTH).append("\",");
+            w.append(PrjWriter.roundToString(AngleFormat.rad2deg(this.getAzimuth()), 1e-11));
+        }
+        if (this.getRectifiedGridAngle() != 0.0) {
+            w.append("],PARAMETER[\"").append(Parameter.RECTIFIED_GRID_ANGLE).append("\",");
+            w.append(PrjWriter.roundToString(AngleFormat.rad2deg(this.getRectifiedGridAngle()), 1e-11));
+        }
+        w.append("],PARAMETER[\"").append(Parameter.SCALE_FACTOR).append("\",");
+        w.append(PrjWriter.roundToString(this.getScaleFactor(), 1e-11));
+        w.append("],PARAMETER[\"").append(Parameter.FALSE_EASTING).append("\",");
+        w.append(PrjWriter.roundToString(this.getFalseEasting(), 1e-11));
+        w.append("],PARAMETER[\"").append(Parameter.FALSE_NORTHING).append("\",");
+        w.append(PrjWriter.roundToString(this.getFalseNorthing(), 1e-11));
+        w.append("]");
+        return w.toString();
+    }
 
     /**
      * Returns true if object is equals to

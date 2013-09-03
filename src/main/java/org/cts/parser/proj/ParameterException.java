@@ -37,6 +37,11 @@ package org.cts.parser.proj;
  */
 public class ParameterException extends RuntimeException {
 
+    /**
+     * Build a new ParameterException from a message.
+     *
+     * @param message the message to throw
+     */
     public ParameterException(String message) {
         super(message);
     }

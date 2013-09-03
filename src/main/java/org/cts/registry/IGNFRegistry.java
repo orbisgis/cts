@@ -44,6 +44,9 @@ import java.util.regex.Pattern;
  */
 public class IGNFRegistry extends AbstractProjRegistry {
 
+    /**
+     * The regex that must be used to parse IGNF registry.
+     */
     static final Pattern IGNF_REGEX = Pattern.compile("[ ]\\+|\\s<>");
 
     @Override
@@ -52,7 +55,7 @@ public class IGNFRegistry extends AbstractProjRegistry {
     }
 
     @Override
-    public Map<String, String> getParameters(String code) throws RegistryException{
+    public Map<String, String> getParameters(String code) throws RegistryException {
         try {
             Map<String, String> crsParameters = projParser.readParameters(code, IGNF_REGEX);
             return crsParameters;

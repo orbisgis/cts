@@ -38,18 +38,37 @@ package org.cts.parser.prj;
  */
 public class PrjParserException extends RuntimeException {
 
+    /**
+     * Build a PrjParserException from a cause.
+     *
+     * @param cause the cause of the error
+     */
     public PrjParserException(Throwable cause) {
         super(cause);
     }
 
+    /**
+     * Build a PrjParserException from a message and a cause.
+     *
+     * @param message the message to throw
+     * @param cause the cause of the error
+     */
     public PrjParserException(String message, Throwable cause) {
         super(message, cause);
     }
 
+    /**
+     * Build a PrjParserException from a message.
+     *
+     * @param message the message to throw
+     */
     public PrjParserException(String message) {
         super(message);
     }
 
+    /**
+     * Build a new PrjParserException.
+     */
     public PrjParserException() {
     }
 }

@@ -34,6 +34,7 @@ package org.cts.crs;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.cts.Identifiable;
 import org.cts.Identifier;
 import org.cts.cs.Axis;
 import org.cts.cs.CoordinateSystem;
@@ -42,13 +43,19 @@ import org.cts.op.ChangeCoordinateDimension;
 import org.cts.op.CoordinateOperation;
 import org.cts.op.CoordinateOperationSequence;
 import org.cts.op.CoordinateSwitch;
+import org.cts.op.OppositeCoordinate;
 import org.cts.op.UnitConversion;
 import org.cts.op.projection.Projection;
 import org.cts.units.Unit;
 
 import static org.cts.cs.Axis.LATITUDE;
 import static org.cts.cs.Axis.LONGITUDE;
-import static org.cts.units.Unit.*;
+import static org.cts.cs.Axis.Direction.EAST;
+import static org.cts.cs.Axis.Direction.SOUTH;
+import static org.cts.cs.Axis.Direction.WEST;
+import static org.cts.units.Unit.RADIAN;
+import static org.cts.units.Unit.DEGREE;
+import static org.cts.units.Unit.GRAD;
 
 /**
  * <p> A Geographic CoordinateReferenceSystem is a reference system based on a
@@ -152,15 +159,22 @@ public class Geographic2DCRS extends GeodeticCRS {
     @Override
     public CoordinateOperation toGeographicCoordinateConverter() {
         List<CoordinateOperation> ops = new ArrayList<CoordinateOperation>();
+        for (int i = 0; i < 2; i++) {
+            if (getCoordinateSystem().getAxis(i).getDirection() == SOUTH
+                    || getCoordinateSystem().getAxis(i).getDirection() == WEST) {
+                ops.add(new OppositeCoordinate(i));
+            }
+        }
         // Convert from source unit to radians
-        ops.add(UnitConversion.createUnitConverter(getCoordinateSystem().getUnit(0), Unit.RADIAN));
+        ops.add(UnitConversion.createUnitConverter(getCoordinateSystem().getUnit(0), RADIAN));
+        // switch from LON/LAT to LAT/LON coordinate if necessary
+        if (getCoordinateSystem().getAxis(0).getDirection() == EAST
+                || getCoordinateSystem().getAxis(0).getDirection() == WEST) {
+            ops.add(CoordinateSwitch.SWITCH_LAT_LON);
+        }
         // Add a third value to transform the geographic2D coord into a
         // geographic3D coord
         ops.add(ChangeCoordinateDimension.TO3D);
-        // switch from LON/LAT to LAT/LON coordinate if necessary
-        if (getCoordinateSystem().getAxis(0) == Axis.LONGITUDE) {
-            ops.add(CoordinateSwitch.SWITCH_LAT_LON);
-        }
         return new CoordinateOperationSequence(new Identifier(
                 CoordinateOperationSequence.class), ops);
     }
@@ -175,12 +189,18 @@ public class Geographic2DCRS extends GeodeticCRS {
         // geographic2D coord
         ops.add(ChangeCoordinateDimension.TO2D);
         // switch from LON/LAT to LAT/LON coordinate if necessary
-        if (getCoordinateSystem().getAxis(0) == Axis.LONGITUDE) {
+        if (getCoordinateSystem().getAxis(0).getDirection() == EAST
+                || getCoordinateSystem().getAxis(0).getDirection() == WEST) {
             ops.add(CoordinateSwitch.SWITCH_LAT_LON);
         }
         // Convert from radian to this coordinate system's units
-        ops.add(UnitConversion.createUnitConverter(Unit.RADIAN,
-                getCoordinateSystem().getUnit(0)));
+        ops.add(UnitConversion.createUnitConverter(RADIAN, getCoordinateSystem().getUnit(0)));
+        for (int i = 0; i < 2; i++) {
+            if (getCoordinateSystem().getAxis(i).getDirection() == SOUTH
+                    || getCoordinateSystem().getAxis(i).getDirection() == WEST) {
+                ops.add(new OppositeCoordinate(i));
+            }
+        }
         return new CoordinateOperationSequence(new Identifier(
                 CoordinateOperationSequence.class), ops);
     }
@@ -198,5 +218,31 @@ public class Geographic2DCRS extends GeodeticCRS {
      */
     public Type getType() {
         return Type.GEOGRAPHIC2D;
+    }
+
+    /**
+     * Returns a WKT representation of the geographic 2D CRS.
+     *
+     */
+    public String toWKT() {
+        StringBuilder w = new StringBuilder();
+        w.append("GEOGCS[\"");
+        w.append(this.getName());
+        w.append("\",");
+        w.append(this.getDatum().toWKT());
+        w.append(',');
+        w.append(this.getDatum().getPrimeMeridian().toWKT());
+        w.append(',');
+        w.append(this.getCoordinateSystem().getUnit(0).toWKT());
+        for (int i = 0; i < this.getCoordinateSystem().getDimension(); i++) {
+            w.append(',');
+            w.append(this.getCoordinateSystem().getAxis(i).toWKT());
+        }
+        if (!this.getAuthorityName().startsWith(Identifiable.LOCAL)) {
+            w.append(',');
+            w.append(this.getIdentifier().toWKT());
+        }
+        w.append(']');
+        return w.toString();
     }
 }

@@ -31,13 +31,10 @@
  */
 package org.cts.op;
 
-import org.cts.CRSFactory;
 import org.cts.CTSTestCase;
 import org.cts.IllegalCoordinateException;
-import org.cts.crs.CRSException;
 import org.cts.crs.CoordinateReferenceSystem;
 import org.cts.crs.GeodeticCRS;
-import org.cts.parser.prj.PrjWriter;
 
 import java.util.List;
 
@@ -47,9 +44,7 @@ import java.util.List;
  */
 public class BaseCoordinateTransformTest extends CTSTestCase {
 
-    
     protected boolean verbose = false;
-    
 
     /**
      * Transform a point from a CRS to another CRS
@@ -61,7 +56,8 @@ public class BaseCoordinateTransformTest extends CTSTestCase {
      * @throws IllegalCoordinateException
      */
     public double[] transform(GeodeticCRS sourceCRS, GeodeticCRS targetCRS, double[] inputPoint) throws IllegalCoordinateException {
-        List<CoordinateOperation> ops = CoordinateOperationFactory.createCoordinateOperations(sourceCRS, targetCRS);
+        List<CoordinateOperation> ops;
+        ops = CoordinateOperationFactory.createCoordinateOperations(sourceCRS, targetCRS);
         if (!ops.isEmpty()) {
             if (verbose) {
                 System.out.println(ops.get(0));
@@ -78,6 +74,6 @@ public class BaseCoordinateTransformTest extends CTSTestCase {
      * @param crs
      */
     public void printCRStoWKT(CoordinateReferenceSystem crs) {
-        System.out.println(PrjWriter.crsToWKT(crs));
+        System.out.println(crs.toWKT());
     }
 }

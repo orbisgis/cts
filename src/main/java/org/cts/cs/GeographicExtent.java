@@ -189,7 +189,7 @@ public class GeographicExtent implements Extent {
      * Return whether coord is inside this Extent or not. For
      * <code>GeographicExtent</code>, coord must be a latitude and a longitude
      * (in this order) and in decimal degrees.
-     * 
+     *
      * @param coord the coordinates to test
      */
     @Override

@@ -85,8 +85,8 @@ public class TransverseMercator extends Projection {
         n = k0 * ellipsoid.getSemiMajorAxis();
         xs = x0;
         ys = y0 - n * ellipsoid.curvilinearAbscissa(lat0);
-        dircoeff = ellipsoid.getDirectUTMCoeff();
-        invcoeff = ellipsoid.getInverseUTMCoeff();
+        dircoeff = UniversalTransverseMercator.getDirectUTMCoeff(ellipsoid);
+        invcoeff = UniversalTransverseMercator.getInverseUTMCoeff(ellipsoid);
     }
 
     /**

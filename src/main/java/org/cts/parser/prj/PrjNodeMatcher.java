@@ -39,7 +39,15 @@ import java.util.List;
  */
 public interface PrjNodeMatcher {
 
+    /**
+     * Return the name of the node match by this PrjNodeMatcher.
+     */
     String getName();
 
+    /**
+     * Match the node in parameter.
+     *
+     * @param list the node to match with this PrjNodeMatcher
+     */
     void run(List<PrjElement> list);
 }

@@ -78,6 +78,7 @@ public class ObliqueMercator extends Projection {
             gamma0, //constant of the projection
             lambda0, //constant of the projection
             uc; // center of the projection
+    protected final double[] invcoeff;
 
     /**
      * Create a new Oblique Mercator Projection corresponding to the
@@ -93,8 +94,8 @@ public class ObliqueMercator extends Projection {
         super(OMERC, ellipsoid, parameters);
         lonc = getCentralMeridian();
         latc = getLatitudeOfOrigin();
-        alphac = getAzimuthOfInitialLine();
-        gammac = getAngleRectifiedToOblique();
+        alphac = getAzimuth();
+        gammac = getRectifiedGridAngle();
         FE = getFalseEasting();
         FN = getFalseNorthing();
         kc = getScaleFactor();
@@ -111,6 +112,7 @@ public class ObliqueMercator extends Projection {
         gamma0 = asin(sin(alphac) / D);
         lambda0 = lonc - asin(G * tan(gamma0)) / B;
         uc = (D > 1) ? A / B * atan(sqrt(D * D - 1) / cos(alphac)) * signum(latc) : 0;
+        invcoeff = Mercator1SP.getInverseMercatorCoeff(ellipsoid);
     }
 
     /**
@@ -193,9 +195,8 @@ public class ObliqueMercator extends Projection {
                 double t = pow(H / sqrt((1 + U) / (1 - U)), 1 / B);
                 double ki = 2 * (PI / 4 - atan(t));
                 double lat = ki;
-                double[] coeff = ellipsoid.getInverseMercatorCoeff();
                 for (int i = 1; i < 5; i++) {
-                    lat += coeff[i] * sin(2 * i * ki);
+                    lat += invcoeff[i] * sin(2 * i * ki);
                 }
                 coord[0] = lat;
                 coord[1] = lambda0 - atan((S * cos(gamma0) - V * sin(gamma0)) / cos(B * u / A)) / B;
