@@ -1,7 +1,7 @@
 CTS
 ===
 
-Coordinate Transformations Suite (abridged CTS)  is a library developped to perform Coordinate Transformations 
+Coordinate Transformation Suite (abridged CTS)  is a library developped to perform Coordinate Transformations 
 using well known geodetic algorithms and parameter sets. 
 Its main focus are simplicity, flexibility, interoperability, in this order.
 
