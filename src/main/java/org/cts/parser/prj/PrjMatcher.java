@@ -788,7 +788,14 @@ public final class PrjMatcher {
      */
     private String getAuthority(List<PrjElement> ll) {
         String auth = getString(ll.get(0));
-        String code = getString(ll.get(1));
+        PrjElement authorityCode = ll.get(1);
+        String code ;
+        if(authorityCode instanceof PrjNumberElement){
+            code =  String.valueOf(Math.round(getNumber(authorityCode)));            
+        }
+        else{
+            code = getString(authorityCode);
+        }
         return auth + ':' + code;
     }
 
