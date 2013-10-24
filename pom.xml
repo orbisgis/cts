@@ -1,14 +1,43 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
-  <groupId>org.cts</groupId>
+  <groupId>org.orbisgis</groupId>
   <artifactId>cts</artifactId>
-  <version>1.3</version>
+  <version>1.3.1</version>
   <packaging>bundle</packaging>
-
+  <description>Coordinate Transformation Suite (abridged CTS) is a library developed to perform coordinate
+    transformations using well known geodetic algorithms and parameter sets. It strives to be simple, flexible and
+    interoperable, in this order.</description>
   <name>cts</name>
-  <url>http://maven.apache.org</url>
+  <organization>
+    <name>IRSTV CNRS-FR-2488</name>
+    <url>http://www.irstv.fr/</url>
+  </organization>
+  <url>http://www.orbisgis.org/projects/cts/</url>
+  <scm>
+    <connection>scm:git:https://github.com/irstv/cts.git</connection>
+    <url>https://github.com/irstv/cts</url>
+  </scm>
+  <licenses>
+    <license>
+      <name>GNU General Public License (GPL)</name>
+      <url>http://www.gnu.org/licenses/gpl.txt</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>Michaël Michaud</name>
+      <organization>OpenJUMP Community</organization>
+    </developer>
+    <developer>
+      <name>Jules Party</name>
+      <organization>IRSTV CNRS-FR-2488</organization>
+    </developer>
+    <developer>
+      <name>Erwan Bocher</name>
+      <organization>IRSTV CNRS-FR-2488</organization>
+    </developer>
+  </developers>
   <build>
     <plugins>
       <plugin>
