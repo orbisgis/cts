@@ -25,8 +25,8 @@
   </scm>
   <licenses>
     <license>
-      <name>GNU General Public License (GPL)</name>
-      <url>http://www.gnu.org/licenses/gpl.txt</url>
+      <name>GNU General Public License (GPLV3+)</name>
+      <url>http://www.gnu.org/licenses/gpl-3.0.html</url>
     </license>
   </licenses>
   <developers>
