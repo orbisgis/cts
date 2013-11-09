@@ -40,6 +40,7 @@ import org.cts.op.CoordinateOperation;
 import org.cts.op.NonInvertibleOperationException;
 import org.cts.units.Measure;
 
+import static java.lang.Math.abs;
 import static java.lang.Math.asin;
 import static java.lang.Math.atan;
 import static java.lang.Math.cos;
@@ -164,15 +165,23 @@ public class LambertAzimuthalEqualArea extends Projection {
             public double[] transform(double[] coord) throws CoordinateDimensionException {
                 double e = ellipsoid.getEccentricity();
                 double e2 = ellipsoid.getSquareEccentricity();
-                double e4 = e2 * e2;
-                double e6 = e4 * e2;
                 double x = (coord[0] - FE) / D;
                 double y = (coord[1] - FN) * D;
                 double rho = sqrt(x * x + y * y);
                 double C = 2 * asin(rho / 2 / Rq);
-                double betap = asin(cos(C) * sin(beta0) + y * sin(C) * cos(beta0) / rho);
-                coord[0] = betap + (e2 / 3 + 31 / 180 * e4 + 517 / 5040 * e6) * sin(2 * betap)
-                        + (23 / 360 * e4 + 251 / 3780 * e6) * sin(4 * betap) + 761 / 45360 * e6 * sin(6 * betap);
+                double q = qp * (cos(C) * sin(beta0) + y * sin(C) * cos(beta0) / rho);
+                double phiOld = asin(q/2);
+                double sinPhiOld = sin(phiOld);
+                double phi = phiOld + pow(1 - e2 * sinPhiOld * sinPhiOld, 2)/2/cos(phiOld) *
+                        (q/(1 - e2) - sinPhiOld / (1 - e2 *sinPhiOld * sinPhiOld) + log((1 - e * sinPhiOld)/(1 + e * sinPhiOld)) / 2 / e);
+                while (abs(phi - phiOld) > 1e-14) {
+                    System.out.println(phiOld * 180 / Math.PI);
+                    phiOld = phi;
+                    sinPhiOld = sin(phiOld);
+                    phi = phiOld + pow(1 - e2 * sinPhiOld * sinPhiOld, 2)/2/cos(phiOld) *
+                        (q/(1 - e2) - sinPhiOld / (1 - e2 *sinPhiOld * sinPhiOld) + log((1 - e * sinPhiOld)/(1 + e * sinPhiOld)) / 2 / e);
+                }
+                coord[0] = phi;
                 coord[1] = lon0 + atan(x * sin(C) / (rho * cos(beta0) * cos(C) - y * sin(beta0) * sin(C)));
                 return coord;
             }
