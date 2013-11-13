@@ -9,9 +9,9 @@
     interoperable, in this order.</description>
   <name>cts</name>
   <parent>
-    <groupId>org.sonatype.oss</groupId>
-    <artifactId>oss-parent</artifactId>
-    <version>7</version>
+    <groupId>org.orbisgis</groupId>
+    <artifactId>orbisgis-nexus</artifactId>
+    <version>1</version>
   </parent>
   <organization>
     <name>IRSTV CNRS-FR-2488</name>
@@ -51,26 +51,11 @@
         <version>2.3.7</version>
         <extensions>true</extensions>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-gpg-plugin</artifactId>
-        <version>1.4</version>
-        <executions>
-          <execution>
-            <id>sign-artifacts</id>
-            <phase>verify</phase>
-            <goals>
-              <goal>sign</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
     </plugins>
   </build>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
-
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
