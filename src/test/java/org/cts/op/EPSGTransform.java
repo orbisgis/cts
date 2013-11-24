@@ -50,7 +50,7 @@ public class EPSGTransform extends BaseCoordinateTransformTest {
         double[] pointSource = new double[]{2.114551393, 50.345609791, 0};
         String csNameDest = "EPSG:27582";  //Target EPSG lambert 2 etendu france
         double[] pointDest = new double[]{584173.736, 2594514.828, 0};
-        double tolerance = 10E-7;
+        double tolerance = 10E-3;
         CoordinateReferenceSystem inputCRS = cRSFactory.getCRS(csNameSrc);
         System.out.println(inputCRS.toWKT());
         CoordinateReferenceSystem outputCRS = cRSFactory.getCRS(csNameDest);
