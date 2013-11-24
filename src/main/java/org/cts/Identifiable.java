@@ -35,8 +35,8 @@ import java.util.List;
 
 /**
  * Identifiable is the interface implemented by geodetic objects issued from
- * registries (like the epsg database).<p> {@link fr.cts.datum.Datum}s,
- * {@link Ellipsoid} and {@link fr.cts.crs.CoordinateReferenceSystem}s are
+ * registries (like the epsg database).<p> {@link org.cts.datum.Datum}s,
+ * {@link org.cts.datum.Ellipsoid} and {@link org.cts.crs.CoordinateReferenceSystem}s are
  * Identifiable objects.<p>
  * Well known geodetic databases are :
  * <ul>
@@ -68,10 +68,12 @@ public interface Identifiable {
      * persistent database.
      */
     public static final String LOCAL = "LOCAL";
+
     /**
      * Value used as a dafault name for objects without name.
      */
     public static final String DEFAULT = "DEFAULT";
+
     /**
      * Value used for objects with an unknown name.
      */

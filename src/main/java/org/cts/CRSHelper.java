@@ -60,10 +60,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class is used to define a new
- * {@link org.cts.crs.CoordinateReferenceSystem} from a map of parameters that
- * is generally obtained by using a parser on a
- * {@link org.cts.registry.Registry} or on an OGC WKT String.
+ * This class is used to build a new
+ * {@link org.cts.crs.CoordinateReferenceSystem} from a map of parameters,
+ * generally obtained from the parser of a {@link org.cts.registry.Registry}
+ * or from an OGC WKT String.
  *
  * @TODO Not sure this class is useful here. I'd prefer a clear separation
  * between the model (CRS/Datum/Ellipsoid/Projection...) and the parsers which

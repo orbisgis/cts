@@ -32,14 +32,14 @@
 package org.cts;
 
 /**
- * Exception occuring when a double array input has not the expected length.
+ * Exception thrown when a double array input has not the expected length.
  *
  * @author Michaël Michaud
  */
 public class CoordinateDimensionException extends IllegalCoordinateException {
 
     /**
-     * Create a new CoordinateDimensionException.
+     * Creates a new CoordinateDimensionException.
      *
      * @param s the message
      */

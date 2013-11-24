@@ -82,7 +82,7 @@ public class CRSFactory {
     }
 
     /**
-     * Return a {@link org.cts.crs.CoordinateReferenceSystem} cooresponding to
+     * Return a {@link org.cts.crs.CoordinateReferenceSystem} corresponding to
      * an authority and a srid.
      *
      * @param authorityAndSrid the code of the desired CRS (for instance
@@ -113,11 +113,10 @@ public class CRSFactory {
     }
 
     /**
-     * Return the registry name and the code base on the pattern name:code ed :
-     * epsg:4326 returns epsg;4326
+     * Return the registry name and the code in a string array.
      *
-     * @param authorityAndSrid
-     * @return
+     * @param authorityAndSrid a string following the pattern "name:code"
+     * @return an array of two strings (ex. {"epsg", "4326"})
      * @throws RegistryException
      */
     public String[] splitRegistryNameAndCode(String authorityAndSrid) throws RegistryException {
