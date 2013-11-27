@@ -37,8 +37,9 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 /**
- * This class parse the esri file available in the resources package. It returns
- * the coresponding parameters to a code specified in the registry file.
+ * This class parses the esri file available in the resources package.
+ * For a given code, it returns a map of parameters required by
+ * {@link org.cts.CRSHelper} to build a {@link org.cts.crs.CoordinateReferenceSystem}.
  *
  * @author Erwan Bocher
  */

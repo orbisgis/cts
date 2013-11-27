@@ -44,6 +44,9 @@ import java.util.regex.Pattern;
 import org.cts.registry.Registry;
 
 /**
+ * Parser used to read a proj file as the one used in proj4 library.
+ * It can return the list of codes available in the file
+ * or the map of parameters associated to a particular code.
  *
  * @author Erwan Bocher
  */
@@ -68,7 +71,7 @@ public class ProjParser {
      *
      * @param crsCode the code corresponding to the information that must be
      * extracted from the registry
-     * @param regex the pattern used to split the line that describes the
+     * @param regexPattern the pattern used to split the line that describes the
      * coordinate system
      * @throws IOException
      */

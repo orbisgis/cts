@@ -31,10 +31,12 @@
  */
 package org.cts.op;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.cts.op.transformation.GeocentricTranslation;
 import org.junit.Test;
 
 import org.cts.Identifier;
@@ -108,9 +110,15 @@ public class UserDefinedTransform extends BaseCoordinateTransformTest {
         double[] pointSource = new double[]{50.345609791, 2.114551393};
         double[] pointDest = new double[]{584173.736, 2594514.828};
         CoordinateOperationSequence WGS84_LAMB2E = new CoordinateOperationSequence(new Identifier("CTS",
-                "WGS84 (lon/lat)-> Lambert 2 etendu",
-                "WGS84 (lon/lat) to  Lambert 2 etendu"),
+                "WGS84 (lat/lon)-> Lambert 2 etendu",
+                "WGS84 (lat/lon) to  Lambert 2 etendu"),
                 DD2RAD,
+                // we must use a 3D geocentric transformation from WGS84 to NTF (cf. circe)
+                ChangeCoordinateDimension.TO3D,
+                new Geographic2Geocentric(Ellipsoid.WGS84),
+                new GeocentricTranslation(168, 60, -320),
+                new Geocentric2Geographic(Ellipsoid.CLARKE1880IGN),
+                // NTF is based on Paris prime meridian
                 GREENWICH2PARIS,
                 LambertConicConformal1SP.LAMBERT2E,
                 CoordinateRounding.MILLIMETER);
@@ -179,14 +187,16 @@ public class UserDefinedTransform extends BaseCoordinateTransformTest {
     @Test
     public void fromWGS84TOLambert93() throws Exception {
         double[] pointSource = new double[]{50.345609791, 2.114551393};
-        double[] pointDest = new double[]{584173.736, 2594514.828};
+        //double[] pointDest = new double[]{584173.736, 2594514.828};
+        double[] pointDest = new double[]{636890.740, 7027895.263}; // circe (last tab)
         CoordinateOperationSequence WGS84_LAMB2E = new CoordinateOperationSequence(new Identifier("CTS",
-                "WGS84 (lon/lat)-> RGF93/Lambert 93",
-                "WGS84 (lon/lat) to  RGF93/Lambert 93"),
-                CoordinateSwitch.SWITCH_LAT_LON, DD2RAD,
+                "WGS84 (lat/lon)-> RGF93/Lambert 93",
+                "WGS84 (lat/lon) to  RGF93/Lambert 93"),
+                //CoordinateSwitch.SWITCH_LAT_LON,
+                DD2RAD,
                 LambertConicConformal2SP.LAMBERT93,
                 CoordinateRounding.MILLIMETER);
         double[] result = WGS84_LAMB2E.transform(pointSource);
-        assertTrue(checkEquals("WGS84 degrees to RGF93/Lambert 93", result, pointDest, 0.01));
+        assertTrue(""+ Arrays.toString(result), checkEquals("WGS84 degrees to RGF93/Lambert 93", result, pointDest, 0.01));
     }
 }
