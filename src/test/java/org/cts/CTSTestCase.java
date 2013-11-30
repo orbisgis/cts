@@ -33,13 +33,8 @@ package org.cts;
 
 import java.util.Arrays;
 
-import org.cts.registry.EPSGRegistry;
-import org.cts.registry.ESRIRegistry;
-import org.cts.registry.IGNFRegistry;
-import org.cts.registry.Nad27Registry;
-import org.cts.registry.Nad83Registry;
-import org.cts.registry.RegistryManager;
-import org.cts.registry.worldRegistry;
+import org.cts.registry.*;
+import org.cts.registry.WorldRegistry;
 
 import org.junit.BeforeClass;
 import org.slf4j.Logger;
@@ -68,7 +63,7 @@ public class CTSTestCase {
         registryManager.addRegistry(new ESRIRegistry());
         registryManager.addRegistry(new Nad27Registry());
         registryManager.addRegistry(new Nad83Registry());
-        registryManager.addRegistry(new worldRegistry());
+        registryManager.addRegistry(new WorldRegistry());
 
     }
 
