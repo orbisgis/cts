@@ -94,13 +94,11 @@ public class CRSFactory {
         if (crs == null) {
             try {
                 String[] registryNameWithCode = splitRegistryNameAndCode(authorityAndSrid);
-                if (isRegistrySupported(registryNameWithCode[0])) {
-                    Registry registry = getRegistryManager().getRegistry(registryNameWithCode[0]);
-                    Map<String, String> crsParameters = registry.getParameters(registryNameWithCode[1]);
-                    if (crsParameters != null) {
-                        crs = CRSHelper.createCoordinateReferenceSystem(new Identifier(registryNameWithCode[0], registryNameWithCode[1],
-                                crsParameters.remove(ProjKeyParameters.title)), crsParameters);
-                    }
+                String authority = registryNameWithCode[0];
+                String code = registryNameWithCode[1];
+                if (isRegistrySupported(authority)) {
+                    Registry registry = getRegistryManager().getRegistry(authority);
+                    crs = registry.getCoordinateReferenceSystem(new Identifier(authority, code, ""));
                     if (crs != null) {
                         CRSPOOL.put(authorityAndSrid, crs);
                     }

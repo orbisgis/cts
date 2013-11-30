@@ -31,7 +31,10 @@
  */
 package org.cts.registry;
 
-import java.util.Map;
+import org.cts.Identifier;
+import org.cts.crs.CRSException;
+import org.cts.crs.CoordinateReferenceSystem;
+
 import java.util.Set;
 
 /**
@@ -50,7 +53,8 @@ public interface Registry {
      *
      * @throws RegistryException
      */
-    public Map<String, String> getParameters(String code) throws RegistryException;
+    //public Map<String, String> getParameters(String code) throws RegistryException;
+    public CoordinateReferenceSystem getCoordinateReferenceSystem(Identifier identifier) throws RegistryException, CRSException;
 
     /**
      * Return all supported codes for this registry.
