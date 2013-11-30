@@ -43,6 +43,7 @@ public class CRSIdentifierTest extends CTSTestCase {
 
     @Test
     public void testEPSG4326AuthorityName() throws Exception {
+        System.out.println(cRSFactory.getCRS("EPSG:4326").getAuthorityName());
         assertTrue(cRSFactory.getCRS("EPSG:4326").getAuthorityName().equals("EPSG"));
     }
 
