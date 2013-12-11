@@ -26,3 +26,22 @@ PURPOSE.  See the GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License along with
 CTS.  If not, see <http://www.gnu.org/licenses/>.
+
+#### Declaring project dependencies
+
+##### With maven
+
+```xml
+<dependency>
+    <groupId>org.orbisgis</groupId>
+    <artifactId>cts</artifactId>
+    <version>1.3.2</version>
+</dependency>
+```
+
+##### Pre-built jar
+
+You can find latest jar release on maven central:
+
+http://search.maven.org/#search|ga|1|g%3A%22org.orbisgis%22%20AND%20a%3A%22cts%22
+
