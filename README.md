@@ -1,12 +1,12 @@
 CTS
 ===
 
-Coordinate Transformation Suite (abridged CTS)  is a library developped to
+Coordinate Transformation Suite (abridged CTS)  is a library developed to
 perform coordinate transformations using well known geodetic algorithms and
 parameter sets.  It strives to be simple, flexible and interoperable, in this
 order.
 
-Originaly developed by Michaël Michaud under the name of JGeod, the library was
+Originally developed by Michaël Michaud under the name of JGeod, the library was
 renamed to CTS in 2009.  Today CTS is maintained by the Atelier SIG team in
 collaboration with Michaël Michaud.
 
