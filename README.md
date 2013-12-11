@@ -1,5 +1,4 @@
-CTS
-===
+# CTS [![Build Status](https://travis-ci.org/irstv/CTS.png?branch=master)](https://travis-ci.org/irstv/CTS)
 
 Coordinate Transformation Suite (abridged CTS)  is a library developed to
 perform coordinate transformations using well known geodetic algorithms and
