@@ -38,8 +38,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
-
 /**
  * IdentifiableComponent is a helper class used as a parent class for components
  * having to implement the Identifiable interface. Instead of implementing
@@ -182,14 +180,20 @@ public class IdentifiableComponent implements Identifiable {
         this.registerComponent();
     }
 
+    /**
+     * Register the component
+     */
     private void registerComponent() {
         if (!registry.containsKey(getIdentifier())) {
             registry.put(getIdentifier(), this);
-        } else {
-            LOGGER.warn("A component has already been register for key " + getAuthorityName() + ":" + getAuthorityKey() + ".");
         }
     }
 
+    /**
+     * Get the component based on its identifier
+     * @param id
+     * @return 
+     */
     public static IdentifiableComponent getComponent(Identifier id) {
         return registry.get(id);
     }

@@ -33,10 +33,10 @@ package org.cts.op;
 
 import org.cts.crs.CoordinateReferenceSystem;
 import org.cts.crs.GeodeticCRS;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertTrue;
 
 /**
  * This class contains tests that uses PRJ definition for the CRS
@@ -224,5 +224,34 @@ public class PRJCoordinateTransformationTest extends BaseCoordinateTransformTest
         assertTrue(checkEquals2D(srcCRS + " to " + outCRS, result, expectedPoint, 10E-2));
         double[] check = transform((GeodeticCRS) outCRS, (GeodeticCRS) srcCRS, expectedPoint);
         assertTrue(checkEquals2D(outCRS + " to " + srcCRS, check, srcPoint, 1E-2));
+    }
+    
+    
+     @Test
+    public void testFrenchEPSGCodeFrom3035To2154() throws Exception {
+        double[] pointSource = new double[]{3445356.243369 , 2744505.796699, 0};
+        double[] pointDest = new double[]{351889.32064 , 6687364.73540, 0};
+        double tolerance = 10E-3;        
+        String srcprj = "PROJCS[\"ETRS89 / ETRS-LAEA\",GEOGCS[\"ETRS89\","
+                + "DATUM[\"European_Terrestrial_Reference_System_1989\",SPHEROID[\"GRS 1980\","
+                + "6378137,298.257222101,AUTHORITY[\"EPSG\",\"7019\"]],AUTHORITY[\"EPSG\",\"6258\"]],"
+                + "PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],"
+                + "UNIT[\"degree\",0.01745329251994328,AUTHORITY[\"EPSG\",\"9122\"]],"
+                + "AUTHORITY[\"EPSG\",\"4258\"]],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],"
+                + "PROJECTION[\"Lambert_Azimuthal_Equal_Area\"],PARAMETER[\"latitude_of_center\",52],"
+                + "PARAMETER[\"longitude_of_center\",10],PARAMETER[\"false_easting\",4321000],"
+                + "PARAMETER[\"false_northing\",3210000],AUTHORITY[\"EPSG\",\"3035\"],"
+                + "AXIS[\"X\",EAST],AXIS[\"Y\",NORTH]]";
+        
+        String outprj = "PROJCS[\"RGF93_Lambert_93\",GEOGCS[\"GCS_RGF_1993\",DATUM[\"D_RGF_1993\","
+                + "SPHEROID[\"GRS_1980\",6378137.0,298.257222101]],PRIMEM[\"Greenwich\",0.0],"
+                + "UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Lambert_Conformal_Conic\"],"
+                + "PARAMETER[\"False_Easting\",700000.0],PARAMETER[\"False_Northing\",6600000.0],"
+                + "PARAMETER[\"Central_Meridian\",3.0],PARAMETER[\"Standard_Parallel_1\",44.0],"
+                + "PARAMETER[\"Standard_Parallel_2\",49.0],PARAMETER[\"Latitude_Of_Origin\",46.5],UNIT[\"Meter\",1.0]]";
+        CoordinateReferenceSystem inputCRS = cRSFactory.createFromPrj(srcprj);
+        CoordinateReferenceSystem outputCRS = cRSFactory.createFromPrj(outprj);
+        double[] result = transform((GeodeticCRS) inputCRS, (GeodeticCRS) outputCRS, pointSource);
+        assertTrue(checkEquals2D("EPSG:3035 to EPSG:2154 ", result, pointDest, tolerance));        
     }
 }
