@@ -278,10 +278,6 @@ public class GeographicGrid implements Grid {
      * @param longitude the longitude
      * @return the interpolated value as a double
      */
-    // Bug corrigé le 15/11/03 : les indices de grille i+1 ou j+1 provoquent des
-    // IndexOutOfBoundsException --> remplacé par
-    // i\<nbL-1?i+1:i<br>
-    // j\<nbC-1?j+1:j
     public double[] bilinearInterpolation(double latitude, double longitude)
             throws OutOfExtentException {
         if (!extent.isInside(latitude, longitude)) {
