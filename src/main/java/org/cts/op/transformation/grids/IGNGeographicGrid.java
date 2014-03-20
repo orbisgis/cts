@@ -31,12 +31,12 @@
  */
 package org.cts.op.transformation.grids;
 
-import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.StringTokenizer;
-import java.util.zip.ZipInputStream;
 
 import org.cts.cs.GeographicExtent;
 import org.slf4j.Logger;
@@ -44,8 +44,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  * <p>Classe representing a Geographic grid as defined by IGN (France).</p>
- * Here is an exemple of a Geographic Grid from IGN with some explanations. GR1D
- * REFALT 700 20370201<br>
+ * Here is an exemple of a Geographic Grid from IGN with some explanations. 
+ * GR1D  REFALT 700 20370201<br>
  * GR1D1 -61.7000 -61.4750 15.8000 15.9250 .0250 .0250<br>
  * GR1D2 INTERPOLATION BILINEAIRE<br>
  * GR1D3 PREC CM 01:5 02:10 03:20 04:50 99>100<br>
@@ -71,7 +71,7 @@ import org.slf4j.LoggerFactory;
  * For geoid grids :<br>
  * N = He - A = Ellipsoidal height - Altitude (above geoid)<br>
  *
- * @author Michaël Michaud, Jules Party
+ * @author Michaël Michaud, Jules Party, Erwan Bocher
  */
 public class IGNGeographicGrid extends GeographicGrid {
 
@@ -92,160 +92,165 @@ public class IGNGeographicGrid extends GeographicGrid {
      * @param is input stream
      */
     public IGNGeographicGrid(InputStream is) throws Exception {
-        String token;
-        double xmin, xmax, ymin, ymax;
-        ConcurrentHashMap precisionCodes = new ConcurrentHashMap();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        try {
+            //Read the header           
+            String token;
+            double xmin, xmax, ymin, ymax;
+            ConcurrentHashMap precisionCodes = new ConcurrentHashMap();
 
 
-        byte[] bb = new byte[is.available()];
-        is.read(bb);
-        String ignFile = new String(bb);
-
-
-        StringTokenizer st = new StringTokenizer(ignFile, "\r\n");
-        String gr = st.nextToken();
-        String gr1 = st.nextToken();
-        String gr2 = st.nextToken();
-        String gr3 = st.nextToken();
-        //String grid = st.nextToken();
-        // Read the first line
-        StringTokenizer stt = new StringTokenizer(gr, " \t");
-        if (stt.hasMoreTokens()) {
-            dim = Integer.parseInt(stt.nextToken().substring(2, 3));
-        } else {
-            throw new IOException("Missing information in line : " + gr);
-        }
-        if (stt.hasMoreTokens()) {
-            gridType = stt.nextToken();
-        } else {
-            throw new Exception("Missing information in line : " + gr);
-        }
-        if (stt.hasMoreTokens()) {
-            datumId = Integer.parseInt(stt.nextToken());
-        } else {
-            throw new Exception("Missing information in line : " + gr);
-        }
-        if (stt.hasMoreTokens()) {
-            token = stt.nextToken();
-            coordinateType = Integer.parseInt(token.substring(0, 1));
-            geographicDatumId = Integer.parseInt(token.substring(1, 4));
-            unit = Integer.parseInt(token.substring(4, 6));
-            primeMeridian = Integer.parseInt(token.substring(6, 8));
-        } else {
-            throw new Exception("Missing information in line : " + gr);
-        }
-        // Second line decoder -> grid1
-        stt = new StringTokenizer(gr1, " \t");
-        if (stt.hasMoreTokens()) {
-            token = stt.nextToken();
-        } else {
-            throw new Exception("Missing information in line : " + gr1);
-        }
-        if (stt.hasMoreTokens() && token.endsWith("1")) {
-            token = stt.nextToken();
-            xmin = Double.parseDouble(token);
-            x0 = xmin;
-        } else {
-            throw new Exception("Missing min longitude in line : " + gr1);
-        }
-        if (stt.hasMoreTokens()) {
-            token = stt.nextToken();
-            xmax = Double.parseDouble(token);
-            xL = xmax;
-        } else {
-            throw new Exception("Missing maximum longitude in line : " + gr1);
-        }
-        if (stt.hasMoreTokens()) {
-            token = stt.nextToken();
-            ymin = Double.parseDouble(token);
-            y0 = ymin;
-        } else {
-            throw new Exception("Missing minimum latitude in line : " + gr1);
-        }
-        if (stt.hasMoreTokens()) {
-            token = stt.nextToken();
-            ymax = Double.parseDouble(token);
-            yL = ymax;
-        } else {
-            throw new Exception("Missing maximum latitude in line : " + gr1);
-        }
-        if (stt.hasMoreTokens()) {
-            token = stt.nextToken();
-            dx = Double.parseDouble(token);
-            double gridWidth = Math.rint((xmax - xmin) * 1000000000000d) / 1000000000000d;
-            colNumber = (int) Math.rint(gridWidth / dx) + 1;
-        } else {
-            throw new Exception("Missing cell size in line : " + gr1);
-        }
-        if (stt.hasMoreTokens()) {
-            token = stt.nextToken();
-            dy = Double.parseDouble(token);
-            double gridHeight = Math.rint((ymax - ymin) * 1000000000000d) / 1000000000000d;
-            rowNumber = (int) Math.rint(gridHeight / dy) + 1;
-        } else {
-            throw new Exception("Missing cell size in line : " + gr1);
-        }
-        // Third line decoder -> grid2
-        stt = new StringTokenizer(gr2, " \t");
-        if (stt.hasMoreTokens()) {
-            token = stt.nextToken();
-        } else {
-            throw new Exception("Missing information in line : " + gr2);
-        }
-        if (stt.hasMoreTokens() && token.endsWith("2")) {
-            token = stt.nextToken("");
-            interpolationMode = token;
-        } else {
-            throw new Exception("Missing interpolation mode : " + gr2);
-        }
-        // Forth line decoder -> grid3
-        stt = new StringTokenizer(gr3, " \t");
-        if (stt.hasMoreTokens()) {
-            stt.nextToken();
-        } else {
-            throw new Exception("Missing information in line : " + gr3);
-        }
-        if (stt.hasMoreTokens()) {
-            stt.nextToken();
-        } else {
-            throw new Exception("Missing information in line : " + gr3);
-        }
-        if (stt.hasMoreTokens()) {
-            stt.nextToken();
-            precisionUnit = stt.nextToken();
-        } else {
-            throw new Exception("Missing precision unit in line : " + gr3);
-        }
-        if (stt.hasMoreTokens()) {
-            while (stt.hasMoreTokens()) {
+            // Read the first line
+            String gr = reader.readLine();
+            StringTokenizer stt = new StringTokenizer(gr, " \t");
+            if (stt.hasMoreTokens()) {
+                dim = Integer.parseInt(stt.nextToken().substring(2, 3));
+            } else {
+                throw new IOException("Missing information in line : " + gr);
+            }
+            if (stt.hasMoreTokens()) {
+                gridType = stt.nextToken();
+            } else {
+                throw new Exception("Missing information in line : " + gr);
+            }
+            if (stt.hasMoreTokens()) {
+                datumId = Integer.parseInt(stt.nextToken());
+            } else {
+                throw new Exception("Missing information in line : " + gr);
+            }
+            if (stt.hasMoreTokens()) {
                 token = stt.nextToken();
-                String[] precisionCode = token.split("[:>]");
-                if (precisionCode.length == 2) {
-                    precisionCodes.put(precisionCode[0], precisionCode[1]);
+                coordinateType = Integer.parseInt(token.substring(0, 1));
+                geographicDatumId = Integer.parseInt(token.substring(1, 4));
+                unit = Integer.parseInt(token.substring(4, 6));
+                primeMeridian = Integer.parseInt(token.substring(6, 8));
+            } else {
+                throw new Exception("Missing information in line : " + gr);
+            }
+
+            // Second line decoder -> grid1
+
+            String gr1 = reader.readLine();
+            stt = new StringTokenizer(gr1, " \t");
+            if (stt.hasMoreTokens()) {
+                token = stt.nextToken();
+            } else {
+                throw new Exception("Missing information in line : " + gr1);
+            }
+            if (stt.hasMoreTokens() && token.endsWith("1")) {
+                token = stt.nextToken();
+                xmin = Double.parseDouble(token);
+                x0 = xmin;
+            } else {
+                throw new Exception("Missing min longitude in line : " + gr1);
+            }
+            if (stt.hasMoreTokens()) {
+                token = stt.nextToken();
+                xmax = Double.parseDouble(token);
+                xL = xmax;
+            } else {
+                throw new Exception("Missing maximum longitude in line : " + gr1);
+            }
+            if (stt.hasMoreTokens()) {
+                token = stt.nextToken();
+                ymin = Double.parseDouble(token);
+                y0 = ymin;
+            } else {
+                throw new Exception("Missing minimum latitude in line : " + gr1);
+            }
+            if (stt.hasMoreTokens()) {
+                token = stt.nextToken();
+                ymax = Double.parseDouble(token);
+                yL = ymax;
+            } else {
+                throw new Exception("Missing maximum latitude in line : " + gr1);
+            }
+            if (stt.hasMoreTokens()) {
+                token = stt.nextToken();
+                dx = Double.parseDouble(token);
+                double gridWidth = Math.rint((xmax - xmin) * 1000000000000d) / 1000000000000d;
+                colNumber = (int) Math.rint(gridWidth / dx) + 1;
+            } else {
+                throw new Exception("Missing cell size in line : " + gr1);
+            }
+            if (stt.hasMoreTokens()) {
+                token = stt.nextToken();
+                dy = Double.parseDouble(token);
+                double gridHeight = Math.rint((ymax - ymin) * 1000000000000d) / 1000000000000d;
+                rowNumber = (int) Math.rint(gridHeight / dy) + 1;
+            } else {
+                throw new Exception("Missing cell size in line : " + gr1);
+            }
+            // Third line decoder -> grid2
+
+            String gr2 = reader.readLine();
+            stt = new StringTokenizer(gr2, " \t");
+            if (stt.hasMoreTokens()) {
+                token = stt.nextToken();
+            } else {
+                throw new Exception("Missing information in line : " + gr2);
+            }
+            if (stt.hasMoreTokens() && token.endsWith("2")) {
+                token = stt.nextToken("");
+                interpolationMode = token;
+            } else {
+                throw new Exception("Missing interpolation mode : " + gr2);
+            }
+            // Forth line decoder -> grid3
+            String gr3 = reader.readLine();
+            stt = new StringTokenizer(gr3, " \t");
+            if (stt.hasMoreTokens()) {
+                stt.nextToken();
+            } else {
+                throw new Exception("Missing information in line : " + gr3);
+            }
+            if (stt.hasMoreTokens()) {
+                stt.nextToken();
+            } else {
+                throw new Exception("Missing information in line : " + gr3);
+            }
+            if (stt.hasMoreTokens()) {
+                stt.nextToken();
+                precisionUnit = stt.nextToken();
+            } else {
+                throw new Exception("Missing precision unit in line : " + gr3);
+            }
+            if (stt.hasMoreTokens()) {
+                while (stt.hasMoreTokens()) {
+                    token = stt.nextToken();
+                    String[] precisionCode = token.split("[:>]");
+                    if (precisionCode.length == 2) {
+                        precisionCodes.put(precisionCode[0], precisionCode[1]);
+                    }
                 }
             }
-        }
-        // Read the grid
-        values = new double[rowNumber][colNumber][dim];
-        int nbdec = 0;
-        while (st.hasMoreTokens()) {
-            String[] gg = st.nextToken().split("[ \t]+");
-            try {
-                double lon = Double.parseDouble(gg[1]);
-                double lat = Double.parseDouble(gg[2]);
-                double[] t = new double[dim];
-                for (int i = 0; i < dim; i++) {
-                    t[i] = Double.parseDouble(gg[3 + i]);
+            // Read the grid
+            values = new double[rowNumber][colNumber][dim];
+
+            int nbdec = 0;
+            String line;
+            while (null != (line = reader.readLine())) {
+                String[] gg = line.split("[ \t]+");
+                try {
+                    double lon = Double.parseDouble(gg[1]);
+                    double lat = Double.parseDouble(gg[2]);
+                    double[] t = new double[dim];
+                    for (int i = 0; i < dim; i++) {
+                        t[i] = Double.parseDouble(gg[3 + i]);
+                    }
+                    //String prec = gg[3 + dim];
+                    nbdec = Math.max(nbdec, gg[3].split("\\.")[1].length());
+                    System.arraycopy(t, 0, values[(int) Math.rint((lat - y0) / dy)][(int) Math.rint((lon - x0) / dx)], 0, dim);
+                } catch (NumberFormatException nfe) {
+                    LOGGER.warn("Cannot parse the number long : " + gg[0] + " lat : " + gg[1] + " dim :" + gg[2]);
                 }
-                //String prec = gg[3 + dim];
-                nbdec = Math.max(nbdec, gg[3].split("\\.")[1].length());
-                System.arraycopy(t, 0, values[(int) Math.rint((lat - y0) / dy)][(int) Math.rint((lon - x0) / dx)], 0, dim);
-            } catch (NumberFormatException nfe) {
-                LOGGER.warn("Cannot parse the number long : " + gg[0] + " lat : " + gg[1] + " dim :" + gg[2]);
             }
+            // decimal part size --> scale
+            scale = (int) Math.rint(Math.pow(10.0, (double) nbdec));
+            extent = new GeographicExtent("GG", y0, yL, x0, xL, modulo);
+        } finally {
+            reader.close();
         }
-        // decimal part size --> scale
-        scale = (int) Math.rint(Math.pow(10.0, (double) nbdec));
-        extent = new GeographicExtent("GG", y0, yL, x0, xL, modulo);
+
     }
 }
