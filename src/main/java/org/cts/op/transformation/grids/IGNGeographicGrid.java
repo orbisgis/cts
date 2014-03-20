@@ -36,10 +36,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.StringTokenizer;
-import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.cts.cs.GeographicExtent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>Classe representing a Geographic grid as defined by IGN (France).</p>
@@ -74,6 +75,7 @@ import org.cts.cs.GeographicExtent;
  */
 public class IGNGeographicGrid extends GeographicGrid {
 
+    static final Logger LOGGER = LoggerFactory.getLogger(IGNGeographicGrid.class);
     String gridType;
     int datumId;
     int coordinateType;
@@ -85,57 +87,28 @@ public class IGNGeographicGrid extends GeographicGrid {
 
     /**
      * <p>Construct a GeographicGrid from an InputStream representing an IGN
-     * GeographicGrid. Default value of zip is true.</p>
-     *
-     * @param is
-     */
-    public IGNGeographicGrid(InputStream is) throws Exception {
-        this(is, true);
-    }
-
-    /**
-     * <p>Construct a GeographicGrid from an InputStream representing an IGN
      * GeographicGrid</p>
      *
      * @param is input stream
-     * @param zip flag indicating if input data is zipped or not
      */
-    public IGNGeographicGrid(InputStream is, boolean zip) throws Exception {
+    public IGNGeographicGrid(InputStream is) throws Exception {
         String token;
         double xmin, xmax, ymin, ymax;
         ConcurrentHashMap precisionCodes = new ConcurrentHashMap();
-        String ignFile;
 
-        if (zip) {
-            try {
-                // Decompression du fichier Zip
-                ZipInputStream zis =
-                        new ZipInputStream(new BufferedInputStream(is));
-                ZipEntry ze = zis.getNextEntry();
-                byte[] bytes = new byte[1024 * 32];
-                StringBuilder sb = new StringBuilder();
-                int nb;
-                while ((nb = zis.read(bytes)) != -1) {
-                    sb.append(new String(bytes, 0, nb));
-                }
-                ignFile = sb.toString();
-            } catch (IOException e) {
-                throw e;
-            }
-        } else {
-            byte[] bb = new byte[is.available()];
-            is.read(bb);
-            ignFile = new String(bb);
-        }
 
-        
+        byte[] bb = new byte[is.available()];
+        is.read(bb);
+        String ignFile = new String(bb);
+
+
         StringTokenizer st = new StringTokenizer(ignFile, "\r\n");
         String gr = st.nextToken();
         String gr1 = st.nextToken();
         String gr2 = st.nextToken();
         String gr3 = st.nextToken();
         //String grid = st.nextToken();
-        // First line decoder
+        // Read the first line
         StringTokenizer stt = new StringTokenizer(gr, " \t");
         if (stt.hasMoreTokens()) {
             dim = Integer.parseInt(stt.nextToken().substring(2, 3));
@@ -161,7 +134,7 @@ public class IGNGeographicGrid extends GeographicGrid {
         } else {
             throw new Exception("Missing information in line : " + gr);
         }
-        // Second line decoder
+        // Second line decoder -> grid1
         stt = new StringTokenizer(gr1, " \t");
         if (stt.hasMoreTokens()) {
             token = stt.nextToken();
@@ -212,7 +185,7 @@ public class IGNGeographicGrid extends GeographicGrid {
         } else {
             throw new Exception("Missing cell size in line : " + gr1);
         }
-        // Third line decoder
+        // Third line decoder -> grid2
         stt = new StringTokenizer(gr2, " \t");
         if (stt.hasMoreTokens()) {
             token = stt.nextToken();
@@ -225,7 +198,7 @@ public class IGNGeographicGrid extends GeographicGrid {
         } else {
             throw new Exception("Missing interpolation mode : " + gr2);
         }
-        // Forth line decoder
+        // Forth line decoder -> grid3
         stt = new StringTokenizer(gr3, " \t");
         if (stt.hasMoreTokens()) {
             stt.nextToken();
@@ -256,7 +229,7 @@ public class IGNGeographicGrid extends GeographicGrid {
         values = new double[rowNumber][colNumber][dim];
         int nbdec = 0;
         while (st.hasMoreTokens()) {
-            String[] gg = st.nextToken().trim().split("[ \t]+");
+            String[] gg = st.nextToken().split("[ \t]+");
             try {
                 double lon = Double.parseDouble(gg[1]);
                 double lat = Double.parseDouble(gg[2]);
@@ -264,13 +237,11 @@ public class IGNGeographicGrid extends GeographicGrid {
                 for (int i = 0; i < dim; i++) {
                     t[i] = Double.parseDouble(gg[3 + i]);
                 }
-                String prec = gg[3 + dim];
+                //String prec = gg[3 + dim];
                 nbdec = Math.max(nbdec, gg[3].split("\\.")[1].length());
                 System.arraycopy(t, 0, values[(int) Math.rint((lat - y0) / dy)][(int) Math.rint((lon - x0) / dx)], 0, dim);
             } catch (NumberFormatException nfe) {
-                System.out.println(gg[0]);
-                System.out.println(gg[1]);
-                System.out.println(gg[2]);
+                LOGGER.warn("Cannot parse the number long : " + gg[0] + " lat : " + gg[1] + " dim :" + gg[2]);
             }
         }
         // decimal part size --> scale

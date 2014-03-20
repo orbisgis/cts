@@ -86,9 +86,9 @@ public class FrenchGeocentricNTF2RGF extends AbstractCoordinateOperation {
         try {
             InputStream is = FrenchGeocentricNTF2RGF.class.getResourceAsStream("grids/gr3df97a.txt");
             if (is == null) {
-                GRID3D = new IGNGeographicGrid(new FileInputStream(gridPath + "gr3df97a.txt"), false);
+                GRID3D = new IGNGeographicGrid(new FileInputStream(gridPath + "gr3df97a.txt"));
             } else {
-                GRID3D = new IGNGeographicGrid(is, false);
+                GRID3D = new IGNGeographicGrid(is);
             }
         } catch (Exception e) {
             throw new Exception( "\nThis problem occured when trying to load the gr3df97a.txt grid file", e);
@@ -105,7 +105,7 @@ public class FrenchGeocentricNTF2RGF extends AbstractCoordinateOperation {
         this.precision = 0.01;
         try {
             InputStream is = FrenchGeocentricNTF2RGF.class.getResourceAsStream("grids/gr3df97a.txt");
-            GRID3D = new IGNGeographicGrid(is, false);
+            GRID3D = new IGNGeographicGrid(is);
         } catch (Exception e) {
             throw new Exception("\nThis problem occured when trying to load the gr3df97a.txt grid file", e);
         }
