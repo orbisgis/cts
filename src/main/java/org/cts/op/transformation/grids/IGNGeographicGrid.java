@@ -31,6 +31,7 @@
  */
 package org.cts.op.transformation.grids;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -92,13 +93,12 @@ public class IGNGeographicGrid extends GeographicGrid {
      * @param is input stream
      */
     public IGNGeographicGrid(InputStream is) throws Exception {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));        
         try {
             //Read the header           
             String token;
             double xmin, xmax, ymin, ymax;
             ConcurrentHashMap precisionCodes = new ConcurrentHashMap();
-
 
             // Read the first line
             String gr = reader.readLine();
