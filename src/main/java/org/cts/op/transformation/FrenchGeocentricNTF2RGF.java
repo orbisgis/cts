@@ -53,7 +53,7 @@ import org.cts.units.Unit;
  * compatible RGF93.<p> It is a geocentric translation which parameters are
  * interpolated on a geographic grid.
  *
- * @author Michaël Michaud, Jules Party
+ * @author Michaël Michaud, Jules Party, Erwan Bocher
  */
 public class FrenchGeocentricNTF2RGF extends AbstractCoordinateOperation {
 
@@ -71,10 +71,6 @@ public class FrenchGeocentricNTF2RGF extends AbstractCoordinateOperation {
      * The GeographicGrid that define this transformation.
      */
     private IGNGeographicGrid GRID3D;
-    /**
-     * The grid path to acces the grid used by this transformation.
-     */
-    private String gridPath;
 
     /**
      * Geocentric translation with parameters interpolated in a grid.<p> The
@@ -88,18 +84,14 @@ public class FrenchGeocentricNTF2RGF extends AbstractCoordinateOperation {
         super(opId);
         this.precision = 0.01;
         try {
-            InputStream is;
-
-            is = FrenchGeocentricNTF2RGF.class.getClassLoader().getResourceAsStream("org/cts/op/transformation/grids/gr3df97a.txt");
+            InputStream is = FrenchGeocentricNTF2RGF.class.getResourceAsStream("grids/gr3df97a.txt");
             if (is == null) {
-                this.gridPath = gridPath;
-                GRID3D = new IGNGeographicGrid(new FileInputStream(gridPath + "gr3df97a.txt"), false);
+                GRID3D = new IGNGeographicGrid(new FileInputStream(gridPath + "gr3df97a.txt"));
             } else {
-                this.gridPath = "org/cts/op/transformation/grids/";
-                GRID3D = new IGNGeographicGrid(is, false);
+                GRID3D = new IGNGeographicGrid(is);
             }
         } catch (Exception e) {
-            throw new Exception(e.getMessage() + "\nThis problem occured when trying to load the gr3df97a.txt grid file, using this path : " + gridPath);
+            throw new Exception( "\nThis problem occured when trying to load the gr3df97a.txt grid file", e);
         }
     }
 
@@ -110,15 +102,12 @@ public class FrenchGeocentricNTF2RGF extends AbstractCoordinateOperation {
      */
     public FrenchGeocentricNTF2RGF() throws Exception {
         super(opId);
-        this.gridPath = "org/cts/op/transformation/grids/";
         this.precision = 0.01;
         try {
-            InputStream is;
-
-            is = FrenchGeocentricNTF2RGF.class.getClassLoader().getResourceAsStream("org/cts/op/transformation/grids/gr3df97a.txt");
-            GRID3D = new IGNGeographicGrid(is, false);
+            InputStream is = FrenchGeocentricNTF2RGF.class.getResourceAsStream("grids/gr3df97a.txt");
+            GRID3D = new IGNGeographicGrid(is);
         } catch (Exception e) {
-            throw new Exception(e.getMessage() + "\nThis problem occured when trying to load the gr3df97a.txt grid file, using this path : " + gridPath);
+            throw new Exception("\nThis problem occured when trying to load the gr3df97a.txt grid file", e);
         }
     }
 
