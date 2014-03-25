@@ -33,13 +33,8 @@ package org.cts;
 
 import java.util.Arrays;
 
-import org.cts.registry.EPSGRegistry;
-import org.cts.registry.ESRIRegistry;
-import org.cts.registry.IGNFRegistry;
-import org.cts.registry.Nad27Registry;
-import org.cts.registry.Nad83Registry;
-import org.cts.registry.RegistryManager;
-import org.cts.registry.worldRegistry;
+import org.cts.registry.*;
+import org.cts.registry.WorldRegistry;
 
 import org.junit.BeforeClass;
 import org.slf4j.Logger;
@@ -68,7 +63,7 @@ public class CTSTestCase {
         registryManager.addRegistry(new ESRIRegistry());
         registryManager.addRegistry(new Nad27Registry());
         registryManager.addRegistry(new Nad83Registry());
-        registryManager.addRegistry(new worldRegistry());
+        registryManager.addRegistry(new WorldRegistry());
 
     }
 
@@ -77,9 +72,9 @@ public class CTSTestCase {
      * clause
      *
      * @param test
-     * @param o1
-     * @param o2
-     * @param tol
+     * @param o1 expected coordinates
+     * @param o2 actual coordinates
+     * @param tol tolerance
      */
     public boolean checkEquals(String test, double o1, double o2, double tol) {
         if (Math.abs(o1 - o2) <= tol) {
@@ -95,12 +90,11 @@ public class CTSTestCase {
      * Check if the result point is equal to the target point using an epsilon
      * clause
      *
-     * @param resultPoint
-     * @param targetPoint
-     * @param epsilon
+     * @param c1 expected coordinates
+     * @param c2 actual coordinates
+     * @param tol tolerance
      */
-    protected boolean checkEquals(String test, double[] c1, double[] c2,
-            double tol) {
+    protected boolean checkEquals(String test, double[] c1, double[] c2, double tol) {
         double dd = 0;
         for (int i = 0; i < Math.min(c1.length, c2.length); i++) {
             dd += (c2[i] - c1[i]) * (c2[i] - c1[i]);
@@ -121,12 +115,11 @@ public class CTSTestCase {
      * an epsilon clause
      *
      * @param test
-     * @param c1
-     * @param c2
+     * @param c1 expected coordinates
+     * @param c2 actual coordinates
      * @param tolerance
      */
-    protected boolean checkEquals2D(String test, double[] c1, double[] c2,
-            double tolerance) {
+    protected boolean checkEquals2D(String test, double[] c1, double[] c2, double tolerance) {
         double dx = Math.abs(c1[0] - c2[0]);
         double dy = Math.abs(c1[1] - c2[1]);
         double delta = Math.max(dx, dy);
@@ -147,12 +140,11 @@ public class CTSTestCase {
      * using an epsilon clause
      *
      * @param test
-     * @param c1
-     * @param c2
+     * @param c1 expected coordinates
+     * @param c2 actual coordinates
      * @param tolerance
      */
-    protected boolean checkEquals3D(String test, double[] c1, double[] c2,
-            double tolerance) {
+    protected boolean checkEquals3D(String test, double[] c1, double[] c2, double tolerance) {
         double dx = Math.abs(c1[0] - c2[0]);
         double dy = Math.abs(c1[1] - c2[1]);
         double dz = Math.abs(c1[2] - c2[2]);
@@ -170,9 +162,7 @@ public class CTSTestCase {
     }
 
     /**
-     * Display point values
-     *
-     * @param coord
+     * Display point values.
      */
     protected String coord2string(double[] coord) {
         if (coord.length == 2) {

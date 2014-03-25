@@ -45,7 +45,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * CoordinateOperationFactory is a factory used to create
- * {@linkplain  org.cts.CoordinateOperation CoordinateOperations} from source
+ * {@linkplain  org.cts.op.CoordinateOperation CoordinateOperations} from source
  * and target
  * {@linkplain org.cts.crs.CoordinateReferenceSystem CoordinateReferenceSystems}.
  *
@@ -65,11 +65,11 @@ public final class CoordinateOperationFactory {
     public final static int UNIT_OP = 256; // ex. heights from meters to feet
 
     /**
-     * Create a CoordinateOperation from a source
+     * Creates a list of {@link CoordinateOperation}s from a source
      * {@link org.cts.crs.GeodeticCRS} to a target
-     * {@link org.cts.crs.GeodeticCRS}. Remember that
-     * {@link org.cts.crs.GeodeticCRS} includes {@link org.cts.crs.GeocentricCRS},
-     * {@link Geographic2DCRS}, {@link org.cts.crs.Geographic3DCRS} and
+     * {@link org.cts.crs.GeodeticCRS}.
+     * {@link org.cts.crs.GeodeticCRS}s include {@link org.cts.crs.GeocentricCRS}s,
+     * {@link org.cts.crs.Geographic2DCRS}, {@link org.cts.crs.Geographic3DCRS} and
      * {@link org.cts.crs.ProjectedCRS}.
      *
      * @param source the (non null) source geodetic coordinate reference system
@@ -105,7 +105,7 @@ public final class CoordinateOperationFactory {
                 addNadgridsOperationInv(sourceDatum, source, targetDatum, target, target.getGridTransformations(sourceDatum), opList);
             }
             if (sourceDatum.equals(targetDatum)) {
-                addCoordinateOperations(sourceDatum, source, target, opList);
+                addCoordinateOperations(source, target, opList);
             } else {
                 addCoordinateOperations(sourceDatum, source, targetDatum, target, opList);
             }
@@ -115,25 +115,24 @@ public final class CoordinateOperationFactory {
     }
 
     /**
-     * Add a CoordinateOperation to the list of CoordinateOperation in
-     * parameter. This CoordinateOperation linked a source {@link GeodeticCRS}
-     * to a target {@link GeodeticCRS} based on different
-     * {@link org.cts.datum.Datum} using a CoordinateOperation to convert
-     * coordinates directly from one Geographic CRS to another without the use
-     * of GeocentricCRS. Remember that {@link GeodeticCRS} includes {@link GeocentricCRS},
-     * {@link Geographic2DCRS}, {@link Geographic3DCRS} and
-     * {@link ProjectedCRS}, but here the use of {@link GeocentricCRS} is
-     * senseless. NB : This class was made for nadgrids that are defined only in
-     * the parameter of the source CRS for the nadgrids transformation, it is
-     * why there is two createNadgridsOperation, createNadgridsOperationDir must
-     * be use when the nadgrids is defined in the sourceCRS.
+     * Adds a CoordinateOperation based on nadGrids to the list of CoordinateOperations
+     * usable to transform coordinates from source CRS to target CRS.<br>
+     * NadGrids operations link a source {@link org.cts.crs.GeodeticCRS} to a target
+     * {@link org.cts.crs.GeodeticCRS} using different {@link org.cts.datum.Datum}s
+     * but without making use of Geocentric coordinates.<br>
+     * Remember that {@link org.cts.crs.GeodeticCRS} include {@link org.cts.crs.GeocentricCRS},
+     * {@link org.cts.crs.Geographic2DCRS}, {@link org.cts.crs.Geographic3DCRS} and
+     * {@link org.cts.crs.ProjectedCRS}, but here the use of {@link org.cts.crs.GeocentricCRS}
+     * is senseless.<br>
+     * NB : This method is used when nadgrid is defined in the source CRS. If nadgrid is defined
+     * in the target CRS, use {@link #addNadgridsOperationInv(org.cts.datum.GeodeticDatum, org.cts.crs.GeodeticCRS, org.cts.datum.GeodeticDatum, org.cts.crs.GeodeticCRS, java.util.List, java.util.List)} .
      *
-     * @param sourceDatum the (non null) datum used by source CRS
-     * @param source the source geodetic coordinate reference system
+     * @param sourceDatum the (non null) datum used by source CRS.
+     * @param source the source coordinate reference system. Should not be a GeocentricCRS.
      * @param targetDatum the (non null) datum used by target CRS
-     * @param target the target geodetic coordinate reference system
-     * @param coordOp the transformation between two Geographic CRS
-     * @param opList the list in which the CoordinateOperation must be added
+     * @param target the target coordinate reference system. Should not be a GeocentricCRS.
+     * @param nadgridsTransformations the transformation between two Geographic CRS
+     * @param opList the list to which the CoordinateOperation must be added
      */
     private static void addNadgridsOperationDir(
             GeodeticDatum sourceDatum, GeodeticCRS source,
@@ -165,24 +164,23 @@ public final class CoordinateOperationFactory {
     }
 
     /**
-     * Add a CoordinateOperation to the list of CoordinateOperation in
-     * parameter. This CoordinateOperation linked a source {@link GeodeticCRS}
-     * to a target {@link GeodeticCRS} based on different
-     * {@link org.cts.datum.Datum} using a CoordinateOperation to convert
-     * coordinates directly from one Geographic CRS to another without the use
-     * of GeocentricCRS. Remember that {@link GeodeticCRS} includes {@link GeocentricCRS},
-     * {@link Geographic2DCRS}, {@link Geographic3DCRS} and
-     * {@link ProjectedCRS}, but here the use of {@link GeocentricCRS} is
-     * senseless. NB : This class was made for nadgrids that are defined only in
-     * the parameter of the source CRS for the nadgrids transformation, it is
-     * why there is two createNadgridsOperation, createNadgridsOperationInv must
-     * be use when the nadgrids is defined in the targetCRS.
+     * Adds a CoordinateOperation based on nadGrids to the list of CoordinateOperations
+     * usable to transform coordinates from source CRS to target CRS.<br>
+     * NadGrids operations link a source {@link org.cts.crs.GeodeticCRS} to a target
+     * {@link org.cts.crs.GeodeticCRS} using different {@link org.cts.datum.Datum}s
+     * but without making use of Geocentric coordinates.<br>
+     * Remember that {@link org.cts.crs.GeodeticCRS} include {@link org.cts.crs.GeocentricCRS},
+     * {@link org.cts.crs.Geographic2DCRS}, {@link org.cts.crs.Geographic3DCRS} and
+     * {@link org.cts.crs.ProjectedCRS}, but here the use of {@link org.cts.crs.GeocentricCRS}
+     * is senseless.<br>
+     * NB : This method is used when nadgrid is defined in the target CRS. If nadgrids is defined
+     * in the source CRS, use {@link #addNadgridsOperationDir(org.cts.datum.GeodeticDatum, org.cts.crs.GeodeticCRS, org.cts.datum.GeodeticDatum, org.cts.crs.GeodeticCRS, java.util.List, java.util.List)}
      *
      * @param sourceDatum the (non null) datum used by source CRS
-     * @param source the source geodetic coordinate reference system
+     * @param source the source coordinate reference system. Should not be a GeocentricCRS.
      * @param targetDatum the (non null) datum used by target CRS
-     * @param target the target geodetic coordinate reference system
-     * @param coordOp the transformation between two Geographic CRS
+     * @param target the target coordinate reference system. Should not be a GeocentricCRS.
+     * @param nadgridsTransformations the transformation between two Geographic CRS
      * @param opList the list in which the CoordinateOperation must be added
      */
     private static void addNadgridsOperationInv(
@@ -215,21 +213,21 @@ public final class CoordinateOperationFactory {
     }
 
     /**
-     * Add a CoordinateOperation to the list of CoordinateOperation in
-     * parameter. This CoordinateOperation linked a source
-     * {@link org.cts.crs.GeodeticCRS} to a target {@link GeodeticCRS} using the
-     * same {@link org.cts.datum.GeodeticDatum}. Remember that
-     * {@link GeodeticCRS} includes {@link GeocentricCRS},
-     * {@link Geographic2DCRS}, {@link Geographic3DCRS} and
-     * {@link ProjectedCRS}.
+     * Adds a CoordinateOperation to the list of CoordinateOperations usable to transform
+     * coordinates from source CRS to target CRS.
+     * parameter. This CoordinateOperation links a source
+     * {@link org.cts.crs.GeodeticCRS} to a target {@link org.cts.crs.GeodeticCRS} using the
+     * same {@link org.cts.datum.GeodeticDatum}.
+     * Remember that {@link org.cts.crs.GeodeticCRS}s include {@link org.cts.crs.GeocentricCRS}s,
+     * {@link org.cts.crs.Geographic2DCRS}s, {@link org.cts.crs.Geographic3DCRS}s and
+     * {@link org.cts.crs.ProjectedCRS}s.
      *
-     * @param datum the (non null) common datum of source and target CRS
      * @param source the source geodetic coordinate reference system
      * @param target the target geodetic coordinate reference system
      * @param opList the list in which the CoordinateOperation must be added
      */
     private static void addCoordinateOperations(
-            GeodeticDatum datum, GeodeticCRS source, GeodeticCRS target,
+            GeodeticCRS source, GeodeticCRS target,
             List<CoordinateOperation> opList) {
         try {
             opList.add(new CoordinateOperationSequence(
@@ -243,12 +241,13 @@ public final class CoordinateOperationFactory {
     }
 
     /**
-     * Add a CoordinateOperation to the list of CoordinateOperation in
-     * parameter. This CoordinateOperation linked a source {@link GeodeticCRS}
-     * to a target {@link GeodeticCRS} based on different
-     * {@link org.cts.datum.Datum}. Remember that {@link GeodeticCRS} includes {@link GeocentricCRS},
-     * {@link Geographic2DCRS}, {@link Geographic3DCRS} and
-     * {@link ProjectedCRS}.
+     * Adds a CoordinateOperation to the list of CoordinateOperations usable to transform
+     * coordinates from source CRS to target CRS.
+     * This CoordinateOperation links a source {@link org.cts.crs.GeodeticCRS}
+     * to a target {@link org.cts.crs.GeodeticCRS} which may use different {@link org.cts.datum.Datum}s.
+     * Remember that {@link org.cts.crs.GeodeticCRS}s include {@link org.cts.crs.GeocentricCRS}s,
+     * {@link org.cts.crs.Geographic2DCRS}s, {@link org.cts.crs.Geographic3DCRS}s and
+     * {@link org.cts.crs.ProjectedCRS}s.
      *
      * @param sourceDatum the (non null) datum used by source CRS
      * @param source the source geodetic coordinate reference system

@@ -49,26 +49,23 @@ public final class RegistryManager {
     private final List<RegistryManagerListener> listeners = new ArrayList<RegistryManagerListener>();
 
     /**
-     * Create a default registry manager without any declared registry. To load
-     * a registry you must call the {@code addRegistry} ig : addRegistry(new
-     * IGNFRegistry());
+     * Creates a default registry manager without any registered {@link Registry}.
+     * To load registries, use {@code addRegistry} method
+     * (eg : addRegistry(new IGNFRegistry()));
      */
     public RegistryManager() {
     }
 
     /**
-     * Adds a listener.
-     *
-     * @param listener a listener
+     * Adds a listener able to process add/remove registry events.
      */
     public void addRegistryManagerListener(RegistryManagerListener listener) {
         listeners.add(listener);
     }
 
     /**
-     * Remove the listener if it is present in the listener list
+     * Removes the listener if it is present in the listener list.
      *
-     * @param listener
      * @return true if the listener was successfully removed. False if the
      * specified parameter was not a listener
      */
@@ -77,20 +74,19 @@ public final class RegistryManager {
     }
 
     /**
-     * Declare a registry to the {@code RegistryManager}
-     *
-     * @param registryClass
+     * Register a {@link Registry} in this {@code RegistryManager}.
      */
     public void addRegistry(Registry registryClass) {
         addRegistry(registryClass, false);
     }
 
     /**
-     * Declare a registry to the {@code RegistryManager} An existing registry
-     * can be replaced by a new one.
+     * Register a {@link Registry} in this {@code RegistryManager}.
+     * An existing registry can be replaced by a new one.
      *
-     * @param registryClass
-     * @param replace
+     * @param registry the Registry to add
+     * @param replace whether an existing Registry with the same name should be
+     *                replaced  or not.
      */
     public void addRegistry(Registry registry, boolean replace) {
         LOGGER.trace("Adding a new registry " + registry.getRegistryName());
@@ -104,7 +100,7 @@ public final class RegistryManager {
     }
 
     /**
-     * Listener to inform that a registry has been added.
+     * Informs listeners that a registry has been added.
      *
      * @param functionName
      */
@@ -115,10 +111,11 @@ public final class RegistryManager {
     }
 
     /**
-     * Gets if the registry with the given name has been registered.
+     * Returns whether a registry with the given name is already
+     * registered or not.
      *
      * @param name a registry name ie epsg, ignf, esri...
-     * @return true if registered
+     * @return true if name is already registered
      */
     public boolean contains(String name) {
         return registries.containsKey(name);
@@ -136,18 +133,11 @@ public final class RegistryManager {
     }
 
     /**
-     * Return the corresponding registry based on its name
-     *
-     * @param string
-     * @return
+     * Gets the {@link Registry} registered with this name or
+     * null if no Registry has been registered with this name.
      */
     public Registry getRegistry(String registryName) {
         LOGGER.trace("Getting the registry " + registryName);
-        Registry registry = registries.get(registryName.toLowerCase());
-        if (registry == null) {
-            return null;
-        } else {
-            return registry;
-        }
+        return registries.get(registryName.toLowerCase());
     }
 }
