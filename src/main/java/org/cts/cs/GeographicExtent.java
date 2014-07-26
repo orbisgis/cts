@@ -47,28 +47,33 @@ public class GeographicExtent implements Extent {
     /**
      * The World Extent that contains all the planet surface.
      */
-    public static final GeographicExtent WORLD =
-            new GeographicExtent("World", -90, 90, -180, 180);
+    public static final GeographicExtent WORLD = new GeographicExtent("World", -90, 90, -180, 180);
+
     /**
      * The name of this GeographicExtent.
      */
     private String name;
+
     /**
      * The western bound of this GeographicExtent.
      */
     private double westernBound;
+
     /**
      * The eastern bound of this GeographicExtent.
      */
     private double easternBound;
+
     /**
      * The southern bound of this GeographicExtent.
      */
     private double southernBound;
+
     /**
      * The northern bound of this GeographicExtent.
      */
     private double northernBound;
+
     /**
      * The modulo value (360 for an extent in degree) for this GeographicExtent.
      */

@@ -46,6 +46,7 @@ public class CoordinateSystem {
      * The {@linkplain Axis axes} of this CoordinateSystem.
      */
     private Axis[] axes;
+
     /**
      * The {@linkplain Unit units} for the {@linkplain Axis axes} of this
      * CoordinateSystem.
