@@ -36,16 +36,8 @@ import org.cts.Identifier;
 import org.cts.cs.Extent;
 
 /**
- * A datum (plural datums) is a reference from which measurements are made.<p>
- * In surveying and geodesy, a datum is a reference point on the earth's surface
- * against which position measurements are made, and an associated model of the
- * shape of the earth for computing positions. Horizontal datums are used for
- * describing a point on the earth's surface, in latitude and longitude or
- * another coordinate system. Vertical datums are used to measure elevations or
- * underwater depths. In engineering and drafting, a datum is a reference point,
- * surface, or axis on an object against which measurements are made.<p> (Taken
- * from <a ref="http://en.wikipedia.org/wiki/Datum">wikipedia</a> on
- * 2006-10-06)</p>
+ * A simple implementation of {@link Datum} interface with a default
+ * constructor.
  *
  * @author Michaël Michaud
  */
@@ -56,10 +48,12 @@ public abstract class AbstractDatum extends IdentifiableComponent
      * The valid {@link Extent} of this Datum.
      */
     private Extent extent;
+
     /**
      * The description of this Datum origin.
      */
     private String origin;
+
     /**
      * The realization epoch of this Datum as a String.
      */
