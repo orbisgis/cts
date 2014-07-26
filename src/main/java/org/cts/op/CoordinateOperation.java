@@ -54,8 +54,10 @@ public interface CoordinateOperation extends Identifiable {
      * @return the same object with new values or a new double array
      * @throws IllegalCoordinateException if <code>coord</code> is not
      * compatible with this <code>CoordinateOperation</code>.
+     * @throws org.cts.op.CoordinateOperationException if this operation
+     * failed during the transformation process.
      */
-    public double[] transform(double[] coord) throws IllegalCoordinateException;
+    public double[] transform(double[] coord) throws IllegalCoordinateException, CoordinateOperationException;
 
     /**
      * Return the inverse CoordinateOperation, or throw a
@@ -77,4 +79,9 @@ public interface CoordinateOperation extends Identifiable {
      * 6378137.0 (Earth semi-major axis).
      */
     public double getPrecision();
+
+    /**
+     * @return true if this operation does not change coordinates.
+     */
+    public boolean isIdentity();
 }
