@@ -37,7 +37,7 @@ package org.cts.op;
  *
  * @author Michaël Michaud
  */
-public class NonInvertibleOperationException extends Exception {
+public class NonInvertibleOperationException extends CoordinateOperationException {
 
     /**
      * Create a new NonInvertibleOperationException.
