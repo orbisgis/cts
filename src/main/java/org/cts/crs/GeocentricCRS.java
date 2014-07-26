@@ -36,6 +36,7 @@ import java.util.List;
 
 import org.cts.Identifiable;
 import org.cts.Identifier;
+import org.cts.cs.Axis;
 import org.cts.cs.CoordinateSystem;
 import org.cts.datum.GeodeticDatum;
 import org.cts.datum.PrimeMeridian;
@@ -45,6 +46,10 @@ import org.cts.op.Geocentric2Geographic;
 import org.cts.op.Geographic2Geocentric;
 import org.cts.op.LongitudeRotation;
 import org.cts.op.NonInvertibleOperationException;
+import org.cts.units.Unit;
+
+import static org.cts.cs.Axis.*;
+import static org.cts.units.Unit.METER;
 
 /**
  * <p> A geocentric CoordinateReferenceSystem is a 3D cartesian coordinate
@@ -58,11 +63,27 @@ import org.cts.op.NonInvertibleOperationException;
 public class GeocentricCRS extends GeodeticCRS {
 
     /**
+     * A 3D cartesian {@link CoordinateSystem}.
+     */
+    public static final CoordinateSystem XYZ = new CoordinateSystem(new Axis[]{X, Y, Z}, new Unit[]{METER, METER, METER});
+
+    /**
      * Returns this CoordinateReferenceSystem Type.
      */
     @Override
     public Type getType() {
         return Type.GEOCENTRIC;
+    }
+
+    /**
+     * Creates a new Geocentric CRS based on given datum, identifier and
+     * with a cartesian coordinate system in meters.
+     *
+     * @param identifier the identifier of the GeocentricCRS
+     * @param datum the datum associated with the GeocentricCRS
+     */
+    public GeocentricCRS(Identifier identifier, GeodeticDatum datum) {
+        super(identifier, datum, XYZ);
     }
 
     /**
