@@ -34,6 +34,8 @@ package org.cts.op;
 import org.cts.Identifier;
 import org.cts.IllegalCoordinateException;
 
+import java.util.Arrays;
+
 /**
  * Add a fourth dimension to save one of the other coordinates. It is used in
  * CoumpoundCRS transformation to save the altitude value.
@@ -42,20 +44,23 @@ import org.cts.IllegalCoordinateException;
  */
 public class MemorizeCoordinate extends AbstractCoordinateOperation {
 
-    private final int indexSaved;
+    private final int[] indexesSaved;
     public static CoordinateOperation memoX = new MemorizeCoordinate(0);
     public static CoordinateOperation memoY = new MemorizeCoordinate(1);
     public static CoordinateOperation memoZ = new MemorizeCoordinate(2);
+    public static CoordinateOperation memoXY = new MemorizeCoordinate(0,1);
+    public static CoordinateOperation memoXYZ = new MemorizeCoordinate(0,1,2);
 
     /**
      * Creates a new CoordinateOperation increasing (resp decreasing) the coord
      * size by length.
      *
-     * @param dim final dimension of the new coordinate
+     * @param indexes indexes of ordinates to memorize
      */
-    public MemorizeCoordinate(int index) {
-        super(new Identifier(MemorizeCoordinate.class, "Save the " + (index + 1) + "e coordinate"));
-        this.indexSaved = index;
+    public MemorizeCoordinate(int... indexes) {
+        super(new Identifier(CoordinateOperation.class, "Save coordinates at indexes " + Arrays.toString(indexes)));
+        for (int i : indexes) assert i < 3;
+        this.indexesSaved = indexes;
     }
 
     /**
@@ -68,9 +73,11 @@ public class MemorizeCoordinate extends AbstractCoordinateOperation {
     @Override
     public double[] transform(double[] coord)
             throws IllegalCoordinateException {
-        double[] cc = new double[Math.max(coord.length + 1, 4)];
+        double[] cc = new double[Math.max(coord.length + indexesSaved.length, 4)];
         System.arraycopy(coord, 0, cc, 0, Math.min(coord.length, cc.length));
-        cc[Math.max(coord.length, 3)] = coord[indexSaved];
+        for (int i = 0 ; i < indexesSaved.length ; i++) {
+            cc[Math.max(coord.length+i, 3+i)] = coord[indexesSaved[i]];
+        }
         return cc;
     }
 }
