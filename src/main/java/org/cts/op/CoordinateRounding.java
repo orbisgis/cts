@@ -35,6 +35,8 @@ import org.cts.CoordinateDimensionException;
 import org.cts.Identifier;
 import org.cts.IllegalCoordinateException;
 
+import java.util.Arrays;
+
 /**
  * A class to change the coordinate precision
  *
@@ -46,22 +48,27 @@ public class CoordinateRounding extends AbstractCoordinateOperation {
      * Round the coordinates to millimeter value.
      */
     public final static CoordinateRounding MILLIMETER = createCoordinateRoundingOperation(0.001);
+
     /**
      * Round the coordinates to centimeter value.
      */
     public final static CoordinateRounding CENTIMETER = createCoordinateRoundingOperation(0.01);
+
     /**
      * Round the coordinates to decimeter value.
      */
     public final static CoordinateRounding DECIMETER = createCoordinateRoundingOperation(0.1);
+
     /**
      * Round the coordinates to meter value.
      */
     public final static CoordinateRounding METER = createCoordinateRoundingOperation(0.0);
+
     /**
      * Round the coordinates to kilometer value.
      */
     public final static CoordinateRounding KILOMETER = createCoordinateRoundingOperation(1000.0);
+
     /**
      * Store the inverse resolution of the rounding.
      */
@@ -71,7 +78,7 @@ public class CoordinateRounding extends AbstractCoordinateOperation {
      * Creates a new coordinate rounding operation from the smallest
      * representable value. Note that CoordinateRounding is not invertible.
      *
-     * @param decimalPlaces number of decimal places
+     * @param resolution the target resolution.
      */
     private CoordinateRounding(double resolution) {
         super(new Identifier(CoordinateRounding.class,
@@ -90,7 +97,7 @@ public class CoordinateRounding extends AbstractCoordinateOperation {
     @Override
     public double[] transform(double[] coord) throws IllegalCoordinateException {
         if (coord == null || coord.length == 0) {
-            throw new CoordinateDimensionException("" + coord
+            throw new CoordinateDimensionException(Arrays.toString(coord)
                     + " is an invalid coordinate");
         }
         for (int i = 0; i < coord.length; i++) {
