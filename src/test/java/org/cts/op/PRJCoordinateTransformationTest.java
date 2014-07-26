@@ -34,6 +34,7 @@ package org.cts.op;
 import org.cts.crs.CoordinateReferenceSystem;
 import org.cts.crs.GeodeticCRS;
 
+import org.cts.datum.GeodeticDatum;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
@@ -48,9 +49,12 @@ public class PRJCoordinateTransformationTest extends BaseCoordinateTransformTest
     @Test
     public void testLAMBEtoLAMB93PRJ() throws Exception {
         //IGN data : POINT (931813.94 1786923.891 2525.68) ID5863
-        double[] srcPoint = new double[]{282331, 2273699.7, 0};
+        double[] srcPoint = new double[]{282331, 2273699.7};
         //IGN data : POINT (977362.95 6218045.569 0)	ID5863
-        double[] expectedPoint = new double[]{332602.961893497, 6709788.26447893, 0};
+        double[] expectedPoint = new double[]{332602.961893497, 6709788.26447893};
+        GeodeticDatum.NTF.removeAllTransformations();
+        GeodeticDatum.NTF_PARIS.removeAllTransformations();
+        GeodeticDatum.RGF93.removeAllTransformations();
         String srcprj = "PROJCS[\"NTF_Lambert_II_étendu\",	GEOGCS[\"GCS_NTF\", DATUM[\"D_NTF\","
                 + "SPHEROID[\"Clarke_1866_IGN\",6378249.2,293.46602]], PRIMEM[\"Greenwich\",0.0],"
                 + "UNIT[\"Degree\",0.0174532925199433]], PROJECTION[\"Lambert_Conformal_Conic\"],"
@@ -79,9 +83,9 @@ public class PRJCoordinateTransformationTest extends BaseCoordinateTransformTest
     @Test
     public void testWGS84toLAMB93PRJ() throws Exception {
         //IGN data : POINT (931813.94 1786923.891 2525.68) ID5863
-        double[] srcPoint = new double[]{2.114551393, 50.345609791, 0};
+        double[] srcPoint = new double[]{2.114551393, 50.345609791};
         //IGN data : POINT (977362.95 6218045.569 0)	ID5863
-        double[] expectedPoint = new double[]{636890.74032145, 7027895.26344997, 0};
+        double[] expectedPoint = new double[]{636890.74032145, 7027895.26344997};
         String srcprj = "GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\","
                 + "SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],"
                 + "AUTHORITY[\"EPSG\",\"6326\"]],"
@@ -108,8 +112,8 @@ public class PRJCoordinateTransformationTest extends BaseCoordinateTransformTest
 
     @Test
     public void testMercatorPRJ() throws Exception {
-        double[] srcPoint = new double[]{120, -3, 0};
-        double[] expectedPoint = new double[]{5009726.58, 569150.82, 0};
+        double[] srcPoint = new double[]{120, -3};
+        double[] expectedPoint = new double[]{5009726.58, 569150.82};
         String srcprj = "GEOGCS[\"Makassar\",DATUM[\"Makassar\","
                 + "SPHEROID[\"Bessel 1841\",6377397.155,299.1528128,AUTHORITY[\"EPSG\",\"7004\"]],"
                 + "TOWGS84[-587.8,519.75,145.76,0,0,0,0],AUTHORITY[\"EPSG\",\"6257\"]],"
@@ -137,8 +141,8 @@ public class PRJCoordinateTransformationTest extends BaseCoordinateTransformTest
 
     @Test
     public void testUnitsInPRJ() throws Exception {
-        double[] srcPoint = new double[]{-62, 10, 0};
-        double[] expectedPoint = new double[]{66644.94, 82536.22, 0};
+        double[] srcPoint = new double[]{-62, 10};
+        double[] expectedPoint = new double[]{66644.94, 82536.22};
         String srcprj = "GEOGCS[\"Trinidad 1903\",\n"
                 + "    DATUM[\"Trinidad_1903\",\n"
                 + "        SPHEROID[\"Clarke 1858\",6378293.645208759,294.2606763692654,\n"
@@ -180,8 +184,8 @@ public class PRJCoordinateTransformationTest extends BaseCoordinateTransformTest
 
     @Test
     public void testCH1903toLV95PRJ() throws Exception {
-        double[] srcPoint = new double[]{8.486419798, 47.0580435, 0};
-        double[] expectedPoint = new double[]{2679520.05, 1212273.44, 0};
+        double[] srcPoint = new double[]{8.486419798, 47.0580435};
+        double[] expectedPoint = new double[]{2679520.05, 1212273.44};
         String srcprj = "GEOGCS[\"CH1903+\",\n"
                 + "    DATUM[\"CH1903\",\n"
                 + "        SPHEROID[\"Bessel 1841\",6377397.155,299.1528128,\n"

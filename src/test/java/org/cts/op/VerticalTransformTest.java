@@ -41,7 +41,12 @@ import org.cts.datum.GeodeticDatum;
 import org.cts.datum.VerticalDatum;
 
 import static org.junit.Assert.assertTrue;
+
+import org.cts.op.transformation.FrenchGeocentricNTF2RGF;
+import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Arrays;
 
 /**
  * This class tests transformation using CoumpoundCRS and VerticalCRS.
@@ -52,6 +57,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
 
     Geographic2DCRS RGF93crs = new Geographic2DCRS(new Identifier("EPSG", "4171", "RGF93"), GeodeticDatum.RGF93);
 
+
     @Test
     public void testIGN69() throws Exception {
         CompoundCRS crs = new CompoundCRS(new Identifier(CompoundCRS.class, "RGF93 + IGN69"), RGF93crs,
@@ -60,8 +66,8 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         double[] expectedPoint = new double[]{50 * PI / 180, 0, 94.194};
         double[] outputPoint = crs.toGeographicCoordinateConverter().transform(inputPoint.clone());
         double[] checkPoint = crs.fromGeographicCoordinateConverter().transform(expectedPoint.clone());
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
-        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-8, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-8, 1E-3));
     }
 
     @Test
@@ -73,8 +79,8 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         double[] expectedPoint = new double[]{50.09631762 * PI / 180, 3.69807131 * PI / 180, 144.492};
         double[] outputPoint = crs.toGeographicCoordinateConverter().transform(inputPoint.clone());
         double[] checkPoint = crs.fromGeographicCoordinateConverter().transform(expectedPoint.clone());
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
-        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-8, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3, 1E-3));
     }
 
     @Test
@@ -87,8 +93,8 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         double[] expectedPoint = new double[]{50.09631762, 3.69807131, 144.492};
         double[] outputPoint = transform(sourceCRS, targetCRS, inputPoint);
         double[] checkPoint = transform(targetCRS, sourceCRS, expectedPoint);
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", checkPoint, inputPoint, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-8, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", checkPoint, inputPoint, 1E-3, 1E-3));
     }
 
     @Test
@@ -99,8 +105,8 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         double[] expectedPoint = new double[]{42.2 * PI / 180, 9 * PI / 180, 150.224};
         double[] outputPoint = crs.toGeographicCoordinateConverter().transform(inputPoint.clone());
         double[] checkPoint = crs.fromGeographicCoordinateConverter().transform(expectedPoint.clone());
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
-        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-8, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-8, 1E-3));
     }
 
     @Test
@@ -115,8 +121,9 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         double[] expectedPoint = new double[]{697570.330, 2567559.095, 100.000};
         double[] outputPoint = transform(sourceCRS, targetCRS, inputPoint);
         double[] checkPoint = transform(targetCRS, sourceCRS, expectedPoint);
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", checkPoint, inputPoint, 1E-3));
+        System.out.println(Arrays.toString(outputPoint) + " (" + Arrays.toString(expectedPoint) + ")");
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", checkPoint, inputPoint, 1E-3, 1E-3));
     }
 
     @Test
@@ -127,8 +134,8 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         double[] expectedPoint = new double[]{16 * PI / 180, -61.5 * PI / 180, 59.747};
         double[] outputPoint = crs.toGeographicCoordinateConverter().transform(inputPoint.clone());
         double[] checkPoint = crs.fromGeographicCoordinateConverter().transform(expectedPoint.clone());
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
-        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-8, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-8, 1E-3));
     }
 
     @Test
@@ -139,8 +146,8 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         double[] expectedPoint = new double[]{16.3 * PI / 180, -61 * PI / 180, 55.584};
         double[] outputPoint = crs.toGeographicCoordinateConverter().transform(inputPoint.clone());
         double[] checkPoint = crs.fromGeographicCoordinateConverter().transform(expectedPoint.clone());
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
-        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-8, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-8, 1E-3));
     }
 
     @Test
@@ -151,8 +158,8 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         double[] expectedPoint = new double[]{15.9 * PI / 180, -61.5 * PI / 180, 60.010};
         double[] outputPoint = crs.toGeographicCoordinateConverter().transform(inputPoint.clone());
         double[] checkPoint = crs.fromGeographicCoordinateConverter().transform(expectedPoint.clone());
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
-        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-8, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-8, 1E-3));
     }
 
     @Test
@@ -163,8 +170,8 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         double[] expectedPoint = new double[]{14.5 * PI / 180, -61 * PI / 180, 61.765};
         double[] outputPoint = crs.toGeographicCoordinateConverter().transform(inputPoint.clone());
         double[] checkPoint = crs.fromGeographicCoordinateConverter().transform(expectedPoint.clone());
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
-        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-8, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-8, 1E-3));
     }
 
     @Test
@@ -175,8 +182,8 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         double[] expectedPoint = new double[]{16 * PI / 180, -61.2 * PI / 180, 58.652};
         double[] outputPoint = crs.toGeographicCoordinateConverter().transform(inputPoint.clone());
         double[] checkPoint = crs.fromGeographicCoordinateConverter().transform(expectedPoint.clone());
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
-        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-8, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-8, 1E-3));
     }
 
     @Test
@@ -187,8 +194,8 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         double[] expectedPoint = new double[]{17.9 * PI / 180, -62.8 * PI / 180, 57.365};
         double[] outputPoint = crs.toGeographicCoordinateConverter().transform(inputPoint.clone());
         double[] checkPoint = crs.fromGeographicCoordinateConverter().transform(expectedPoint.clone());
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
-        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-8, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-8, 1E-3));
     }
 
     @Test
@@ -199,8 +206,8 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         double[] expectedPoint = new double[]{18.1 * PI / 180, -63 * PI / 180, 56.727};
         double[] outputPoint = crs.toGeographicCoordinateConverter().transform(inputPoint.clone());
         double[] checkPoint = crs.fromGeographicCoordinateConverter().transform(expectedPoint.clone());
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
-        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-8, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-8, 1E-3));
     }
 
     @Test
@@ -211,8 +218,8 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         double[] expectedPoint = new double[]{4 * PI / 180, -53 * PI / 180, 66.370};
         double[] outputPoint = crs.toGeographicCoordinateConverter().transform(inputPoint.clone());
         double[] checkPoint = crs.fromGeographicCoordinateConverter().transform(expectedPoint.clone());
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
-        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-8, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-8, 1E-3));
     }
 
     @Test
@@ -226,8 +233,8 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         double[] expectedPoint = new double[]{277944.208, 442285.668, 100};
         double[] outputPoint = transform(crs, crs2, inputPoint);
         double[] checkPoint = transform(crs2, crs, expectedPoint);
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
-        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-8, 1E-3));
     }
 
     @Test
@@ -238,8 +245,8 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         double[] expectedPoint = new double[]{-13 * PI / 180, 45 * PI / 180, 80.292};
         double[] outputPoint = crs.toGeographicCoordinateConverter().transform(inputPoint.clone());
         double[] checkPoint = crs.fromGeographicCoordinateConverter().transform(expectedPoint.clone());
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
-        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-8, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-8, 1E-3));
     }
 
     @Test
@@ -258,9 +265,9 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         double[] checkPoint = transform(crs2, crs, expectedPoint);
         double[] expectedPoint2 = new double[]{499771.634, 8563128.517, 78.815};
         double[] outputPoint2 = transform(crs, crs3, inputPoint);
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
-        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint2, expectedPoint2, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-8, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint2, expectedPoint2, 1E-3, 1E-3));
     }
 
     @Test
@@ -271,8 +278,8 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         double[] expectedPoint = new double[]{-49 * PI / 180, 69 * PI / 180, 140.638};
         double[] outputPoint = crs.toGeographicCoordinateConverter().transform(inputPoint.clone());
         double[] checkPoint = crs.fromGeographicCoordinateConverter().transform(expectedPoint.clone());
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
-        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-8, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-8, 1E-3));
     }
 
     @Test
@@ -286,8 +293,8 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         double[] expectedPoint = new double[]{500202.123, 4572372.239, 100.000};
         double[] outputPoint = transform(crs, crs2, inputPoint);
         double[] checkPoint = transform(crs2, crs, expectedPoint);
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
-        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-8, 1E-3));
     }
 
     @Test
@@ -298,8 +305,8 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         double[] expectedPoint = new double[]{46.7 * PI / 180, -56.2 * PI / 180, 98.266};
         double[] outputPoint = crs.toGeographicCoordinateConverter().transform(inputPoint.clone());
         double[] checkPoint = crs.fromGeographicCoordinateConverter().transform(expectedPoint.clone());
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
-        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-8, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-8, 1E-3));
     }
 
     @Test
@@ -313,8 +320,8 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         double[] expectedPoint = new double[]{560806.129, 5182759.317, 100.000};
         double[] outputPoint = transform(crs, crs2, inputPoint);
         double[] checkPoint = transform(crs2, crs, expectedPoint);
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
-        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-8, 1E-3));
     }
 
     @Test
@@ -325,8 +332,8 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         double[] expectedPoint = new double[]{-16.5 * PI / 180, -151.7 * PI / 180, 109.954};
         double[] outputPoint = crs.toGeographicCoordinateConverter().transform(inputPoint.clone());
         double[] checkPoint = crs.fromGeographicCoordinateConverter().transform(expectedPoint.clone());
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
-        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-8, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-8, 1E-3));
     }
 
     @Test
@@ -337,8 +344,8 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         double[] expectedPoint = new double[]{-16 * PI / 180, -145.5 * PI / 180, 99.571};
         double[] outputPoint = crs.toGeographicCoordinateConverter().transform(inputPoint.clone());
         double[] checkPoint = crs.fromGeographicCoordinateConverter().transform(expectedPoint.clone());
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
-        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-8, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-8, 1E-3));
     }
 
     @Test
@@ -349,8 +356,8 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         double[] expectedPoint = new double[]{-23 * PI / 180, -135 * PI / 180, 92.027};
         double[] outputPoint = crs.toGeographicCoordinateConverter().transform(inputPoint.clone());
         double[] checkPoint = crs.fromGeographicCoordinateConverter().transform(expectedPoint.clone());
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
-        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-8, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-8, 1E-3));
     }
 
     @Test
@@ -361,8 +368,8 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         double[] expectedPoint = new double[]{-18 * PI / 180, -141 * PI / 180, 94.022};
         double[] outputPoint = crs.toGeographicCoordinateConverter().transform(inputPoint.clone());
         double[] checkPoint = crs.fromGeographicCoordinateConverter().transform(expectedPoint.clone());
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
-        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-8, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-8, 1E-3));
     }
 
     @Test
@@ -373,8 +380,8 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         double[] expectedPoint = new double[]{-9.8 * PI / 180, -139 * PI / 180, 101.980};
         double[] outputPoint = crs.toGeographicCoordinateConverter().transform(inputPoint.clone());
         double[] checkPoint = crs.fromGeographicCoordinateConverter().transform(expectedPoint.clone());
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
-        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-8, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-8, 1E-3));
     }
 
     @Test
@@ -385,8 +392,8 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         double[] expectedPoint = new double[]{-16.8 * PI / 180, -151 * PI / 180, 108.121};
         double[] outputPoint = crs.toGeographicCoordinateConverter().transform(inputPoint.clone());
         double[] checkPoint = crs.fromGeographicCoordinateConverter().transform(expectedPoint.clone());
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
-        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-8, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-8, 1E-3));
     }
 
     @Test
@@ -397,8 +404,8 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         double[] expectedPoint = new double[]{-17.5 * PI / 180, -149.5 * PI / 180, 108.196};
         double[] outputPoint = crs.toGeographicCoordinateConverter().transform(inputPoint.clone());
         double[] checkPoint = crs.fromGeographicCoordinateConverter().transform(expectedPoint.clone());
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
-        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-8, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-8, 1E-3));
     }
 
     @Test
@@ -409,8 +416,8 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         double[] expectedPoint = new double[]{-17.7 * PI / 180, -150.6 * PI / 180, 105.168};
         double[] outputPoint = crs.toGeographicCoordinateConverter().transform(inputPoint.clone());
         double[] checkPoint = crs.fromGeographicCoordinateConverter().transform(expectedPoint.clone());
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
-        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-8, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-8, 1E-3));
     }
 
     @Test
@@ -421,8 +428,8 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         double[] expectedPoint = new double[]{-14.9 * PI / 180, -148.6 * PI / 180, 102.484};
         double[] outputPoint = crs.toGeographicCoordinateConverter().transform(inputPoint.clone());
         double[] checkPoint = crs.fromGeographicCoordinateConverter().transform(expectedPoint.clone());
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
-        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-8, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-8, 1E-3));
     }
 
     @Test
@@ -433,8 +440,8 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         double[] expectedPoint = new double[]{-16.5 * PI / 180, -152.3 * PI / 180, 108.282};
         double[] outputPoint = crs.toGeographicCoordinateConverter().transform(inputPoint.clone());
         double[] checkPoint = crs.fromGeographicCoordinateConverter().transform(expectedPoint.clone());
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
-        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-8, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-8, 1E-3));
     }
 
     @Test
@@ -445,8 +452,8 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         double[] expectedPoint = new double[]{-17.5 * PI / 180, -149.9 * PI / 180, 106.686};
         double[] outputPoint = crs.toGeographicCoordinateConverter().transform(inputPoint.clone());
         double[] checkPoint = crs.fromGeographicCoordinateConverter().transform(expectedPoint.clone());
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
-        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-8, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-8, 1E-3));
     }
 
     @Test
@@ -457,8 +464,8 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         double[] expectedPoint = new double[]{-8.8 * PI / 180, -140 * PI / 180, 104.512};
         double[] outputPoint = crs.toGeographicCoordinateConverter().transform(inputPoint.clone());
         double[] checkPoint = crs.fromGeographicCoordinateConverter().transform(expectedPoint.clone());
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
-        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-8, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-8, 1E-3));
     }
 
     @Test
@@ -469,8 +476,8 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         double[] expectedPoint = new double[]{-16.8 * PI / 180, -151.5 * PI / 180, 109.936};
         double[] outputPoint = crs.toGeographicCoordinateConverter().transform(inputPoint.clone());
         double[] checkPoint = crs.fromGeographicCoordinateConverter().transform(expectedPoint.clone());
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
-        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-8, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-8, 1E-3));
     }
 
     @Test
@@ -481,8 +488,8 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         double[] expectedPoint = new double[]{-23.9 * PI / 180, -147.6 * PI / 180, 98.656};
         double[] outputPoint = crs.toGeographicCoordinateConverter().transform(inputPoint.clone());
         double[] checkPoint = crs.fromGeographicCoordinateConverter().transform(expectedPoint.clone());
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
-        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-8, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-8, 1E-3));
     }
 
     @Test
@@ -493,8 +500,8 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         double[] expectedPoint = new double[]{-18.5 * PI / 180, -136.4 * PI / 180, 91.930};
         double[] outputPoint = crs.toGeographicCoordinateConverter().transform(inputPoint.clone());
         double[] checkPoint = crs.fromGeographicCoordinateConverter().transform(expectedPoint.clone());
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
-        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-8, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-8, 1E-3));
     }
 
     @Test
@@ -505,8 +512,8 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         double[] expectedPoint = new double[]{-22.5 * PI / 180, -151.4 * PI / 180, 102.139};
         double[] outputPoint = crs.toGeographicCoordinateConverter().transform(inputPoint.clone());
         double[] checkPoint = crs.fromGeographicCoordinateConverter().transform(expectedPoint.clone());
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
-        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-8, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-8, 1E-3));
     }
 
     @Test
@@ -517,8 +524,8 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         double[] expectedPoint = new double[]{-16.6 * PI / 180, -151.4 * PI / 180, 109.790};
         double[] outputPoint = crs.toGeographicCoordinateConverter().transform(inputPoint.clone());
         double[] checkPoint = crs.fromGeographicCoordinateConverter().transform(expectedPoint.clone());
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
-        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-8, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-8, 1E-3));
     }
 
     @Test
@@ -529,8 +536,8 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         double[] expectedPoint = new double[]{-15 * PI / 180, -148 * PI / 180, 103.785};
         double[] outputPoint = crs.toGeographicCoordinateConverter().transform(inputPoint.clone());
         double[] checkPoint = crs.fromGeographicCoordinateConverter().transform(expectedPoint.clone());
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
-        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-8, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-8, 1E-3));
     }
 
     @Test
@@ -541,8 +548,8 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         double[] expectedPoint = new double[]{-23.3 * PI / 180, -149.5 * PI / 180, 99.899};
         double[] outputPoint = crs.toGeographicCoordinateConverter().transform(inputPoint.clone());
         double[] checkPoint = crs.fromGeographicCoordinateConverter().transform(expectedPoint.clone());
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
-        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-8, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-8, 1E-3));
     }
 
     @Test
@@ -553,8 +560,8 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         double[] expectedPoint = new double[]{-16.3 * PI / 180, -151.9 * PI / 180, 108.762};
         double[] outputPoint = crs.toGeographicCoordinateConverter().transform(inputPoint.clone());
         double[] checkPoint = crs.fromGeographicCoordinateConverter().transform(expectedPoint.clone());
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
-        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-8, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-8, 1E-3));
     }
 
     @Test
@@ -580,8 +587,8 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         double[] expectedPoint = new double[]{16 * PI / 180, -61.5 * PI / 180, 59.613};
         double[] outputPoint = crs.toGeographicCoordinateConverter().transform(inputPoint.clone());
         double[] checkPoint = crs.fromGeographicCoordinateConverter().transform(expectedPoint.clone());
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
-        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-8, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-8, 1E-3));
     }
 
     @Test
@@ -593,8 +600,8 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         double[] expectedPoint = new double[]{16.3 * PI / 180, -61 * PI / 180, 56.623};
         double[] outputPoint = crs.toGeographicCoordinateConverter().transform(inputPoint.clone());
         double[] checkPoint = crs.fromGeographicCoordinateConverter().transform(expectedPoint.clone());
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
-        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-8, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-8, 1E-3));
     }
 
     @Test
@@ -606,8 +613,8 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         double[] expectedPoint = new double[]{15.9 * PI / 180, -61.5 * PI / 180, 60.000};
         double[] outputPoint = crs.toGeographicCoordinateConverter().transform(inputPoint.clone());
         double[] checkPoint = crs.fromGeographicCoordinateConverter().transform(expectedPoint.clone());
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
-        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-8, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-8, 1E-3));
     }
 
     @Test
@@ -619,8 +626,8 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         double[] expectedPoint = new double[]{14.5 * PI / 180, -61 * PI / 180, 61.882};
         double[] outputPoint = crs.toGeographicCoordinateConverter().transform(inputPoint.clone());
         double[] checkPoint = crs.fromGeographicCoordinateConverter().transform(expectedPoint.clone());
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
-        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-8, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-8, 1E-3));
     }
 
     @Test
@@ -632,8 +639,8 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         double[] expectedPoint = new double[]{16 * PI / 180, -61.2 * PI / 180, 59.199};
         double[] outputPoint = crs.toGeographicCoordinateConverter().transform(inputPoint.clone());
         double[] checkPoint = crs.fromGeographicCoordinateConverter().transform(expectedPoint.clone());
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
-        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-8, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-8, 1E-3));
     }
 
     @Test
@@ -645,8 +652,8 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         double[] expectedPoint = new double[]{17.9 * PI / 180, -62.8 * PI / 180, 58.074};
         double[] outputPoint = crs.toGeographicCoordinateConverter().transform(inputPoint.clone());
         double[] checkPoint = crs.fromGeographicCoordinateConverter().transform(expectedPoint.clone());
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
-        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-8, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-8, 1E-3));
     }
 
     @Test
@@ -658,8 +665,8 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         double[] expectedPoint = new double[]{18.1 * PI / 180, -63 * PI / 180, 57.299};
         double[] outputPoint = crs.toGeographicCoordinateConverter().transform(inputPoint.clone());
         double[] checkPoint = crs.fromGeographicCoordinateConverter().transform(expectedPoint.clone());
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
-        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-8, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-8, 1E-3));
     }
 
     @Test
@@ -673,8 +680,8 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         double[] expectedPoint = new double[]{16.00000066, -61.50000549, 99.427};
         double[] outputPoint = transform(crs1, crs2, inputPoint);
         double[] checkPoint = transform(crs2, crs1, expectedPoint);
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
-        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-8, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-8, 1E-3));
     }
 
     @Test
@@ -688,8 +695,8 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         double[] expectedPoint = new double[]{16.30000109, -61.00000556, 100.612};
         double[] outputPoint = transform(crs1, crs2, inputPoint);
         double[] checkPoint = transform(crs2, crs1, expectedPoint);
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
-        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-8, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-8, 1E-3));
     }
 
     @Test
@@ -703,8 +710,8 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         double[] expectedPoint = new double[]{15.90000062, -61.50000542, 99.552};
         double[] outputPoint = transform(crs1, crs2, inputPoint);
         double[] checkPoint = transform(crs2, crs1, expectedPoint);
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
-        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-8, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-8, 1E-3));
     }
 
     @Test
@@ -718,8 +725,8 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         double[] expectedPoint = new double[]{14.49999981, -61.00000619, 100.017};
         double[] outputPoint = transform(crs1, crs2, inputPoint);
         double[] checkPoint = transform(crs2, crs1, expectedPoint);
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
-        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-8, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-8, 1E-3));
     }
 
     @Test
@@ -733,8 +740,8 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         double[] expectedPoint = new double[]{16.00000086, -61.20000540, 100.119};
         double[] outputPoint = transform(crs1, crs2, inputPoint);
         double[] checkPoint = transform(crs2, crs1, expectedPoint);
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
-        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-8, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-8, 1E-3));
     }
 
     @Test
@@ -748,8 +755,8 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         double[] expectedPoint = new double[]{17.90000142, -62.80000572, 100.114};
         double[] outputPoint = transform(crs1, crs2, inputPoint);
         double[] checkPoint = transform(crs2, crs1, expectedPoint);
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
-        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-8, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-8, 1E-3));
     }
 
     @Test
@@ -763,12 +770,12 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         double[] expectedPoint = new double[]{18.10000162, -63.00000537, 99.923};
         double[] outputPoint = transform(crs1, crs2, inputPoint);
         double[] checkPoint = transform(crs2, crs1, expectedPoint);
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
-        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-8, 1E-3));
+        assertTrue(checkEquals3D(" ellipsoidal height to altitude.", checkPoint, inputPoint, 1E-8, 1E-3));
     }
 
     @Test
-    public void testCompdCRS() throws CRSException, IllegalCoordinateException {
+    public void testCompdCRS() throws CRSException, IllegalCoordinateException, CoordinateOperationException {
         String prjString = "COMPD_CS[\"RGF93 / Lambert-93 + IGN69\",\n"
                 + "    PROJCS[\"RGF93 / Lambert-93\",\n"
                 + "        GEOGCS[\"RGF93\",\n"
@@ -826,8 +833,8 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         double[] expectedPoint = new double[]{3.69807131, 50.09631762, 144.492};
         double[] outputPoint = transform(sourceCRS, targetCRS, inputPoint);
         double[] checkPoint = transform(targetCRS, sourceCRS, expectedPoint);
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", checkPoint, inputPoint, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-8, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", checkPoint, inputPoint, 1E-3, 1E-3));
     }
 
     @Test
@@ -844,7 +851,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void testGeocentricCRS() throws CRSException, IllegalCoordinateException {
+    public void testGeocentricCRS() throws CRSException, IllegalCoordinateException, CoordinateOperationException {
         CompoundCRS sourceCRS = new CompoundCRS(new Identifier(CompoundCRS.class, "NTF LAMB2E + IGN69"),
                 (ProjectedCRS) cRSFactory.getCRS("IGNF:LAMBE"),
                 new VerticalCRS(new Identifier("EPSG", "5720", "IGN69"), VerticalDatum.IGN69, VerticalCRS.ALTITUDE_CS));
@@ -868,7 +875,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         double[] expectedPoint = new double[]{4294839.989, 225283.135, 4694418.993};
         double[] outputPoint = transform(sourceCRS, targetCRS, inputPoint);
         double[] checkPoint = transform(targetCRS, sourceCRS, expectedPoint);
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3));
-        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", checkPoint, inputPoint, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", outputPoint, expectedPoint, 1E-3, 1E-3));
+        assertTrue(checkEquals3D(" altitude to ellipsoidal height.", checkPoint, inputPoint, 1E-3, 1E-3));
     }
 }

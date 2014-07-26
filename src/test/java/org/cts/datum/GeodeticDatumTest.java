@@ -115,4 +115,21 @@ public class GeodeticDatumTest extends CTSTestCase {
         Identifier id = new Identifier("EPSG", "6171", "Réseau géodésique français 1993", "RGF93");
         assertTrue("test de getDatum(id)", IdentifiableComponent.getComponent(id).equals(RGF93));
     }
+
+    @Test
+    public void testCreateGeodeticDatum() {
+        GeodeticDatum datum = GeodeticDatum.createGeodeticDatum(new Identifier(GeodeticDatum.class,"MyDatum"),
+                PrimeMeridian.PARIS, Ellipsoid.GRS80,
+                new GeocentricTranslation(10,10,10), new GeographicExtent("",0, 0, 0, 0), "","");
+        //datum.addGeocentricTransformation(WGS84, new GeocentricTranslation(10,10,10));
+        assertTrue(datum.getPrimeMeridian().equals(PrimeMeridian.PARIS));
+        assertTrue(datum.getEllipsoid().equals(Ellipsoid.GRS80));
+        assertTrue(datum.getToWGS84().equals(new GeocentricTranslation(10,10,10)));
+        assertTrue(datum.getGeocentricTransformations(WGS84).size()>0);
+        assertTrue(datum.getGeocentricTransformations(WGS84).iterator().next().equals(new GeocentricTranslation(10,10,10)));
+        assertTrue(WGS84.getGeocentricTransformations(datum).size()>0);
+        assertTrue(WGS84.getGeocentricTransformations(datum).iterator().next().equals(new GeocentricTranslation(-10,-10,-10)));
+        //System.out.println(datum.getGeographicTransformations(WGS84));
+        //System.out.println(WGS84.getGeographicTransformations(datum));
+    }
 }
