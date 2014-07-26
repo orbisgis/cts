@@ -52,13 +52,14 @@ import org.cts.op.NonInvertibleOperationException;
  * convention, used in Bursa-Wolf formulas are widely used in Europe. It is used
  * by the International Association of Geodesy and recommended by ISO 19111). In
  * this convention, rx, ry and rz are the rotations to be applied to the point's
- * vector.</li> <li>The CoordinateFrame convention use opposite values for
+ * vector.</li> <li>The CoordinateFrame convention uses opposite values for
  * rotations. In this convention, most used in USA and recommended by NATO,
  * rotation parameters represent rotations to be applied to the frame.</li>
  *
  * @author Michaël Michaud
  */
-public class SevenParameterTransformation extends AbstractCoordinateOperation implements GeoTransformation {
+public class SevenParameterTransformation extends AbstractCoordinateOperation
+        implements GeoTransformation, ParamBasedTransformation {
 
     /**
      * POSITION_VECTOR sign convention is such that a positive rotation about an
@@ -70,6 +71,7 @@ public class SevenParameterTransformation extends AbstractCoordinateOperation im
      * Conversions and Transformations including Formulas - Revised April 2006]
      */
     public final static int POSITION_VECTOR = 0;
+
     /**
      * COORDINATE_FRAME sign convention is such that a positive rotation of the
      * frame about an axis is defined as a clockwise rotation of the coordinate
@@ -82,22 +84,28 @@ public class SevenParameterTransformation extends AbstractCoordinateOperation im
      * Revised April 2006]
      */
     public final static int COORDINATE_FRAME = 1;
+
     /**
      * LINEARIZED when formulas use x (rad) instead of sin(x).
      */
     public final static boolean LINEARIZED = true;
+
     /**
      * NOT_LINEARIZED when formulas use exact sin(x) function.
      */
     public final static boolean NOT_LINEARIZED = false;
-    private final static Identifier idBW = new Identifier("EPSG", "9606", "Position vector 7 parameter transformation (linearized)", "Bursa-Wolf (lin.)");
-    private final static Identifier idSinBW = new Identifier(SevenParameterTransformation.class, "Position vector 7 parameter transformation");
-    private final static Identifier idCFR = new Identifier("EPSG", "9607", "Frame Rotation (lin.)", "Coordinate Frame rotation (linearized)");
+
+    private final static Identifier idBW = new Identifier("EPSG", "1033", "Position vector 7-parameter transformation (linearized)", "Bursa-Wolf (lin.)");
+    private final static Identifier idSinBW = new Identifier(SevenParameterTransformation.class, "Position vector 7-parameter transformation");
+    private final static Identifier idCFR = new Identifier("EPSG", "1032", "Frame Rotation (lin.)", "Coordinate Frame rotation (linearized)");
     private final static Identifier idSinCFR = new Identifier(SevenParameterTransformation.class, "Coordinate Frame rotation");
-    private final static Identifier idT = new Identifier("EPSG", "9603", "Geocentric translation", "Translation");
+    private final static Identifier idT = new Identifier("EPSG", "1031", "Geocentric translation", "Translation");
     private final double tx, ty, tz, rx, ry, rz, scale;
     private final int rotationConvention;
     private final boolean linearized;
+
+    // Inverse transformation
+    private SevenParameterTransformation inverse;
 
     /**
      * <p>7-parameter transformation for geodesy calculation.</p>
@@ -173,7 +181,7 @@ public class SevenParameterTransformation extends AbstractCoordinateOperation im
                 rx_sec * Math.PI / 180.0 / 3600.0,
                 ry_sec * Math.PI / 180.0 / 3600.0,
                 rz_sec * Math.PI / 180.0 / 3600.0,
-                1.0 + ds_ppm / 1000000.0, rotationConvention, linearized, 1E-9);
+                1.0 + ds_ppm / 1000000.0, rotationConvention, linearized, 0.5);
     }
 
     /**
@@ -234,7 +242,24 @@ public class SevenParameterTransformation extends AbstractCoordinateOperation im
                 rx_sec * Math.PI / 180.0 / 3600.0,
                 ry_sec * Math.PI / 180.0 / 3600.0,
                 rz_sec * Math.PI / 180.0 / 3600.0,
-                1.0 + ds_ppm / 1000000.0, POSITION_VECTOR, LINEARIZED, 0.000000001);
+                1.0 + ds_ppm / 1000000.0, POSITION_VECTOR, LINEARIZED, 0.5);
+    }
+
+    public static SevenParameterTransformation createBursaWolfTransformation(
+            double tx, double ty, double tz,
+            double rx_sec, double ry_sec, double rz_sec, double ds_ppm,
+            final SevenParameterTransformation inverse) {
+        return new SevenParameterTransformation(
+                tx, ty, tz,
+                rx_sec * Math.PI / 180.0 / 3600.0,
+                ry_sec * Math.PI / 180.0 / 3600.0,
+                rz_sec * Math.PI / 180.0 / 3600.0,
+                1.0 + ds_ppm / 1000000.0, POSITION_VECTOR, LINEARIZED, 0.5) {
+            @Override
+            public SevenParameterTransformation inverse() {
+                return inverse;
+            }
+        };
     }
 
     /**
@@ -299,7 +324,7 @@ public class SevenParameterTransformation extends AbstractCoordinateOperation im
                 rx_sec * Math.PI / 180.0 / 3600.0,
                 ry_sec * Math.PI / 180.0 / 3600.0,
                 rz_sec * Math.PI / 180.0 / 3600.0,
-                1.0 + ds_ppm / 1000000.0, COORDINATE_FRAME, LINEARIZED, 1E-9);
+                1.0 + ds_ppm / 1000000.0, COORDINATE_FRAME, LINEARIZED, 0.5);
     }
 
     /**
@@ -365,9 +390,16 @@ public class SevenParameterTransformation extends AbstractCoordinateOperation im
      * Creates the inverse CoordinateOperation.
      */
     @Override
-    public CoordinateOperation inverse() throws NonInvertibleOperationException {
-        // should throw NonInvertibleOperationException
-        // for linearized operation with large rotations
+    public SevenParameterTransformation inverse() throws NonInvertibleOperationException {
+        // If inverse has already been calculated, return cached object.
+        if (inverse != null) return inverse;
+        return inverse = inverseStandard();
+    }
+
+    // We can inverse a seven-parameter transformation by negating the sign of all parameters
+    // but we don't get an exact inverse (about 2 cm with a 10" rotation and 1 m with a 100" rotation)
+    // With the above inverse formula, the transformation is stable, even after several back and forth
+    public SevenParameterTransformation inverseStandard() {
         return new SevenParameterTransformation(tx, ty, tz, rx, ry, rz, scale,
                 rotationConvention, linearized, precision) {
             @Override
@@ -392,10 +424,67 @@ public class SevenParameterTransformation extends AbstractCoordinateOperation im
             }
 
             @Override
-            public CoordinateOperation inverse() throws NonInvertibleOperationException {
-                return new SevenParameterTransformation(tx, ty, tz, rx, ry, rz, scale,
-                        rotationConvention, linearized, precision);
+            public SevenParameterTransformation inverse() throws NonInvertibleOperationException {
+                return SevenParameterTransformation.this;
             }
+
+            @Override
+            public double getPrecision() {
+                if (linearized == NOT_LINEARIZED) return precision;
+                // If the transformation is linearized, inverseTransformation return a lesser precision
+                // so that direct transformation may always have priority over inverse transformation.
+                else if (Math.abs(rx) + Math.abs(ry) + Math.abs(rz) < 0.0001) return precision*0.9;
+                else if (Math.abs(rx) + Math.abs(ry) + Math.abs(rz) < 0.001) return precision*0.5;
+                else return precision*0.1;
+            }
+        };
+    }
+
+    // IGN ALG0063
+    // @TODO from my tests, results are not as stable as with inverseStandard
+    public SevenParameterTransformation inverse0063() {
+
+        return new SevenParameterTransformation(tx, ty, tz, rx, ry, rz, scale,
+                rotationConvention, linearized, precision) {
+            @Override
+            public double[] transform(double[] coord) throws IllegalCoordinateException {
+                if (coord.length < 3) {
+                    throw new CoordinateDimensionException(coord, 3);
+                }
+                double rotationSign = (rotationConvention == POSITION_VECTOR) ? 1.0 : -1.0;
+                double x = coord[0] - tx;
+                double y = coord[1] - ty;
+                double z = coord[2] - tz;
+                double srx = rx * rotationSign;
+                double sry = ry * rotationSign;
+                double srz = rz * rotationSign;
+                srx = linearized ? srx : sin(srx);
+                sry = linearized ? sry : sin(sry);
+                srz = linearized ? srz : sin(srz);
+                double e = scale;
+                double e2 = e*e;
+                double det = e * (e2 + srx*srx + sry*sry + srz*srz);
+                coord[0] = (x * (e2 + srx*srx) + z * (srx*srz - e*sry) + y * (e*srz + srx*sry)) / det;
+                coord[1] = (y * (e2 + sry*sry) + x * (sry*srx - e*srz) + z * (e*srx + sry*srz)) / det;
+                coord[2] = (z * (e2 + srz*srz) + y * (srz*sry - e*srx) + x * (e*sry + srz*srx)) / det;
+                return coord;
+            }
+
+            @Override
+            public SevenParameterTransformation inverse() throws NonInvertibleOperationException {
+                return SevenParameterTransformation.this;
+            }
+
+            @Override
+            public double getPrecision() {
+                if (linearized == NOT_LINEARIZED) return precision;
+                    // If the transformation is linearized, inverseTransformation return a lesser precision
+                    // so that direct transformation may always have priority over inverse transformation.
+                else if (Math.abs(rx) + Math.abs(ry) + Math.abs(rz) < 0.0001) return precision*0.9;
+                else if (Math.abs(rx) + Math.abs(ry) + Math.abs(rz) < 0.001) return precision*0.5;
+                else return precision*0.1;
+            }
+
         };
     }
 
@@ -468,24 +557,28 @@ public class SevenParameterTransformation extends AbstractCoordinateOperation im
     }
 
     /**
-     * Returns true if object is equals to
-     * <code>this</code>. Tests equality between the references of both object,
-     * then tests if the seven parameters values (tx, ty, tz, etc) used by each
-     * SevenParameterTransformation are equals.
+     * Returns true if o is equals to <code>this</code>.
+     * SevenParametersTransformations are equals if they both are identity, or
+     * if all their parameters are equal.
      *
-     * @param object The object to compare this ProjectedCRS against
+     * @param o The object to compare this ProjectedCRS against
      */
     @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (o instanceof SevenParameterTransformation) {
-            SevenParameterTransformation transfo = (SevenParameterTransformation) o;
-            return ((this.tx == transfo.tx) && (this.ty == transfo.ty) && (this.tz == transfo.tz)
+        if (o instanceof CoordinateOperation) {
+            if (this.isIdentity() && ((CoordinateOperation)o).isIdentity()) {
+                return true;
+            }
+            if (o instanceof SevenParameterTransformation) {
+                SevenParameterTransformation transfo = (SevenParameterTransformation) o;
+                return ((this.tx == transfo.tx) && (this.ty == transfo.ty) && (this.tz == transfo.tz)
                     && (this.rx == transfo.rx) && (this.ry == transfo.ry) && (this.rz == transfo.rz)
                     && (this.scale == transfo.scale) && (this.rotationConvention == transfo.rotationConvention)
                     && (this.linearized == transfo.linearized));
+            }
         }
         return false;
     }
@@ -495,6 +588,7 @@ public class SevenParameterTransformation extends AbstractCoordinateOperation im
      */
     @Override
     public int hashCode() {
+        if (isIdentity()) return 0;
         int hash = 5;
         hash = 67 * hash + (int) (Double.doubleToLongBits(this.tx) ^ (Double.doubleToLongBits(this.tx) >>> 32));
         hash = 67 * hash + (int) (Double.doubleToLongBits(this.ty) ^ (Double.doubleToLongBits(this.ty) >>> 32));
@@ -506,5 +600,12 @@ public class SevenParameterTransformation extends AbstractCoordinateOperation im
         hash = 67 * hash + this.rotationConvention;
         hash = 67 * hash + (this.linearized ? 1 : 0);
         return hash;
+    }
+
+    /**
+     * @return true if this operation does not change coordinates.
+     */
+    public boolean isIdentity() {
+        return tx == 0.0 && ty == 0.0 && tz == 0.0 && rx == 0 && ry == 0 && rz == 0 && scale == 1;
     }
 }
