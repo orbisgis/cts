@@ -60,8 +60,9 @@ import static org.cts.units.Unit.METER;
 import static org.cts.units.Unit.RADIAN;
 
 /**
- * <p> A Geographic CoordinateReferenceSystem is a reference system based on a
- * GeodeticDatum and a 2D or 3D Ellipsoidal Coordinate System. </p> <p>
+ * <p>A {@link org.cts.crs.CoordinateReferenceSystem} based on a
+ * {@link org.cts.datum.GeodeticDatum} and a 3D Ellipsoidal
+ * {@link org.cts.cs.CoordinateSystem}.</p>
  *
  * @author Michaël Michaud
  */
@@ -72,54 +73,59 @@ public class Geographic3DCRS extends GeodeticCRS {
      * second {@link Axis} contains longitude and third axis contains
      * ellipsoidal height. The units used by these axes are radian and meter.
      */
-    public static CoordinateSystem LATLONH_RRM_CS = new CoordinateSystem(
+    public static final CoordinateSystem LATLONH_RRM_CS = new CoordinateSystem(
             new Axis[]{LATITUDE, LONGITUDE, HEIGHT}, new Unit[]{RADIAN,
         RADIAN, METER});
+
     /**
      * A 3D {@link CoordinateSystem} whose first {@link Axis} contains
      * longitude, second {@link Axis} contains latitude and third axis contains
      * ellipsoidal height. The units used by these axes are radian and meter.
      */
-    public static CoordinateSystem LONLATH_RRM_CS = new CoordinateSystem(
+    public static final CoordinateSystem LONLATH_RRM_CS = new CoordinateSystem(
             new Axis[]{LONGITUDE, LATITUDE, HEIGHT}, new Unit[]{RADIAN,
         RADIAN, METER});
+
     /**
      * A 3D {@link CoordinateSystem} whose first {@link Axis} contains latitude,
      * second {@link Axis} contains longitude and third axis contains
      * ellipsoidal height. The units used by these axes are decimal degree and
      * meter.
      */
-    public static CoordinateSystem LATLONH_DDM_CS = new CoordinateSystem(
+    public static final CoordinateSystem LATLONH_DDM_CS = new CoordinateSystem(
             new Axis[]{LATITUDE, LONGITUDE, HEIGHT}, new Unit[]{DEGREE,
         DEGREE, METER});
+
     /**
      * A 3D {@link CoordinateSystem} whose first {@link Axis} contains
      * longitude, second {@link Axis} contains latitude and third axis contains
      * ellipsoidal height. The units used by these axes are decimal degree and
      * meter.
      */
-    public static CoordinateSystem LONLATH_DDM_CS = new CoordinateSystem(
+    public static final CoordinateSystem LONLATH_DDM_CS = new CoordinateSystem(
             new Axis[]{LONGITUDE, LATITUDE, HEIGHT}, new Unit[]{DEGREE,
         DEGREE, METER});
+
     /**
      * A 3D {@link CoordinateSystem} whose first {@link Axis} contains latitude,
      * second {@link Axis} contains longitude and third axis contains
      * ellipsoidal height. The units used by these axes are grad and meter.
      */
-    public static CoordinateSystem LATLONH_GGM_CS = new CoordinateSystem(
+    public static final CoordinateSystem LATLONH_GGM_CS = new CoordinateSystem(
             new Axis[]{LATITUDE, LONGITUDE, HEIGHT}, new Unit[]{GRAD,
         GRAD, METER});
+
     /**
      * A 3D {@link CoordinateSystem} whose first {@link Axis} contains
      * longitude, second {@link Axis} contains latitude and third axis contains
      * ellipsoidal height. The units used by these axes are grad and meter.
      */
-    public static CoordinateSystem LONLATH_GGM_CS = new CoordinateSystem(
+    public static final CoordinateSystem LONLATH_GGM_CS = new CoordinateSystem(
             new Axis[]{LONGITUDE, LATITUDE, HEIGHT}, new Unit[]{GRAD,
         GRAD, METER});
 
     /**
-     * Create a new Geographic3DCRS.
+     * Creates a new Geographic3DCRS.
      *
      * @param identifier the identifier of the Geographic3DCRS
      * @param datum the datum associated with the Geographic3DCRS
@@ -131,7 +137,7 @@ public class Geographic3DCRS extends GeodeticCRS {
     }
 
     /**
-     * Create a new Geographic2DCRS. The first {@link Axis} of the associated
+     * Creates a new Geographic2DCRS. The first {@link Axis} of the associated
      * {@link CoordinateSystem} contains latitude, the second {@link Axis}
      * contains longitude and the third contains the ellipsoidal height in
      * meters.
@@ -149,14 +155,17 @@ public class Geographic3DCRS extends GeodeticCRS {
             this.coordinateSystem = LATLONH_DDM_CS;
         } else if (unit == GRAD) {
             this.coordinateSystem = LATLONH_GGM_CS;
-        } else;
+        } else {
+            // default unit
+            this.coordinateSystem = LATLONH_RRM_CS;
+        }
     }
 
     /**
-     * Create a new Geographic3DCRS. The first {@link Axis} of the associated
+     * Creates a new Geographic3DCRS. The first {@link Axis} of the associated
      * {@link CoordinateSystem} contains latitude, the second {@link Axis}
-     * contains longitude and the third contains the ellipsoidal height in
-     * meters.
+     * contains longitude and the third contains the ellipsoidal height.
+     * Latitude and longitude are in decimal degrees while height is in meters.
      *
      * @param identifier the identifier of the Geographic2DCRS
      * @param datum the datum associated with the Geographic2DCRS
@@ -177,9 +186,7 @@ public class Geographic3DCRS extends GeodeticCRS {
      * @see GeodeticCRS#getProjection()
      */
     @Override
-    public Projection getProjection() {
-        return null;
-    }
+    public Projection getProjection() { return null; }
 
     /**
      * @see GeodeticCRS#toGeographicCoordinateConverter()
@@ -233,8 +240,8 @@ public class Geographic3DCRS extends GeodeticCRS {
 
     /**
      * Returns a WKT representation of the geographic 3D CRS.
-     *
      */
+    @Override
     public String toWKT() {
         StringBuilder w = new StringBuilder();
         w.append("GEOGCS[\"");
