@@ -123,14 +123,49 @@ public class CTSTestCase {
         double dx = Math.abs(c1[0] - c2[0]);
         double dy = Math.abs(c1[1] - c2[1]);
         double delta = Math.max(dx, dy);
+        System.out.println("" + delta + " < " + tolerance);
         boolean isInTol = delta <= tolerance;
         if (isInTol) {
-            LOGGER.debug("TRUE : From " + test + " Result point : " + Arrays.toString(c1) + " = expected point : "
+            LOGGER.debug("TRUE : " + test + " Result point : " + Arrays.toString(c1) + " = expected point : "
                     + Arrays.toString(c2) + " <= " + tolerance);
             return true;
         } else {
-            LOGGER.debug("FALSE : From " + test + " Result point : " + Arrays.toString(c1) + " compare to expected point : "
+            LOGGER.debug("FALSE : " + test + " Result point : " + Arrays.toString(c1) + " compare to expected point : "
                     + Arrays.toString(c2) + " = " + (tolerance - delta));
+            return false;
+        }
+    }
+
+    /**
+     * Check if the result point is equal in X, Y and Z to the target point
+     * using an epsilon clause
+     *
+     * @param test
+     * @param c1 expected coordinates
+     * @param c2 actual coordinates
+     * @param tolerance
+     */
+    protected boolean checkEquals3D(String test, double[] c1, double[] c2, double tolerance, double toleranceZ) {
+        double dx = Math.abs(c1[0] - c2[0]);
+        double dy = Math.abs(c1[1] - c2[1]);
+        double dz = Math.abs(c1[2] - c2[2]);
+        if (dx <= tolerance && dy <= tolerance && dz <= toleranceZ) {
+            System.out.println("TRUE : " + test + " Result point : " + Arrays.toString(c1) + " = expected point : "
+                    + Arrays.toString(c2) + " <= " + tolerance);
+            LOGGER.debug("TRUE : " + test + " Result point : " + Arrays.toString(c1) + " = expected point : "
+                    + Arrays.toString(c2) + " <= " + tolerance);
+            return true;
+        } else if (dx > tolerance || dy > tolerance) {
+            System.out.println("FALSE : " + test + " Result point : " + Arrays.toString(c1) + " compare to expected point : "
+                    + Arrays.toString(c2) + " = " + (tolerance - Math.max(dx, dy)));
+            LOGGER.debug("FALSE : " + test + " Result point : " + Arrays.toString(c1) + " compare to expected point : "
+                    + Arrays.toString(c2) + " = " + (tolerance - Math.max(dx, dy)));
+            return false;
+        } else {
+            System.out.println("FALSE : " + test + " Result point : " + Arrays.toString(c1) + " compare to expected point : "
+                    + Arrays.toString(c2) + " = " + (toleranceZ - dz));
+            LOGGER.debug("FALSE : " + test + " Result point : " + Arrays.toString(c1) + " compare to expected point : "
+                    + Arrays.toString(c2) + " = " + (toleranceZ - dz));
             return false;
         }
     }
@@ -148,15 +183,14 @@ public class CTSTestCase {
         double dx = Math.abs(c1[0] - c2[0]);
         double dy = Math.abs(c1[1] - c2[1]);
         double dz = Math.abs(c1[2] - c2[2]);
-        double delta = Math.max(Math.max(dx, dy), dz);
-        boolean isInTol = delta <= tolerance;
+        boolean isInTol = dx <= tolerance && dy <= tolerance && dz <= tolerance;
         if (isInTol) {
-            LOGGER.debug("TRUE : From " + test + " Result point : " + Arrays.toString(c1) + " = expected point : "
+            LOGGER.debug("TRUE : " + test + " Result point : " + Arrays.toString(c1) + " = expected point : "
                     + Arrays.toString(c2) + " <= " + tolerance);
             return true;
         } else {
-            LOGGER.debug("FALSE : From " + test + " Result point : " + Arrays.toString(c1) + " compare to expected point : "
-                    + Arrays.toString(c2) + " = " + (tolerance - delta));
+            LOGGER.debug("FALSE : " + test + " Result point : " + Arrays.toString(c1) + " compare to expected point : "
+                    + Arrays.toString(c2) + " = " + (tolerance - Math.max(Math.max(dx, dy), dz)));
             return false;
         }
     }
