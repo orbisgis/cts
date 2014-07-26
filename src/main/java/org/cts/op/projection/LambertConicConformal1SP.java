@@ -64,7 +64,7 @@ import static java.lang.Math.tan;
 public class LambertConicConformal1SP extends Projection {
 
     /**
-     * The Identifier used for all Cylindrical Equal Area projection.
+     * The Identifier used for all Lambert Conic Conformal projections.
      */
     public static final Identifier LCC1SP =
             new Identifier("EPSG", "9801", "Lambert Conic Conformal (1SP)", "Lambert tangent");
@@ -125,8 +125,6 @@ public class LambertConicConformal1SP extends Projection {
     public LambertConicConformal1SP(final Ellipsoid ellipsoid,
             final Map<String, Measure> parameters) {
         super(LCC1SP, ellipsoid, parameters);
-        double semimajor = getSemiMajorAxis();
-        double semiminor = getSemiMinorAxis();
         double lat0 = getLatitudeOfOrigin();
         lon0 = getCentralMeridian();
         double k0 = getScaleFactor();
@@ -147,7 +145,7 @@ public class LambertConicConformal1SP extends Projection {
      *
      * @param latitude_of_origin latitude of origin of the projection in degrees
      * @param scale_factor scale factor of the projection
-     * @param central_meridian central meridian of the projection en degrees
+     * @param central_meridian central meridian of the projection in degrees
      * @param false_easting false easting in meters
      * @param false_northing false northing in meters
      */

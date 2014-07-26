@@ -31,14 +31,17 @@
  */
 package org.cts.op.projection;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.cts.CoordinateDimensionException;
 import org.cts.Identifier;
+import org.cts.Parameter;
 import org.cts.datum.Ellipsoid;
 import org.cts.op.CoordinateOperation;
 import org.cts.op.NonInvertibleOperationException;
 import org.cts.units.Measure;
+import org.cts.units.Unit;
 import org.cts.util.Complex;
 
 /**
@@ -53,22 +56,26 @@ public class UniversalTransverseMercator extends Projection {
      */
     public static final Identifier UTM =
             new Identifier("EPSG", "9824", "Transverse Mercator Zoned Grid System", "UTM");
+
+    public static final String NORTH = "NORTH";
+    public static final String SOUTH = "SOUTH";
+
     protected final double FE, // false easting
             lon0, // the reference longitude (from the datum prime meridian)
             n, // projection exponent
             xs, // x coordinate of the pole
             ys;   // y coordinate of the pole
+
     protected final double[] dircoeff, invcoeff;
 
     /**
-     * Create a new Universal Transverse Mercator Projection corresponding to
-     * the
-     * <code>Ellipsoid</code> and the list of parameters given in argument and
-     * initialize common parameters lon0, FE and other parameters useful for the
-     * projection.
+     * Creates a new Universal Transverse Mercator Projection based on the given
+     * <code>Ellipsoid</code> and parameters (must contain Central Meridian and
+     * False Northing)
      *
      * @param ellipsoid ellipsoid used to define the projection.
-     * @param parameters a map of useful parameters to define the projection.
+     * @param parameters a map of parameters to define the projection.
+     *                   Must include Central Meridian and False Northing
      */
     public UniversalTransverseMercator(final Ellipsoid ellipsoid,
             final Map<String, Measure> parameters) {
@@ -84,6 +91,25 @@ public class UniversalTransverseMercator extends Projection {
         ys = y0 - n * ellipsoid.curvilinearAbscissa(lat0);
         dircoeff = getDirectUTMCoeff(ellipsoid);
         invcoeff = getInverseUTMCoeff(ellipsoid);
+    }
+
+    /**
+     * Creates a new Universal Transverse Mercator Projection based on the given
+     * <code>Ellipsoid</code>, for the given zone and the given hemisphere.
+     *
+     * @param ellipsoid ellipsoid used to define the projection.
+     * @param zone the UTM zone
+     */
+    public static UniversalTransverseMercator createUTM(final Ellipsoid ellipsoid, final int zone, final String hemisphere) {
+        Map parameters = new HashMap();
+        parameters.put(Parameter.CENTRAL_MERIDIAN, new Measure(6.0*((double)zone-31.0)+3.0, Unit.DEGREE));
+        if (hemisphere.equalsIgnoreCase("SOUTH")) {
+            parameters.put(Parameter.FALSE_NORTHING, new Measure(10000000,Unit.METER));
+        }
+        else {
+            parameters.put(Parameter.FALSE_NORTHING, new Measure(0, Unit.METER));
+        }
+        return new UniversalTransverseMercator(ellipsoid, parameters);
     }
 
     /**

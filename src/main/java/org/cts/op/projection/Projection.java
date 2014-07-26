@@ -90,7 +90,7 @@ public abstract class Projection extends AbstractCoordinateOperation {
         PSEUDOCONICAL,
         PSEUDOCYLINDRICAL,
         RETROAZIMUTHAL
-    };
+    }
 
     /**
      * Projection property.
@@ -114,7 +114,7 @@ public abstract class Projection extends AbstractCoordinateOperation {
         SECANT,
         TANGENT,
         TRANSVERSE
-    };
+    }
     /**
      * Ellispoid used for this projection.
      */
@@ -300,7 +300,7 @@ public abstract class Projection extends AbstractCoordinateOperation {
      * <code>this</code>. Tests equality between the references of both object,
      * then tests if the string representation of these objects are equals.
      *
-     * @param object The object to compare this ProjectedCRS against
+     * @param o The object to compare this ProjectedCRS against
      */
     @Override
     public boolean equals(Object o) {

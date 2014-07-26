@@ -60,11 +60,8 @@ public class UniversalTransverseMercatorAuto extends Projection {
     protected final double[] dircoeff, invcoeff;
 
     /**
-     * Create a new Universal Transverse Mercator Projection corresponding to
-     * the
-     * <code>Ellipsoid</code> given in argument and a default set of parameters
-     * and initialize common parameters lat0 and other parameters useful for the
-     * projection.
+     * Creates a new Universal Transverse Mercator Projection based on the given
+     * <code>Ellipsoid</code> and parameters.
      *
      * @param ellipsoid ellipsoid used to define the projection.
      * @param parameters a map of useful parameters to define the projection.

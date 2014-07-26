@@ -144,8 +144,6 @@ public class NewZealandMapGrid extends Projection {
      * meters. Algorithm based on the USGS professional paper 1395, "Map
      * Projection - A Working Manual" by John P. Snyder :
      * <http://pubs.er.usgs.gov/publication/pp1395>
-     *
-     * @param coord coordinate to transform
      */
     @Override
     public CoordinateOperation inverse() throws NonInvertibleOperationException {

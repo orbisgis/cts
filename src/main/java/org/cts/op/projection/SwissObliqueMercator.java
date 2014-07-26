@@ -182,8 +182,6 @@ public class SwissObliqueMercator extends Projection {
      * in meters. Algorithm based on a Swiss Federal Office of Topography
      * document:
      * <http://www.swisstopo.admin.ch/internet/swisstopo/en/home/topics/survey/sys/refsys/switzerland.parsysrelated1.37696.downloadList.97912.DownloadFile.tmp/swissprojectionen.pdf>
-     *
-     * @param coord coordinate to transform
      */
     @Override
     public CoordinateOperation inverse() throws NonInvertibleOperationException {

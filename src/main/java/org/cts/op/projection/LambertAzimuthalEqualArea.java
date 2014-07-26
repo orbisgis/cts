@@ -155,8 +155,6 @@ public class LambertAzimuthalEqualArea extends Projection {
      * coordinate in meters. Algorithm based on the OGP's Guidance Note Number 7
      * Part 2 :
      * <http://www.epsg.org/guides/G7-2.html>
-     *
-     * @param coord coordinate to transform
      */
     @Override
     public CoordinateOperation inverse() throws NonInvertibleOperationException {
@@ -175,7 +173,7 @@ public class LambertAzimuthalEqualArea extends Projection {
                 double phi = phiOld + pow(1 - e2 * sinPhiOld * sinPhiOld, 2)/2/cos(phiOld) *
                         (q/(1 - e2) - sinPhiOld / (1 - e2 *sinPhiOld * sinPhiOld) + log((1 - e * sinPhiOld)/(1 + e * sinPhiOld)) / 2 / e);
                 while (abs(phi - phiOld) > 1e-14) {
-                    System.out.println(phiOld * 180 / Math.PI);
+                    //System.out.println(phiOld * 180 / Math.PI);
                     phiOld = phi;
                     sinPhiOld = sin(phiOld);
                     phi = phiOld + pow(1 - e2 * sinPhiOld * sinPhiOld, 2)/2/cos(phiOld) *

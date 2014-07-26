@@ -173,8 +173,6 @@ public class Mercator1SP extends Projection {
      * supposed to be a projected easting / northing coordinate in meters.
      * Algorithm based on the OGP's Guidance Note Number 7 Part 2 :
      * <http://www.epsg.org/guides/G7-2.html>
-     *
-     * @param coord coordinate to transform
      */
     @Override
     public CoordinateOperation inverse() throws NonInvertibleOperationException {
