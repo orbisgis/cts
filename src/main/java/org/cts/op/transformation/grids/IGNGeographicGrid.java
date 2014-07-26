@@ -128,7 +128,6 @@ public class IGNGeographicGrid extends GeographicGrid {
             ignFile = new String(bb);
         }
 
-        //
         StringTokenizer st = new StringTokenizer(ignFile, "\r\n");
         String gr = st.nextToken();
         String gr1 = st.nextToken();
@@ -252,7 +251,7 @@ public class IGNGeographicGrid extends GeographicGrid {
                 }
             }
         }
-        // Lecture de la grille
+        // Grid reading
         values = new double[rowNumber][colNumber][dim];
         int nbdec = 0;
         while (st.hasMoreTokens()) {

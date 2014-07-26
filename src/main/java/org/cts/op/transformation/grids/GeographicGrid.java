@@ -40,7 +40,7 @@ import org.cts.cs.OutOfExtentException;
  * (digital elevation model), or transformation parameters for transformations
  * based on a model.
  *
- * @author Michaël Michaud, Jules Party
+ * @author Michaël Michaud, Jules Party, Erwan Bocher
  */
 public class GeographicGrid implements Grid {
 
@@ -64,10 +64,8 @@ public class GeographicGrid implements Grid {
      */
     int scale = 1;
     /**
-     * 3-dimensions float array. Float values has been choosen because
-     * quantities represented in a grid may vary from small quantities
-     * (rotation) to greater quantities (translation), but never need a great
-     * precision (6 digits are generally sufficient).
+     * 3-dimensions array containing transformation parameters (rotation,
+     * translation and scale coefficients) for each node of the grid.
      */
     protected double[][][] values;
     /**
@@ -233,7 +231,7 @@ public class GeographicGrid implements Grid {
      *
      * @param r row index
      * @param c column index
-     * @param value new value of row r column c
+     * @param values new value for row r column c
      */
     public void setValue(int r, int c, double[] values) {
         System.arraycopy(values, 0, this.values[r][c], 0, dim);
@@ -265,14 +263,16 @@ public class GeographicGrid implements Grid {
     /**
      * Return a double value interpolated in this geographic grid with a
      * bilinear interpolation method.<p>
-     * dx<br>
-     * ----------<br>
-     * | |<br>
-     * |ddx |dy<br>
-     * | + ddy |<br>
-     * ----------<br>
-     * fx = ddx/dx<br>
-     * fy = ddy/dy<br>
+     * <pre>
+     *     dx
+     * ----------
+     * |        |
+     * |ddx     |dy
+     * | + ddy  |
+     * ----------
+     * fx = ddx/dx
+     * fy = ddy/dy
+     * </pre>
      *
      * @param latitude the latitude
      * @param longitude the longitude
@@ -338,5 +338,73 @@ public class GeographicGrid implements Grid {
             sb.append("\n");
         }
         return sb.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        GeographicGrid that = (GeographicGrid) o;
+
+        if (colNumber != that.colNumber) return false;
+        if (dim != that.dim) return false;
+        if (Double.compare(that.dx, dx) != 0) return false;
+        if (Double.compare(that.dy, dy) != 0) return false;
+        if (Double.compare(that.modulo, modulo) != 0) return false;
+        if (rowNumber != that.rowNumber) return false;
+        if (scale != that.scale) return false;
+        if (Double.compare(that.x0, x0) != 0) return false;
+        if (Double.compare(that.xL, xL) != 0) return false;
+        if (Double.compare(that.y0, y0) != 0) return false;
+        if (Double.compare(that.yL, yL) != 0) return false;
+        if (context != null ? !context.equals(that.context) : that.context != null) return false;
+        if (extent != null ? !extent.equals(that.extent) : that.extent != null) return false;
+        double[][][] thisArray3 = this.values;
+        double[][][] thatArray3 = that.values;
+        if (thisArray3.length != thatArray3.length) return false;
+        // Check a small sample of grid values in the grid
+        // (ok: equality check is more restrictive than hashcode)
+        for (int i = 0 ; i < thisArray3.length ; i += thisArray3.length/3) {
+            double[][] thisArray2 = thisArray3[i];
+            double[][] thatArray2 = thisArray3[i];
+            if (thisArray2.length != thatArray2.length) return false;
+            for (int j = 0 ; j < thisArray2.length ; j += thisArray2.length/3) {
+                double[] thisArray1 = thisArray2[j];
+                double[] thatArray1 = thisArray2[j];
+                if (thisArray1.length != thatArray1.length) return false;
+                for (int k = 0; k < thisArray1.length; k++) {
+                    if (thisArray1[k] != thatArray1[k]) return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        result = colNumber;
+        result = 31 * result + rowNumber;
+        result = 31 * result + dim;
+        temp = Double.doubleToLongBits(x0);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(y0);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(xL);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(yL);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(dx);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(dy);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        result = 31 * result + (extent != null ? extent.hashCode() : 0);
+        temp = Double.doubleToLongBits(modulo);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        result = 31 * result + scale;
+        result = 31 * result + (context != null ? context.hashCode() : 0);
+        return result;
     }
 }
