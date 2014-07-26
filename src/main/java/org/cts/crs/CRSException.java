@@ -49,7 +49,7 @@ public class CRSException extends Exception {
     /**
      * Build a coordinate reference system exception based on an exception.
      *
-     * @param Exception
+     * @param ex source of this CRSException
      */
     public CRSException(Exception ex) {
         super(ex);
