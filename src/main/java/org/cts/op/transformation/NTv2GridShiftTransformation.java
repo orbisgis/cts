@@ -32,11 +32,8 @@
 package org.cts.op.transformation;
 
 import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.RandomAccessFile;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -59,7 +56,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Michaël Michaud
  */
-public class NTv2GridShiftTransformation extends AbstractCoordinateOperation {
+public class NTv2GridShiftTransformation extends AbstractCoordinateOperation implements GridBasedTransformation {
 
     static final Logger LOGGER = LoggerFactory.getLogger(NTv2GridShiftTransformation.class);
     /**
@@ -77,11 +74,14 @@ public class NTv2GridShiftTransformation extends AbstractCoordinateOperation {
     /**
      * The URL used to find the grid associated to the NTv2 transformation.
      */
-    private URL grid_file;
+    final private URL grid_file;
     /**
      * The GridShiftFile that define this transformation.
      */
-    private GridShiftFile gsf;
+    final private GridShiftFile gsf;
+
+    // Inverse NTv2GridShiftTransformation
+    private NTv2GridShiftTransformation inverse;
 
     /**
      * Create a NTv2GridShiftTransformation from the name of the file that
@@ -121,6 +121,7 @@ public class NTv2GridShiftTransformation extends AbstractCoordinateOperation {
             LOGGER.warn("No NTv2 Grid file specified.");
         }
         this.gsf = new GridShiftFile();
+        this.precision = 0.1;
     }
 
     /**
@@ -140,7 +141,7 @@ public class NTv2GridShiftTransformation extends AbstractCoordinateOperation {
         gs.setLatDegrees(coord[0] * 180d / Math.PI);
         gs.setLonPositiveEastDegrees(coord[1] * 180d / Math.PI);
         try {
-            if (gsf == null) {
+            if (gsf == null || !gsf.isLoaded()) {
                 loadGridShiftFile();
             }
             boolean withinGrid = gsf.gridShiftForward(gs);
@@ -159,7 +160,16 @@ public class NTv2GridShiftTransformation extends AbstractCoordinateOperation {
      */
     @Override
     public CoordinateOperation inverse() throws NonInvertibleOperationException {
-        return new NTv2GridShiftTransformation(grid_file, precision) {
+        if (inverse != null) return inverse;
+        try {
+            if (gsf == null || !gsf.isLoaded()) {
+                loadGridShiftFile();
+            }
+        } catch (IOException ioe) {
+            LOGGER.error("Could not load GridShiftFile " + grid_file);
+        }
+
+        return inverse = new NTv2GridShiftTransformation(grid_file, precision) {
             @Override
             public double[] transform(double[] coord) throws IllegalCoordinateException {
                 if (coord.length < 2) {
@@ -169,9 +179,6 @@ public class NTv2GridShiftTransformation extends AbstractCoordinateOperation {
                 gs.setLatDegrees(coord[0] * 180d / Math.PI);
                 gs.setLonPositiveEastDegrees(coord[1] * 180d / Math.PI);
                 try {
-                    if (gsf == null) {
-                        loadGridShiftFile();
-                    }
                     boolean withinGrid = gsf.gridShiftReverse(gs);
                     if (withinGrid) {
                         coord[0] = gs.getShiftedLatDegrees() * Math.PI / 180d;
@@ -198,11 +205,18 @@ public class NTv2GridShiftTransformation extends AbstractCoordinateOperation {
         if (grid_file != null) {
             if (mode == 0) {
                 if (grid_file.getProtocol().equals("file")) {
-                    File file = new File(grid_file.getFile());
-                    if (!file.exists() || !file.canRead()) {
-                        LOGGER.warn("This grid doesn't exist or cannot be read.");
-                    } else {
-                        gsf.loadGridShiftFile(new FileInputStream(file), false);
+                    InputStream is = null;
+                    try {
+                        is = grid_file.openConnection().getInputStream();
+                        if (is == null) {
+                            LOGGER.warn("This grid doesn't exist or cannot be read.");
+                        }
+                        else {
+                            gsf.loadGridShiftFile(is, false);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        LOGGER.error("This grid doesn't exist or cannot be read.", e);
                     }
                 } else {
                     InputStream is = new BufferedInputStream(grid_file.openConnection().getInputStream());
@@ -210,11 +224,18 @@ public class NTv2GridShiftTransformation extends AbstractCoordinateOperation {
                 }
             } else if (mode == 1) {
                 if (grid_file.getProtocol().equals("file")) {
-                    File file = new File(grid_file.getFile());
-                    if (!file.exists() || !file.canRead()) {
-                        LOGGER.warn("This grid doesn't exist or cannot be read.");
-                    } else {
-                        gsf.loadGridShiftFile(new RandomAccessFile(file, "r"));
+                    InputStream is = null;
+                    try {
+                        is = grid_file.openConnection().getInputStream();
+                        if (is == null) {
+                            LOGGER.warn("This grid doesn't exist or cannot be read.");
+                        }
+                        else {
+                            gsf.loadGridShiftFile(is, false);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        LOGGER.error("This grid doesn't exist or cannot be read.", e);
                     }
                 } else {
                     LOGGER.warn("This grid cannot be accessed.");
