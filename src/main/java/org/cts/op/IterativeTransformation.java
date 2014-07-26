@@ -36,7 +36,7 @@ import org.cts.IllegalCoordinateException;
 
 /**
  * The IterativeTransformation is used to repeat a
- * {@link org.cts.op.CoordinateOperation} until one ore more coordinate(s)
+ * {@link org.cts.op.CoordinateOperation} until one or more coordinate(s)
  * converge to predifined values (saved in additional dimensions using
  * {@link org.cts.op.MemorizeCoordinate}). This transformation should be used
  * when an iterative process is recommended (for instance when using a grid
@@ -51,21 +51,23 @@ public class IterativeTransformation extends AbstractCoordinateOperation impleme
     int[] realValueIndex;
     int[] calculatedValueIndex;
     double[] tolerance;
+    int maxIterations = 12;
 
     /**
      * Build a new IterativeTransformation.
      *
      * @param op the transformation to iterate
-     * @param realValueIndex a list of index refering to the reference values
+     * @param realValueIndex a list of indexes referring to the reference values
      * the iteration should reach
-     * @param calculatedValueIndex the list of index refering to the calculated
+     * @param calculatedValueIndex the list of indexes referring to the calculated
      * values that must reach the reference values defined above
      * @param tol the maximal difference accepted between the real value and the
      * target value
-     * @throws Exception when the arrayx in parameter does not have the same
+     * @throws Exception when the arrays in parameter does not have the same
      * length
      */
-    public IterativeTransformation(CoordinateOperation op, int[] realValueIndex, int[] calculatedValueIndex, double[] tol) throws Exception {
+    public IterativeTransformation(CoordinateOperation op, int[] realValueIndex, int[] calculatedValueIndex,
+                                   double[] tol, int maxIterations) throws Exception {
         super(new Identifier(IterativeTransformation.class));
         this.op = op;
         if (calculatedValueIndex.length != realValueIndex.length) {
@@ -74,11 +76,13 @@ public class IterativeTransformation extends AbstractCoordinateOperation impleme
         this.calculatedValueIndex = calculatedValueIndex;
         this.realValueIndex = realValueIndex;
         this.tolerance = tol;
+        this.maxIterations = maxIterations;
     }
 
     @Override
-    public double[] transform(double[] coord) throws IllegalCoordinateException {
+    public double[] transform(double[] coord) throws IllegalCoordinateException, CoordinateOperationException {
         boolean iter = false;
+        int count = 0;
         for (int i = 0; i < realValueIndex.length; i++) {
             iter = iter || Math.abs(coord[realValueIndex[i]] - coord[calculatedValueIndex[i]]) > tolerance[i];
         }
@@ -88,7 +92,20 @@ public class IterativeTransformation extends AbstractCoordinateOperation impleme
             for (int i = 0; i < realValueIndex.length; i++) {
                 iter = iter || Math.abs(coord[realValueIndex[i]] - coord[calculatedValueIndex[i]]) > tolerance[i];
             }
+            if (++count > maxIterations ) throw new TooManyIterationsException(this, count);
         }
         return coord;
+    }
+
+    @Override
+    public double getPrecision() {
+        // Precision of this iterative operation is difficult to guess
+        // because we don't know it uses radians, degrees or meters
+        // We just suppose it is less than the base transformation
+        return op.getPrecision()/2.0;
+    }
+
+    public String toString() {
+        return "Iterative transformation based on [\n" + op.toString().replaceAll("\n","\n\t") + "\n]";
     }
 }
