@@ -186,7 +186,7 @@ public class IdentifiableComponent implements Identifiable {
         if (!registry.containsKey(getIdentifier())) {
             registry.put(getIdentifier(), this);
         } else {
-            LOGGER.warn("A component has already been register for key " + getAuthorityName() + ":" + getAuthorityKey() + ".");
+            LOGGER.warn("A component has already been registered for key " + getAuthorityName() + ":" + getAuthorityKey() + ".");
         }
     }
 
