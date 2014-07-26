@@ -36,9 +36,16 @@ import org.cts.cs.Extent;
 import org.cts.op.CoordinateOperation;
 
 /**
- * A Datum (plural datums) is a reference from which measurements are made.<p>
- * This interface defines getters and setters for attributes common to every
- * kind of datum (horizontal or vertical) : origin, extent, epoch
+ * A datum (plural datums) is a reference from which measurements are made.<p>
+ * In surveying and geodesy, a datum is a reference point on the earth's surface
+ * against which position measurements are made, and an associated model of the
+ * shape of the earth for computing positions. Horizontal datums are used for
+ * describing a point on the earth's surface, in latitude and longitude or
+ * another coordinate system. Vertical datums are used to measure elevations or
+ * underwater depths. In engineering and drafting, a datum is a reference point,
+ * surface, or axis on an object against which measurements are made.<p> (Taken
+ * from <a ref="http://en.wikipedia.org/wiki/Datum">wikipedia</a> on
+ * 2006-10-06)</p>
  *
  * @author Michaël Michaud
  *
