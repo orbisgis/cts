@@ -99,8 +99,8 @@ public class GeodeticDatum extends AbstractDatum {
      * A map of known vertical transformations from this ellipsoid to other
      * {@linkplain VerticalDatum vertical datum}.
      */
-    private final Map<Datum, List<CoordinateOperation>> heightTransformations =
-            new HashMap<Datum, List<CoordinateOperation>>();
+    private final Map<Datum, Set<CoordinateOperation>> heightTransformations =
+            new HashMap<Datum, Set<CoordinateOperation>>();
 
     /**
      * The PrimeMeridian used with this Datum.
@@ -353,7 +353,10 @@ public class GeodeticDatum extends AbstractDatum {
         }
         added = geocentricTransformations.get(targetDatum).add(coordOp);
 
-        if (!added) return;
+        // 2015-02-07 : if we already have added this coordOp for targetDatum,
+        // we want to prevent adding derived geographicTransformation a second time,
+        // but we don't want to prevent adding the inverse transformation as
+        // targetDatum may be another datum equals but not == (ex. RGF93 vs ETRS89)
 
         // Add the inverse transformation operation from datum to this
         try {
@@ -363,6 +366,8 @@ public class GeodeticDatum extends AbstractDatum {
         } catch (NonInvertibleOperationException e) {
             e.printStackTrace();
         }
+
+        if (!added) return;
 
         // Add the coordinate operation sequence from this geographic coordinate system to
         // the target datum geographic crs based on the geocentric coordOp.
@@ -541,7 +546,7 @@ public class GeodeticDatum extends AbstractDatum {
      *
      * @param datum the datum that must be a target for returned transformation
      */
-    public List<CoordinateOperation> getHeightTransformations(Datum datum) {
+    public Set<CoordinateOperation> getHeightTransformations(Datum datum) {
         return heightTransformations.get(datum);
     }
 
