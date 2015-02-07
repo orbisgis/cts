@@ -31,6 +31,7 @@
  */
 package org.cts.op;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -162,8 +163,11 @@ public final class CoordinateOperationFactory {
         if (source.getCoordinateSystem().getDimension() == 3 || target.getCoordinateSystem().getDimension() == 3) {
 
             // First, we get all transformations already available from sourceDatum to targetDatum
-            datumTransformations.addAll(sourceDatum.getGeocentricTransformations(targetDatum));
-
+            CoordinateOperation mostPrecise3DTransform =
+                    getMostPrecise3DTransformation(sourceDatum.getGeocentricTransformations(targetDatum));
+            if (mostPrecise3DTransform != null) {
+                datumTransformations.add(mostPrecise3DTransform);
+            }
             // The following process adds new datum transformations from sourceDatum to targetDatum
             // if one of these datum is considered equivalent to WGS84.
             // Here, we consider that source or target is equivalent to WGS84 if its toWGS84 is identity
@@ -194,7 +198,7 @@ public final class CoordinateOperationFactory {
                                 new Geocentric2Geographic(target.getDatum().getEllipsoid()),
                                 new LongitudeRotation(target.getDatum().getPrimeMeridian().getLongitudeFromGreenwichInRadians()).inverse(),
                                 target.fromGeographicCoordinateConverter());
-                        for (CoordinateOperation op : newSequence.sequence) System.out.println("     " + op.getPrecision() + " : " + op);
+                        //for (CoordinateOperation op : newSequence.sequence) System.out.println("     " + op.getPrecision() + " : " + op);
                         opList.add(newSequence);
                     } catch (NonInvertibleOperationException e) {
                         LOG.warn("Operation from " + source.getCode() + " to " + target.getCode()
@@ -288,7 +292,7 @@ public final class CoordinateOperationFactory {
     /**
      * Returns the most precise among the list of {@link org.cts.op.CoordinateOperation}s.
      */
-    public static CoordinateOperation getMostPrecise(Set<? extends CoordinateOperation> ops) {
+    public static CoordinateOperation getMostPrecise(Collection<? extends CoordinateOperation> ops) {
         CoordinateOperation preciseOp = null;
         double currentPrecision = Double.MAX_VALUE;
         for (CoordinateOperation op : ops) {
@@ -303,7 +307,7 @@ public final class CoordinateOperationFactory {
     /**
      * Returns the most precise among the list of {@link org.cts.op.CoordinateOperation}s.
      */
-    public static CoordinateOperation getMostPrecise3DTransformation(List<? extends CoordinateOperation> ops) {
+    public static CoordinateOperation getMostPrecise3DTransformation(Collection<? extends CoordinateOperation> ops) {
         CoordinateOperation preciseOp = null;
         double currentPrecision = Double.MAX_VALUE;
         for (CoordinateOperation op : ops) {

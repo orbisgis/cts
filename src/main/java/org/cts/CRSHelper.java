@@ -546,7 +546,7 @@ public class CRSHelper {
                                 FrenchGeocentricNTF2RGF ntf2rgf = FrenchGeocentricNTF2RGF.getInstance();
                                 crs.getDatum().addGeocentricTransformation(GeodeticDatum.RGF93, ntf2rgf);
                                 crs.getDatum().addGeocentricTransformation(GeodeticDatum.WGS84, ntf2rgf);
-                                System.out.println("Add French Geocentric Grid transformation from " + crs.getDatum() + " to RGF93 and WGS84");
+                                //System.out.println("Add French Geocentric Grid transformation from " + crs.getDatum() + " to RGF93 and WGS84");
                                 LOGGER.info("Add French Geocentric Grid transformation from " + crs.getDatum() + " to RGF93 and WGS84");
 
                                 NTv2GridShiftTransformation ntf_r93 = NTv2GridShiftTransformation.createNTv2GridShiftTransformation(grid);
@@ -557,7 +557,7 @@ public class CRSHelper {
                                 crs.getDatum().addGeographicTransformation(GeodeticDatum.RGF93,
                                         new CoordinateOperationSequence(ntf_r93.getIdentifier(),
                                                 LongitudeRotation.getLongitudeRotationFrom(crs.getDatum().getPrimeMeridian()), ntf_r93));
-                                System.out.println("Add NTv2 transformation from " + crs.getDatum() + " to RGF93 and WGS84");
+                                //System.out.println("Add NTv2 transformation from " + crs.getDatum() + " to RGF93 and WGS84");
                                 LOGGER.info("Add NTv2 transformation from " + crs.getDatum() + " to RGF93 and WGS84");
                             } else {
                                 // This is the general case where we want to add a NTv2 transformation
@@ -570,7 +570,7 @@ public class CRSHelper {
                                                 gt.getIdentifier(),
                                                 new LongitudeRotation(crs.getDatum().getPrimeMeridian().getLongitudeFromGreenwichInRadians()),
                                                 gt));
-                                System.out.println("Add NTv2 transformation from " + crs.getDatum() + " to " + datum);
+                                //System.out.println("Add NTv2 transformation from " + crs.getDatum() + " to " + datum);
                                 LOGGER.info("Add NTv2 transformation from " + crs.getDatum() + " to " + datum);
                             }
                         } catch (Exception ex) {
