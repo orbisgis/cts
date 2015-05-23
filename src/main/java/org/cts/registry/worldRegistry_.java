@@ -43,7 +43,7 @@ import java.util.regex.Pattern;
  *
  * @author Jules Party
  */
-public class worldRegistry extends AbstractProjRegistry {
+public class worldRegistry_ extends AbstractProjRegistry {
 
     /**
      * The regex used to parse world registry.
