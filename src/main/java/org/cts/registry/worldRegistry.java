@@ -43,10 +43,10 @@ import java.util.regex.Pattern;
  *
  * @author Jules Party
  */
-public class WorldRegistry extends AbstractProjRegistry {
+public class worldRegistry extends AbstractProjRegistry {
 
     /**
-     * The regex that must be used to parse world registry.
+     * The regex used to parse world registry.
      */
     static final Pattern WORLD_REGEX = Pattern.compile("\\s+");
 
