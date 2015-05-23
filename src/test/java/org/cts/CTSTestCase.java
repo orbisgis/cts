@@ -34,7 +34,6 @@ package org.cts;
 import java.util.Arrays;
 
 import org.cts.registry.*;
-import org.cts.registry.WorldRegistry;
 
 import org.junit.BeforeClass;
 import org.slf4j.Logger;
