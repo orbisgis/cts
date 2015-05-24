@@ -161,8 +161,8 @@ public class CompoundCRS extends GeodeticCRS {
         // Cannot process this case yet
         if (verticalCRS.getDatum().getType().equals(VerticalDatum.Type.ELLIPSOIDAL)
                 && !horizontalCRS.getDatum().getEllipsoid().equals(verticalCRS.getDatum().getEllipsoid())) {
-            System.out.println("Unsupported operation for this CRS : " + this);
-            throw new CoordinateOperationNotFoundException("Unsupported operation for this CRS : " + this);
+            System.out.println("Incompatible horizontal and vertical datum for this CRS : " + this);
+            throw new CoordinateOperationNotFoundException("Incompatible horizontal and vertical datum for this CRS : " + this);
             //@TODO should be possible to convert ellipsoidal heights if we know the GeodeticDatum associated with the vertical CRS of this compoundCRS
             // Note : above verticalCRS.getDatum().getEllipsoid() should not exists
             // Try to do the following :
@@ -247,7 +247,8 @@ public class CompoundCRS extends GeodeticCRS {
                 ops.add(UnitConversion.createUnitConverter(Unit.DEGREE, Unit.RADIAN, Unit.METER, Unit.METER));
             }
         } else {
-            System.out.println("Unsupported operation for this CRS : " + this);
+            //System.out.println("Unknown vertical datum type for this CRS : " + this);
+            throw new CoordinateOperationNotFoundException("Unknown vertical datum type for this CRS : " + this);
         }
         return new CoordinateOperationSequence(new Identifier(
                 CoordinateOperationSequence.class), ops);
@@ -261,13 +262,14 @@ public class CompoundCRS extends GeodeticCRS {
      */
     @Override
     public CoordinateOperation fromGeographicCoordinateConverter()
-            throws NonInvertibleOperationException {
+            throws NonInvertibleOperationException, CoordinateOperationNotFoundException {
         List<CoordinateOperation> ops = new ArrayList<CoordinateOperation>();
         // For ellipsoidal height, horizontal and vertical CRS must use the same ellipsoid
         if (verticalCRS.getDatum().getType().equals(VerticalDatum.Type.ELLIPSOIDAL)
                 && !horizontalCRS.getDatum().getEllipsoid().equals(verticalCRS.getDatum().getEllipsoid())) {
-            System.out.println("Unsupported operation for this CRS : " + this);
+            System.out.println("Incompatible horizontal and vertical datum for this CRS : " + this);
             // TO DO
+            //ops.add(verticalCRS.getDatum().getAltiToEllpsHeight());
         }
         // If this crs vertical datum uses heights above ellipsoid, don't convert z ordinate
         else if (verticalCRS.getDatum().getType().equals(VerticalDatum.Type.ELLIPSOIDAL)) {
@@ -294,9 +296,12 @@ public class CompoundCRS extends GeodeticCRS {
             ops.add(z_transfo.inverse());
             ops.add(LoadMemorizeCoordinate.loadY);
             ops.add(LoadMemorizeCoordinate.loadX);
-        }  else {
-            System.out.println("Unsupported operation for this CRS : " + this);
         }
+        else {
+            //System.out.println("Unknown vertical datum type for this CRS : " + this);
+            throw new CoordinateOperationNotFoundException("Unknown vertical datum type for this CRS : " + this);
+        }
+
         if (horizontalCRS instanceof Geographic2DCRS) {
             // Convert from source unit to radians and meters.
             if (getCoordinateSystem().getUnit(0) != Unit.RADIAN || getCoordinateSystem().getUnit(2) != Unit.METER) {
