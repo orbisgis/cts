@@ -59,7 +59,6 @@ public abstract class GeodeticCRS extends IdentifiableComponent
     /**
      * @see CoordinateReferenceSystem#getProjection()
      */
-    @Override
     public Projection getProjection() {
         return null;
     }
@@ -87,13 +86,11 @@ public abstract class GeodeticCRS extends IdentifiableComponent
     /**
      * @see CoordinateReferenceSystem#getType()
      */
-    @Override
     abstract public Type getType();
 
     /**
      * @see CoordinateReferenceSystem#getCoordinateSystem()
      */
-    @Override
     public CoordinateSystem getCoordinateSystem() {
         return coordinateSystem;
     }
@@ -102,7 +99,6 @@ public abstract class GeodeticCRS extends IdentifiableComponent
      * Returns the {@link org.cts.datum.Datum} to which this
      * <code>CoordinateReferenceSystem</code> is refering.
      */
-    @Override
     public GeodeticDatum getDatum() {
         return geodeticDatum;
     }
@@ -143,7 +139,6 @@ public abstract class GeodeticCRS extends IdentifiableComponent
     /**
      * Returns a WKT representation of the geodetic CRS.
      */
-    @Override
     public abstract String toWKT();
 
     /**

@@ -1,9 +1,12 @@
 package org.cts;
 
 import org.cts.crs.CoordinateReferenceSystem;
+import org.cts.datum.Ellipsoid;
 import org.cts.datum.GeodeticDatum;
 import org.cts.op.CoordinateOperation;
 import org.cts.op.CoordinateOperationFactory;
+import org.cts.op.projection.Projection;
+import org.cts.op.projection.TransverseMercator;
 import org.cts.op.transformation.GeocentricTransformation;
 import org.cts.op.transformation.GeocentricTranslation;
 import org.cts.op.transformation.NTv2GridShiftTransformation;
@@ -35,6 +38,19 @@ public class CRSHelperTest {
         Set<GeocentricTransformation> ops = datum.getGeocentricTransformations(GeodeticDatum.WGS84);
         assertTrue(CoordinateOperationFactory.getMostPrecise(
                 CoordinateOperationFactory.includeFilter(ops, GeocentricTranslation.class)) != null);
+    }
+
+    @Test
+    public void testEpsgParser2() throws Exception {
+        CRSFactory factory = new CRSFactory();
+        factory.getRegistryManager().addRegistry(new EPSGRegistry());
+        CoordinateReferenceSystem crs = factory.getCRS("EPSG:3874");
+        assertTrue(crs.getAuthorityName().equals("EPSG"));
+        assertTrue(crs.getAuthorityKey().equals("3874"));
+        GeodeticDatum datum = (GeodeticDatum)crs.getDatum();
+        assertTrue(datum.getEllipsoid().equals(Ellipsoid.GRS80));
+        Projection projection = crs.getProjection();
+        assertTrue(projection instanceof TransverseMercator);
     }
 
     @Test

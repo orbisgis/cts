@@ -157,7 +157,7 @@ public class LambertAzimuthalEqualArea extends Projection {
      * <http://www.epsg.org/guides/G7-2.html>
      */
     @Override
-    public CoordinateOperation inverse() throws NonInvertibleOperationException {
+    public Projection inverse() throws NonInvertibleOperationException {
         return new LambertAzimuthalEqualArea(ellipsoid, parameters) {
             @Override
             public double[] transform(double[] coord) throws CoordinateDimensionException {
@@ -182,6 +182,22 @@ public class LambertAzimuthalEqualArea extends Projection {
                 coord[0] = phi;
                 coord[1] = lon0 + atan(x * sin(C) / (rho * cos(beta0) * cos(C) - y * sin(beta0) * sin(C)));
                 return coord;
+            }
+
+            @Override
+            public Projection inverse()
+                    throws NonInvertibleOperationException {
+                return LambertAzimuthalEqualArea.this;
+            }
+
+            @Override
+            public boolean isDirect() {
+                return false;
+            }
+
+            @Override
+            public String toString() {
+                return LambertAzimuthalEqualArea.this.toString() + " inverse";
             }
         };
     }

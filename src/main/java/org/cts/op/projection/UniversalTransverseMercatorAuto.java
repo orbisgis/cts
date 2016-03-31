@@ -113,7 +113,7 @@ public class UniversalTransverseMercatorAuto extends Projection {
      * Creates the inverse CoordinateOperation.
      */
     @Override
-    public CoordinateOperation inverse() throws NonInvertibleOperationException {
+    public Projection inverse() throws NonInvertibleOperationException {
         return new UniversalTransverseMercatorAuto(ellipsoid, parameters) {
             @Override
             public double[] transform(double[] coord) throws CoordinateDimensionException {
@@ -132,6 +132,21 @@ public class UniversalTransverseMercatorAuto extends Projection {
                 coord[0] = lat;
                 coord[1] = lon;
                 return coord;
+            }
+
+            @Override
+            public Projection inverse()
+                    throws NonInvertibleOperationException {
+                return UniversalTransverseMercatorAuto.this;
+            }
+            @Override
+            public boolean isDirect() {
+                return false;
+            }
+
+            @Override
+            public String toString() {
+                return UniversalTransverseMercatorAuto.this.toString() + " inverse";
             }
         };
     }

@@ -67,7 +67,6 @@ public abstract class AbstractCoordinateOperation
      * @throws org.cts.op.CoordinateOperationException if this operation
      * failed during the transformation process.
      */
-    @Override
     public abstract double[] transform(double[] coord)
             throws IllegalCoordinateException, CoordinateOperationException;
 
@@ -78,7 +77,6 @@ public abstract class AbstractCoordinateOperation
      * abstract, so that implementation classes have not to implement it if they
      * represent non invertible operation.
      */
-    @Override
     public CoordinateOperation inverse()
             throws NonInvertibleOperationException {
         throw new NonInvertibleOperationException(this.toString()
@@ -94,7 +92,6 @@ public abstract class AbstractCoordinateOperation
      * 1E-9 which is the value of an ulp (units in the last place) for a double
      * value equals to 6378137.0 (Earth semi-major axis).
      */
-    @Override
     public double getPrecision() {
         return precision;
     }

@@ -32,6 +32,7 @@
 package org.cts.crs;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -156,11 +157,16 @@ public class CompoundCRS extends GeodeticCRS {
 
         // Now we have geographic coordinates (radian), let's take care of the vertical component
 
-        // 1sr case : z is an ellipsoidal height based on an ellipsoid different
-        // from the ellipsoid associated with this CRS GeodeticDatum.
-        // Cannot process this case yet
-        if (verticalCRS.getDatum().getType().equals(VerticalDatum.Type.ELLIPSOIDAL)
-                && !horizontalCRS.getDatum().getEllipsoid().equals(verticalCRS.getDatum().getEllipsoid())) {
+        // Case 1a - Ellipsoidal heights refering to the same ellipsoid as horizontal datum
+        // @TODO : if we remove verticalCRS.getDatum().getEllipsoid() we must find another way to identify this case
+        // We should test GeodeticDatum used by VerticalDaum, but is is not always defined
+        if (verticalCRS.getDatum().getType().equals(VerticalDatum.Type.ELLIPSOIDAL) &&
+                horizontalCRS.getDatum().getEllipsoid().equals(verticalCRS.getDatum().getEllipsoid())) {
+            ops = cleverAdd(ops, Identity.IDENTITY);
+        }
+
+        // Case 1b : Ellipsoidal heights refering to a different ellipsoid than horizontal crs
+        else if (verticalCRS.getDatum().getType().equals(VerticalDatum.Type.ELLIPSOIDAL)) {
             System.out.println("Incompatible horizontal and vertical datum for this CRS : " + this);
             throw new CoordinateOperationNotFoundException("Incompatible horizontal and vertical datum for this CRS : " + this);
             //@TODO should be possible to convert ellipsoidal heights if we know the GeodeticDatum associated with the vertical CRS of this compoundCRS
@@ -172,25 +178,33 @@ public class CompoundCRS extends GeodeticCRS {
             // - use a pivot : for any vertical datum, have a toWGS / fromWGS ellipsoidal height
         }
 
-        // z is an ellipsoid height based on the same ellipsoid as horizontal crs
-        //@TODO : if we remove verticalCRS.getDatum().getEllipsoid() we must find another way to identify this case
-        else if (verticalCRS.getDatum().getType().equals(VerticalDatum.Type.ELLIPSOIDAL)) {
-            ops = cleverAdd(ops, Identity.IDENTITY);
-        }
-        // third ordinate is an altitude : but need a height transformation to get the ellipsoidal height
+        // Cas 2 : Altitude defined by a grid
         else if (verticalCRS.getDatum().getAltiToEllpsHeight() instanceof Altitude2EllipsoidalHeight) {
+
             //@TODO find a way to get a height transformation from verticalCRS.getDatum() to the verticalDatum
             // associated to this horizontalDatum with a new verticalCRS.getDatum().getHeightOperations(vDatum associated with hDatum)
             Altitude2EllipsoidalHeight z_transfo = (Altitude2EllipsoidalHeight) verticalCRS.getDatum().getAltiToEllpsHeight();
-            // Z-coordinate transformation uses a horizontal datum different from the one of this crs
+
+            // Case 2a : Altitude defined by a grid using the same horizontal datum (ellipsoid) as the
+            // horizontal CRS
+            if (horizontalCRS.getDatum().equals(z_transfo.getAssociatedDatum())) {
+                ops = cleverAdd(ops, UnitConversion.createUnitConverter(Unit.RADIAN, Unit.DEGREE, Unit.METER, Unit.METER));
+                ops.add(z_transfo);
+                ops.add(UnitConversion.createUnitConverter(Unit.DEGREE, Unit.RADIAN, Unit.METER, Unit.METER));
+            }
+
+            // Case 2b : Altitude defined by a grid using a datum different from the one used by
+            // horizontal CRS
             // We have first to transform horizontal coordinates to the one used by z transformation
             //@TODO : this case should be partly transferred to the VerticalDatum.getHeightOperations() code
-            if (!horizontalCRS.getDatum().equals(z_transfo.getAssociatedDatum())) {
-
-                ops.add(MemorizeCoordinate.memoXYZ);
+            else {
+                // We need no transform horizontal coordinates just to be able to transform vertical ordinate
+                // Before that, we save current horizontal coordinate to be able to set them back at the end
+                // of the process
+                ops.add(MemorizeCoordinate.memoXYZ);  // X, Y, Z, X, Y, Z
 
                 // We find an operation to transform horizontal coordinates to the datum used by the z transformation
-                Set<CoordinateOperation> h_datum_tf =
+                Collection<CoordinateOperation> h_datum_tf =
                         horizontalCRS.getDatum().getGeographicTransformations(z_transfo.getAssociatedDatum());
                 if (h_datum_tf.isEmpty()) {
                     throw new CoordinateOperationNotFoundException(horizontalCRS.getDatum(), z_transfo.getAssociatedDatum());
@@ -199,22 +213,35 @@ public class CompoundCRS extends GeodeticCRS {
 
                 ops.add(h_op);
                 ops.add(UnitConversion.createUnitConverter(Unit.RADIAN, Unit.DEGREE, Unit.METER, Unit.METER));
+                // We set back the original Z value we had before h_op ((datum change may have changed z ordinate)
                 ops.add(LoadMemorizeCoordinate.loadZ);
-                ops.add(MemorizeCoordinate.memoZ); // We must keep this value in memory in the eventuality of an iterative process
+                // and keep this value in memory in the eventuality of an iterative process
+                ops.add(MemorizeCoordinate.memoZ);
 
+                // Now that we have horizontal coordinates and z value consistent with z_transfo
+                // we can use the z_transfo to get an ellipsoid height ABOVE z_transfo.getAssociatedDatum()
                 ops.add(z_transfo);
 
+                // h_op.inverse should transform height above z_transfo.getAssociatedDatum
+                // into z above horizontalCRS.getDatum()
                 ops.add(UnitConversion.createUnitConverter(Unit.DEGREE, Unit.RADIAN, Unit.METER, Unit.METER));
                 ops.add(h_op.inverse());
 
+                // Complete sequence to
+                // - get original X, Y coordinates
+                // - apply h_op from horizonal crs used by source coordinates
+                //   to horizonal crs needed for vertical datum transformation
+                // - get original z ordinate
+                // - apply z transfo
+                // - apply h_op.inverse() to get back coordinates in the original crs
                 CoordinateOperationSequence seq = new CoordinateOperationSequence(new Identifier(CoordinateOperationSequence.class),
-                        new CoordinateSwitch(4, 5),
-                        new CoordinateSwitch(3, 4),
-                        LoadMemorizeCoordinate.loadY,
-                        LoadMemorizeCoordinate.loadX,
-                        MemorizeCoordinate.memoXY,
-                        new CoordinateSwitch(3, 4),
-                        new CoordinateSwitch(4, 5),
+                        new CoordinateSwitch(4, 5),   // X,  Y,  Z,  X', Z', Y'
+                        new CoordinateSwitch(3, 4),   // X,  Y,  Z,  Z', X', Y'
+                        LoadMemorizeCoordinate.loadY, // X,  Y', Z,  Z', X'
+                        LoadMemorizeCoordinate.loadX, // X', Y', Z,  Z'
+                        MemorizeCoordinate.memoXY,    // X', Y', Z,  Z', X,  Y
+                        new CoordinateSwitch(3, 4),   // X', Y', Z,  X,  Z', Y
+                        new CoordinateSwitch(4, 5),   // X', Y', Z,  X,  Y,  Z'
                         h_op,
                         UnitConversion.createUnitConverter(Unit.RADIAN, Unit.DEGREE, Unit.METER, Unit.METER),
                         LoadMemorizeCoordinate.loadZ,
@@ -240,13 +267,8 @@ public class CompoundCRS extends GeodeticCRS {
                 ops.add(LoadMemorizeCoordinate.loadX); // We use the original value for a greater precision
 
             }
-            // Z-coordinate transformation uses the same horizontal datum as this crs
-            else {
-                ops = cleverAdd(ops, UnitConversion.createUnitConverter(Unit.RADIAN, Unit.DEGREE, Unit.METER, Unit.METER));
-                ops.add(z_transfo);
-                ops.add(UnitConversion.createUnitConverter(Unit.DEGREE, Unit.RADIAN, Unit.METER, Unit.METER));
-            }
-        } else {
+        }
+        else {
             //System.out.println("Unknown vertical datum type for this CRS : " + this);
             throw new CoordinateOperationNotFoundException("Unknown vertical datum type for this CRS : " + this);
         }
@@ -264,42 +286,65 @@ public class CompoundCRS extends GeodeticCRS {
     public CoordinateOperation fromGeographicCoordinateConverter()
             throws NonInvertibleOperationException, CoordinateOperationNotFoundException {
         List<CoordinateOperation> ops = new ArrayList<CoordinateOperation>();
-        // For ellipsoidal height, horizontal and vertical CRS must use the same ellipsoid
-        if (verticalCRS.getDatum().getType().equals(VerticalDatum.Type.ELLIPSOIDAL)
-                && !horizontalCRS.getDatum().getEllipsoid().equals(verticalCRS.getDatum().getEllipsoid())) {
-            System.out.println("Incompatible horizontal and vertical datum for this CRS : " + this);
-            // TO DO
-            //ops.add(verticalCRS.getDatum().getAltiToEllpsHeight());
-        }
-        // If this crs vertical datum uses heights above ellipsoid, don't convert z ordinate
-        else if (verticalCRS.getDatum().getType().equals(VerticalDatum.Type.ELLIPSOIDAL)) {
+
+        // Case 1a : ellipsoidal height based on the same datum (ellipsoid) as horizontal crs
+        if ((verticalCRS.getDatum().getType().equals(VerticalDatum.Type.ELLIPSOIDAL))
+                && horizontalCRS.getDatum().getEllipsoid().equals(verticalCRS.getDatum().getEllipsoid())) {
             ops.add(Identity.IDENTITY);
         }
-        // We know how to convert ellipsoidal heights to this crs altitude
-        else if (verticalCRS.getDatum().getAltiToEllpsHeight() instanceof Altitude2EllipsoidalHeight) {
-            Altitude2EllipsoidalHeight z_transfo = (Altitude2EllipsoidalHeight) verticalCRS.getDatum().getAltiToEllpsHeight();
-            //ops.add(MemorizeCoordinate.memoX);
-            //ops.add(MemorizeCoordinate.memoY);
-            ops.add(MemorizeCoordinate.memoXY);
-            if (!horizontalCRS.getDatum().equals(z_transfo.getAssociatedDatum())) {
-                //if (horizontalCRS.getGridTransformations(transfo.getAssociatedDatum()) != null) {
-                //    ops.add(horizontalCRS.getGridTransformations(transfo.getAssociatedDatum()).get(0));
-                //} else {
-                    ops.add(horizontalCRS.getDatum().getGeographicTransformations(z_transfo.getAssociatedDatum()).iterator().next());
-                    //CoordinateOperation op = CoordinateOperationFactory.getTypedCoordinateOperation(
-                    //    horizontalCRS.getDatum().getGeographicTransformations(z_transfo.getAssociatedDatum()), GeoTransformation.class);
-                    //ops.add(op);
-                    //ops.add(CoordinateOperationFactory.getMostPrecise(horizontalCRS.getDatum().getGeographicTransformations(z_transfo.getAssociatedDatum())));
-                //}
-            }
-            ops.add(UnitConversion.createUnitConverter(Unit.RADIAN, Unit.DEGREE, Unit.METER, Unit.METER));
-            ops.add(z_transfo.inverse());
-            ops.add(LoadMemorizeCoordinate.loadY);
-            ops.add(LoadMemorizeCoordinate.loadX);
+        // Case 1b : ellipsoid height based on a different datum (ellipsoid) than horizontal crs
+        // (TODO) ellipsoidal height : horizontal and vertical CRS don't use the same horizontal datum
+        else if (verticalCRS.getDatum().getType().equals(VerticalDatum.Type.ELLIPSOIDAL)) {
+            System.out.println("Incompatible horizontal and vertical datum for this CRS : " + this);
+            // TODO
+            //ops.add(verticalCRS.getDatum().getAltiToEllpsHeight());
         }
+
+        // Case 2 : Altitude based on a grid
+        else if (verticalCRS.getDatum().getAltiToEllpsHeight() instanceof Altitude2EllipsoidalHeight) {
+
+            Altitude2EllipsoidalHeight z_transfo = (Altitude2EllipsoidalHeight) verticalCRS.getDatum().getAltiToEllpsHeight();
+            ops.add(MemorizeCoordinate.memoXY);
+
+            // Case 2a : altitude definition uses the same horizontal datum as horizontal crs
+            if (horizontalCRS.getDatum().equals(z_transfo.getAssociatedDatum())) {
+                // Convert to degree to be able to use the grid
+                ops.add(UnitConversion.createUnitConverter(Unit.RADIAN, Unit.DEGREE, Unit.METER, Unit.METER));
+                // transform from height to altitude
+                ops.add(z_transfo.inverse());
+                // get original latitude / longitude in radians
+                ops.add(LoadMemorizeCoordinate.loadY);
+                ops.add(LoadMemorizeCoordinate.loadX);
+            }
+
+            // Case 2a : altitude definition uses a different horizontal datum as horizontal crs
+            else {
+                // We find an operation to transform horizontal coordinates to the datum used by the z transformation
+                Collection<CoordinateOperation> h_datum_tf =
+                        horizontalCRS.getDatum().getGeographicTransformations(z_transfo.getAssociatedDatum());
+                if (h_datum_tf.isEmpty()) {
+                    throw new CoordinateOperationNotFoundException(horizontalCRS.getDatum(), z_transfo.getAssociatedDatum());
+                }
+                CoordinateOperation h_op = CoordinateOperationFactory.getMostPrecise(h_datum_tf);
+
+                // We apply horizontal transformation (temporary op) to use the grid
+                ops.add(h_op);
+                ops.add(UnitConversion.createUnitConverter(Unit.RADIAN, Unit.DEGREE, Unit.METER, Unit.METER));
+
+                // Now that we have horizontal coordinates and z value consistent with z_transfo
+                // we can use the z_transfo to get an ellipsoid height ABOVE z_transfo.getAssociatedDatum()
+                ops.add(z_transfo.inverse());
+
+                //ops.add(LoadMemorizeCoordinate.loadY); // In fact, it deletes the memorized value of altitude
+                ops.add(LoadMemorizeCoordinate.loadY);
+                ops.add(LoadMemorizeCoordinate.loadX);
+
+            }
+        }
+        // 4th case (TODO) : Z-coordinate transformation uses the same horizontal datum as this crs
         else {
             //System.out.println("Unknown vertical datum type for this CRS : " + this);
-            throw new CoordinateOperationNotFoundException("Unknown vertical datum type for this CRS : " + this);
+            throw new CoordinateOperationNotFoundException("Unknown vertical datum type for this CRS : " + this.getVerticalCRS());
         }
 
         if (horizontalCRS instanceof Geographic2DCRS) {

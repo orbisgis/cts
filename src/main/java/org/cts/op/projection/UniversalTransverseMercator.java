@@ -181,7 +181,7 @@ public class UniversalTransverseMercator extends Projection {
      * Creates the inverse CoordinateOperation.
      */
     @Override
-    public CoordinateOperation inverse() throws NonInvertibleOperationException {
+    public Projection inverse() throws NonInvertibleOperationException {
         return new UniversalTransverseMercator(ellipsoid, parameters) {
             @Override
             public double[] transform(double[] coord) throws CoordinateDimensionException {
@@ -198,6 +198,21 @@ public class UniversalTransverseMercator extends Projection {
                 coord[0] = lat;
                 coord[1] = lon;
                 return coord;
+            }
+
+            @Override
+            public Projection inverse()
+                    throws NonInvertibleOperationException {
+                return UniversalTransverseMercator.this;
+            }
+            @Override
+            public boolean isDirect() {
+                return false;
+            }
+
+            @Override
+            public String toString() {
+                return UniversalTransverseMercator.this.toString() + " inverse";
             }
         };
     }

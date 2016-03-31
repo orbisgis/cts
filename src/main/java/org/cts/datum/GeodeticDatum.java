@@ -553,7 +553,6 @@ public class GeodeticDatum extends AbstractDatum {
     /**
      * Returns the default transformation to WGS84 of this Datum.
      */
-    @Override
     public GeocentricTransformation getToWGS84() {
         return toWGS84;
     }

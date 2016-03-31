@@ -166,7 +166,7 @@ public class AlbersEqualArea extends Projection {
      * <http://www.epsg.org/guides/G7-2.html>
      */
     @Override
-    public CoordinateOperation inverse() throws NonInvertibleOperationException {
+    public Projection inverse() throws NonInvertibleOperationException {
         return new AlbersEqualArea(ellipsoid, parameters) {
             @Override
             public double[] transform(double[] coord) throws CoordinateDimensionException {
@@ -184,6 +184,22 @@ public class AlbersEqualArea extends Projection {
                         + (23 / 360 * e4 + 251 / 3780 * e6) * sin(4 * betap) + 761 / 45360 * e6 * sin(6 * betap);
                 coord[1] = lon0 + theta / n;
                 return coord;
+            }
+
+            @Override
+            public Projection inverse()
+                    throws NonInvertibleOperationException {
+                return AlbersEqualArea.this;
+            }
+
+            @Override
+            public boolean isDirect() {
+                return false;
+            }
+
+            @Override
+            public String toString() {
+                return AlbersEqualArea.this.toString() + " inverse";
             }
         };
     }

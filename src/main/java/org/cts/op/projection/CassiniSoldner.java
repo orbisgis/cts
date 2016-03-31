@@ -152,7 +152,7 @@ public class CassiniSoldner extends Projection {
      * <http://www.epsg.org/guides/G7-2.html>
      */
     @Override
-    public CoordinateOperation inverse() throws NonInvertibleOperationException {
+    public Projection inverse() throws NonInvertibleOperationException {
         return new CassiniSoldner(ellipsoid, parameters) {
             @Override
             public double[] transform(double[] coord) throws CoordinateDimensionException {
@@ -166,6 +166,22 @@ public class CassiniSoldner extends Projection {
                 coord[1] = lon0 + D * (1 - T1 * D2 / 3 + (1 + 3 * T1) * T1 * D2 * D2 / 15) / cos(lat1);
                 coord[0] = lat1 - v1 * tan(lat1) / rho1 * D2 / 2 * (1 - (1 + 3 * T1) * D2 / 12);
                 return coord;
+            }
+
+            @Override
+            public Projection inverse()
+                    throws NonInvertibleOperationException {
+                return CassiniSoldner.this;
+            }
+
+            @Override
+            public boolean isDirect() {
+                return false;
+            }
+
+            @Override
+            public String toString() {
+                return CassiniSoldner.this.toString() + " inverse";
             }
         };
     }

@@ -156,7 +156,7 @@ public class Polyconic extends Projection {
      * <http://pubs.er.usgs.gov/publication/pp1395>
      */
     @Override
-    public CoordinateOperation inverse() throws NonInvertibleOperationException {
+    public Projection inverse() throws NonInvertibleOperationException {
         return new Polyconic(ellipsoid, parameters) {
             @Override
             public double[] transform(double[] coord) throws CoordinateDimensionException {
@@ -189,6 +189,21 @@ public class Polyconic extends Projection {
                     coord[1] = lon0 + asin(x * C / a) / sin(lat);
                 }
                 return coord;
+            }
+
+            @Override
+            public Projection inverse()
+                    throws NonInvertibleOperationException {
+                return Polyconic.this;
+            }
+            @Override
+            public boolean isDirect() {
+                return false;
+            }
+
+            @Override
+            public String toString() {
+                return Polyconic.this.toString() + " inverse";
             }
         };
     }

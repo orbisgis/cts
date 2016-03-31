@@ -40,6 +40,8 @@ import org.cts.Identifier;
 import org.cts.Parameter;
 import org.cts.datum.Ellipsoid;
 import org.cts.op.AbstractCoordinateOperation;
+import org.cts.op.CoordinateOperation;
+import org.cts.op.NonInvertibleOperationException;
 import org.cts.parser.prj.PrjWriter;
 import org.cts.units.Measure;
 import org.cts.units.Unit;
@@ -257,6 +259,21 @@ public abstract class Projection extends AbstractCoordinateOperation {
      */
     public abstract Orientation getOrientation();
 
+    @Override
+    public Projection inverse()
+            throws NonInvertibleOperationException {
+        throw new NonInvertibleOperationException(this.toString()
+                + " is non invertible");
+    }
+
+    /**
+     * Return true for direct operation (projection) and false for the
+     * inverse operation.
+     */
+    public boolean isDirect() {
+        return true;
+    }
+
     /**
      * Returns a WKT representation of the projection.
      *
@@ -309,8 +326,19 @@ public abstract class Projection extends AbstractCoordinateOperation {
         } else if (o instanceof Projection) {
             Projection proj = (Projection) o;
             if (this.toString() != null) {
-                if (toString().equals(proj.toString())) {
-                    return true;
+                if (getClass().equals(proj.getClass())) {
+                    for (String param : parameters.keySet()) {
+                        if (parameters.get(param) == null && proj.parameters.get(param) == null) continue;
+                        else if (parameters.get(param) == null && proj.parameters.get(param) != null) return false;
+                        else if (parameters.get(param) != null && proj.parameters.get(param) == null) continue;
+                        else if (parameters.get(param).equals(proj.parameters.get(param))) continue;
+                        else if (!parameters.get(param).equals(proj.parameters.get(param))) return false;
+                        else {
+                            // Should not reach here
+                        }
+                    }
+                } else {
+                    return false;
                 }
             }
         }

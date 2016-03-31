@@ -146,7 +146,7 @@ public class MillerCylindrical extends Projection {
      * <http://pubs.er.usgs.gov/publication/pp1395>
      */
     @Override
-    public CoordinateOperation inverse() throws NonInvertibleOperationException {
+    public Projection inverse() throws NonInvertibleOperationException {
         return new MillerCylindrical(ellipsoid, parameters) {
             @Override
             public double[] transform(double[] coord) throws CoordinateDimensionException {
@@ -159,6 +159,21 @@ public class MillerCylindrical extends Projection {
                 coord[1] = (coord[0] - FE) / n + lon0;
                 coord[0] = lat / 0.8;
                 return coord;
+            }
+
+            @Override
+            public Projection inverse()
+                    throws NonInvertibleOperationException {
+                return MillerCylindrical.this;
+            }
+            @Override
+            public boolean isDirect() {
+                return false;
+            }
+
+            @Override
+            public String toString() {
+                return MillerCylindrical.this.toString() + " inverse";
             }
         };
     }

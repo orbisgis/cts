@@ -250,7 +250,7 @@ public final class CoordinateOperationFactory {
     /**
      * Returns {@link org.cts.op.CoordinateOperation}s including operations of a particular type.
      */
-    public static Set<CoordinateOperation> includeFilter(Set<? extends CoordinateOperation> ops, Class clazz) {
+    public static Set<CoordinateOperation> includeFilter(Collection<? extends CoordinateOperation> ops, Class clazz) {
         Set<CoordinateOperation> list = new HashSet<CoordinateOperation>();
         for (CoordinateOperation op : ops) {
             if (clazz.isAssignableFrom(op.getClass())) list.add(op);
@@ -271,7 +271,7 @@ public final class CoordinateOperationFactory {
     /**
      * Returns {@link org.cts.op.CoordinateOperation}s excluding sequence containing a particular operation type.
      */
-    public static Set<CoordinateOperation> excludeFilter(Set<? extends CoordinateOperation> ops, Class clazz) {
+    public static Set<CoordinateOperation> excludeFilter(Collection<? extends CoordinateOperation> ops, Class clazz) {
         Set<CoordinateOperation> list = new HashSet<CoordinateOperation>();
         for (CoordinateOperation op : ops) {
             if (clazz.isAssignableFrom(op.getClass())) continue;

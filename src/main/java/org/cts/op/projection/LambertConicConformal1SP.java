@@ -213,7 +213,7 @@ public class LambertConicConformal1SP extends Projection {
      * Creates the inverse CoordinateOperation.
      */
     @Override
-    public CoordinateOperation inverse() throws NonInvertibleOperationException {
+    public Projection inverse() throws NonInvertibleOperationException {
         return new LambertConicConformal1SP(ellipsoid, parameters) {
             @Override
             public double[] transform(double[] coord) throws IllegalCoordinateException {
@@ -230,9 +230,19 @@ public class LambertConicConformal1SP extends Projection {
             }
 
             @Override
-            public CoordinateOperation inverse()
+            public Projection inverse()
                     throws NonInvertibleOperationException {
                 return LambertConicConformal1SP.this;
+            }
+
+            @Override
+            public boolean isDirect() {
+                return false;
+            }
+
+            @Override
+            public String toString() {
+                return LambertConicConformal1SP.this.toString() + " inverse";
             }
         };
     }

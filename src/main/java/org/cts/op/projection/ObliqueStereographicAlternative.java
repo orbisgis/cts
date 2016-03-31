@@ -171,7 +171,7 @@ public class ObliqueStereographicAlternative extends Projection {
      * <http://www.epsg.org/guides/G7-2.html>
      */
     @Override
-    public CoordinateOperation inverse() throws NonInvertibleOperationException {
+    public Projection inverse() throws NonInvertibleOperationException {
         return new ObliqueStereographicAlternative(ellipsoid, parameters) {
             @Override
             public double[] transform(double[] coord) throws CoordinateDimensionException {
@@ -187,6 +187,21 @@ public class ObliqueStereographicAlternative extends Projection {
                 double isoLat = log((1 + sin(conLat)) / (1 - sin(conLat)) / c) / 2 / n;
                 coord[0] = ellipsoid.latitude(isoLat);
                 return coord;
+            }
+
+            @Override
+            public Projection inverse()
+                    throws NonInvertibleOperationException {
+                return ObliqueStereographicAlternative.this;
+            }
+            @Override
+            public boolean isDirect() {
+                return false;
+            }
+
+            @Override
+            public String toString() {
+                return ObliqueStereographicAlternative.this.toString() + " inverse";
             }
         };
     }

@@ -143,7 +143,7 @@ public class CoordinateOperationSequence extends AbstractCoordinateOperation {
             throws IllegalCoordinateException, CoordinateOperationException {
         for (CoordinateOperation op : sequence) {
             coord = op.transform(coord);
-            //System.out.println(Arrays.toString(coord));
+            System.out.println(Arrays.toString(coord));
         }
         return coord;
     }

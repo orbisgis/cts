@@ -56,11 +56,12 @@ public class TransverseMercator extends Projection {
      */
     public static final Identifier TMERC =
             new Identifier("EPSG", "9807", "Transverse Mercator", "TMERC");
-    protected final double lat0, // the reference latitude
+    protected final double
+            lat0, // the reference latitude
             lon0, // the reference longitude (from the datum prime meridian)
-            n, // projection exponent
-            //C,    // projection constant
-            xs, // x coordinate of the pole
+            n,    // projection exponent
+            //C,  // projection constant
+            xs,   // x coordinate of the pole
             ys;   // y coordinate of the pole
     protected final double[] dircoeff, invcoeff;
 
@@ -117,7 +118,7 @@ public class TransverseMercator extends Projection {
      * Creates the inverse CoordinateOperation.
      */
     @Override
-    public CoordinateOperation inverse() throws NonInvertibleOperationException {
+    public Projection inverse() throws NonInvertibleOperationException {
         return new TransverseMercator(ellipsoid, parameters) {
             @Override
             public double[] transform(double[] coord) throws CoordinateDimensionException {
@@ -134,6 +135,21 @@ public class TransverseMercator extends Projection {
                 coord[0] = lat;
                 coord[1] = lon;
                 return coord;
+            }
+
+            @Override
+            public Projection inverse()
+                    throws NonInvertibleOperationException {
+                return TransverseMercator.this;
+            }
+            @Override
+            public boolean isDirect() {
+                return false;
+            }
+
+            @Override
+            public String toString() {
+                return TransverseMercator.this.toString() + " inverse";
             }
         };
     }

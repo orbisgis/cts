@@ -184,7 +184,7 @@ public class SwissObliqueMercator extends Projection {
      * <http://www.swisstopo.admin.ch/internet/swisstopo/en/home/topics/survey/sys/refsys/switzerland.parsysrelated1.37696.downloadList.97912.DownloadFile.tmp/swissprojectionen.pdf>
      */
     @Override
-    public CoordinateOperation inverse() throws NonInvertibleOperationException {
+    public Projection inverse() throws NonInvertibleOperationException {
         return new SwissObliqueMercator(ellipsoid, parameters) {
             @Override
             public double[] transform(double[] coord) throws CoordinateDimensionException {
@@ -197,6 +197,21 @@ public class SwissObliqueMercator extends Projection {
                 coord[1] = lonc + I / alpha;
                 coord[0] = findLatSwissObliqueMercator(b);
                 return coord;
+            }
+
+            @Override
+            public Projection inverse()
+                    throws NonInvertibleOperationException {
+                return SwissObliqueMercator.this;
+            }
+            @Override
+            public boolean isDirect() {
+                return false;
+            }
+
+            @Override
+            public String toString() {
+                return SwissObliqueMercator.this.toString() + " inverse";
             }
         };
     }

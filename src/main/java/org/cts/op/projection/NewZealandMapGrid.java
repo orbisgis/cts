@@ -146,7 +146,7 @@ public class NewZealandMapGrid extends Projection {
      * <http://pubs.er.usgs.gov/publication/pp1395>
      */
     @Override
-    public CoordinateOperation inverse() throws NonInvertibleOperationException {
+    public Projection inverse() throws NonInvertibleOperationException {
         return new NewZealandMapGrid(ellipsoid, parameters) {
             @Override
             public double[] transform(double[] coord) throws CoordinateDimensionException {
@@ -168,6 +168,21 @@ public class NewZealandMapGrid extends Projection {
                 coord[0] = ellipsoid.latitude(isoLat + ellipsoid.isometricLatitude(lat0));
                 coord[1] = lon0 + lon;
                 return coord;
+            }
+
+            @Override
+            public Projection inverse()
+                    throws NonInvertibleOperationException {
+                return NewZealandMapGrid.this;
+            }
+            @Override
+            public boolean isDirect() {
+                return false;
+            }
+
+            @Override
+            public String toString() {
+                return NewZealandMapGrid.this.toString() + " inverse";
             }
         };
     }

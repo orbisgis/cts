@@ -56,6 +56,7 @@ import java.util.Arrays;
 public class VerticalTransformTest extends BaseCoordinateTransformTest {
 
     Geographic2DCRS RGF93crs = new Geographic2DCRS(new Identifier("EPSG", "4171", "RGF93"), GeodeticDatum.RGF93);
+    Geographic2DCRS WGS84crs = new Geographic2DCRS(new Identifier("EPSG", "4326", "WGS84"), GeodeticDatum.RGF93);
 
 
     @Test
