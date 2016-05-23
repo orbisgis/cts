@@ -30,40 +30,40 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 /**
- * This class parses the epsg file available in the resources package.
+ * This class parses the world file available in the resources package.
  * For a given code, it returns a map of parameters required by
  * {@link org.cts.CRSHelper} to build a {@link org.cts.crs.CoordinateReferenceSystem}.
  *
- * @author Erwan Bocher
+ * @author Jules Party
  */
-public class EPSGRegistry extends AbstractProjRegistry implements Registry {
+public class WorldRegistry extends AbstractProjRegistry {
 
     /**
-     * The regex that must be used to parse EPSG registry.
+     * The regex that must be used to parse world registry.
      */
-    static final Pattern EPSG_REGEX = Pattern.compile("\\s+|<>");
+    static final Pattern WORLD_REGEX = Pattern.compile("\\s+");
 
     @Override
     public String getRegistryName() {
-        return "epsg";
+        return "world";
     }
 
     @Override
     public Map<String, String> getParameters(String code) throws RegistryException {
         try {
-            Map<String, String> crsParameters = projParser.readParameters(code, EPSG_REGEX);
+            Map<String, String> crsParameters = projParser.readParameters(code, WORLD_REGEX);
             return crsParameters;
         } catch (IOException ex) {
-            throw new RegistryException("Cannot load the EPSG registry", ex);
+            throw new RegistryException("Cannot load the world registry", ex);
         }
     }
 
     @Override
     public Set<String> getSupportedCodes() throws RegistryException {
         try {
-            return projParser.getSupportedCodes(EPSG_REGEX);
+            return projParser.getSupportedCodes(WORLD_REGEX);
         } catch (IOException ex) {
-            throw new RegistryException("Cannot load the EPSG registry", ex);
+            throw new RegistryException("Cannot load the world registry", ex);
         }
     }
 }
