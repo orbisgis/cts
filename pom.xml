@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.orbisgis</groupId>
   <artifactId>cts</artifactId>
-  <version>1.4.0</version>
+  <version>1.4.1-SNAPSHOT</version>
   <packaging>bundle</packaging>
   <description>Coordinate Transformation Suite (abridged CTS) is a library developed to perform coordinate
     transformations using well known geodetic algorithms and parameter sets. It strives to be simple, flexible and
