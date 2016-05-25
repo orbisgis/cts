@@ -14,14 +14,13 @@
     <version>2</version>
   </parent>
   <organization>
-    <name>IRSTV CNRS-FR-2488</name>
-    <url>http://www.irstv.fr/</url>
+    <name>Lab-STICC - UMR CNRS 6285</name>
+    <url>http://www.labsticc.fr/</url>
   </organization>
-  <url>http://www.orbisgis.org/projects/CTS/</url>
   <scm>
-    <connection>scm:git:https://github.com/irstv/CTS.git</connection>
-    <developerConnection>scm:git:https://github.com/irstv/CTS.git</developerConnection>
-    <url>git@github.com:irstv/CTS.git</url>
+    <connection>scm:git:https://github.com/orbisgis/CTS.git</connection>
+    <developerConnection>scm:git:https://github.com/orbisgis/CTS.git</developerConnection>
+    <url>git@github.com:orbisgis/CTS.git</url>
   </scm>
   <licenses>
     <license>
