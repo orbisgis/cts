@@ -6,22 +6,29 @@
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
  * name. It has been renamed CTS in 2009 and shared to the community from 
- * the OrbisGIS code repository.
+ * the Atelier SIG code repository.
+ * 
+ * Since them, CTS is supported by the Atelier SIG team in collaboration with Michaël 
+ * Michaud.
+ * The new CTS has been funded  by the French Agence Nationale de la Recherche 
+ * (ANR) under contract ANR-08-VILL-0005-01 and the regional council 
+ * "Région Pays de La Loire" under the projet SOGVILLE (Système d'Orbservation 
+ * Géographique de la Ville).
  *
  * CTS is free software: you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License as published by the Free Software
- * Foundation, either version 3 of the License.
+ * terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
  *
  * CTS is distributed in the hope that it will be useful, but WITHOUT ANY
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
+ * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License along with
+ * You should have received a copy of the GNU General Public License along with
  * CTS. If not, see <http://www.gnu.org/licenses/>.
  *
- * For more information, please consult: <https://github.com/orbisgis/cts/>
+ * For more information, please consult: <https://github.com/irstv/cts/>
  */
-
 package org.cts.crs;
 
 import java.util.ArrayList;
@@ -50,9 +57,8 @@ import static org.cts.cs.Axis.Direction.WEST;
 import static org.cts.units.Unit.METER;
 
 /**
- * A Projected {@link org.cts.crs.CoordinateReferenceSystem} is a
- * CoordinateReferenceSystem based on a GeodeticDatum and a Projection
- * operation.
+ * A CoordinateReferenceSystem based on a {@link org.cts.datum.GeodeticDatum}
+ * and a {@link org.cts.op.projection.Projection}.
  *
  * @author Michaël Michaud
  */
@@ -63,15 +69,17 @@ public class ProjectedCRS extends GeodeticCRS {
      * and second {@link Axis} contains northing. The unit used by these axes is
      * meter.
      */
-    public static CoordinateSystem EN_CS = new CoordinateSystem(new Axis[]{
+    public static final CoordinateSystem EN_CS = new CoordinateSystem(new Axis[]{
         EASTING, NORTHING}, new Unit[]{METER, METER});
+
     /**
      * A 2D {@link CoordinateSystem} whose first {@link Axis} contains northing
      * and second {@link Axis} contains easting. The unit used by these axes is
      * meter.
      */
-    public static CoordinateSystem NE_CS = new CoordinateSystem(new Axis[]{
+    public static final CoordinateSystem NE_CS = new CoordinateSystem(new Axis[]{
         NORTHING, EASTING}, new Unit[]{METER, METER});
+
     /**
      * The projection used by this ProjectedCRS.
      */
@@ -233,13 +241,9 @@ public class ProjectedCRS extends GeodeticCRS {
     }
 
     /**
-     * Returns true if object is equals to
-     * <code>this</code>. Tests equality between identifiers, then tests if the
-     * components of this ProjectedCRS are equals : the grids transformations,
-     * the {@link GeodeticDatum}, the {@link CoordinateSystem} and the
-     * {@link Projection}.
+     * Returns true if o is equals to this ProjectedCRS.
      *
-     * @param object The object to compare this ProjectedCRS against
+     * @param o The object to compare this ProjectedCRS to.
      */
     @Override
     public boolean equals(Object o) {
@@ -254,18 +258,8 @@ public class ProjectedCRS extends GeodeticCRS {
             if (getIdentifier().equals(crs.getIdentifier())) {
                 return true;
             }
-            boolean nadgrids;
-            if (getGridTransformations() == null) {
-                if (crs.getGridTransformations() == null) {
-                    nadgrids = true;
-                } else {
-                    nadgrids = false;
-                }
-            } else {
-                nadgrids = getGridTransformations().equals(crs.getGridTransformations());
-            }
             return getDatum().equals(crs.getDatum()) && getProjection().equals(crs.getProjection())
-                    && getCoordinateSystem().equals(crs.getCoordinateSystem()) && nadgrids;
+                    && getCoordinateSystem().equals(crs.getCoordinateSystem()) /*&& nadgrids*/;
         } else {
             return false;
         }
@@ -277,6 +271,7 @@ public class ProjectedCRS extends GeodeticCRS {
     @Override
     public int hashCode() {
         int hash = 3;
+        hash = 59 * hash + (this.getDatum() != null ? this.getDatum().hashCode() : 0);
         hash = 59 * hash + (this.projection != null ? this.projection.hashCode() : 0);
         return hash;
     }

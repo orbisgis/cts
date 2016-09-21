@@ -6,22 +6,29 @@
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
  * name. It has been renamed CTS in 2009 and shared to the community from 
- * the OrbisGIS code repository.
+ * the Atelier SIG code repository.
+ * 
+ * Since them, CTS is supported by the Atelier SIG team in collaboration with Michaël 
+ * Michaud.
+ * The new CTS has been funded  by the French Agence Nationale de la Recherche 
+ * (ANR) under contract ANR-08-VILL-0005-01 and the regional council 
+ * "Région Pays de La Loire" under the projet SOGVILLE (Système d'Orbservation 
+ * Géographique de la Ville).
  *
  * CTS is free software: you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License as published by the Free Software
- * Foundation, either version 3 of the License.
+ * terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
  *
  * CTS is distributed in the hope that it will be useful, but WITHOUT ANY
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
+ * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License along with
+ * You should have received a copy of the GNU General Public License along with
  * CTS. If not, see <http://www.gnu.org/licenses/>.
  *
- * For more information, please consult: <https://github.com/orbisgis/cts/>
+ * For more information, please consult: <https://github.com/irstv/cts/>
  */
-
 package org.cts.op.projection;
 
 import java.util.HashMap;
@@ -57,7 +64,7 @@ import static java.lang.Math.tan;
 public class LambertConicConformal1SP extends Projection {
 
     /**
-     * The Identifier used for all Cylindrical Equal Area projection.
+     * The Identifier used for all Lambert Conic Conformal projections.
      */
     public static final Identifier LCC1SP =
             new Identifier("EPSG", "9801", "Lambert Conic Conformal (1SP)", "Lambert tangent");
@@ -118,8 +125,6 @@ public class LambertConicConformal1SP extends Projection {
     public LambertConicConformal1SP(final Ellipsoid ellipsoid,
             final Map<String, Measure> parameters) {
         super(LCC1SP, ellipsoid, parameters);
-        double semimajor = getSemiMajorAxis();
-        double semiminor = getSemiMinorAxis();
         double lat0 = getLatitudeOfOrigin();
         lon0 = getCentralMeridian();
         double k0 = getScaleFactor();
@@ -140,7 +145,7 @@ public class LambertConicConformal1SP extends Projection {
      *
      * @param latitude_of_origin latitude of origin of the projection in degrees
      * @param scale_factor scale factor of the projection
-     * @param central_meridian central meridian of the projection en degrees
+     * @param central_meridian central meridian of the projection in degrees
      * @param false_easting false easting in meters
      * @param false_northing false northing in meters
      */
@@ -208,7 +213,7 @@ public class LambertConicConformal1SP extends Projection {
      * Creates the inverse CoordinateOperation.
      */
     @Override
-    public CoordinateOperation inverse() throws NonInvertibleOperationException {
+    public Projection inverse() throws NonInvertibleOperationException {
         return new LambertConicConformal1SP(ellipsoid, parameters) {
             @Override
             public double[] transform(double[] coord) throws IllegalCoordinateException {
@@ -225,9 +230,19 @@ public class LambertConicConformal1SP extends Projection {
             }
 
             @Override
-            public CoordinateOperation inverse()
+            public Projection inverse()
                     throws NonInvertibleOperationException {
                 return LambertConicConformal1SP.this;
+            }
+
+            @Override
+            public boolean isDirect() {
+                return false;
+            }
+
+            @Override
+            public String toString() {
+                return LambertConicConformal1SP.this.toString() + " inverse";
             }
         };
     }

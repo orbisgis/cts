@@ -6,22 +6,29 @@
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
  * name. It has been renamed CTS in 2009 and shared to the community from 
- * the OrbisGIS code repository.
+ * the Atelier SIG code repository.
+ * 
+ * Since them, CTS is supported by the Atelier SIG team in collaboration with Michaël 
+ * Michaud.
+ * The new CTS has been funded  by the French Agence Nationale de la Recherche 
+ * (ANR) under contract ANR-08-VILL-0005-01 and the regional council 
+ * "Région Pays de La Loire" under the projet SOGVILLE (Système d'Orbservation 
+ * Géographique de la Ville).
  *
  * CTS is free software: you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License as published by the Free Software
- * Foundation, either version 3 of the License.
+ * terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
  *
  * CTS is distributed in the hope that it will be useful, but WITHOUT ANY
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
+ * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License along with
+ * You should have received a copy of the GNU General Public License along with
  * CTS. If not, see <http://www.gnu.org/licenses/>.
  *
- * For more information, please consult: <https://github.com/orbisgis/cts/>
+ * For more information, please consult: <https://github.com/irstv/cts/>
  */
-
 package org.cts;
 
 import java.io.*;
@@ -41,7 +48,7 @@ import org.cts.registry.RegistryManager;
 
 /**
  * This factory is in charge of creating new
- * {@link org.cts.crs.CoordinateReferenceSystem}s. It can do so by two way :
+ * {@link org.cts.crs.CoordinateReferenceSystem}s. It can do so :
  * <ul>
  * <li> 1. From an authority name and a code.</li>
  * <li> 2. From a OGC WKT String (PRJ) (that can be read from a file).</li>
@@ -75,7 +82,7 @@ public class CRSFactory {
     }
 
     /**
-     * Return a {@link org.cts.crs.CoordinateReferenceSystem} corresponding to
+     * Returns a {@link org.cts.crs.CoordinateReferenceSystem} corresponding to
      * an authority and a srid.
      *
      * @param authorityAndSrid the code of the desired CRS (for instance
@@ -87,13 +94,11 @@ public class CRSFactory {
         if (crs == null) {
             try {
                 String[] registryNameWithCode = splitRegistryNameAndCode(authorityAndSrid);
-                if (isRegistrySupported(registryNameWithCode[0])) {
-                    Registry registry = getRegistryManager().getRegistry(registryNameWithCode[0]);
-                    Map<String, String> crsParameters = registry.getParameters(registryNameWithCode[1]);
-                    if (crsParameters != null) {
-                        crs = CRSHelper.createCoordinateReferenceSystem(new Identifier(registryNameWithCode[0], registryNameWithCode[1],
-                                crsParameters.remove(ProjKeyParameters.title)), crsParameters);
-                    }
+                String authority = registryNameWithCode[0];
+                String code = registryNameWithCode[1];
+                if (isRegistrySupported(authority)) {
+                    Registry registry = getRegistryManager().getRegistry(authority);
+                    crs = registry.getCoordinateReferenceSystem(new Identifier(authority, code, ""));
                     if (crs != null) {
                         CRSPOOL.put(authorityAndSrid, crs);
                     }
@@ -117,7 +122,7 @@ public class CRSFactory {
         if (registryAndCode.length == 2) {
             return registryAndCode;
         } else {
-            throw new RegistryException("This registry pattern " + authorityAndSrid + " is not supported");
+            throw new RegistryException("The registry pattern '" + authorityAndSrid + "' is not supported");
         }
 
     }
@@ -139,7 +144,7 @@ public class CRSFactory {
         if (getRegistryManager().contains(registryName.toLowerCase())) {
             return true;
         } else {
-            throw new RegistryException("This registry " + registryName + " is not supported");
+            throw new RegistryException("Registry '" + registryName + "' is not supported");
         }
     }
 

@@ -6,22 +6,29 @@
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
  * name. It has been renamed CTS in 2009 and shared to the community from 
- * the OrbisGIS code repository.
+ * the Atelier SIG code repository.
+ * 
+ * Since them, CTS is supported by the Atelier SIG team in collaboration with Michaël 
+ * Michaud.
+ * The new CTS has been funded  by the French Agence Nationale de la Recherche 
+ * (ANR) under contract ANR-08-VILL-0005-01 and the regional council 
+ * "Région Pays de La Loire" under the projet SOGVILLE (Système d'Orbservation 
+ * Géographique de la Ville).
  *
  * CTS is free software: you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License as published by the Free Software
- * Foundation, either version 3 of the License.
+ * terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
  *
  * CTS is distributed in the hope that it will be useful, but WITHOUT ANY
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
+ * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License along with
+ * You should have received a copy of the GNU General Public License along with
  * CTS. If not, see <http://www.gnu.org/licenses/>.
  *
- * For more information, please consult: <https://github.com/orbisgis/cts/>
+ * For more information, please consult: <https://github.com/irstv/cts/>
  */
-
 package org.cts.op.transformation;
 
 import java.io.InputStream;
@@ -45,33 +52,38 @@ import org.cts.op.transformation.grids.IGNVerticalGrid;
  *
  * @author Jules Party
  */
-public class Altitude2EllipsoidalHeight extends AbstractCoordinateOperation {
+public class Altitude2EllipsoidalHeight extends AbstractCoordinateOperation implements GridBasedTransformation {
 
     /**
      * The GeographicGrid that define this transformation.
      */
     private GeographicGrid GRID;
+
     /**
      * The name of the grid file used to define this transformation.
      */
     private String gridFileName;
+
     /**
      * The geodetic datum associated to this transformation. The latitude and
      * longitude of the coordinate must be expressed in this datum to obtain
      * good results.
      */
     private GeodeticDatum associatedDatum;
+
     /**
      * The Identifier used for all Altitude to Ellipsoidal Height translations.
      */
     private static final Identifier opId =
             new Identifier("EPSG", "9616", "Vertical Offset (by Interpolation of Gridded Data)", "Translation");
 
+    // Inverse transformation
+    private Altitude2EllipsoidalHeight inverse;
+
     /**
      * Altitude translation with parameter interpolated from a grid depending on
      * the geographic coordinates of the point to convert.
      *
-     * @param id the identifier of the Altitude2EllipsoidalHeight
      * @param nameGrid the name of the grid file to use
      * @param gd the geodetic datum in which the geographic coordinates used in
      * the interpolation must be expressed
@@ -115,7 +127,7 @@ public class Altitude2EllipsoidalHeight extends AbstractCoordinateOperation {
         }
         // Creates a temporary coord to find the final translation parameters
         double[] coordi = coord.clone();
-        double th = 0;
+        double th;
         // Get the definitive translation parameters from the grids
         try {
             double[] t = GRID.bilinearInterpolation(coordi[0], coordi[1]);
@@ -130,19 +142,18 @@ public class Altitude2EllipsoidalHeight extends AbstractCoordinateOperation {
 
     /**
      * Creates the inverse CoordinateOperation.
-     * @return 
-     * @throws org.cts.op.NonInvertibleOperationException
      */
     @Override
     public CoordinateOperation inverse() throws NonInvertibleOperationException {
+        if (inverse != null) return inverse;
         try {
-            return new Altitude2EllipsoidalHeight(getGridFileName(), associatedDatum) {
+            inverse = new Altitude2EllipsoidalHeight(getGridFileName(), associatedDatum) {
                 @Override
                 public double[] transform(double[] coord)
                         throws IllegalCoordinateException {
                     // Creates a temp coord to find the final translation parameters
                     double[] coordi = coord.clone();
-                    double th = 0;
+                    double th;
                     // Get the definitive translation parameters from the grids
                     try {
                         double[] t = GRID.bilinearInterpolation(coordi[0], coordi[1]);
@@ -161,6 +172,7 @@ public class Altitude2EllipsoidalHeight extends AbstractCoordinateOperation {
                     return Altitude2EllipsoidalHeight.this;
                 }
             };
+            return inverse;
         } catch (Exception e) {
             throw new NonInvertibleOperationException(e.getMessage());
         }

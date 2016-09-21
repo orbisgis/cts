@@ -6,32 +6,42 @@
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
  * name. It has been renamed CTS in 2009 and shared to the community from 
- * the OrbisGIS code repository.
+ * the Atelier SIG code repository.
+ * 
+ * Since them, CTS is supported by the Atelier SIG team in collaboration with Michaël 
+ * Michaud.
+ * The new CTS has been funded  by the French Agence Nationale de la Recherche 
+ * (ANR) under contract ANR-08-VILL-0005-01 and the regional council 
+ * "Région Pays de La Loire" under the projet SOGVILLE (Système d'Orbservation 
+ * Géographique de la Ville).
  *
  * CTS is free software: you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License as published by the Free Software
- * Foundation, either version 3 of the License.
+ * terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
  *
  * CTS is distributed in the hope that it will be useful, but WITHOUT ANY
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
+ * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License along with
+ * You should have received a copy of the GNU General Public License along with
  * CTS. If not, see <http://www.gnu.org/licenses/>.
  *
- * For more information, please consult: <https://github.com/orbisgis/cts/>
+ * For more information, please consult: <https://github.com/irstv/cts/>
  */
-
 package org.cts.op.projection;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.cts.CoordinateDimensionException;
 import org.cts.Identifier;
+import org.cts.Parameter;
 import org.cts.datum.Ellipsoid;
 import org.cts.op.CoordinateOperation;
 import org.cts.op.NonInvertibleOperationException;
 import org.cts.units.Measure;
+import org.cts.units.Unit;
 import org.cts.util.Complex;
 
 /**
@@ -46,22 +56,26 @@ public class UniversalTransverseMercator extends Projection {
      */
     public static final Identifier UTM =
             new Identifier("EPSG", "9824", "Transverse Mercator Zoned Grid System", "UTM");
+
+    public static final String NORTH = "NORTH";
+    public static final String SOUTH = "SOUTH";
+
     protected final double FE, // false easting
             lon0, // the reference longitude (from the datum prime meridian)
             n, // projection exponent
             xs, // x coordinate of the pole
             ys;   // y coordinate of the pole
+
     protected final double[] dircoeff, invcoeff;
 
     /**
-     * Create a new Universal Transverse Mercator Projection corresponding to
-     * the
-     * <code>Ellipsoid</code> and the list of parameters given in argument and
-     * initialize common parameters lon0, FE and other parameters useful for the
-     * projection.
+     * Creates a new Universal Transverse Mercator Projection based on the given
+     * <code>Ellipsoid</code> and parameters (must contain Central Meridian and
+     * False Northing)
      *
      * @param ellipsoid ellipsoid used to define the projection.
-     * @param parameters a map of useful parameters to define the projection.
+     * @param parameters a map of parameters to define the projection.
+     *                   Must include Central Meridian and False Northing
      */
     public UniversalTransverseMercator(final Ellipsoid ellipsoid,
             final Map<String, Measure> parameters) {
@@ -77,6 +91,25 @@ public class UniversalTransverseMercator extends Projection {
         ys = y0 - n * ellipsoid.curvilinearAbscissa(lat0);
         dircoeff = getDirectUTMCoeff(ellipsoid);
         invcoeff = getInverseUTMCoeff(ellipsoid);
+    }
+
+    /**
+     * Creates a new Universal Transverse Mercator Projection based on the given
+     * <code>Ellipsoid</code>, for the given zone and the given hemisphere.
+     *
+     * @param ellipsoid ellipsoid used to define the projection.
+     * @param zone the UTM zone
+     */
+    public static UniversalTransverseMercator createUTM(final Ellipsoid ellipsoid, final int zone, final String hemisphere) {
+        Map parameters = new HashMap();
+        parameters.put(Parameter.CENTRAL_MERIDIAN, new Measure(6.0*((double)zone-31.0)+3.0, Unit.DEGREE));
+        if (hemisphere.equalsIgnoreCase("SOUTH")) {
+            parameters.put(Parameter.FALSE_NORTHING, new Measure(10000000,Unit.METER));
+        }
+        else {
+            parameters.put(Parameter.FALSE_NORTHING, new Measure(0, Unit.METER));
+        }
+        return new UniversalTransverseMercator(ellipsoid, parameters);
     }
 
     /**
@@ -148,7 +181,7 @@ public class UniversalTransverseMercator extends Projection {
      * Creates the inverse CoordinateOperation.
      */
     @Override
-    public CoordinateOperation inverse() throws NonInvertibleOperationException {
+    public Projection inverse() throws NonInvertibleOperationException {
         return new UniversalTransverseMercator(ellipsoid, parameters) {
             @Override
             public double[] transform(double[] coord) throws CoordinateDimensionException {
@@ -165,6 +198,21 @@ public class UniversalTransverseMercator extends Projection {
                 coord[0] = lat;
                 coord[1] = lon;
                 return coord;
+            }
+
+            @Override
+            public Projection inverse()
+                    throws NonInvertibleOperationException {
+                return UniversalTransverseMercator.this;
+            }
+            @Override
+            public boolean isDirect() {
+                return false;
+            }
+
+            @Override
+            public String toString() {
+                return UniversalTransverseMercator.this.toString() + " inverse";
             }
         };
     }

@@ -6,22 +6,29 @@
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
  * name. It has been renamed CTS in 2009 and shared to the community from 
- * the OrbisGIS code repository.
+ * the Atelier SIG code repository.
+ * 
+ * Since them, CTS is supported by the Atelier SIG team in collaboration with Michaël 
+ * Michaud.
+ * The new CTS has been funded  by the French Agence Nationale de la Recherche 
+ * (ANR) under contract ANR-08-VILL-0005-01 and the regional council 
+ * "Région Pays de La Loire" under the projet SOGVILLE (Système d'Orbservation 
+ * Géographique de la Ville).
  *
  * CTS is free software: you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License as published by the Free Software
- * Foundation, either version 3 of the License.
+ * terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
  *
  * CTS is distributed in the hope that it will be useful, but WITHOUT ANY
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
+ * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License along with
+ * You should have received a copy of the GNU General Public License along with
  * CTS. If not, see <http://www.gnu.org/licenses/>.
  *
- * For more information, please consult: <https://github.com/orbisgis/cts/>
+ * For more information, please consult: <https://github.com/irstv/cts/>
  */
-
 package org.cts.op;
 
 import org.cts.Identifier;
@@ -41,13 +48,13 @@ public class LoadMemorizeCoordinate extends AbstractCoordinateOperation {
     public static CoordinateOperation loadZ = new LoadMemorizeCoordinate(2);
 
     /**
-     * Creates a new CoordinateOperation increasing (resp decreasing) the coord
-     * size by length.
+     * Creates a new CoordinateOperation removing the last double value from
+     * a coordinate array and loading it at the specified index in the array.
      *
-     * @param dim final dimension of the new coordinate
+     * @param index final dimension of the new coordinate
      */
     public LoadMemorizeCoordinate(int index) {
-        super(new Identifier(LoadMemorizeCoordinate.class, "Load the last saved coordinate in the position " + index));
+        super(new Identifier(CoordinateOperation.class, "Load last saved coordinate in position " + index));
         this.indexSaved = index;
     }
 
@@ -56,9 +63,10 @@ public class LoadMemorizeCoordinate extends AbstractCoordinateOperation {
     }
 
     /**
-     * Load the last memorized coordinates
+     * Load the last memorized coordinates : remove the last ordinate
+     * of the array, and load it at index indexSaved.
      *
-     * @param coord is an array containing one, two or three ordinates
+     * @param coord is an array containing four ordinates or more
      * @throws IllegalCoordinateException if <code>coord</code> is not
      * compatible with this <code>CoordinateOperation</code>.
      */

@@ -6,22 +6,29 @@
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
  * name. It has been renamed CTS in 2009 and shared to the community from 
- * the OrbisGIS code repository.
+ * the Atelier SIG code repository.
+ * 
+ * Since them, CTS is supported by the Atelier SIG team in collaboration with Michaël 
+ * Michaud.
+ * The new CTS has been funded  by the French Agence Nationale de la Recherche 
+ * (ANR) under contract ANR-08-VILL-0005-01 and the regional council 
+ * "Région Pays de La Loire" under the projet SOGVILLE (Système d'Orbservation 
+ * Géographique de la Ville).
  *
  * CTS is free software: you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License as published by the Free Software
- * Foundation, either version 3 of the License.
+ * terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
  *
  * CTS is distributed in the hope that it will be useful, but WITHOUT ANY
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
+ * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License along with
+ * You should have received a copy of the GNU General Public License along with
  * CTS. If not, see <http://www.gnu.org/licenses/>.
  *
- * For more information, please consult: <https://github.com/orbisgis/cts/>
+ * For more information, please consult: <https://github.com/irstv/cts/>
  */
-
 package org.cts.op;
 
 import java.util.ArrayList;
@@ -29,12 +36,13 @@ import java.util.Arrays;
 
 import org.cts.Identifier;
 import org.cts.IllegalCoordinateException;
+import org.cts.op.transformation.NTv2GridShiftTransformation;
 
 import java.util.List;
 
 /**
  * A coordinate operation sequence can transform a coordinate through several
- * ordered {@linkplain  org.cts.CoordinateOperation CoordinateOperations}.
+ * ordered {@linkplain  org.cts.op.CoordinateOperation CoordinateOperations}.
  *
  * @author Michaël Michaud
  */
@@ -44,13 +52,13 @@ public class CoordinateOperationSequence extends AbstractCoordinateOperation {
      * The sequence of the {@link CoordinateOperation} used by this
      * CoordinateOperationSequence.
      */
-    private CoordinateOperation[] sequence;
+    protected CoordinateOperation[] sequence;
 
     /**
      * Create a CoordinateOperationSequence from an identifier and an array of
-     * {@linkplain  org.cts.CoordinateOperation CoordinateOperations}. Precision
+     * {@linkplain  org.cts.op.CoordinateOperation CoordinateOperations}. Precision
      * of this sequence is considered as the sum of all single
-     * {@link org.cts.CoordinateOperation}.
+     * {@link org.cts.op.CoordinateOperation}.
      *
      * @param identifier this operation sequence identifier
      * @param sequence an array containing ordered operations to apply to
@@ -68,9 +76,9 @@ public class CoordinateOperationSequence extends AbstractCoordinateOperation {
 
     /**
      * Create a CoordinateOperationSequence from an identifier and a List of
-     * {@linkplain  org.cts.CoordinateOperation CoordinateOperations}. Precision
+     * {@linkplain  org.cts.op.CoordinateOperation CoordinateOperations}. Precision
      * of this sequence is considered as the sum of all single
-     * {@link org.cts.CoordinateOperation}.
+     * {@link org.cts.op.CoordinateOperation}.
      *
      * @param identifier this operation sequence identifier
      * @param list a list containing ordered operations to apply to coordinates
@@ -87,7 +95,7 @@ public class CoordinateOperationSequence extends AbstractCoordinateOperation {
 
     /**
      * Create a CoordinateOperationSequence from an identifier an array of
-     * {@linkplain  org.cts.CoordinateOperation CoordinateOperations} and a
+     * {@linkplain  org.cts.op.CoordinateOperation CoordinateOperations} and a
      * precision.
      *
      * @param identifier this operation sequence identifier
@@ -105,7 +113,7 @@ public class CoordinateOperationSequence extends AbstractCoordinateOperation {
 
     /**
      * Creates a CoordinateOperationSequence from an identifier, a List of
-     * {@linkplain  org.cts.CoordinateOperation CoordinateOperations} and a
+     * {@linkplain  org.cts.op.CoordinateOperation CoordinateOperations} and a
      * precision.
      *
      * @param identifier this operation sequence identifier
@@ -124,7 +132,7 @@ public class CoordinateOperationSequence extends AbstractCoordinateOperation {
      * Implementation of the transform method for a sequence of transformation.
      * It is important that input coordinate is a 3D coordinate because any of
      * the coordinate operation of the sequence may be a 3D coordinate of
-     * {@link org.cts.CoordinateOperation}s.
+     * {@link org.cts.op.CoordinateOperation}s.
      *
      * @param coord the 3D coord to transform
      * @throws IllegalCoordinateException if <code>coord</code> is not
@@ -132,9 +140,10 @@ public class CoordinateOperationSequence extends AbstractCoordinateOperation {
      */
     @Override
     public double[] transform(double[] coord)
-            throws IllegalCoordinateException {
+            throws IllegalCoordinateException, CoordinateOperationException {
         for (CoordinateOperation op : sequence) {
             coord = op.transform(coord);
+            System.out.println(Arrays.toString(coord));
         }
         return coord;
     }
@@ -157,6 +166,19 @@ public class CoordinateOperationSequence extends AbstractCoordinateOperation {
     }
 
     /**
+     * Return a pessimistic estimation of the precision where precision
+     * of every sub-operation is simply added to the previous.
+     * @return
+     */
+    public double getPrecision() {
+        double combinedPrecision = 0.0;
+        for (CoordinateOperation op : sequence) {
+            combinedPrecision += op.getPrecision();
+        }
+        return combinedPrecision;
+    }
+
+    /**
      * Return the sequence of the coordinateOperation.
      */
     CoordinateOperation[] getSequence() {
@@ -164,7 +186,7 @@ public class CoordinateOperationSequence extends AbstractCoordinateOperation {
     }
 
     /**
-     * fusionSequences merge cleverly two list of CoordinateOperations by
+     * fusionSequences merges cleverly two list of CoordinateOperations by
      * removing the last element of the first list and the first of the second
      * list when one of these is the inverse of the other.
      *
@@ -219,10 +241,23 @@ public class CoordinateOperationSequence extends AbstractCoordinateOperation {
     private static CoordinateOperation[] cleanSequence(CoordinateOperation... sequence) {
         List<CoordinateOperation> result = new ArrayList<CoordinateOperation>();
         for (CoordinateOperation op : sequence) {
-            if (op != null && !op.equals(Identity.IDENTITY) && !(op instanceof CoordinateOperationSequence)) {
+            if (op != null && !op.isIdentity() && !(op instanceof CoordinateOperationSequence)) {
                 result.add(op);
             } else if (op instanceof CoordinateOperationSequence) {
                 result = fusionSequences(result, Arrays.asList(((CoordinateOperationSequence) op).getSequence()));
+            }
+        }
+        // Remove 2 successive opposite operations
+        for (int i = result.size()-1 ; i > 0 ; i--) {
+            CoordinateOperation op = result.get(i);
+            try {
+                if (op.inverse().equals(result.get(i-1))) {
+                    result.remove(i);
+                    result.remove(i-1);
+                    i -= 2;
+                }
+            } catch (NonInvertibleOperationException e) {
+                //Ignore
             }
         }
         if (sequence.length > 0 && result.isEmpty()) {
@@ -262,20 +297,11 @@ public class CoordinateOperationSequence extends AbstractCoordinateOperation {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(256);
-        sb.append(getIdentifier().getName()).append("{\n");
+        sb.append(getIdentifier().getName()).append("{");
         for (CoordinateOperation op : sequence) {
-            sb.append("   ").append(op.getCode());
-            if (op instanceof CoordinateOperationSequence) {
-                sb.append(" {\n");
-                for (CoordinateOperation op2 : ((CoordinateOperationSequence) op).getSequence()) {
-                    sb.append("      ").append(op2.toString()).append("\n");
-                }
-                sb.append("   }\n");
-            } else {
-                sb.append(" : ").append(op.toString()).append("\n");
-            }
+            sb.append("\n   ").append(op.toString());
         }
-        sb.append("}");
+        sb.append("\n} precision = " + getPrecision());
         return sb.toString();
     }
 
@@ -284,7 +310,7 @@ public class CoordinateOperationSequence extends AbstractCoordinateOperation {
      * <code>this</code>. Tests equality between the length of the sequences and
      * then the equality of each CoordinateOperation.
      *
-     * @param object The object to compare this CoordinateOperationSequence
+     * @param o The object to compare this CoordinateOperationSequence
      * against
      */
     @Override
@@ -314,5 +340,18 @@ public class CoordinateOperationSequence extends AbstractCoordinateOperation {
         int hash = 3;
         hash = 67 * hash + Arrays.deepHashCode(this.sequence);
         return hash;
+    }
+
+    /**
+     * This method can identify sequences with no operations as equivalent to
+     * Identity, but it does not try to nullify sequences of two opposite
+     * operations.
+     * @return true if this operation does not change coordinates.
+     */
+    public boolean isIdentity() {
+        for (CoordinateOperation op : sequence) {
+            if (!op.isIdentity()) return false;
+        }
+        return true;
     }
 }

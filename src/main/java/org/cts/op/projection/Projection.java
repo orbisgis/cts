@@ -6,22 +6,29 @@
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
  * name. It has been renamed CTS in 2009 and shared to the community from 
- * the OrbisGIS code repository.
+ * the Atelier SIG code repository.
+ * 
+ * Since them, CTS is supported by the Atelier SIG team in collaboration with Michaël 
+ * Michaud.
+ * The new CTS has been funded  by the French Agence Nationale de la Recherche 
+ * (ANR) under contract ANR-08-VILL-0005-01 and the regional council 
+ * "Région Pays de La Loire" under the projet SOGVILLE (Système d'Orbservation 
+ * Géographique de la Ville).
  *
  * CTS is free software: you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License as published by the Free Software
- * Foundation, either version 3 of the License.
+ * terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
  *
  * CTS is distributed in the hope that it will be useful, but WITHOUT ANY
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
+ * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License along with
+ * You should have received a copy of the GNU General Public License along with
  * CTS. If not, see <http://www.gnu.org/licenses/>.
  *
- * For more information, please consult: <https://github.com/orbisgis/cts/>
+ * For more information, please consult: <https://github.com/irstv/cts/>
  */
-
 package org.cts.op.projection;
 
 import java.util.Collections;
@@ -33,6 +40,8 @@ import org.cts.Identifier;
 import org.cts.Parameter;
 import org.cts.datum.Ellipsoid;
 import org.cts.op.AbstractCoordinateOperation;
+import org.cts.op.CoordinateOperation;
+import org.cts.op.NonInvertibleOperationException;
 import org.cts.parser.prj.PrjWriter;
 import org.cts.units.Measure;
 import org.cts.units.Unit;
@@ -83,7 +92,7 @@ public abstract class Projection extends AbstractCoordinateOperation {
         PSEUDOCONICAL,
         PSEUDOCYLINDRICAL,
         RETROAZIMUTHAL
-    };
+    }
 
     /**
      * Projection property.
@@ -107,7 +116,7 @@ public abstract class Projection extends AbstractCoordinateOperation {
         SECANT,
         TANGENT,
         TRANSVERSE
-    };
+    }
     /**
      * Ellispoid used for this projection.
      */
@@ -250,6 +259,21 @@ public abstract class Projection extends AbstractCoordinateOperation {
      */
     public abstract Orientation getOrientation();
 
+    @Override
+    public Projection inverse()
+            throws NonInvertibleOperationException {
+        throw new NonInvertibleOperationException(this.toString()
+                + " is non invertible");
+    }
+
+    /**
+     * Return true for direct operation (projection) and false for the
+     * inverse operation.
+     */
+    public boolean isDirect() {
+        return true;
+    }
+
     /**
      * Returns a WKT representation of the projection.
      *
@@ -293,7 +317,7 @@ public abstract class Projection extends AbstractCoordinateOperation {
      * <code>this</code>. Tests equality between the references of both object,
      * then tests if the string representation of these objects are equals.
      *
-     * @param object The object to compare this ProjectedCRS against
+     * @param o The object to compare this ProjectedCRS against
      */
     @Override
     public boolean equals(Object o) {
@@ -302,8 +326,19 @@ public abstract class Projection extends AbstractCoordinateOperation {
         } else if (o instanceof Projection) {
             Projection proj = (Projection) o;
             if (this.toString() != null) {
-                if (toString().equals(proj.toString())) {
-                    return true;
+                if (getClass().equals(proj.getClass())) {
+                    for (String param : parameters.keySet()) {
+                        if (parameters.get(param) == null && proj.parameters.get(param) == null) continue;
+                        else if (parameters.get(param) == null && proj.parameters.get(param) != null) return false;
+                        else if (parameters.get(param) != null && proj.parameters.get(param) == null) continue;
+                        else if (parameters.get(param).equals(proj.parameters.get(param))) continue;
+                        else if (!parameters.get(param).equals(proj.parameters.get(param))) return false;
+                        else {
+                            // Should not reach here
+                        }
+                    }
+                } else {
+                    return false;
                 }
             }
         }

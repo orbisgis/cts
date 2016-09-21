@@ -6,26 +6,35 @@
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
  * name. It has been renamed CTS in 2009 and shared to the community from 
- * the OrbisGIS code repository.
+ * the Atelier SIG code repository.
+ * 
+ * Since them, CTS is supported by the Atelier SIG team in collaboration with Michaël 
+ * Michaud.
+ * The new CTS has been funded  by the French Agence Nationale de la Recherche 
+ * (ANR) under contract ANR-08-VILL-0005-01 and the regional council 
+ * "Région Pays de La Loire" under the projet SOGVILLE (Système d'Orbservation 
+ * Géographique de la Ville).
  *
  * CTS is free software: you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License as published by the Free Software
- * Foundation, either version 3 of the License.
+ * terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
  *
  * CTS is distributed in the hope that it will be useful, but WITHOUT ANY
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
+ * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License along with
+ * You should have received a copy of the GNU General Public License along with
  * CTS. If not, see <http://www.gnu.org/licenses/>.
  *
- * For more information, please consult: <https://github.com/orbisgis/cts/>
+ * For more information, please consult: <https://github.com/irstv/cts/>
  */
-
 package org.cts.op;
 
 import org.cts.Identifier;
 import org.cts.IllegalCoordinateException;
+
+import java.util.Arrays;
 
 /**
  * Add a fourth dimension to save one of the other coordinates. It is used in
@@ -35,20 +44,23 @@ import org.cts.IllegalCoordinateException;
  */
 public class MemorizeCoordinate extends AbstractCoordinateOperation {
 
-    private final int indexSaved;
+    private final int[] indexesSaved;
     public static CoordinateOperation memoX = new MemorizeCoordinate(0);
     public static CoordinateOperation memoY = new MemorizeCoordinate(1);
     public static CoordinateOperation memoZ = new MemorizeCoordinate(2);
+    public static CoordinateOperation memoXY = new MemorizeCoordinate(0,1);
+    public static CoordinateOperation memoXYZ = new MemorizeCoordinate(0,1,2);
 
     /**
      * Creates a new CoordinateOperation increasing (resp decreasing) the coord
      * size by length.
      *
-     * @param dim final dimension of the new coordinate
+     * @param indexes indexes of ordinates to memorize
      */
-    public MemorizeCoordinate(int index) {
-        super(new Identifier(MemorizeCoordinate.class, "Save the " + (index + 1) + "e coordinate"));
-        this.indexSaved = index;
+    public MemorizeCoordinate(int... indexes) {
+        super(new Identifier(CoordinateOperation.class, "Save coordinates at indexes " + Arrays.toString(indexes)));
+        for (int i : indexes) assert i < 3;
+        this.indexesSaved = indexes;
     }
 
     /**
@@ -61,9 +73,11 @@ public class MemorizeCoordinate extends AbstractCoordinateOperation {
     @Override
     public double[] transform(double[] coord)
             throws IllegalCoordinateException {
-        double[] cc = new double[Math.max(coord.length + 1, 4)];
+        double[] cc = new double[Math.max(coord.length + indexesSaved.length, 4)];
         System.arraycopy(coord, 0, cc, 0, Math.min(coord.length, cc.length));
-        cc[Math.max(coord.length, 3)] = coord[indexSaved];
+        for (int i = 0 ; i < indexesSaved.length ; i++) {
+            cc[Math.max(coord.length+i, 3+i)] = coord[indexesSaved[i]];
+        }
         return cc;
     }
 }
