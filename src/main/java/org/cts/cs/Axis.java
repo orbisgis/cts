@@ -6,28 +6,20 @@
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
  * name. It has been renamed CTS in 2009 and shared to the community from 
- * the Atelier SIG code repository.
- * 
- * Since them, CTS is supported by the Atelier SIG team in collaboration with Michaël 
- * Michaud.
- * The new CTS has been funded  by the French Agence Nationale de la Recherche 
- * (ANR) under contract ANR-08-VILL-0005-01 and the regional council 
- * "Région Pays de La Loire" under the projet SOGVILLE (Système d'Orbservation 
- * Géographique de la Ville).
+ * the OrbisGIS code repository.
  *
  * CTS is free software: you can redistribute it and/or modify it under the
- * terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * terms of the GNU Lesser General Public License as published by the Free Software
+ * Foundation, either version 3 of the License.
  *
  * CTS is distributed in the hope that it will be useful, but WITHOUT ANY
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with
+ * You should have received a copy of the GNU Lesser General Public License along with
  * CTS. If not, see <http://www.gnu.org/licenses/>.
  *
- * For more information, please consult: <https://github.com/irstv/cts/>
+ * For more information, please consult: <https://github.com/orbisgis/cts/>
  */
 package org.cts.cs;
 
@@ -195,6 +187,7 @@ public class Axis {
 
     /**
      * Return the name of this Axis (X, Y, Z, LONGITUDE, ALTITUDE,&hellip;).
+     * @return 
      */
     public String getName() {
         return name;
@@ -202,6 +195,7 @@ public class Axis {
 
     /**
      * Return the direction of this Axis (NORTH, SOUTH, EAST, WEST or OTHER).
+     * @return 
      */
     public Direction getDirection() {
         return direction;
@@ -211,6 +205,7 @@ public class Axis {
      * Return the direction correpsonding to the string in parameter.
      *
      * @param dir the name of the direction
+     * @return 
      */
     public static Direction getDirection(String dir) {
         Direction direction = null;
@@ -237,6 +232,7 @@ public class Axis {
     /**
      * Returns a WKT representation of the axis.
      *
+     * @return 
      */
     public String toWKT() {
         StringBuilder w = new StringBuilder();
@@ -250,6 +246,7 @@ public class Axis {
 
     /**
      * Return a String representation of this Axis.
+     * @return 
      */
     @Override
     public String toString() {

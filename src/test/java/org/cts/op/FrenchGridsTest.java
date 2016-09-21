@@ -21,19 +21,19 @@
  *
  * For more information, please consult: <https://github.com/orbisgis/cts/>
  */
-
 package org.cts.op;
 
-import org.cts.IllegalCoordinateException;
 import org.cts.crs.CoordinateReferenceSystem;
 import org.cts.crs.GeodeticCRS;
 
+import org.cts.op.transformation.FrenchGeocentricNTF2RGF;
+import org.cts.op.transformation.NTv2GridShiftTransformation;
 import org.junit.Test;
 
 import java.io.FileReader;
 import java.io.LineNumberReader;
-import java.util.List;
-import org.cts.crs.CRSException;
+import java.util.Arrays;
+import java.util.Set;
 
 import static org.junit.Assert.assertTrue;
 
@@ -78,25 +78,38 @@ public class FrenchGridsTest extends BaseCoordinateTransformTest {
             double csNameDest_Y_Blegg = parseNumber(values[6]);
             double tolerance = parseNumber(values[7]);
             int index = ((int) parseNumber(id)) % 2;
+            //@TODO Fix NTv2 transformation for RGF93 (index = 1)
             CoordinateReferenceSystem inputCRS = cRSFactory.getCRS(csNameSrc);
             CoordinateReferenceSystem outputCRS = cRSFactory.getCRS(csNameDest);
-            double[] pointSource = new double[]{csNameSrc_X, csNameSrc_Y, 0};
+            double[] pointSource = new double[]{csNameSrc_X, csNameSrc_Y};
             double[] result = transform((GeodeticCRS) inputCRS, (GeodeticCRS) outputCRS, pointSource, index);
-            double[] pointDest = new double[]{csNameDest_X_Blegg, csNameDest_Y_Blegg, 0};
+            double[] pointDest = new double[]{csNameDest_X_Blegg, csNameDest_Y_Blegg};
             double[] check = transform((GeodeticCRS) outputCRS, (GeodeticCRS) inputCRS, pointDest, index);
-            //printCRStoWKT(inputCRS);
-            //printCRStoWKT(outputCRS);
-            //System.out.println(result[0]+", "+result[1]);
-            //System.out.println(pointDest[0]+", "+pointDest[1]);
             assertTrue(checkEquals2D(id + " dir--> " + csNameSrc + " to " + csNameDest, result, pointDest, tolerance));
             assertTrue(checkEquals2D(id + " inv--> " + csNameDest + " to " + csNameSrc, check, pointSource, 1E-3));
         }
         lineReader.close();
     }
 
-    public double[] transform(GeodeticCRS sourceCRS, GeodeticCRS targetCRS, double[] inputPoint, int index) throws IllegalCoordinateException, CRSException {
-        List<CoordinateOperation> ops = CoordinateOperationFactory.createCoordinateOperations(sourceCRS, targetCRS);
-        return ops.get(index).transform(new double[]{inputPoint[0], inputPoint[1], inputPoint[2]});
+    /**
+     * for index = 0, choose the second (NTv2-based) transform returned by createCoordinateOperations
+     * for index = 1, choose the first (blegg-based) transform (=circe) returned by createCoordinateOperations
+     */
+    public double[] transform(GeodeticCRS sourceCRS, GeodeticCRS targetCRS, double[] inputPoint, int index) throws Exception {
+
+        Set<CoordinateOperation> ops = CoordinateOperationFactory.createCoordinateOperations(sourceCRS, targetCRS);
+        CoordinateOperation gr3d = CoordinateOperationFactory.getMostPrecise(
+                CoordinateOperationFactory.includeFilter(ops, FrenchGeocentricNTF2RGF.class));
+        CoordinateOperation ntv2 = CoordinateOperationFactory.getMostPrecise(
+                CoordinateOperationFactory.includeFilter(ops, NTv2GridShiftTransformation.class));
+
+        CoordinateOperation op = index == 1 ? ntv2 : gr3d;
+
+        //if (sourceCRS.getDatum().getEllipsoid().equals(Ellipsoid.GRS80)) {
+        //    op = op.inverse();
+        //}
+
+        return op.transform(new double[]{inputPoint[0], inputPoint[1]});
     }
 
     /**

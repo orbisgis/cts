@@ -6,28 +6,20 @@
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
  * name. It has been renamed CTS in 2009 and shared to the community from 
- * the Atelier SIG code repository.
- * 
- * Since them, CTS is supported by the Atelier SIG team in collaboration with Michaël 
- * Michaud.
- * The new CTS has been funded  by the French Agence Nationale de la Recherche 
- * (ANR) under contract ANR-08-VILL-0005-01 and the regional council 
- * "Région Pays de La Loire" under the projet SOGVILLE (Système d'Orbservation 
- * Géographique de la Ville).
+ * the OrbisGIS code repository.
  *
  * CTS is free software: you can redistribute it and/or modify it under the
- * terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * terms of the GNU Lesser General Public License as published by the Free Software
+ * Foundation, either version 3 of the License.
  *
  * CTS is distributed in the hope that it will be useful, but WITHOUT ANY
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with
+ * You should have received a copy of the GNU Lesser General Public License along with
  * CTS. If not, see <http://www.gnu.org/licenses/>.
  *
- * For more information, please consult: <https://github.com/irstv/cts/>
+ * For more information, please consult: <https://github.com/orbisgis/cts/>
  */
 package org.cts.op.transformation.grids;
 
@@ -40,6 +32,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.cts.cs.GeographicExtent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>Classe representing a Geographic grid as defined by IGN (France).</p>
@@ -70,10 +64,11 @@ import org.cts.cs.GeographicExtent;
  * For geoid grids :<br>
  * N = He - A = Ellipsoidal height - Altitude (above geoid)<br>
  *
- * @author Michaël Michaud, Jules Party
+ * @author Michaël Michaud, Jules Party, Erwan Bocher
  */
 public class IGNGeographicGrid extends GeographicGrid {
 
+    static final Logger LOGGER = LoggerFactory.getLogger(IGNGeographicGrid.class);
     String gridType;
     int datumId;
     int coordinateType;
@@ -82,6 +77,8 @@ public class IGNGeographicGrid extends GeographicGrid {
     int primeMeridian;
     String interpolationMode;
     String precisionUnit;
+    
+  
 
     /**
      * <p>Construct a GeographicGrid from an InputStream representing an IGN
@@ -263,13 +260,10 @@ public class IGNGeographicGrid extends GeographicGrid {
                 for (int i = 0; i < dim; i++) {
                     t[i] = Double.parseDouble(gg[3 + i]);
                 }
-                String prec = gg[3 + dim];
                 nbdec = Math.max(nbdec, gg[3].split("\\.")[1].length());
                 System.arraycopy(t, 0, values[(int) Math.rint((lat - y0) / dy)][(int) Math.rint((lon - x0) / dx)], 0, dim);
             } catch (NumberFormatException nfe) {
-                System.out.println(gg[0]);
-                System.out.println(gg[1]);
-                System.out.println(gg[2]);
+                 LOGGER.warn("Cannot parse the number long : " + gg[0] + " lat : " + gg[1] + " dim :" + gg[2]);
             }
         }
         // decimal part size --> scale

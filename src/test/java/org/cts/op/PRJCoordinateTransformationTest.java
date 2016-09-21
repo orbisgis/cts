@@ -21,15 +21,15 @@
  *
  * For more information, please consult: <https://github.com/orbisgis/cts/>
  */
-
 package org.cts.op;
 
 import org.cts.crs.CoordinateReferenceSystem;
 import org.cts.crs.GeodeticCRS;
-import static org.junit.Assert.assertTrue;
 
+import org.cts.datum.GeodeticDatum;
 import org.junit.Test;
 
+import static org.junit.Assert.assertTrue;
 
 /**
  * This class contains tests that uses PRJ definition for the CRS
@@ -41,9 +41,12 @@ public class PRJCoordinateTransformationTest extends BaseCoordinateTransformTest
     @Test
     public void testLAMBEtoLAMB93PRJ() throws Exception {
         //IGN data : POINT (931813.94 1786923.891 2525.68) ID5863
-        double[] srcPoint = new double[]{282331, 2273699.7, 0};
+        double[] srcPoint = new double[]{282331, 2273699.7};
         //IGN data : POINT (977362.95 6218045.569 0)	ID5863
-        double[] expectedPoint = new double[]{332602.961893497, 6709788.26447893, 0};
+        double[] expectedPoint = new double[]{332602.961893497, 6709788.26447893};
+        GeodeticDatum.NTF.removeAllTransformations();
+        GeodeticDatum.NTF_PARIS.removeAllTransformations();
+        GeodeticDatum.RGF93.removeAllTransformations();
         String srcprj = "PROJCS[\"NTF_Lambert_II_étendu\",	GEOGCS[\"GCS_NTF\", DATUM[\"D_NTF\","
                 + "SPHEROID[\"Clarke_1866_IGN\",6378249.2,293.46602]], PRIMEM[\"Greenwich\",0.0],"
                 + "UNIT[\"Degree\",0.0174532925199433]], PROJECTION[\"Lambert_Conformal_Conic\"],"
@@ -72,9 +75,9 @@ public class PRJCoordinateTransformationTest extends BaseCoordinateTransformTest
     @Test
     public void testWGS84toLAMB93PRJ() throws Exception {
         //IGN data : POINT (931813.94 1786923.891 2525.68) ID5863
-        double[] srcPoint = new double[]{2.114551393, 50.345609791, 0};
+        double[] srcPoint = new double[]{2.114551393, 50.345609791};
         //IGN data : POINT (977362.95 6218045.569 0)	ID5863
-        double[] expectedPoint = new double[]{636890.74032145, 7027895.26344997, 0};
+        double[] expectedPoint = new double[]{636890.74032145, 7027895.26344997};
         String srcprj = "GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\","
                 + "SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],"
                 + "AUTHORITY[\"EPSG\",\"6326\"]],"
@@ -101,8 +104,8 @@ public class PRJCoordinateTransformationTest extends BaseCoordinateTransformTest
 
     @Test
     public void testMercatorPRJ() throws Exception {
-        double[] srcPoint = new double[]{120, -3, 0};
-        double[] expectedPoint = new double[]{5009726.58, 569150.82, 0};
+        double[] srcPoint = new double[]{120, -3};
+        double[] expectedPoint = new double[]{5009726.58, 569150.82};
         String srcprj = "GEOGCS[\"Makassar\",DATUM[\"Makassar\","
                 + "SPHEROID[\"Bessel 1841\",6377397.155,299.1528128,AUTHORITY[\"EPSG\",\"7004\"]],"
                 + "TOWGS84[-587.8,519.75,145.76,0,0,0,0],AUTHORITY[\"EPSG\",\"6257\"]],"
@@ -130,8 +133,8 @@ public class PRJCoordinateTransformationTest extends BaseCoordinateTransformTest
 
     @Test
     public void testUnitsInPRJ() throws Exception {
-        double[] srcPoint = new double[]{-62, 10, 0};
-        double[] expectedPoint = new double[]{66644.94, 82536.22, 0};
+        double[] srcPoint = new double[]{-62, 10};
+        double[] expectedPoint = new double[]{66644.94, 82536.22};
         String srcprj = "GEOGCS[\"Trinidad 1903\",\n"
                 + "    DATUM[\"Trinidad_1903\",\n"
                 + "        SPHEROID[\"Clarke 1858\",6378293.645208759,294.2606763692654,\n"
@@ -173,8 +176,8 @@ public class PRJCoordinateTransformationTest extends BaseCoordinateTransformTest
 
     @Test
     public void testCH1903toLV95PRJ() throws Exception {
-        double[] srcPoint = new double[]{8.486419798, 47.0580435, 0};
-        double[] expectedPoint = new double[]{2679520.05, 1212273.44, 0};
+        double[] srcPoint = new double[]{8.486419798, 47.0580435};
+        double[] expectedPoint = new double[]{2679520.05, 1212273.44};
         String srcprj = "GEOGCS[\"CH1903+\",\n"
                 + "    DATUM[\"CH1903\",\n"
                 + "        SPHEROID[\"Bessel 1841\",6377397.155,299.1528128,\n"
@@ -217,34 +220,5 @@ public class PRJCoordinateTransformationTest extends BaseCoordinateTransformTest
         assertTrue(checkEquals2D(srcCRS + " to " + outCRS, result, expectedPoint, 10E-2));
         double[] check = transform((GeodeticCRS) outCRS, (GeodeticCRS) srcCRS, expectedPoint);
         assertTrue(checkEquals2D(outCRS + " to " + srcCRS, check, srcPoint, 1E-2));
-    }
-    
-    
-     @Test
-    public void testFrenchEPSGCodeFrom3035To2154() throws Exception {
-        double[] pointSource = new double[]{3445356.243369 , 2744505.796699, 0};
-        double[] pointDest = new double[]{351889.32064 , 6687364.73540, 0};
-        double tolerance = 10E-3;        
-        String srcprj = "PROJCS[\"ETRS89 / ETRS-LAEA\",GEOGCS[\"ETRS89\","
-                + "DATUM[\"European_Terrestrial_Reference_System_1989\",SPHEROID[\"GRS 1980\","
-                + "6378137,298.257222101,AUTHORITY[\"EPSG\",\"7019\"]],AUTHORITY[\"EPSG\",\"6258\"]],"
-                + "PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],"
-                + "UNIT[\"degree\",0.01745329251994328,AUTHORITY[\"EPSG\",\"9122\"]],"
-                + "AUTHORITY[\"EPSG\",\"4258\"]],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],"
-                + "PROJECTION[\"Lambert_Azimuthal_Equal_Area\"],PARAMETER[\"latitude_of_center\",52],"
-                + "PARAMETER[\"longitude_of_center\",10],PARAMETER[\"false_easting\",4321000],"
-                + "PARAMETER[\"false_northing\",3210000],AUTHORITY[\"EPSG\",\"3035\"],"
-                + "AXIS[\"X\",EAST],AXIS[\"Y\",NORTH]]";
-        
-        String outprj = "PROJCS[\"RGF93_Lambert_93\",GEOGCS[\"GCS_RGF_1993\",DATUM[\"D_RGF_1993\","
-                + "SPHEROID[\"GRS_1980\",6378137.0,298.257222101]],PRIMEM[\"Greenwich\",0.0],"
-                + "UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Lambert_Conformal_Conic\"],"
-                + "PARAMETER[\"False_Easting\",700000.0],PARAMETER[\"False_Northing\",6600000.0],"
-                + "PARAMETER[\"Central_Meridian\",3.0],PARAMETER[\"Standard_Parallel_1\",44.0],"
-                + "PARAMETER[\"Standard_Parallel_2\",49.0],PARAMETER[\"Latitude_Of_Origin\",46.5],UNIT[\"Meter\",1.0]]";
-        CoordinateReferenceSystem inputCRS = cRSFactory.createFromPrj(srcprj);
-        CoordinateReferenceSystem outputCRS = cRSFactory.createFromPrj(outprj);
-        double[] result = transform((GeodeticCRS) inputCRS, (GeodeticCRS) outputCRS, pointSource);
-        assertTrue(checkEquals2D("EPSG:3035 to EPSG:2154 ", result, pointDest, tolerance));        
     }
 }

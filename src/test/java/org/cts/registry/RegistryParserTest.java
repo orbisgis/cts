@@ -24,14 +24,18 @@
 
 package org.cts.registry;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.cts.CTSTestCase;
+import org.cts.Identifier;
+import org.cts.crs.CoordinateReferenceSystem;
 import org.cts.parser.proj.ProjKeyParameters;
 
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 /**
  *
@@ -48,6 +52,17 @@ public class RegistryParserTest extends CTSTestCase {
         assertTrue(parameters.get(ProjKeyParameters.proj).equals("longlat"));
         assertTrue(parameters.get(ProjKeyParameters.ellps).equals("WGS84"));
         assertTrue(parameters.get(ProjKeyParameters.datum).equals("WGS84"));
+    }
+
+    @Test
+    public void testReadEPSGFile1() throws Exception {
+        CoordinateReferenceSystem crs = cRSFactory.getRegistryManager().getRegistry("EPSG")
+                .getCoordinateReferenceSystem(new Identifier("EPSG", "2154", null));
+        assertEquals("epsg:2154 complete code", "EPSG:2154", crs.getCode());
+        assertEquals("epsg:2154 authority name", "EPSG", crs.getAuthorityName());
+        assertEquals("epsg:2154 authority code", "2154", crs.getAuthorityKey());
+        assertEquals("epsg:2154 name", "RGF93 / Lambert-93", crs.getName());
+        assertEquals("epsg:2154 x_0", 700000, crs.getProjection().getFalseEasting(), 1E-9);
     }
 
     @Test
@@ -78,10 +93,15 @@ public class RegistryParserTest extends CTSTestCase {
      * @param registry
      * @param code
      * @return
+     * @throws java.lang.Exception
      */
     public Map<String, String> getParameters(String registry, String code) throws Exception {
-        Map<String, String> parameters = cRSFactory.getRegistryManager().getRegistry(registry).getParameters(code);
-        return parameters;
+        //Map<String, String> parameters = cRSFactory.getRegistryManager().getRegistry(registry).getParameters(code);
+        Registry reg  = cRSFactory.getRegistryManager().getRegistry(registry);
+        if (reg instanceof AbstractProjRegistry) {
+            return ((AbstractProjRegistry) reg).getParameters(code);
+    }
+        return new HashMap<String, String>();
     }
 
     @Test

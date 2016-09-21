@@ -21,7 +21,6 @@
  *
  * For more information, please consult: <https://github.com/orbisgis/cts/>
  */
-
 package org.cts.op;
 
 import org.cts.crs.CoordinateReferenceSystem;
@@ -35,17 +34,16 @@ import static org.junit.Assert.assertTrue;
  *
  * @author Erwan Bocher
  */
-public class EPSGTransform extends BaseCoordinateTransformTest {
+public class EPSGTransformTest extends BaseCoordinateTransformTest {
 
     @Test
     public void testFrenchEPSGCodeFrom4326To27582() throws Exception {
         String csNameSrc = "EPSG:4326"; //Input EPSG
-        double[] pointSource = new double[]{2.114551393, 50.345609791, 0};
+        double[] pointSource = new double[]{2.114551393, 50.345609791};
         String csNameDest = "EPSG:27582";  //Target EPSG lambert 2 etendu france
-        double[] pointDest = new double[]{584173.736, 2594514.828, 0};
+        double[] pointDest = new double[]{584173.736, 2594514.828};
         double tolerance = 10E-3;
         CoordinateReferenceSystem inputCRS = cRSFactory.getCRS(csNameSrc);
-        System.out.println(inputCRS.toWKT());
         CoordinateReferenceSystem outputCRS = cRSFactory.getCRS(csNameDest);
         verbose = true;
         double[] result = transform((GeodeticCRS) inputCRS, (GeodeticCRS) outputCRS, pointSource);
@@ -55,9 +53,9 @@ public class EPSGTransform extends BaseCoordinateTransformTest {
     @Test
     public void testFrenchEPSGCodeFrom27582To4326() throws Exception {
         String csNameSrc = "EPSG:27582"; //Input EPSG
-        double[] pointSource = new double[]{584173.736, 2594514.828, 0};
+        double[] pointSource = new double[]{584173.736, 2594514.828};
         String csNameDest = "EPSG:4326";  //Target EPSG 
-        double[] pointDest = new double[]{2.114551393, 50.345609791, 0};
+        double[] pointDest = new double[]{2.114551393, 50.345609791};
         double tolerance = 0.0001;
         CoordinateReferenceSystem inputCRS = cRSFactory.getCRS(csNameSrc);
         CoordinateReferenceSystem outputCRS = cRSFactory.getCRS(csNameDest);

@@ -6,28 +6,20 @@
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
  * name. It has been renamed CTS in 2009 and shared to the community from 
- * the Atelier SIG code repository.
- * 
- * Since them, CTS is supported by the Atelier SIG team in collaboration with Michaël 
- * Michaud.
- * The new CTS has been funded  by the French Agence Nationale de la Recherche 
- * (ANR) under contract ANR-08-VILL-0005-01 and the regional council 
- * "Région Pays de La Loire" under the projet SOGVILLE (Système d'Orbservation 
- * Géographique de la Ville).
+ * the OrbisGIS code repository.
  *
  * CTS is free software: you can redistribute it and/or modify it under the
- * terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * terms of the GNU Lesser General Public License as published by the Free Software
+ * Foundation, either version 3 of the License.
  *
  * CTS is distributed in the hope that it will be useful, but WITHOUT ANY
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with
+ * You should have received a copy of the GNU Lesser General Public License along with
  * CTS. If not, see <http://www.gnu.org/licenses/>.
  *
- * For more information, please consult: <https://github.com/irstv/cts/>
+ * For more information, please consult: <https://github.com/orbisgis/cts/>
  */
 package org.cts;
 
@@ -547,7 +539,6 @@ public class CRSHelper {
                                 FrenchGeocentricNTF2RGF ntf2rgf = FrenchGeocentricNTF2RGF.getInstance();
                                 crs.getDatum().addGeocentricTransformation(GeodeticDatum.RGF93, ntf2rgf);
                                 crs.getDatum().addGeocentricTransformation(GeodeticDatum.WGS84, ntf2rgf);
-                                //System.out.println("Add French Geocentric Grid transformation from " + crs.getDatum() + " to RGF93 and WGS84");
                                 LOGGER.info("Add French Geocentric Grid transformation from " + crs.getDatum() + " to RGF93 and WGS84");
 
                                 NTv2GridShiftTransformation ntf_r93 = NTv2GridShiftTransformation.createNTv2GridShiftTransformation(grid);
@@ -558,7 +549,6 @@ public class CRSHelper {
                                 crs.getDatum().addGeographicTransformation(GeodeticDatum.RGF93,
                                         new CoordinateOperationSequence(ntf_r93.getIdentifier(),
                                                 LongitudeRotation.getLongitudeRotationFrom(crs.getDatum().getPrimeMeridian()), ntf_r93));
-                                //System.out.println("Add NTv2 transformation from " + crs.getDatum() + " to RGF93 and WGS84");
                                 LOGGER.info("Add NTv2 transformation from " + crs.getDatum() + " to RGF93 and WGS84");
                             } else {
                                 // This is the general case where we want to add a NTv2 transformation
@@ -571,11 +561,9 @@ public class CRSHelper {
                                                 gt.getIdentifier(),
                                                 new LongitudeRotation(crs.getDatum().getPrimeMeridian().getLongitudeFromGreenwichInRadians()),
                                                 gt));
-                                //System.out.println("Add NTv2 transformation from " + crs.getDatum() + " to " + datum);
                                 LOGGER.info("Add NTv2 transformation from " + crs.getDatum() + " to " + datum);
                             }
                         } catch (Exception ex) {
-                            ex.printStackTrace();
                             LOGGER.error("Cannot find the nadgrid " + grid + ".", ex);
                         }
                     }
