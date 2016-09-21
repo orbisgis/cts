@@ -133,10 +133,12 @@ public class CompoundCRS extends GeodeticCRS {
      * CoordinateReferenceSystem to a GeographicReferenceSystem based on the
      * same horizonal datum and vertical datum, and using normal SI units in the
      * following order : latitude (rad), longitude (rad) height/altitude (m).
+     * @return 
+     * @throws org.cts.op.NonInvertibleOperationException 
      */
     @Override
     public CoordinateOperation toGeographicCoordinateConverter()
-            throws NonInvertibleOperationException {
+            throws NonInvertibleOperationException, CRSException {
         List<CoordinateOperation> ops = new ArrayList<CoordinateOperation>();
         for (int i = 0; i < 3; i++) {
             if (getCoordinateSystem().getAxis(i).getDirection() == Axis.Direction.SOUTH
@@ -172,8 +174,7 @@ public class CompoundCRS extends GeodeticCRS {
         }
         if (verticalCRS.getDatum().getType().equals(VerticalDatum.Type.ELLIPSOIDAL)
                 && !horizontalCRS.getDatum().getEllipsoid().equals(verticalCRS.getDatum().getEllipsoid())) {
-            System.out.println("Unsupported operation for this CRS : " + this);
-            //TO DO
+            throw new CRSException("Unsupported operation for this CRS : " + this);
         } else if (verticalCRS.getDatum().getAltiToEllpsHeight() instanceof Altitude2EllipsoidalHeight) {
             Altitude2EllipsoidalHeight transfo = (Altitude2EllipsoidalHeight) verticalCRS.getDatum().getAltiToEllpsHeight();
             if (!horizontalCRS.getDatum().equals(transfo.getAssociatedDatum())) {
@@ -262,7 +263,7 @@ public class CompoundCRS extends GeodeticCRS {
         } else if (verticalCRS.getDatum().getType().equals(VerticalDatum.Type.ELLIPSOIDAL)) {
             ops = cleverAdd(ops, Identity.IDENTITY);
         } else {
-            System.out.println("Unsupported operation for this CRS : " + this);
+            throw new CRSException("Unsupported operation for this CRS : " + this);
         }
         return new CoordinateOperationSequence(new Identifier(
                 CoordinateOperationSequence.class), ops);
@@ -273,15 +274,17 @@ public class CompoundCRS extends GeodeticCRS {
      * GeographicReferenceSystem based on the same horizonal datum and vertical
      * datum, and using normal SI units in the following order : latitude (rad),
      * longitude (rad) height/altitude (m) to this CoordinateReferenceSystem.
+     * @return 
+     * @throws org.cts.op.NonInvertibleOperationException 
+     * @throws org.cts.crs.CRSException 
      */
     @Override
     public CoordinateOperation fromGeographicCoordinateConverter()
-            throws NonInvertibleOperationException {
+            throws NonInvertibleOperationException, CRSException {
         List<CoordinateOperation> ops = new ArrayList<CoordinateOperation>();
         if (verticalCRS.getDatum().getType().equals(VerticalDatum.Type.ELLIPSOIDAL)
                 && !horizontalCRS.getDatum().getEllipsoid().equals(verticalCRS.getDatum().getEllipsoid())) {
-            System.out.println("Unsupported operation for this CRS : " + this);
-            // TO DO
+            throw new CRSException("Unsupported operation for this CRS : " + this);
         } else if (verticalCRS.getDatum().getAltiToEllpsHeight() instanceof Altitude2EllipsoidalHeight) {
             Altitude2EllipsoidalHeight transfo = (Altitude2EllipsoidalHeight) verticalCRS.getDatum().getAltiToEllpsHeight();
             ops.add(MemorizeCoordinate.memoX);
@@ -300,7 +303,7 @@ public class CompoundCRS extends GeodeticCRS {
         } else if (verticalCRS.getDatum().getType().equals(VerticalDatum.Type.ELLIPSOIDAL)) {
             ops.add(Identity.IDENTITY);
         } else {
-            System.out.println("Unsupported operation for this CRS : " + this);
+            throw new CRSException("Unsupported operation for this CRS : " + this);
         }
         if (horizontalCRS instanceof Geographic2DCRS) {
             // Convert from source unit to radians and meters.
@@ -341,6 +344,7 @@ public class CompoundCRS extends GeodeticCRS {
     /**
      * Returns a WKT representation of the compound CRS.
      *
+     * @return 
      */
     public String toWKT() {
         StringBuilder w = new StringBuilder();
@@ -360,6 +364,7 @@ public class CompoundCRS extends GeodeticCRS {
 
     /**
      * Return a String representation of this Datum.
+     * @return 
      */
     @Override
     public String toString() {

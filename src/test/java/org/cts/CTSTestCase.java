@@ -32,7 +32,7 @@ import org.cts.registry.IGNFRegistry;
 import org.cts.registry.Nad27Registry;
 import org.cts.registry.Nad83Registry;
 import org.cts.registry.RegistryManager;
-import org.cts.registry.worldRegistry;
+import org.cts.registry.WorldRegistry;
 
 import org.junit.BeforeClass;
 import org.slf4j.Logger;
@@ -61,7 +61,7 @@ public class CTSTestCase {
         registryManager.addRegistry(new ESRIRegistry());
         registryManager.addRegistry(new Nad27Registry());
         registryManager.addRegistry(new Nad83Registry());
-        registryManager.addRegistry(new worldRegistry());
+        registryManager.addRegistry(new WorldRegistry());
 
     }
 
@@ -73,6 +73,7 @@ public class CTSTestCase {
      * @param o1
      * @param o2
      * @param tol
+     * @return 
      */
     public boolean checkEquals(String test, double o1, double o2, double tol) {
         if (Math.abs(o1 - o2) <= tol) {

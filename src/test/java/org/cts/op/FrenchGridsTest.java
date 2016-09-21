@@ -33,6 +33,7 @@ import org.junit.Test;
 import java.io.FileReader;
 import java.io.LineNumberReader;
 import java.util.List;
+import org.cts.crs.CRSException;
 
 import static org.junit.Assert.assertTrue;
 
@@ -93,7 +94,7 @@ public class FrenchGridsTest extends BaseCoordinateTransformTest {
         lineReader.close();
     }
 
-    public double[] transform(GeodeticCRS sourceCRS, GeodeticCRS targetCRS, double[] inputPoint, int index) throws IllegalCoordinateException {
+    public double[] transform(GeodeticCRS sourceCRS, GeodeticCRS targetCRS, double[] inputPoint, int index) throws IllegalCoordinateException, CRSException {
         List<CoordinateOperation> ops = CoordinateOperationFactory.createCoordinateOperations(sourceCRS, targetCRS);
         return ops.get(index).transform(new double[]{inputPoint[0], inputPoint[1], inputPoint[2]});
     }
