@@ -30,6 +30,7 @@ import java.util.List;
 
 
 import org.cts.Identifier;
+import org.cts.crs.CRSException;
 import org.cts.crs.GeodeticCRS;
 import org.cts.datum.GeodeticDatum;
 import org.cts.op.transformation.NTv2GridShiftTransformation;
@@ -67,9 +68,11 @@ public final class CoordinateOperationFactory {
      *
      * @param source the (non null) source geodetic coordinate reference system
      * @param target the (non null) target geodetic coordinate reference system
+     * @return 
+     * @throws org.cts.crs.CRSException 
      */
-    public static List<CoordinateOperation> createCoordinateOperations(
-            GeodeticCRS source, GeodeticCRS target) {
+    public static List<CoordinateOperation> createCoordinateOperations (
+            GeodeticCRS source, GeodeticCRS target) throws CRSException{
         if (source == null) {
             throw new IllegalArgumentException("The source CRS must not be null");
         }
@@ -131,7 +134,7 @@ public final class CoordinateOperationFactory {
     private static void addNadgridsOperationDir(
             GeodeticDatum sourceDatum, GeodeticCRS source,
             GeodeticDatum targetDatum, GeodeticCRS target, List<CoordinateOperation> nadgridsTransformations,
-            List<CoordinateOperation> opList) {
+            List<CoordinateOperation> opList) throws CRSException{
         for (CoordinateOperation coordOp : nadgridsTransformations) {
             try {
                 if (!(coordOp instanceof NTv2GridShiftTransformation) || (sourceDatum.getShortName().equals(((NTv2GridShiftTransformation) coordOp).getFromDatum()))) {
@@ -181,7 +184,7 @@ public final class CoordinateOperationFactory {
     private static void addNadgridsOperationInv(
             GeodeticDatum sourceDatum, GeodeticCRS source,
             GeodeticDatum targetDatum, GeodeticCRS target, List<CoordinateOperation> nadgridsTransformations,
-            List<CoordinateOperation> opList) {
+            List<CoordinateOperation> opList) throws CRSException {
         for (CoordinateOperation coordOp : nadgridsTransformations) {
             try {
                 if (!(coordOp instanceof NTv2GridShiftTransformation) || sourceDatum.getShortName().equals(((NTv2GridShiftTransformation) coordOp).getFromDatum())) {
@@ -223,7 +226,7 @@ public final class CoordinateOperationFactory {
      */
     private static void addCoordinateOperations(
             GeodeticDatum datum, GeodeticCRS source, GeodeticCRS target,
-            List<CoordinateOperation> opList) {
+            List<CoordinateOperation> opList) throws CRSException{
         try {
             opList.add(new CoordinateOperationSequence(
                     new Identifier(CoordinateOperationSequence.class, source.getName() + " to " + target.getName()),
@@ -252,7 +255,7 @@ public final class CoordinateOperationFactory {
     private static void addCoordinateOperations(
             GeodeticDatum sourceDatum, GeodeticCRS source,
             GeodeticDatum targetDatum, GeodeticCRS target,
-            List<CoordinateOperation> opList) {
+            List<CoordinateOperation> opList)throws CRSException {
         // We get registered transformation from source GeodeticDatum to target GeodeticDatum
         // There maybe one or more transformations available.
         List<CoordinateOperation> datumTransformations = sourceDatum.getCoordinateOperations(targetDatum);

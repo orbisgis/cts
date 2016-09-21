@@ -66,6 +66,7 @@ public abstract class GeodeticCRS extends IdentifiableComponent
     private Map<CoordinateReferenceSystem, List<CoordinateOperation>> crsTransformations = new HashMap<CoordinateReferenceSystem, List<CoordinateOperation>>();
 
     /**
+     * @return 
      * @see CoordinateReferenceSystem#getProjection()
      */
     @Override
@@ -83,7 +84,7 @@ public abstract class GeodeticCRS extends IdentifiableComponent
      *
      * @param identifier the identifier of the GeodeticCRS
      * @param datum the datum associated with the GeodeticCRS
-     * @param coordSys the coordinate system associated with the GeodeticCRS
+     * @param coordinateSystem the coordinate system associated with the GeodeticCRS
      */
     protected GeodeticCRS(Identifier identifier, GeodeticDatum datum,
             CoordinateSystem coordinateSystem) {
@@ -99,6 +100,7 @@ public abstract class GeodeticCRS extends IdentifiableComponent
     abstract public Type getType();
 
     /**
+     * @return 
      * @see CoordinateReferenceSystem#getCoordinateSystem()
      */
     @Override
@@ -110,6 +112,7 @@ public abstract class GeodeticCRS extends IdentifiableComponent
      * Returns the number of dimensions of the {@link CoordinateSystem} used by
      * this
      * <code>CoordinateReferenceSystem</code>.
+     * @return 
      */
     public int getDimension() {
         return coordinateSystem.getDimension();
@@ -118,6 +121,7 @@ public abstract class GeodeticCRS extends IdentifiableComponent
     /**
      * Returns the {@link Datum} to which this
      * <code>CoordinateReferenceSystem</code> is refering.
+     * @return 
      */
     @Override
     public GeodeticDatum getDatum() {
@@ -210,18 +214,22 @@ public abstract class GeodeticCRS extends IdentifiableComponent
      * CoordinateReferenceSystem to a GeographicReferenceSystem based on the
      * same horizonal datum and vertical datum, and using normal SI units in the
      * following order : latitude (rad), longitude (rad) height/altitude (m).
+     * @return 
+     * @throws org.cts.op.NonInvertibleOperationException
      */
     abstract public CoordinateOperation toGeographicCoordinateConverter()
-            throws NonInvertibleOperationException;
+            throws NonInvertibleOperationException, CRSException;
 
     /**
      * Creates a CoordinateOperation object to convert coordinates from a
      * GeographicReferenceSystem based on the same horizonal datum and vertical
      * datum, and using normal SI units in the following order : latitude (rad),
      * longitude (rad) height/altitude (m) to this CoordinateReferenceSystem.
+     * @throws org.cts.op.NonInvertibleOperationException
+     * @throws org.cts.crs.CRSException
      */
     abstract public CoordinateOperation fromGeographicCoordinateConverter()
-            throws NonInvertibleOperationException;
+            throws NonInvertibleOperationException, CRSException;
 
     /**
      * Returns a WKT representation of the geodetic CRS.

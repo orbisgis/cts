@@ -30,6 +30,7 @@ import org.cts.crs.CoordinateReferenceSystem;
 import org.cts.crs.GeodeticCRS;
 
 import java.util.List;
+import org.cts.crs.CRSException;
 
 /**
  *
@@ -48,7 +49,7 @@ public class BaseCoordinateTransformTest extends CTSTestCase {
      * @return
      * @throws IllegalCoordinateException
      */
-    public double[] transform(GeodeticCRS sourceCRS, GeodeticCRS targetCRS, double[] inputPoint) throws IllegalCoordinateException {
+    public double[] transform(GeodeticCRS sourceCRS, GeodeticCRS targetCRS, double[] inputPoint) throws IllegalCoordinateException , CRSException{
         List<CoordinateOperation> ops;
         ops = CoordinateOperationFactory.createCoordinateOperations(sourceCRS, targetCRS);
         if (!ops.isEmpty()) {
