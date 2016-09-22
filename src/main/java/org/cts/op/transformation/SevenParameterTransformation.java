@@ -163,6 +163,7 @@ public class SevenParameterTransformation extends AbstractCoordinateOperation
      * @param rotationConvention convention used for the rotation (Position-
      * Vector or Coordinate-Frame)
      * @param linearized true if the formula is linearized (sin(x) = x)
+     * @return 
      */
     public static SevenParameterTransformation createSevenParameterTransformation(
             double tx, double ty, double tz,

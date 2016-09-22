@@ -58,6 +58,7 @@ public class BaseCoordinateTransformTest extends CTSTestCase {
      * @param inputPoint
      * @return
      * @throws IllegalCoordinateException
+     * @throws org.cts.op.CoordinateOperationException
      */
     public double[] transform(GeodeticCRS sourceCRS, GeodeticCRS targetCRS, double[] inputPoint)
             throws IllegalCoordinateException, CoordinateOperationException {

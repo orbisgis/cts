@@ -23,6 +23,7 @@
  */
 package org.cts.op.transformation;
 
+import java.io.FileInputStream;
 import java.io.InputStream;
 
 import org.cts.CoordinateDimensionException;
@@ -34,6 +35,7 @@ import org.cts.op.AbstractCoordinateOperation;
 import org.cts.op.CoordinateOperation;
 import org.cts.op.NonInvertibleOperationException;
 import org.cts.op.transformation.grids.GeographicGrid;
+import org.cts.op.transformation.grids.GridUtils;
 import org.cts.op.transformation.grids.IGNVerticalGrid;
 
 /**
@@ -79,6 +81,7 @@ public class Altitude2EllipsoidalHeight extends AbstractCoordinateOperation impl
      * @param nameGrid the name of the grid file to use
      * @param gd the geodetic datum in which the geographic coordinates used in
      * the interpolation must be expressed
+     * @throws java.lang.Exception
      */
     public Altitude2EllipsoidalHeight(String nameGrid, GeodeticDatum gd) throws Exception {
         super(opId);
@@ -87,7 +90,11 @@ public class Altitude2EllipsoidalHeight extends AbstractCoordinateOperation impl
         this.gridFileName = nameGrid;
         try {
             InputStream is = IGNVerticalGrid.class.getClassLoader().getResourceAsStream("org/cts/op/transformation/grids/" + nameGrid);
-            GRID = new IGNVerticalGrid(is, false);
+            if (is != null) {
+                GRID = new IGNVerticalGrid(is, false);
+            } else {
+                GRID = new IGNVerticalGrid(new FileInputStream(GridUtils.findGrid(nameGrid)), false);
+            }                
         } catch (Exception e) {
             throw new Exception(e.getMessage() + "\nThis problem occured when loading the " + nameGrid + " grid file.");
         }
@@ -97,6 +104,7 @@ public class Altitude2EllipsoidalHeight extends AbstractCoordinateOperation impl
      * Return the geodetic datum associated to this transformation. The latitude
      * and longitude of the coordinate must be expressed in this datum to obtain
      * good results.
+     * @return 
      */
     public GeodeticDatum getAssociatedDatum() {
         return associatedDatum;

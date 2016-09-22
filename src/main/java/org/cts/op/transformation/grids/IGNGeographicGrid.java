@@ -85,6 +85,7 @@ public class IGNGeographicGrid extends GeographicGrid {
      * GeographicGrid. Default value of zip is true.</p>
      *
      * @param is
+     * @throws java.lang.Exception
      */
     public IGNGeographicGrid(InputStream is) throws Exception {
         this(is, true);

@@ -23,6 +23,7 @@
  */
 package org.cts.op.transformation;
 
+import java.io.FileInputStream;
 import java.io.InputStream;
 
 import org.cts.CoordinateDimensionException;
@@ -34,6 +35,7 @@ import org.cts.op.AbstractCoordinateOperation;
 import org.cts.op.Geocentric2Geographic;
 import org.cts.op.NonInvertibleOperationException;
 import org.cts.op.UnitConversion;
+import org.cts.op.transformation.grids.GridUtils;
 import org.cts.op.transformation.grids.IGNGeographicGrid;
 import org.cts.units.Unit;
 import org.slf4j.Logger;
@@ -99,8 +101,14 @@ public class FrenchGeocentricNTF2RGF extends AbstractCoordinateOperation
         super(opId);
         this.precision = 0.001;
         try {
-            InputStream is = FrenchGeocentricNTF2RGF.class.getClassLoader().getResourceAsStream("org/cts/op/transformation/grids/gr3df97a.txt");
+            String gridName = "gr3df97a.txt";
+            InputStream is = FrenchGeocentricNTF2RGF.class.getClassLoader().getResourceAsStream("org/cts/op/transformation/grids/"+gridName);
+            if(is!=null){
             GRID3D = new IGNGeographicGrid(is, false);
+            }
+            else{
+                GRID3D = new IGNGeographicGrid(new FileInputStream(GridUtils.findGrid(gridName)), false);
+            }
         } catch (Exception e) {
             throw new Exception("A problem occured during gr3df97a.txt grid file loading", e);
         }
