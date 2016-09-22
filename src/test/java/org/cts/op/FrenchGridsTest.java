@@ -32,7 +32,6 @@ import org.junit.Test;
 
 import java.io.FileReader;
 import java.io.LineNumberReader;
-import java.util.Arrays;
 import java.util.Set;
 
 import static org.junit.Assert.assertTrue;
@@ -104,10 +103,6 @@ public class FrenchGridsTest extends BaseCoordinateTransformTest {
                 CoordinateOperationFactory.includeFilter(ops, NTv2GridShiftTransformation.class));
 
         CoordinateOperation op = index == 1 ? ntv2 : gr3d;
-
-        //if (sourceCRS.getDatum().getEllipsoid().equals(Ellipsoid.GRS80)) {
-        //    op = op.inverse();
-        //}
 
         return op.transform(new double[]{inputPoint[0], inputPoint[1]});
     }

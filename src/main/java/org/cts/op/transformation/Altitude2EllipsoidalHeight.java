@@ -89,7 +89,7 @@ public class Altitude2EllipsoidalHeight extends AbstractCoordinateOperation impl
         this.precision = 0.01;
         this.gridFileName = nameGrid;
         try {
-            InputStream is = IGNVerticalGrid.class.getClassLoader().getResourceAsStream("org/cts/op/transformation/grids/" + nameGrid);
+            InputStream is = GridUtils.class.getClassLoader().getResourceAsStream("org/cts/op/transformation/grids/" + nameGrid);
             if (is != null) {
                 GRID = new IGNVerticalGrid(is, false);
             } else {

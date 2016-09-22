@@ -102,7 +102,7 @@ public class FrenchGeocentricNTF2RGF extends AbstractCoordinateOperation
         this.precision = 0.001;
         try {
             String gridName = "gr3df97a.txt";
-            InputStream is = FrenchGeocentricNTF2RGF.class.getClassLoader().getResourceAsStream("org/cts/op/transformation/grids/"+gridName);
+            InputStream is = GridUtils.class.getClassLoader().getResourceAsStream("org/cts/op/transformation/grids/"+gridName);
             if(is!=null){
             GRID3D = new IGNGeographicGrid(is, false);
             }

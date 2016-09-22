@@ -39,6 +39,7 @@ import org.cts.op.NonInvertibleOperationException;
 import org.cts.op.transformation.grid.GridShift;
 import org.cts.op.transformation.grid.GridShiftFile;
 import org.cts.op.transformation.grids.GridUtils;
+import org.cts.op.transformation.grids.IGNVerticalGrid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -87,7 +88,8 @@ public class NTv2GridShiftTransformation extends AbstractCoordinateOperation imp
      * @throws MalformedURLException
      */
     public static NTv2GridShiftTransformation createNTv2GridShiftTransformation(String ntv2_gridName) throws URISyntaxException, MalformedURLException, NullPointerException, IOException {
-        URL urlGRID = GridShift.class.getResource(ntv2_gridName).toURI().toURL();
+        URL urlGRID = GridUtils.class.getResource("org/cts/op/transformation/grids/"+ntv2_gridName);
+        //URL  = GridUtils.class.getResource("org/cts/op/transformation/grids/"+ntv2_gridName).toURI().toURL();
         if (urlGRID == null) {
             urlGRID = GridUtils.findGrid(ntv2_gridName).toURI().toURL();
         }
