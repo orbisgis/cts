@@ -88,8 +88,7 @@ public class NTv2GridShiftTransformation extends AbstractCoordinateOperation imp
      * @throws MalformedURLException
      */
     public static NTv2GridShiftTransformation createNTv2GridShiftTransformation(String ntv2_gridName) throws URISyntaxException, MalformedURLException, NullPointerException, IOException {
-        URL urlGRID = GridUtils.class.getResource("org/cts/op/transformation/grids/"+ntv2_gridName);
-        //URL  = GridUtils.class.getResource("org/cts/op/transformation/grids/"+ntv2_gridName).toURI().toURL();
+        URL urlGRID = GridUtils.class.getResource(ntv2_gridName);
         if (urlGRID == null) {
             urlGRID = GridUtils.findGrid(ntv2_gridName).toURI().toURL();
         }

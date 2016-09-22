@@ -95,7 +95,6 @@ public class FrenchGridsTest extends BaseCoordinateTransformTest {
      * for index = 1, choose the first (blegg-based) transform (=circe) returned by createCoordinateOperations
      */
     public double[] transform(GeodeticCRS sourceCRS, GeodeticCRS targetCRS, double[] inputPoint, int index) throws Exception {
-
         Set<CoordinateOperation> ops = CoordinateOperationFactory.createCoordinateOperations(sourceCRS, targetCRS);
         CoordinateOperation gr3d = CoordinateOperationFactory.getMostPrecise(
                 CoordinateOperationFactory.includeFilter(ops, FrenchGeocentricNTF2RGF.class));
