@@ -21,7 +21,6 @@
  *
  * For more information, please consult: <https://github.com/orbisgis/cts/>
  */
-
 package org.cts.op;
 
 import org.cts.Identifier;
@@ -41,13 +40,13 @@ public class LoadMemorizeCoordinate extends AbstractCoordinateOperation {
     public static CoordinateOperation loadZ = new LoadMemorizeCoordinate(2);
 
     /**
-     * Creates a new CoordinateOperation increasing (resp decreasing) the coord
-     * size by length.
+     * Creates a new CoordinateOperation removing the last double value from
+     * a coordinate array and loading it at the specified index in the array.
      *
-     * @param dim final dimension of the new coordinate
+     * @param index final dimension of the new coordinate
      */
     public LoadMemorizeCoordinate(int index) {
-        super(new Identifier(LoadMemorizeCoordinate.class, "Load the last saved coordinate in the position " + index));
+        super(new Identifier(CoordinateOperation.class, "Load last saved coordinate in position " + index));
         this.indexSaved = index;
     }
 
@@ -56,9 +55,11 @@ public class LoadMemorizeCoordinate extends AbstractCoordinateOperation {
     }
 
     /**
-     * Load the last memorized coordinates
+     * Load the last memorized coordinates : remove the last ordinate
+     * of the array, and load it at index indexSaved.
      *
-     * @param coord is an array containing one, two or three ordinates
+     * @param coord is an array containing four ordinates or more
+     * @return 
      * @throws IllegalCoordinateException if <code>coord</code> is not
      * compatible with this <code>CoordinateOperation</code>.
      */

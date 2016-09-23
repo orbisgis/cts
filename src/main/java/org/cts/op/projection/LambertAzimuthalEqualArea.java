@@ -21,7 +21,6 @@
  *
  * For more information, please consult: <https://github.com/orbisgis/cts/>
  */
-
 package org.cts.op.projection;
 
 import java.util.Map;
@@ -29,7 +28,6 @@ import java.util.Map;
 import org.cts.CoordinateDimensionException;
 import org.cts.Identifier;
 import org.cts.datum.Ellipsoid;
-import org.cts.op.CoordinateOperation;
 import org.cts.op.NonInvertibleOperationException;
 import org.cts.units.Measure;
 
@@ -148,11 +146,9 @@ public class LambertAzimuthalEqualArea extends Projection {
      * coordinate in meters. Algorithm based on the OGP's Guidance Note Number 7
      * Part 2 :
      * <http://www.epsg.org/guides/G7-2.html>
-     *
-     * @param coord coordinate to transform
      */
     @Override
-    public CoordinateOperation inverse() throws NonInvertibleOperationException {
+    public Projection inverse() throws NonInvertibleOperationException {
         return new LambertAzimuthalEqualArea(ellipsoid, parameters) {
             @Override
             public double[] transform(double[] coord) throws CoordinateDimensionException {
@@ -168,7 +164,6 @@ public class LambertAzimuthalEqualArea extends Projection {
                 double phi = phiOld + pow(1 - e2 * sinPhiOld * sinPhiOld, 2)/2/cos(phiOld) *
                         (q/(1 - e2) - sinPhiOld / (1 - e2 *sinPhiOld * sinPhiOld) + log((1 - e * sinPhiOld)/(1 + e * sinPhiOld)) / 2 / e);
                 while (abs(phi - phiOld) > 1e-14) {
-                    System.out.println(phiOld * 180 / Math.PI);
                     phiOld = phi;
                     sinPhiOld = sin(phiOld);
                     phi = phiOld + pow(1 - e2 * sinPhiOld * sinPhiOld, 2)/2/cos(phiOld) *
@@ -177,6 +172,22 @@ public class LambertAzimuthalEqualArea extends Projection {
                 coord[0] = phi;
                 coord[1] = lon0 + atan(x * sin(C) / (rho * cos(beta0) * cos(C) - y * sin(beta0) * sin(C)));
                 return coord;
+            }
+
+            @Override
+            public Projection inverse()
+                    throws NonInvertibleOperationException {
+                return LambertAzimuthalEqualArea.this;
+            }
+
+            @Override
+            public boolean isDirect() {
+                return false;
+            }
+
+            @Override
+            public String toString() {
+                return LambertAzimuthalEqualArea.this.toString() + " inverse";
             }
         };
     }

@@ -21,7 +21,6 @@
  *
  * For more information, please consult: <https://github.com/orbisgis/cts/>
  */
-
 package org.cts.op.transformation;
 
 /**
@@ -36,6 +35,7 @@ public interface GeoTransformation {
     /**
      * Returns a WKT representation of the transformation.
      *
+     * @return 
      */
     String toWKT();
 }

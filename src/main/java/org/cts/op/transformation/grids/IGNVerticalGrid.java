@@ -21,7 +21,6 @@
  *
  * For more information, please consult: <https://github.com/orbisgis/cts/>
  */
-
 package org.cts.op.transformation.grids;
 
 import java.io.BufferedInputStream;

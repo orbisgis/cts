@@ -21,7 +21,6 @@
  *
  * For more information, please consult: <https://github.com/orbisgis/cts/>
  */
-
 package org.cts.op;
 
 /**
@@ -30,7 +29,7 @@ package org.cts.op;
  *
  * @author Michaël Michaud
  */
-public class NonInvertibleOperationException extends Exception {
+public class NonInvertibleOperationException extends CoordinateOperationException {
 
     /**
      * Create a new NonInvertibleOperationException.

@@ -21,7 +21,6 @@
  *
  * For more information, please consult: <https://github.com/orbisgis/cts/>
  */
-
 package org.cts.op;
 
 import org.cts.IdentifiableComponent;
@@ -38,14 +37,14 @@ public abstract class AbstractCoordinateOperation
         extends IdentifiableComponent
         implements CoordinateOperation {
 
-    protected double precision;
+    protected double precision = 0.0;
 
     /**
      * Create a new {@link CoordinateOperation} instance.
      *
      * @param identifier this CoordinateOperation identifier
      */
-    public AbstractCoordinateOperation(Identifier identifier) {
+    protected AbstractCoordinateOperation(Identifier identifier) {
         super(identifier);
     }
 
@@ -57,19 +56,19 @@ public abstract class AbstractCoordinateOperation
      * @return a double array containing the output coordinate
      * @throws IllegalCoordinateException if <code>coord</code> is not
      * compatible with this <code>CoordinateOperation</code>.
+     * @throws org.cts.op.CoordinateOperationException if this operation
+     * failed during the transformation process.
      */
-    @Override
     public abstract double[] transform(double[] coord)
-            throws IllegalCoordinateException;
+            throws IllegalCoordinateException, CoordinateOperationException;
 
     /**
      * Creates the inverse CoordinateOperation. This method can be used to chain
-     * {@link fr.cts.CoordinateOperation}s and/or inverse CoordinateOperation in
+     * {@link org.cts.op.CoordinateOperation}s and/or inverse CoordinateOperation in
      * a unique CoordinateOperationSequence. This method is not declared
      * abstract, so that implementation classes have not to implement it if they
      * represent non invertible operation.
      */
-    @Override
     public CoordinateOperation inverse()
             throws NonInvertibleOperationException {
         throw new NonInvertibleOperationException(this.toString()
@@ -79,14 +78,21 @@ public abstract class AbstractCoordinateOperation
     /**
      * Returns the precision of the transformation.<p> Precision is a double
      * representing the mean error, in meters made on the position resulting
-     * from this {@link fr.cts.CoordinateOperation}.<p> ex. : 0.001 means that
+     * from this {@link org.cts.op.CoordinateOperation}.<p> ex. : 0.001 means that
      * the precision of the resulting position is about one millimeter<p>
      * Default precision (or maximum precision) is considered to be equals to
      * 1E-9 which is the value of an ulp (units in the last place) for a double
      * value equals to 6378137.0 (Earth semi-major axis).
      */
-    @Override
     public double getPrecision() {
         return precision;
+    }
+
+
+    /**
+     * @return true if this operation does not change coordinates.
+     */
+    public boolean isIdentity() {
+        return false;
     }
 }

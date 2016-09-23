@@ -21,11 +21,12 @@
  *
  * For more information, please consult: <https://github.com/orbisgis/cts/>
  */
-
 package org.cts.op;
 
 import org.cts.Identifier;
 import org.cts.IllegalCoordinateException;
+
+import java.util.Arrays;
 
 /**
  * Change de coordinate dimension. For example, this operation can add or remove
@@ -35,40 +36,57 @@ import org.cts.IllegalCoordinateException;
  */
 public class ChangeCoordinateDimension extends AbstractCoordinateOperation {
 
+    private static final Identifier G3DG2D =
+            new Identifier("EPSG", "9659", "Geographic 3D to 2D conversion", "Geo3D->2D");
     private static final Identifier G2DG3D =
-            new Identifier("EPSG", "9659", "Geographic 2D/3D conversions", "Geo2D/3D");
-    public final static ChangeCoordinateDimension TO3D =
-            new ChangeCoordinateDimension(G2DG3D, 3);
-    public final static ChangeCoordinateDimension TO2D =
-            new ChangeCoordinateDimension(G2DG3D, 2);
-    private int dim;
+            new Identifier("EPSG", "9659i", "Geographic 2D to 3D conversion", "Geo2D->3D");
+
+    public final static ChangeCoordinateDimension TO3D = new ChangeCoordinateDimension(G2DG3D, 2, 3) {
+        @Override public CoordinateOperation inverse() {return TO2D;}
+    };
+
+    public final static ChangeCoordinateDimension TO2D = new ChangeCoordinateDimension(G3DG2D, 3, 2) {
+        @Override public CoordinateOperation inverse() {return TO3D;}
+    };
+
+    private int inputDim, outputDim;
 
     /**
      * Creates a new CoordinateOperation increasing (resp decreasing) the coord
      * size by length.
      *
-     * @param dim final dimension of the new coordinate
+     * @param inputDim dimension of the input coordinate
+     * @param outputDim dimension of the output coordinate
      */
-    private ChangeCoordinateDimension(Identifier identifier, int dim) {
+    private ChangeCoordinateDimension(Identifier identifier, int inputDim, int outputDim) {
         super(identifier);
-        this.dim = dim;
+        this.inputDim = inputDim;
+        this.outputDim = outputDim;
     }
 
     /**
      * Add a vertical coordinate.
      *
      * @param coord is an array containing one, two or three ordinates
+     * @return 
      * @throws IllegalCoordinateException if <code>coord</code> is not
      * compatible with this <code>CoordinateOperation</code>.
      */
     @Override
-    public double[] transform(double[] coord)
-            throws IllegalCoordinateException {
-        if (dim == coord.length) {
+    public double[] transform(double[] coord) throws IllegalCoordinateException {
+        if (inputDim == outputDim) {
             return coord;
         }
-        double[] cc = new double[dim];
-        System.arraycopy(coord, 0, cc, 0, Math.min(coord.length, cc.length));
+        double[] cc = new double[outputDim];
+        System.arraycopy(coord, 0, cc, 0, Math.min(inputDim, outputDim));
         return cc;
+    }
+
+    /**
+     * Creates the inverse CoordinateOperation.
+     */
+    @Override
+    public CoordinateOperation inverse() throws NonInvertibleOperationException {
+        return new ChangeCoordinateDimension(new Identifier(CoordinateOperation.class), outputDim, inputDim);
     }
 }

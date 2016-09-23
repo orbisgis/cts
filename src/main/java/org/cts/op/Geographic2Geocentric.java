@@ -21,7 +21,6 @@
  *
  * For more information, please consult: <https://github.com/orbisgis/cts/>
  */
-
 package org.cts.op;
 
 import static java.lang.Math.cos;
@@ -63,14 +62,14 @@ public class Geographic2Geocentric extends AbstractCoordinateOperation {
     /**
      * The ellipsoid used to define geographic coordinates.
      */
-    private Ellipsoid ellipsoid;
+    private final Ellipsoid ellipsoid;
     /**
      * Stop condition for the Geocentric to Geographic transformation algorithm
      * (the inverse transformation of this Geographic2Geocentric). epsilon is a
      * value in radian, 1E-11 is the default epsilon and it means that error is
      * less than 1E-4 m.
      */
-    private double epsilon;
+    private final double epsilon;
 
     /**
      * <p>Create a new Geographic2Geocentric transformation for a specific
@@ -160,7 +159,7 @@ public class Geographic2Geocentric extends AbstractCoordinateOperation {
      * <code>this</code>. Tests equality between the ellipsoid used by the
      * transformation.
      *
-     * @param object The object to compare this Geographic2Geocentric against
+     * @param o The object to compare this Geographic2Geocentric against
      */
     @Override
     public boolean equals(Object o) {

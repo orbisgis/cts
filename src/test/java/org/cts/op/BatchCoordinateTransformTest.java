@@ -21,12 +21,10 @@
  *
  * For more information, please consult: <https://github.com/orbisgis/cts/>
  */
-
 package org.cts.op;
 
 import java.io.FileReader;
 import java.io.LineNumberReader;
-
 import org.cts.crs.CoordinateReferenceSystem;
 import org.cts.crs.GeodeticCRS;
 
@@ -74,14 +72,13 @@ public class BatchCoordinateTransformTest extends BaseCoordinateTransformTest {
             double tolerance = parseNumber(values[7]);
             CoordinateReferenceSystem inputCRS = cRSFactory.getCRS(csNameSrc);
             CoordinateReferenceSystem outputCRS = cRSFactory.getCRS(csNameDest);
-            double[] pointSource = new double[]{csNameSrc_X, csNameSrc_Y, 0};
+            double[] pointSource = new double[]{csNameSrc_X, csNameSrc_Y};
             double[] result = transform((GeodeticCRS) inputCRS, (GeodeticCRS) outputCRS, pointSource);
-            double[] pointDest = new double[]{csNameDest_X, csNameDest_Y, 0};
+            double[] pointDest = new double[]{csNameDest_X, csNameDest_Y};
             double[] check = transform((GeodeticCRS) outputCRS, (GeodeticCRS) inputCRS, pointDest);
-            //printCRStoWKT(inputCRS);
-            //printCRStoWKT(outputCRS);
+
             assertTrue(checkEquals2D(id + " dir--> " + csNameSrc + " to " + csNameDest, result, pointDest, tolerance));
-            assertTrue(checkEquals2D(id + " inv--> " + csNameDest + " to " + csNameSrc, check, pointSource, tolerance));
+            assertTrue(checkEquals2D(id + " inv--> " + csNameDest + " to " + csNameSrc, check, pointSource, 0.01));
         }
         lineReader.close();
     }
@@ -101,4 +98,43 @@ public class BatchCoordinateTransformTest extends BaseCoordinateTransformTest {
         }
         return Double.parseDouble(numStr);
     }
+
+    /**
+     * Transform a point from a CRS to another CRS
+     *
+     * @param sourceCRS
+     * @param targetCRS
+     * @param inputPoint
+     * @return
+     * @throws org.cts.IllegalCoordinateException
+     */
+    //public double[] transform(GeodeticCRS sourceCRS, GeodeticCRS targetCRS, double[] inputPoint)
+    //        throws IllegalCoordinateException, CoordinateOperationException {
+    //    List<CoordinateOperation> ops;
+    //    ops = CoordinateOperationFactory.createCoordinateOperations(sourceCRS, targetCRS);
+    //    if (sourceCRS.getIdentifier().getAuthorityName().equals("EPSG")) {
+    //        ops = CoordinateOperationFactory.excludeFilter(ops, GridBasedTransformation.class);
+    //    }
+    //    //if () ops = CoordinateOperationFactory.excludeFilter(ops, GridBasedTransformation.class);
+    //    if (!ops.isEmpty()) {
+    //        if (verbose) {
+    //            System.out.println("Source " + sourceCRS);
+    //            System.out.println("Target " + targetCRS);
+    //            System.out.println("Used transformation " + CoordinateOperationFactory.getMostPrecise(ops));
+    //            if (ops.size() > 1) {
+    //                for (CoordinateOperation ope : ops) {
+    //                    System.out.println("All transformations : " + ope);
+    //                }
+    //            }
+    //        }
+    //        //return ops.get(0).transform(new double[]{inputPoint[0], inputPoint[1], inputPoint[2]});
+    //        double[] input = new double[inputPoint.length];
+    //        for (int i = 0 ; i < inputPoint.length ; i++) input[i] = inputPoint[i];
+    //        return CoordinateOperationFactory.getMostPrecise(ops).transform(input);
+    //        //System.out.println("Choix de la transfo : " + CoordinateOperationFactory.getTypedCoordinateOperation(ops, GeoTransformation.class));
+    //        //return CoordinateOperationFactory.getTypedCoordinateOperation(ops, GeoTransformation.class).transform(new double[]{inputPoint[0], inputPoint[1], inputPoint[2]});
+    //    } else {
+    //        return new double[]{0.0d, 0.0d, 0.0d};
+    //    }
+    //}
 }

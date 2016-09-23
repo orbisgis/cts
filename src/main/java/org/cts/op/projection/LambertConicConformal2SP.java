@@ -21,7 +21,6 @@
  *
  * For more information, please consult: <https://github.com/orbisgis/cts/>
  */
-
 package org.cts.op.projection;
 
 import java.util.HashMap;
@@ -31,7 +30,6 @@ import org.cts.Identifier;
 import org.cts.IllegalCoordinateException;
 import org.cts.Parameter;
 import org.cts.datum.Ellipsoid;
-import org.cts.op.CoordinateOperation;
 import org.cts.op.NonInvertibleOperationException;
 import org.cts.units.Measure;
 import org.cts.units.Unit;
@@ -83,8 +81,6 @@ public class LambertConicConformal2SP extends Projection {
     public LambertConicConformal2SP(final Ellipsoid ellipsoid,
             final Map<String, Measure> parameters) {
         super(LCC2SP, ellipsoid, parameters);
-        double semimajor = getSemiMajorAxis();
-        double semiminor = getSemiMinorAxis();
         double lat0 = getLatitudeOfOrigin();
         double lat1 = parameters.get(Parameter.STANDARD_PARALLEL_1).getSValue();
         double lat2 = parameters.get(Parameter.STANDARD_PARALLEL_2).getSValue();
@@ -111,9 +107,9 @@ public class LambertConicConformal2SP extends Projection {
      *
      * @param ellipsoid reference ellipsoid for this projection instance
      * @param latitude_of_origin latitude of origin of the projection in degrees
-     * @param standard_parallel_1 first standard parallel
-     * @param standard_parallel_2 second standard parallel
-     * @param central_meridian central meridian of the projection en degrees
+     * @param standard_parallel_1 first standard parallel in degrees
+     * @param standard_parallel_2 second standard parallel in degrees
+     * @param central_meridian central meridian of the projection in degrees
      * @param false_easting false easting in meters
      * @param false_northing false northing in meters
      */
@@ -178,7 +174,7 @@ public class LambertConicConformal2SP extends Projection {
      * Creates the inverse CoordinateOperation.
      */
     @Override
-    public CoordinateOperation inverse() throws NonInvertibleOperationException {
+    public Projection inverse() throws NonInvertibleOperationException {
         return new LambertConicConformal2SP(ellipsoid, parameters) {
             @Override
             public double[] transform(double[] coord)
@@ -196,9 +192,18 @@ public class LambertConicConformal2SP extends Projection {
             }
 
             @Override
-            public CoordinateOperation inverse()
+            public Projection inverse()
                     throws NonInvertibleOperationException {
                 return LambertConicConformal2SP.this;
+            }
+            @Override
+            public boolean isDirect() {
+                return false;
+            }
+
+            @Override
+            public String toString() {
+                return LambertConicConformal2SP.this.toString() + " inverse";
             }
         };
     }

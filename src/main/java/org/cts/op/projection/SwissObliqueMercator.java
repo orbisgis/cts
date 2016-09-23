@@ -21,7 +21,6 @@
  *
  * For more information, please consult: <https://github.com/orbisgis/cts/>
  */
-
 package org.cts.op.projection;
 
 import java.util.Map;
@@ -29,7 +28,6 @@ import java.util.Map;
 import org.cts.CoordinateDimensionException;
 import org.cts.Identifier;
 import org.cts.datum.Ellipsoid;
-import org.cts.op.CoordinateOperation;
 import org.cts.op.NonInvertibleOperationException;
 import org.cts.units.Measure;
 
@@ -175,11 +173,9 @@ public class SwissObliqueMercator extends Projection {
      * in meters. Algorithm based on a Swiss Federal Office of Topography
      * document:
      * <http://www.swisstopo.admin.ch/internet/swisstopo/en/home/topics/survey/sys/refsys/switzerland.parsysrelated1.37696.downloadList.97912.DownloadFile.tmp/swissprojectionen.pdf>
-     *
-     * @param coord coordinate to transform
      */
     @Override
-    public CoordinateOperation inverse() throws NonInvertibleOperationException {
+    public Projection inverse() throws NonInvertibleOperationException {
         return new SwissObliqueMercator(ellipsoid, parameters) {
             @Override
             public double[] transform(double[] coord) throws CoordinateDimensionException {
@@ -192,6 +188,21 @@ public class SwissObliqueMercator extends Projection {
                 coord[1] = lonc + I / alpha;
                 coord[0] = findLatSwissObliqueMercator(b);
                 return coord;
+            }
+
+            @Override
+            public Projection inverse()
+                    throws NonInvertibleOperationException {
+                return SwissObliqueMercator.this;
+            }
+            @Override
+            public boolean isDirect() {
+                return false;
+            }
+
+            @Override
+            public String toString() {
+                return SwissObliqueMercator.this.toString() + " inverse";
             }
         };
     }

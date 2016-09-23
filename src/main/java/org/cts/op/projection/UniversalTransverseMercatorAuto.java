@@ -21,7 +21,6 @@
  *
  * For more information, please consult: <https://github.com/orbisgis/cts/>
  */
-
 package org.cts.op.projection;
 
 import java.util.Map;
@@ -29,7 +28,6 @@ import java.util.Map;
 import org.cts.CoordinateDimensionException;
 import org.cts.Identifier;
 import org.cts.datum.Ellipsoid;
-import org.cts.op.CoordinateOperation;
 import org.cts.op.NonInvertibleOperationException;
 import org.cts.units.Measure;
 import org.cts.util.Complex;
@@ -53,11 +51,8 @@ public class UniversalTransverseMercatorAuto extends Projection {
     protected final double[] dircoeff, invcoeff;
 
     /**
-     * Create a new Universal Transverse Mercator Projection corresponding to
-     * the
-     * <code>Ellipsoid</code> given in argument and a default set of parameters
-     * and initialize common parameters lat0 and other parameters useful for the
-     * projection.
+     * Creates a new Universal Transverse Mercator Projection based on the given
+     * <code>Ellipsoid</code> and parameters.
      *
      * @param ellipsoid ellipsoid used to define the projection.
      * @param parameters a map of useful parameters to define the projection.
@@ -109,7 +104,7 @@ public class UniversalTransverseMercatorAuto extends Projection {
      * Creates the inverse CoordinateOperation.
      */
     @Override
-    public CoordinateOperation inverse() throws NonInvertibleOperationException {
+    public Projection inverse() throws NonInvertibleOperationException {
         return new UniversalTransverseMercatorAuto(ellipsoid, parameters) {
             @Override
             public double[] transform(double[] coord) throws CoordinateDimensionException {
@@ -128,6 +123,21 @@ public class UniversalTransverseMercatorAuto extends Projection {
                 coord[0] = lat;
                 coord[1] = lon;
                 return coord;
+            }
+
+            @Override
+            public Projection inverse()
+                    throws NonInvertibleOperationException {
+                return UniversalTransverseMercatorAuto.this;
+            }
+            @Override
+            public boolean isDirect() {
+                return false;
+            }
+
+            @Override
+            public String toString() {
+                return UniversalTransverseMercatorAuto.this.toString() + " inverse";
             }
         };
     }

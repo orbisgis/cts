@@ -21,7 +21,6 @@
  *
  * For more information, please consult: <https://github.com/orbisgis/cts/>
  */
-
 package org.cts;
 
 import java.io.*;
@@ -34,14 +33,13 @@ import org.cts.crs.CRSException;
 import org.cts.crs.CoordinateReferenceSystem;
 import org.cts.parser.prj.PrjKeyParameters;
 import org.cts.parser.prj.PrjParser;
-import org.cts.parser.proj.ProjKeyParameters;
 import org.cts.registry.Registry;
 import org.cts.registry.RegistryException;
 import org.cts.registry.RegistryManager;
 
 /**
  * This factory is in charge of creating new
- * {@link org.cts.crs.CoordinateReferenceSystem}s. It can do so by two way :
+ * {@link org.cts.crs.CoordinateReferenceSystem}s. It can do so :
  * <ul>
  * <li> 1. From an authority name and a code.</li>
  * <li> 2. From a OGC WKT String (PRJ) (that can be read from a file).</li>
@@ -75,7 +73,7 @@ public class CRSFactory {
     }
 
     /**
-     * Return a {@link org.cts.crs.CoordinateReferenceSystem} corresponding to
+     * Returns a {@link org.cts.crs.CoordinateReferenceSystem} corresponding to
      * an authority and a srid.
      *
      * @param authorityAndSrid the code of the desired CRS (for instance
@@ -87,13 +85,11 @@ public class CRSFactory {
         if (crs == null) {
             try {
                 String[] registryNameWithCode = splitRegistryNameAndCode(authorityAndSrid);
-                if (isRegistrySupported(registryNameWithCode[0])) {
-                    Registry registry = getRegistryManager().getRegistry(registryNameWithCode[0]);
-                    Map<String, String> crsParameters = registry.getParameters(registryNameWithCode[1]);
-                    if (crsParameters != null) {
-                        crs = CRSHelper.createCoordinateReferenceSystem(new Identifier(registryNameWithCode[0], registryNameWithCode[1],
-                                crsParameters.remove(ProjKeyParameters.title)), crsParameters);
-                    }
+                String authority = registryNameWithCode[0];
+                String code = registryNameWithCode[1];
+                if (isRegistrySupported(authority)) {
+                    Registry registry = getRegistryManager().getRegistry(authority);
+                    crs = registry.getCoordinateReferenceSystem(new Identifier(authority, code, ""));
                     if (crs != null) {
                         CRSPOOL.put(authorityAndSrid, crs);
                     }
@@ -117,7 +113,7 @@ public class CRSFactory {
         if (registryAndCode.length == 2) {
             return registryAndCode;
         } else {
-            throw new RegistryException("This registry pattern " + authorityAndSrid + " is not supported");
+            throw new RegistryException("The registry pattern '" + authorityAndSrid + "' is not supported");
         }
 
     }
@@ -139,7 +135,7 @@ public class CRSFactory {
         if (getRegistryManager().contains(registryName.toLowerCase())) {
             return true;
         } else {
-            throw new RegistryException("This registry " + registryName + " is not supported");
+            throw new RegistryException("Registry '" + registryName + "' is not supported");
         }
     }
 

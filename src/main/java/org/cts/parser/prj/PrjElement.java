@@ -21,7 +21,6 @@
  *
  * For more information, please consult: <https://github.com/orbisgis/cts/>
  */
-
 package org.cts.parser.prj;
 
 import java.util.List;
@@ -34,6 +33,7 @@ public interface PrjElement {
 
     /**
      * Return the list of the children of this PrjElement.
+     * @return 
      */
     List<PrjElement> getChildren();
 }

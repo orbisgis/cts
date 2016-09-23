@@ -21,7 +21,6 @@
  *
  * For more information, please consult: <https://github.com/orbisgis/cts/>
  */
-
 package org.cts.cs;
 
 import org.cts.CoordinateDimensionException;
@@ -39,6 +38,7 @@ public class CoordinateSystem {
      * The {@linkplain Axis axes} of this CoordinateSystem.
      */
     private Axis[] axes;
+
     /**
      * The {@linkplain Unit units} for the {@linkplain Axis axes} of this
      * CoordinateSystem.
@@ -53,7 +53,6 @@ public class CoordinateSystem {
      * axes.
      */
     public CoordinateSystem(Axis[] axes, Unit[] units) {
-        assert axes.length == units.length;
         this.axes = axes;
         this.units = units;
     }

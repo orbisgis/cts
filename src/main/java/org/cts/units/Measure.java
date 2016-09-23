@@ -21,7 +21,6 @@
  *
  * For more information, please consult: <https://github.com/orbisgis/cts/>
  */
-
 package org.cts.units;
 
 /**
@@ -145,7 +144,6 @@ public class Measure implements java.io.Serializable {
      * @param unit the new unit for the returned measure
      */
     public Measure convert(Unit unit) throws IllegalArgumentException {
-        assert this.unit.isComparable(unit);
         if (Double.isNaN(precision)) {
             return new Measure(unit.fromBaseUnit(svalue), unit);
         } else {

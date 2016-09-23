@@ -21,18 +21,19 @@
  *
  * For more information, please consult: <https://github.com/orbisgis/cts/>
  */
-
 package org.cts.op;
 
 import org.cts.Identifier;
 import org.cts.IllegalCoordinateException;
+import org.cts.op.transformation.GeocentricTransformation;
+import org.cts.op.transformation.ParamBasedTransformation;
 
 /**
  * The identity transformation.<p> This transformation doesn't do anything.
  *
  * @author Michaël Michaud
  */
-public class Identity extends AbstractCoordinateOperation {
+public class Identity extends AbstractCoordinateOperation implements ParamBasedTransformation, GeocentricTransformation {
 
     /**
      * The identity transformation. When used to transform coordinates, it
@@ -64,7 +65,38 @@ public class Identity extends AbstractCoordinateOperation {
      * Creates the inverse CoordinateOperation.
      */
     @Override
-    public CoordinateOperation inverse() throws NonInvertibleOperationException {
+    public GeocentricTransformation inverse() throws NonInvertibleOperationException {
         return this;
+    }
+
+    /**
+     * Returns true if o is also an Identity CoordinateOperation.
+     *
+     * @param o The object to compare this ProjectedCRS against
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o instanceof CoordinateOperation) {
+            return ((CoordinateOperation)o).isIdentity();
+        }
+        return false;
+    }
+
+    /**
+     * Returns 0 for all identity operations.
+     */
+    @Override
+    public int hashCode() {
+        return 0;
+    }
+
+    /**
+     * @return true if this operation does not change coordinates.
+     */
+    public boolean isIdentity() {
+        return true;
     }
 }

@@ -26,13 +26,7 @@ package org.cts;
 
 import java.util.Arrays;
 
-import org.cts.registry.EPSGRegistry;
-import org.cts.registry.ESRIRegistry;
-import org.cts.registry.IGNFRegistry;
-import org.cts.registry.Nad27Registry;
-import org.cts.registry.Nad83Registry;
-import org.cts.registry.RegistryManager;
-import org.cts.registry.WorldRegistry;
+import org.cts.registry.*;
 
 import org.junit.BeforeClass;
 import org.slf4j.Logger;
@@ -41,7 +35,7 @@ import org.slf4j.LoggerFactory;
 /**
  * A main class for all CTS tests
  *
- * @author Erwan Bocher
+ * @author Erwan Bocher, Michaël Michaud
  */
 public class CTSTestCase {
 
@@ -70,10 +64,9 @@ public class CTSTestCase {
      * clause
      *
      * @param test
-     * @param o1
-     * @param o2
-     * @param tol
-     * @return 
+     * @param o1 expected coordinates
+     * @param o2 actual coordinates
+     * @param tol tolerance
      */
     public boolean checkEquals(String test, double o1, double o2, double tol) {
         if (Math.abs(o1 - o2) <= tol) {
@@ -89,12 +82,11 @@ public class CTSTestCase {
      * Check if the result point is equal to the target point using an epsilon
      * clause
      *
-     * @param resultPoint
-     * @param targetPoint
-     * @param epsilon
+     * @param c1 expected coordinates
+     * @param c2 actual coordinates
+     * @param tol tolerance
      */
-    protected boolean checkEquals(String test, double[] c1, double[] c2,
-            double tol) {
+    protected boolean checkEquals(String test, double[] c1, double[] c2, double tol) {
         double dd = 0;
         for (int i = 0; i < Math.min(c1.length, c2.length); i++) {
             dd += (c2[i] - c1[i]) * (c2[i] - c1[i]);
@@ -115,22 +107,21 @@ public class CTSTestCase {
      * an epsilon clause
      *
      * @param test
-     * @param c1
-     * @param c2
+     * @param c1 expected coordinates
+     * @param c2 actual coordinates
      * @param tolerance
      */
-    protected boolean checkEquals2D(String test, double[] c1, double[] c2,
-            double tolerance) {
+    protected boolean checkEquals2D(String test, double[] c1, double[] c2, double tolerance) {
         double dx = Math.abs(c1[0] - c2[0]);
         double dy = Math.abs(c1[1] - c2[1]);
         double delta = Math.max(dx, dy);
         boolean isInTol = delta <= tolerance;
         if (isInTol) {
-            LOGGER.debug("TRUE : From " + test + " Result point : " + Arrays.toString(c1) + " = expected point : "
+            LOGGER.debug("TRUE : " + test + " Result point : " + Arrays.toString(c1) + " = expected point : "
                     + Arrays.toString(c2) + " <= " + tolerance);
             return true;
         } else {
-            LOGGER.debug("FALSE : From " + test + " Result point : " + Arrays.toString(c1) + " compare to expected point : "
+            LOGGER.debug("FALSE : " + test + " Result point : " + Arrays.toString(c1) + " compare to expected point : "
                     + Arrays.toString(c2) + " = " + (tolerance - delta));
             return false;
         }
@@ -141,40 +132,65 @@ public class CTSTestCase {
      * using an epsilon clause
      *
      * @param test
-     * @param c1
-     * @param c2
+     * @param c1 expected coordinates
+     * @param c2 actual coordinates
      * @param tolerance
      */
-    protected boolean checkEquals3D(String test, double[] c1, double[] c2,
-            double tolerance) {
+    protected boolean checkEquals3D(String test, double[] c1, double[] c2, double tolerance, double toleranceZ) {
         double dx = Math.abs(c1[0] - c2[0]);
         double dy = Math.abs(c1[1] - c2[1]);
         double dz = Math.abs(c1[2] - c2[2]);
-        double delta = Math.max(Math.max(dx, dy), dz);
-        boolean isInTol = delta <= tolerance;
-        if (isInTol) {
-            LOGGER.debug("TRUE : From " + test + " Result point : " + Arrays.toString(c1) + " = expected point : "
+        if (dx <= tolerance && dy <= tolerance && dz <= toleranceZ) {
+            LOGGER.debug("TRUE : " + test + " Result point : " + Arrays.toString(c1) + " = expected point : "
                     + Arrays.toString(c2) + " <= " + tolerance);
             return true;
+        } else if (dx > tolerance || dy > tolerance) {
+            LOGGER.debug("FALSE : " + test + " Result point : " + Arrays.toString(c1) + " compare to expected point : "
+                    + Arrays.toString(c2) + " = " + (tolerance - Math.max(dx, dy)));
+            return false;
         } else {
-            LOGGER.debug("FALSE : From " + test + " Result point : " + Arrays.toString(c1) + " compare to expected point : "
-                    + Arrays.toString(c2) + " = " + (tolerance - delta));
+            LOGGER.debug("FALSE : " + test + " Result point : " + Arrays.toString(c1) + " compare to expected point : "
+                    + Arrays.toString(c2) + " = " + (toleranceZ - dz));
             return false;
         }
     }
 
     /**
-     * Display point values
+     * Check if the result point is equal in X, Y and Z to the target point
+     * using an epsilon clause
      *
-     * @param coord
+     * @param test
+     * @param c1 expected coordinates
+     * @param c2 actual coordinates
+     * @param tolerance
+     * @return 
+     */
+    protected boolean checkEquals3D(String test, double[] c1, double[] c2, double tolerance) {
+        double dx = Math.abs(c1[0] - c2[0]);
+        double dy = Math.abs(c1[1] - c2[1]);
+        double dz = Math.abs(c1[2] - c2[2]);
+        boolean isInTol = dx <= tolerance && dy <= tolerance && dz <= tolerance;
+        if (isInTol) {
+            LOGGER.debug("TRUE : " + test + " Result point : " + Arrays.toString(c1) + " = expected point : "
+                    + Arrays.toString(c2) + " <= " + tolerance);
+            return true;
+        } else {
+            LOGGER.debug("FALSE : " + test + " Result point : " + Arrays.toString(c1) + " compare to expected point : "
+                    + Arrays.toString(c2) + " = " + (tolerance - Math.max(Math.max(dx, dy), dz)));
+            return false;
+        }
+    }
+
+    /**
+     * Display point values.
      */
     protected String coord2string(double[] coord) {
         if (coord.length == 2) {
-            return ("P = {" + coord[0] + ", " + coord[1] + "}");
+                return ("P = {" + coord[0] + ", " + coord[1] + "}");
         } else if (coord.length == 3) {
-            return ("P = {" + coord[0] + ", " + coord[1] + ", " + coord[2] + "}");
+                return ("P = {" + coord[0] + ", " + coord[1] + ", " + coord[2] + "}");
         } else {
-            return ("Error : " + coord + " size = " + coord.length);
+                return ("Error : " + coord + " size = " + coord.length);
         }
     }
 }

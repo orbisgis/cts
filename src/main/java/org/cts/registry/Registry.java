@@ -21,10 +21,12 @@
  *
  * For more information, please consult: <https://github.com/orbisgis/cts/>
  */
-
 package org.cts.registry;
 
-import java.util.Map;
+import org.cts.Identifier;
+import org.cts.crs.CRSException;
+import org.cts.crs.CoordinateReferenceSystem;
+
 import java.util.Set;
 
 /**
@@ -35,19 +37,25 @@ public interface Registry {
 
     /**
      * Return the name of the registry.
+     * @return 
      */
     public String getRegistryName();
 
     /**
      * Return all parameters need to build a CoordinateReferenceSystem.
      *
+     * @param identifier
+     * @return 
      * @throws RegistryException
+     * @throws org.cts.crs.CRSException
      */
-    public Map<String, String> getParameters(String code) throws RegistryException;
+    //public Map<String, String> getParameters(String code) throws RegistryException;
+    public CoordinateReferenceSystem getCoordinateReferenceSystem(Identifier identifier) throws RegistryException, CRSException;
 
     /**
      * Return all supported codes for this registry.
      *
+     * @return 
      * @throws RegistryException
      */
     public Set<String> getSupportedCodes() throws RegistryException;

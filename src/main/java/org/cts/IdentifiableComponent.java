@@ -21,7 +21,6 @@
  *
  * For more information, please consult: <https://github.com/orbisgis/cts/>
  */
-
 package org.cts;
 
 import org.slf4j.Logger;
@@ -30,6 +29,8 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+
 
 /**
  * IdentifiableComponent is a helper class used as a parent class for components
@@ -173,20 +174,14 @@ public class IdentifiableComponent implements Identifiable {
         this.registerComponent();
     }
 
-    /**
-     * Register the component
-     */
     private void registerComponent() {
         if (!registry.containsKey(getIdentifier())) {
             registry.put(getIdentifier(), this);
+        } else {
+            LOGGER.warn("A component has already been registered for key " + getAuthorityName() + ":" + getAuthorityKey() + ".");
         }
     }
 
-    /**
-     * Get the component based on its identifier
-     * @param id
-     * @return 
-     */
     public static IdentifiableComponent getComponent(Identifier id) {
         return registry.get(id);
     }

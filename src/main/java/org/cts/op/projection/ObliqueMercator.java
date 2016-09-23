@@ -21,7 +21,6 @@
  *
  * For more information, please consult: <https://github.com/orbisgis/cts/>
  */
-
 package org.cts.op.projection;
 
 import java.util.Map;
@@ -29,7 +28,6 @@ import java.util.Map;
 import org.cts.CoordinateDimensionException;
 import org.cts.Identifier;
 import org.cts.datum.Ellipsoid;
-import org.cts.op.CoordinateOperation;
 import org.cts.op.NonInvertibleOperationException;
 import org.cts.units.Measure;
 
@@ -170,11 +168,9 @@ public class ObliqueMercator extends Projection {
      * coord is supposed to be a projected easting / northing coordinate in
      * meters. Algorithm based on the OGP's Guidance Note Number 7 Part 2 :
      * <http://www.epsg.org/guides/G7-2.html>
-     *
-     * @param coord coordinate to transform
      */
     @Override
-    public CoordinateOperation inverse() throws NonInvertibleOperationException {
+    public Projection inverse() throws NonInvertibleOperationException {
         return new ObliqueMercator(ellipsoid, parameters) {
             @Override
             public double[] transform(double[] coord) throws CoordinateDimensionException {
@@ -194,6 +190,21 @@ public class ObliqueMercator extends Projection {
                 coord[0] = lat;
                 coord[1] = lambda0 - atan((S * cos(gamma0) - V * sin(gamma0)) / cos(B * u / A)) / B;
                 return coord;
+            }
+
+            @Override
+            public Projection inverse()
+                    throws NonInvertibleOperationException {
+                return ObliqueMercator.this;
+            }
+            @Override
+            public boolean isDirect() {
+                return false;
+            }
+
+            @Override
+            public String toString() {
+                return ObliqueMercator.this.toString() + " inverse";
             }
         };
     }

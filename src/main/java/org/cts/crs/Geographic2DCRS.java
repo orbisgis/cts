@@ -21,7 +21,6 @@
  *
  * For more information, please consult: <https://github.com/orbisgis/cts/>
  */
-
 package org.cts.crs;
 
 import java.util.ArrayList;
@@ -51,8 +50,9 @@ import static org.cts.units.Unit.DEGREE;
 import static org.cts.units.Unit.GRAD;
 
 /**
- * <p> A Geographic CoordinateReferenceSystem is a reference system based on a
- * GeodeticDatum and a 2D or 3D Ellipsoidal Coordinate System. </p> <p>
+ * <p>A {@link org.cts.crs.CoordinateReferenceSystem} based on a
+ * {@link org.cts.datum.GeodeticDatum} and a 2D Ellipsoidal
+ * {@link org.cts.cs.CoordinateSystem}.</p>
  *
  * @author Michaël Michaud, Erwan Bocher
  */
@@ -63,46 +63,51 @@ public class Geographic2DCRS extends GeodeticCRS {
      * and second {@link Axis} contains longitude. The unit used by these axes
      * is radian.
      */
-    public static CoordinateSystem LATLON_RR_CS = new CoordinateSystem(
+    public static final CoordinateSystem LATLON_RR_CS = new CoordinateSystem(
             new Axis[]{LATITUDE, LONGITUDE}, new Unit[]{RADIAN, RADIAN});
+
     /**
      * A 2D {@link CoordinateSystem} whose first {@link Axis} contains longitude
      * and second {@link Axis} contains latitude. The unit used by these axes is
      * radian.
      */
-    public static CoordinateSystem LONLAT_RR_CS = new CoordinateSystem(
+    public static final CoordinateSystem LONLAT_RR_CS = new CoordinateSystem(
             new Axis[]{LONGITUDE, LATITUDE}, new Unit[]{RADIAN, RADIAN});
+
     /**
      * A 2D {@link CoordinateSystem} whose first {@link Axis} contains latitude
      * and second {@link Axis} contains longitude. The unit used by these axes
      * is decimal degree.
      */
-    public static CoordinateSystem LATLON_DD_CS = new CoordinateSystem(
+    public static final CoordinateSystem LATLON_DD_CS = new CoordinateSystem(
             new Axis[]{LATITUDE, LONGITUDE}, new Unit[]{DEGREE, DEGREE});
+
     /**
      * A 2D {@link CoordinateSystem} whose first {@link Axis} contains longitude
      * and second {@link Axis} contains latitude. The unit used by these axes is
      * decimal degree.
      */
-    public static CoordinateSystem LONLAT_DD_CS = new CoordinateSystem(
+    public static final CoordinateSystem LONLAT_DD_CS = new CoordinateSystem(
             new Axis[]{LONGITUDE, LATITUDE}, new Unit[]{DEGREE, DEGREE});
+
     /**
      * A 2D {@link CoordinateSystem} whose first {@link Axis} contains latitude
      * and second {@link Axis} contains longitude. The unit used by these axes
      * is grad.
      */
-    public static CoordinateSystem LATLON_GG_CS = new CoordinateSystem(
+    public static final CoordinateSystem LATLON_GG_CS = new CoordinateSystem(
             new Axis[]{LATITUDE, LONGITUDE}, new Unit[]{GRAD, GRAD});
+
     /**
      * A 2D {@link CoordinateSystem} whose first {@link Axis} contains longitude
      * and second {@link Axis} contains latitude. The unit used by these axes is
      * grad.
      */
-    public static CoordinateSystem LONLAT_GG_CS = new CoordinateSystem(
+    public static final CoordinateSystem LONLAT_GG_CS = new CoordinateSystem(
             new Axis[]{LONGITUDE, LATITUDE}, new Unit[]{GRAD, GRAD});
 
     /**
-     * Create a new Geographic2DCRS.
+     * Creates a new Geographic2DCRS.
      *
      * @param identifier the identifier of the Geographic2DCRS
      * @param datum the datum associated with the Geographic2DCRS
@@ -114,7 +119,7 @@ public class Geographic2DCRS extends GeodeticCRS {
     }
 
     /**
-     * Create a new Geographic2DCRS. The first {@link Axis} of the associated
+     * Creates a new Geographic2DCRS. The first {@link Axis} of the associated
      * {@link CoordinateSystem} contains latitude and the second {@link Axis}
      * contains longitude.
      *
@@ -131,13 +136,16 @@ public class Geographic2DCRS extends GeodeticCRS {
             this.coordinateSystem = LATLON_DD_CS;
         } else if (unit == GRAD) {
             this.coordinateSystem = LATLON_GG_CS;
-        } else;
+        } else {
+            // default unit
+            this.coordinateSystem = LATLON_RR_CS;
+        }
     }
 
     /**
-     * Create a new Geographic2DCRS. The first {@link Axis} of the associated
+     * Creates a new Geographic2DCRS. The first {@link Axis} of the associated
      * {@link CoordinateSystem} contains latitude and the second {@link Axis}
-     * contains longitude.
+     * contains longitude. Coordinates are in decimal degrees.
      *
      * @param identifier the identifier of the Geographic2DCRS
      * @param datum the datum associated with the Geographic2DCRS
@@ -147,6 +155,7 @@ public class Geographic2DCRS extends GeodeticCRS {
     }
 
     /**
+     * @return 
      * @see GeodeticCRS#toGeographicCoordinateConverter()
      */
     @Override
@@ -173,6 +182,7 @@ public class Geographic2DCRS extends GeodeticCRS {
     }
 
     /**
+     * @return 
      * @see GeodeticCRS#fromGeographicCoordinateConverter()
      */
     @Override
@@ -199,6 +209,7 @@ public class Geographic2DCRS extends GeodeticCRS {
     }
 
     /**
+     * @return 
      * @see GeodeticCRS#getProjection()
      */
     @Override
@@ -207,16 +218,19 @@ public class Geographic2DCRS extends GeodeticCRS {
     }
 
     /**
+     * @return 
      * @see GeodeticCRS#getType()
      */
+    @Override
     public Type getType() {
         return Type.GEOGRAPHIC2D;
     }
 
     /**
      * Returns a WKT representation of the geographic 2D CRS.
-     *
+     * @return 
      */
+    @Override
     public String toWKT() {
         StringBuilder w = new StringBuilder();
         w.append("GEOGCS[\"");

@@ -21,7 +21,6 @@
  *
  * For more information, please consult: <https://github.com/orbisgis/cts/>
  */
-
 package org.cts.op.transformation;
 
 import org.cts.CoordinateDimensionException;
@@ -43,7 +42,7 @@ import org.cts.op.NonInvertibleOperationException;
  *
  * @author Michaël Michaud, Erwan Bocher
  */
-public class GeocentricTranslation extends AbstractCoordinateOperation implements GeoTransformation {
+public class GeocentricTranslation extends AbstractCoordinateOperation implements GeoTransformation, ParamBasedTransformation {
 
     /**
      * The Identifier used for all Geocentric translations.
@@ -54,6 +53,9 @@ public class GeocentricTranslation extends AbstractCoordinateOperation implement
      * Translation value used in this Geocentric translation.
      */
     private double tx, ty, tz;
+
+    // Inverse translation
+    private GeocentricTranslation inverse;
 
     /**
      * <p>Geocentric translation.</p>
@@ -68,7 +70,7 @@ public class GeocentricTranslation extends AbstractCoordinateOperation implement
         this.tx = tx;
         this.ty = ty;
         this.tz = tz;
-        this.precision = Math.max(0.000000001, precision);
+        this.precision = Math.min(1.0, precision);
     }
 
     /**
@@ -79,7 +81,7 @@ public class GeocentricTranslation extends AbstractCoordinateOperation implement
      * @param tz translation parameter along z axis (meters)
      */
     public GeocentricTranslation(double tx, double ty, double tz) {
-        this(tx, ty, tz, 1E-9);
+        this(tx, ty, tz, 1.0);
     }
 
     /**
@@ -107,8 +109,11 @@ public class GeocentricTranslation extends AbstractCoordinateOperation implement
      * Creates the inverse CoordinateOperation.
      */
     @Override
-    public CoordinateOperation inverse() throws NonInvertibleOperationException {
-        return new GeocentricTranslation(-tx, -ty, -tz, precision);
+    public GeocentricTransformation inverse() throws NonInvertibleOperationException {
+        if (inverse != null) return inverse;
+        else {
+            return inverse = new GeocentricTranslation(-tx, -ty, -tz, precision);
+        }
     }
 
     /**
@@ -151,21 +156,25 @@ public class GeocentricTranslation extends AbstractCoordinateOperation implement
     }
 
     /**
-     * Returns true if object is equals to
-     * <code>this</code>. Tests equality between the references of both object,
-     * then tests if the three translation values (tx, ty and tz) used by each
-     * Geocentric Translation are equals.
+     * Returns true if o is equals to <code>this</code>.
+     * GeocentricTranslations are equals if they both are identity, or
+     * if all their parameters are equal.
      *
-     * @param object The object to compare this ProjectedCRS against
+     * @param o The object to compare this ProjectedCRS against
      */
     @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (o instanceof GeocentricTranslation) {
-            GeocentricTranslation gt = (GeocentricTranslation) o;
-            return ((this.tx == gt.tx) && (this.ty == gt.ty) && (this.tz == gt.tz));
+        if (o instanceof CoordinateOperation) {
+            if (this.isIdentity() && ((CoordinateOperation)o).isIdentity()) {
+                return true;
+            }
+            if (o instanceof GeocentricTranslation) {
+                GeocentricTranslation gt = (GeocentricTranslation) o;
+                return ((this.tx == gt.tx) && (this.ty == gt.ty) && (this.tz == gt.tz));
+            }
         }
         return false;
     }
@@ -175,10 +184,18 @@ public class GeocentricTranslation extends AbstractCoordinateOperation implement
      */
     @Override
     public int hashCode() {
+        if (isIdentity()) return 0;
         int hash = 5;
         hash = 19 * hash + (int) (Double.doubleToLongBits(this.tx) ^ (Double.doubleToLongBits(this.tx) >>> 32));
         hash = 19 * hash + (int) (Double.doubleToLongBits(this.ty) ^ (Double.doubleToLongBits(this.ty) >>> 32));
         hash = 19 * hash + (int) (Double.doubleToLongBits(this.tz) ^ (Double.doubleToLongBits(this.tz) >>> 32));
         return hash;
+    }
+
+    /**
+     * @return true if this operation does not change coordinates.
+     */
+    public boolean isIdentity() {
+        return tx == 0.0 && ty == 0.0 && tz == 0.0;
     }
 }

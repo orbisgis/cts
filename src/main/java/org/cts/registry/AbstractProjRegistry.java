@@ -21,14 +21,20 @@
  *
  * For more information, please consult: <https://github.com/orbisgis/cts/>
  */
-
 package org.cts.registry;
 
 
 
+import org.cts.CRSHelper;
+import org.cts.Identifier;
+import org.cts.crs.CRSException;
+import org.cts.crs.CoordinateReferenceSystem;
+import org.cts.parser.proj.ProjKeyParameters;
 import org.cts.parser.proj.ProjParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Map;
 
 /**
  *
@@ -41,6 +47,34 @@ public abstract class AbstractProjRegistry implements Registry {
      * The parser associated to the PROJ registry.
      */
     protected final ProjParser projParser;
+
+    public CoordinateReferenceSystem getCoordinateReferenceSystem(Identifier identifier) throws RegistryException, CRSException {
+        Map<String,String> params = getParameters(identifier.getAuthorityKey());
+        if (!identifier.getAuthorityName().equalsIgnoreCase(getRegistryName())) {
+            throw new RegistryException("CRS code '" + identifier.getCode() +
+                    "' does not match this registry name : " + getRegistryName());
+        }
+        if (params == null) {
+            throw new CRSException("Registry '" + getRegistryName() + "' contains no parameter for " + identifier);
+        }
+        // try to set a name from params to the identifier if identifier name is empty
+        if (identifier.getName() == null || identifier.getName().isEmpty()) {
+            String title = params.get(ProjKeyParameters.title);
+            if (title != null && !title.isEmpty()) {
+                identifier = new Identifier(identifier.getAuthorityName(), identifier.getAuthorityKey(), title);
+            }
+        }
+        return CRSHelper.createCoordinateReferenceSystem(identifier, params);
+    }
+
+    /**
+     * Return all parameters need to build a CoordinateReferenceSystem.
+     *
+     * @param code
+     * @return 
+     * @throws RegistryException
+     */
+    abstract public Map<String, String> getParameters(String code) throws RegistryException;
 
     /**
      * Create a new AbstractProjRegistry.

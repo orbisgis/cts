@@ -21,13 +21,14 @@
  *
  * For more information, please consult: <https://github.com/orbisgis/cts/>
  */
-
 package org.cts.op;
 
 import org.cts.CoordinateDimensionException;
 import org.cts.Identifier;
 import org.cts.IllegalCoordinateException;
 import org.cts.datum.PrimeMeridian;
+
+import java.util.Arrays;
 
 /**
  * Longitude rotation is a simple transformation which shift the longitude
@@ -120,7 +121,7 @@ public class LongitudeRotation extends AbstractCoordinateOperation {
      * <code>this</code>. Tests equality between the rotationAngles used by the
      * transformation.
      *
-     * @param object The object to compare this LongitudeRotation against
+     * @param o The object to compare this LongitudeRotation against
      */
     @Override
     public boolean equals(Object o) {
@@ -142,5 +143,12 @@ public class LongitudeRotation extends AbstractCoordinateOperation {
         int hash = 7;
         hash = 97 * hash + (int) (Double.doubleToLongBits(this.rotationAngle) ^ (Double.doubleToLongBits(this.rotationAngle) >>> 32));
         return hash;
+    }
+
+    /**
+     * @return true if this operation does not change coordinates.
+     */
+    public boolean isIdentity() {
+        return rotationAngle == 0.0;
     }
 }

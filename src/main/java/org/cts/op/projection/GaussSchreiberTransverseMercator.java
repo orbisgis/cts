@@ -21,7 +21,6 @@
  *
  * For more information, please consult: <https://github.com/orbisgis/cts/>
  */
-
 package org.cts.op.projection;
 
 import java.util.Map;
@@ -29,7 +28,6 @@ import java.util.Map;
 import org.cts.CoordinateDimensionException;
 import org.cts.Identifier;
 import org.cts.datum.Ellipsoid;
-import org.cts.op.CoordinateOperation;
 import org.cts.op.NonInvertibleOperationException;
 import org.cts.units.Measure;
 
@@ -146,11 +144,9 @@ public class GaussSchreiberTransverseMercator extends Projection {
      * coordinate in meters. Algorithm based on the OGP's Guidance Note Number 7
      * Part 2 :
      * <http://www.epsg.org/guides/G7-2.html>
-     *
-     * @param coord coordinate to transform
      */
     @Override
-    public CoordinateOperation inverse() throws NonInvertibleOperationException {
+    public Projection inverse() throws NonInvertibleOperationException {
         return new GaussSchreiberTransverseMercator(ellipsoid, parameters) {
             @Override
             public double[] transform(double[] coord) throws CoordinateDimensionException {
@@ -159,6 +155,22 @@ public class GaussSchreiberTransverseMercator extends Projection {
                 coord[0] = ellipsoid.latitude((isoLats - c) / n1);
                 coord[1] = lon0 + Lambda / n1;
                 return coord;
+            }
+
+            @Override
+            public Projection inverse()
+                    throws NonInvertibleOperationException {
+                return GaussSchreiberTransverseMercator.this;
+            }
+
+            @Override
+            public boolean isDirect() {
+                return false;
+            }
+
+            @Override
+            public String toString() {
+                return GaussSchreiberTransverseMercator.this.toString() + " inverse";
             }
         };
     }

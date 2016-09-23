@@ -21,7 +21,6 @@
  *
  * For more information, please consult: <https://github.com/orbisgis/cts/>
  */
-
 package org.cts.datum;
 
 import static java.lang.Math.abs;
@@ -67,55 +66,63 @@ public class Ellipsoid extends IdentifiableComponent {
     public static enum SecondParameter {
 
         InverseFlattening, SemiMinorAxis, Eccentricity
-    };
+    }
+
     /**
      * The double value of PI/2.
      */
     private static final double PI_2 = Math.PI / 2.;
+
     /**
      * Perfect SPHERE.
      */
     public static final Ellipsoid SPHERE = createEllipsoidFromSemiMinorAxis(
             new Identifier("EPSG", "7035", "SPHERE"), 6371000.0, 6371000.0);
+
     /**
      * GRS 1980 ellipsoid, used in most recent spatial geodetic system (1990 and
      * after).
      */
     public static final Ellipsoid GRS80 = createEllipsoidFromInverseFlattening(
             new Identifier("EPSG", "7019", "GRS 1980", "GRS80"), 6378137.0, 298.257222101);
+
     /**
      * WGS84 ellipsoid, used with the WGS84 spatial geodetic datum. This
      * ellipsoid (and datum) is coherent with GRS80 and the ITRS.
      */
     public static final Ellipsoid WGS84 = createEllipsoidFromInverseFlattening(
             new Identifier("EPSG", "7030", "WGS 84", "WGS84"), 6378137.0, 298.257223563);
+
     /**
      * International 1924.
      */
     public static final Ellipsoid INTERNATIONAL1924 = createEllipsoidFromInverseFlattening(
-            new Identifier("EPSG", "7022", "Intenational 1924", "Int_1924"), 6378388, 297);
+            new Identifier("EPSG", "7022", "Intenational 1924", "Int_1924"), 6378388.0, 297.0);
+
     /**
      * Bessel 1841.
      */
     public static final Ellipsoid BESSEL1841 = createEllipsoidFromInverseFlattening(
             new Identifier("EPSG", "7004", "Bessel 1841", "Bessel_1841"), 6377397.155, 299.1528128);
+
     /**
      * Clarke 1866.
      */
     public static final Ellipsoid CLARKE1866 = createEllipsoidFromSemiMinorAxis(
             new Identifier("EPSG", "7008", "Clarke 1866", "Clarke_1866"), 6378206.4, 6356583.8);
+
     /**
      * Clarke 1880 (IGN).
      */
     public static final Ellipsoid CLARKE1880IGN = createEllipsoidFromSemiMinorAxis(
             new Identifier("EPSG", "7011", "Clarke 1880 (IGN)", "Clarke_1880_IGN"), 6378249.2, 6356515.0);
-    //public static final Ellipsoid CLARKE1880IGN = createEllipsoidFromInverseFlattening(
-    //    new Identifier("EPSG", "7011", "Clarke 1880 (IGN)", "Clarke_1880_IGN"), 6378249.2, 293.466021);
+
     /**
      * Clarke 1880 (RGS) or Clarke 1880 modified.
      */
     public static final Ellipsoid CLARKE1880RGS = createEllipsoidFromInverseFlattening(
             new Identifier("EPSG", "7012", "Clarke 1880 (RGS)", "Clarke_1880_mod"), 6378249.2, 293.465);
+
     /**
      * Clarke 1880 (Arc). Note that the ellipsoid called clrk80 in the proj
      * library is defined as the Clarke 1880 mod. (modified) which is refered as
@@ -124,102 +131,124 @@ public class Ellipsoid extends IdentifiableComponent {
      */
     public static final Ellipsoid CLARKE1880ARC = createEllipsoidFromInverseFlattening(
             new Identifier("EPSG", "7013", "Clarke 1880 (Arc)", "Clarke_1880_Arc"), 6378249.145, 293.4663077);
+
     /**
      * Krassowski 1940.
      */
     public static final Ellipsoid KRASSOWSKI = createEllipsoidFromInverseFlattening(
             new Identifier("EPSG", "7024", "Krassowski 1940", "Krassowski_1940"), 6378245.0, 298.3);
+
     /**
      * Everest 1830 (1967 definition).
      */
     public static final Ellipsoid EVERESTSS = createEllipsoidFromInverseFlattening(
             new Identifier("EPSG", "7016", "Everest 1830 (1967 Definition)", "evrstSS"), 6377298.556, 300.8017);
+
     /**
      * GRS 1967 ellipsoid, used in Australian Geodetic Datum and in South
      * American Datum 1969.
      */
     public static final Ellipsoid GRS67 = createEllipsoidFromInverseFlattening(
             new Identifier("EPSG", "7036", "GRS 1967", "GRS67"), 6378160, 298.247167427);
+
     /**
      * GRS 1967 (SAD 1969) ellipsoid, used in Australian Geodetic Datum and in
      * South American Datum 1969.
      */
     public static final Ellipsoid AustSA = createEllipsoidFromInverseFlattening(
             new Identifier("EPSG", "7050", "GRS 1967 (SAD 1969)", "aust_SA"), 6378160, 298.25);
+
     /**
      * Airy 1830.
      */
     public static final Ellipsoid AIRY = createEllipsoidFromInverseFlattening(
             new Identifier("EPSG", "7001", "AIRY 1830", "airy"), 6377563.396, 299.3249646);
+
     /**
      * Bessel Namibia (GLM).
      */
     public static final Ellipsoid BESSNAM = createEllipsoidFromInverseFlattening(
             new Identifier("EPSG", "7046", "Bessel Namibia (GLM)", "bess_nam"), 6377483.865280419, 299.1528128);
+
     /**
      * Helmert 1906.
      */
     public static final Ellipsoid HELMERT = createEllipsoidFromInverseFlattening(
             new Identifier("EPSG", "7020", "Helmert 1906", "helmert"), 6378200, 298.3);
+
     /**
      * Airy Modified 1849.
      */
     public static final Ellipsoid AIRYMOD = createEllipsoidFromInverseFlattening(
             new Identifier("EPSG", "7002", "Airy Modified 1849", "mod_airy"), 6377340.189, 299.3249646);
+
     /**
      * WGS 66.
      */
     public static final Ellipsoid WGS66 = createEllipsoidFromInverseFlattening(
             new Identifier("EPSG", "7025", "WGS 66", "WGS66"), 6378145, 298.25);
+
     /**
      * WGS 72.
      */
     public static final Ellipsoid WGS72 = createEllipsoidFromInverseFlattening(
             new Identifier("EPSG", "7043", "WGS 72", "WGS72"), 6378135, 298.26);
+
     /**
      * The SecondParameters used to create this Ellipsoid.
      */
     final SecondParameter secondParameter;
+
     /**
      * The semi-major axis of this Ellipsoid.
      */
     final private double a;
+
     /**
      * The semi-minor axis of this Ellipsoid.
      */
     final private double b;
+
     /**
      * The flattening of this Ellipsoid.
      */
     final private double f;
+
     /**
      * The inverse flattening of this Ellipsoid.
      */
     final private double invf;
+
     /**
      * The eccentricity of this Ellipsoid.
      */
     final private double e;
+
     /**
      * The square eccentricity of this Ellipsoid.
      */
     final private double e2;
+
     /**
      * The second square eccentricity of this Ellipsoid.
      */
     final private double eprime2;
+
     /**
      * The coefficients used to compute the meridian arc length.
      */
     transient private double[] arc_coeff;
+
     /**
      * The coefficients for the direct UTM projection.
      */
     transient private double[] dir_utm_coeff;
+
     /**
      * The coefficients for the inverse UTM projection.
      */
     transient private double[] inv_utm_coeff;
+
     /**
      * The coefficients used to compute meridian arc length from/to latitude
      * this second method is taken from <a
@@ -227,16 +256,19 @@ public class Ellipsoid extends IdentifiableComponent {
      * possible to choose the precision of the result.
      */
     transient private double[] kk;
+
     /**
      * The coefficients for the inverse Mercator projection.
      */
     transient private double[] inv_merc_coeff;
+
     /**
      * ellipsoidFromName associates each ellipsoid to a short string used to
      * recognize it in CTS.
      */
     public static final Map<String, Ellipsoid> ellipsoidFromName = new HashMap<String, Ellipsoid>();
 
+    //@TODO see GeodeticDatum to homogeneize how to get objects from id or names
     static {
         ellipsoidFromName.put("airy", AIRY);
         ellipsoidFromName.put("austsa", AustSA);
@@ -256,7 +288,6 @@ public class Ellipsoid extends IdentifiableComponent {
         ellipsoidFromName.put("wgs66", WGS66);
         ellipsoidFromName.put("wgs72", WGS72);
         ellipsoidFromName.put("wgs84", WGS84);
-
     }
 
     /**
@@ -811,25 +842,29 @@ public class Ellipsoid extends IdentifiableComponent {
      * one. Ellipsoid equals method is based on a comparison of the object
      * dimensions with a sensibility of 0.1 mm.
      *
-     * @param other the object to compare this Ellipsoid against
+     * @param o the object to compare this Ellipsoid against
      */
     @Override
-    public boolean equals(Object other) {
+    public boolean equals(Object o) {
         // short circuit to compare final static Ellipsoids
-        if (this == other) {
+        if (this == o) {
             return true;
         }
-        if (other instanceof Ellipsoid) {
-            Ellipsoid ell = (Ellipsoid) other;
+        if (o instanceof Ellipsoid) {
+            Ellipsoid ell = (Ellipsoid)o;
             // if ellipsoid codes are equals, ellipsoids are equals
             if (getCode().equals(ell.getCode())) {
                 return true;
             }
-            // else if ellipsoid semi-major axis and ellipsoid semi-minor axis
-            // are equals (+/- 0.1 mm) ellipoids are also considered as equals
-            double a2 = ell.getSemiMajorAxis();
-            double b2 = ell.getSemiMinorAxis();
-            return (Math.abs(a2 - a) < 1e-4 && Math.abs(b2 - b) < 1e-4);
+            // if ellipsoid semi-major axis and ellipsoid semi-minor axis
+            // are equals (+/- 0.1 mm) ellipsoids are considered as equals
+            // Rational : there maybe small differences between an
+            // ellipsoid defined by its b value, its e2 or its 1/f.
+            // Note : 0.1 mm is less than the difference between WGS84 and
+            // GRS80
+            double a2 = Math.rint(ell.getSemiMajorAxis() * 10000);
+            double b2 = Math.rint(ell.getSemiMinorAxis() * 10000);
+            return (Math.rint(a*10000) == a2 && Math.rint(b*10000) == b2);
         }
         return false;
     }
@@ -840,8 +875,11 @@ public class Ellipsoid extends IdentifiableComponent {
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 97 * hash + (int) (Double.doubleToLongBits(this.a) ^ (Double.doubleToLongBits(this.a) >>> 32));
-        hash = 97 * hash + (int) (Double.doubleToLongBits(this.b) ^ (Double.doubleToLongBits(this.b) >>> 32));
+        // Round to 0.0001 to be consistent with equals definition
+        long la = Double.doubleToLongBits((long)Math.rint(this.a*10000));
+        long lb = Double.doubleToLongBits((long)Math.rint(this.b*10000));
+        hash = 97 * hash + (int) (la ^ (la >>> 32));
+        hash = 97 * hash + (int) (lb ^ (lb >>> 32));
         return hash;
     }
 }

@@ -21,7 +21,6 @@
  *
  * For more information, please consult: <https://github.com/orbisgis/cts/>
  */
-
 package org.cts.op.projection;
 
 import java.util.Map;
@@ -29,7 +28,6 @@ import java.util.Map;
 import org.cts.CoordinateDimensionException;
 import org.cts.Identifier;
 import org.cts.datum.Ellipsoid;
-import org.cts.op.CoordinateOperation;
 import org.cts.op.NonInvertibleOperationException;
 import org.cts.units.Measure;
 
@@ -137,11 +135,9 @@ public class MillerCylindrical extends Projection {
      * meters. Algorithm based on the USGS professional paper 1395, "Map
      * Projection - A Working Manual" by John P. Snyder :
      * <http://pubs.er.usgs.gov/publication/pp1395>
-     *
-     * @param coord coordinate to transform
      */
     @Override
-    public CoordinateOperation inverse() throws NonInvertibleOperationException {
+    public Projection inverse() throws NonInvertibleOperationException {
         return new MillerCylindrical(ellipsoid, parameters) {
             @Override
             public double[] transform(double[] coord) throws CoordinateDimensionException {
@@ -154,6 +150,21 @@ public class MillerCylindrical extends Projection {
                 coord[1] = (coord[0] - FE) / n + lon0;
                 coord[0] = lat / 0.8;
                 return coord;
+            }
+
+            @Override
+            public Projection inverse()
+                    throws NonInvertibleOperationException {
+                return MillerCylindrical.this;
+            }
+            @Override
+            public boolean isDirect() {
+                return false;
+            }
+
+            @Override
+            public String toString() {
+                return MillerCylindrical.this.toString() + " inverse";
             }
         };
     }

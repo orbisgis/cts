@@ -21,7 +21,6 @@
  *
  * For more information, please consult: <https://github.com/orbisgis/cts/>
  */
-
 package org.cts.parser.prj;
 
 /**
@@ -37,6 +36,7 @@ public final class PrjWriter {
      *
      * @param number the double to transform
      * @param tol the tolerance
+     * @return 
      */
     public static String roundToString(double number, double tol) {
         StringBuilder w = new StringBuilder();
@@ -64,6 +64,7 @@ public final class PrjWriter {
      * Returns the WKT in parameter into a Human-Readable OGC WKT form.
      *
      * @param wkt the OGC WKT String to transform.
+     * @return 
      */
     public static String formatWKT(String wkt) {
         StringBuilder w = new StringBuilder();

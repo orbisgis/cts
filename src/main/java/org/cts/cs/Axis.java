@@ -21,7 +21,6 @@
  *
  * For more information, please consult: <https://github.com/orbisgis/cts/>
  */
-
 package org.cts.cs;
 
 import java.util.EnumMap;
@@ -42,71 +41,86 @@ public class Axis {
      * The map that allows CTS to get Axes from their name.
      */
     private static Map<Direction, Map<String, Axis>> axisFromDirAndName = new EnumMap<Direction, Map<String, Axis>>(Direction.class);
+
     /**
      * Easting axis. Used for planimetric coordinate system, generally in pair
      * with northing.
      */
     public static final Axis EASTING = new Axis("Easting", Direction.EAST);
+
     /**
      * Northing axis. Used for planimetric coordinate system, generally in pair
      * with easting.
      */
     public static final Axis NORTHING = new Axis("Northing", Direction.NORTH);
+
     /**
      * Westing axis. Used for planimetric coordinate system, generally in pair
      * with southing.
      */
     public static final Axis WESTING = new Axis("Westing", Direction.WEST);
+
     /**
      * Southing axis. Used for planimetric coordinate system, generally in pair
      * with westing.
      */
     public static final Axis SOUTHING = new Axis("Southing", Direction.SOUTH);
+
     /**
      * x axis. Used for planimetric coordinate system, sometimes used in place
      * of easting.
      */
     public static final Axis x = new Axis("X", Direction.EAST);
+
     /**
      * y axis. Used for planimetric coordinate system, sometimes used in place
      * of northing.
      */
     public static final Axis y = new Axis("Y", Direction.NORTH);
+
     /**
      * Altitude axis. Used for vertical/compound system.
      */
     public static final Axis ALTITUDE = new Axis("Altitude", Direction.UP);
+
     /**
      * Depth axis. Used for bathymetry.
      */
     public static final Axis DEPTH = new Axis("Depth", Direction.DOWN);
+
     /**
      * Latitude axis. Used for geographic coordinate system, generally in pair
      * with longitude.
      */
     public static final Axis LATITUDE = new Axis("Latitude", Direction.NORTH);
+
     /**
      * Longitude axis. Used for geographic coordinate system, generally in pair
      * with latitude.
      */
     public static final Axis LONGITUDE = new Axis("Longitude", Direction.EAST);
+
     /**
      * Height axis. Used for 3D ellipsoidal coordinate system, generally with
      * latitude and longitude axes.
      */
     public static final Axis HEIGHT = new Axis("Height", Direction.UP);
+
     /**
      * X axis. Used for 3D cartesian system, generally with Y and Z axes.
      */
     public static final Axis X = new Axis("X", Direction.OTHER);
+
     /**
      * Y axis. Used for 3D cartesian system, generally with X and Z axes.
      */
     public static final Axis Y = new Axis("Y", Direction.EAST);
+
     /**
      * Z axis. Used for 3D cartesian system, generally with X and Y axes.
      */
     public static final Axis Z = new Axis("Z", Direction.NORTH);
+
     /**
      * Time axis. Not supported in CTS yet.
      */
@@ -125,10 +139,12 @@ public class Axis {
         DOWN,
         OTHER
     };
+
     /**
      * The name of this Axis (X, Y, Z, LONGITUDE, ALTITUDE,&hellip;).
      */
     private String name;
+
     /**
      * The direction of the axis as it is defined in OGC WKT. It should only
      * take one of these values : NORTH, SOUTH, EAST, WEST or OTHER. See
@@ -171,6 +187,7 @@ public class Axis {
 
     /**
      * Return the name of this Axis (X, Y, Z, LONGITUDE, ALTITUDE,&hellip;).
+     * @return 
      */
     public String getName() {
         return name;
@@ -178,6 +195,7 @@ public class Axis {
 
     /**
      * Return the direction of this Axis (NORTH, SOUTH, EAST, WEST or OTHER).
+     * @return 
      */
     public Direction getDirection() {
         return direction;
@@ -187,6 +205,7 @@ public class Axis {
      * Return the direction correpsonding to the string in parameter.
      *
      * @param dir the name of the direction
+     * @return 
      */
     public static Direction getDirection(String dir) {
         Direction direction = null;
@@ -213,6 +232,7 @@ public class Axis {
     /**
      * Returns a WKT representation of the axis.
      *
+     * @return 
      */
     public String toWKT() {
         StringBuilder w = new StringBuilder();
@@ -226,6 +246,7 @@ public class Axis {
 
     /**
      * Return a String representation of this Axis.
+     * @return 
      */
     @Override
     public String toString() {

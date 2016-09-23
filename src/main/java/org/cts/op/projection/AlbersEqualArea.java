@@ -21,7 +21,6 @@
  *
  * For more information, please consult: <https://github.com/orbisgis/cts/>
  */
-
 package org.cts.op.projection;
 
 import java.util.Map;
@@ -29,7 +28,6 @@ import java.util.Map;
 import org.cts.CoordinateDimensionException;
 import org.cts.Identifier;
 import org.cts.datum.Ellipsoid;
-import org.cts.op.CoordinateOperation;
 import org.cts.op.NonInvertibleOperationException;
 import org.cts.units.Measure;
 
@@ -157,11 +155,9 @@ public class AlbersEqualArea extends Projection {
      * coord is supposed to be a projected easting / northing coordinate in
      * meters. Algorithm based on the OGP's Guidance Note Number 7 Part 2 :
      * <http://www.epsg.org/guides/G7-2.html>
-     *
-     * @param coord coordinate to transform
      */
     @Override
-    public CoordinateOperation inverse() throws NonInvertibleOperationException {
+    public Projection inverse() throws NonInvertibleOperationException {
         return new AlbersEqualArea(ellipsoid, parameters) {
             @Override
             public double[] transform(double[] coord) throws CoordinateDimensionException {
@@ -179,6 +175,22 @@ public class AlbersEqualArea extends Projection {
                         + (23 / 360 * e4 + 251 / 3780 * e6) * sin(4 * betap) + 761 / 45360 * e6 * sin(6 * betap);
                 coord[1] = lon0 + theta / n;
                 return coord;
+            }
+
+            @Override
+            public Projection inverse()
+                    throws NonInvertibleOperationException {
+                return AlbersEqualArea.this;
+            }
+
+            @Override
+            public boolean isDirect() {
+                return false;
+            }
+
+            @Override
+            public String toString() {
+                return AlbersEqualArea.this.toString() + " inverse";
             }
         };
     }

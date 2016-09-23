@@ -21,7 +21,6 @@
  *
  * For more information, please consult: <https://github.com/orbisgis/cts/>
  */
-
 package org.cts.registry;
 
 import java.io.IOException;
@@ -39,7 +38,7 @@ import java.util.regex.Pattern;
 public class WorldRegistry extends AbstractProjRegistry {
 
     /**
-     * The regex that must be used to parse world registry.
+     * The regex used to parse world registry.
      */
     static final Pattern WORLD_REGEX = Pattern.compile("\\s+");
 

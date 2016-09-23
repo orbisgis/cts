@@ -21,7 +21,6 @@
  *
  * For more information, please consult: <https://github.com/orbisgis/cts/>
  */
-
 package org.cts;
 
 import java.util.HashMap;
@@ -34,16 +33,9 @@ import org.cts.datum.Ellipsoid;
 import org.cts.datum.GeodeticDatum;
 import org.cts.datum.PrimeMeridian;
 import org.cts.datum.VerticalDatum;
-import org.cts.op.CoordinateOperation;
-import org.cts.op.CoordinateOperationSequence;
-import org.cts.op.Geocentric2Geographic;
-import org.cts.op.Geographic2Geocentric;
-import org.cts.op.Identity;
+import org.cts.op.*;
 import org.cts.op.projection.*;
-import org.cts.op.transformation.FrenchGeocentricNTF2RGF;
-import org.cts.op.transformation.GeocentricTranslation;
-import org.cts.op.transformation.NTv2GridShiftTransformation;
-import org.cts.op.transformation.SevenParameterTransformation;
+import org.cts.op.transformation.*;
 import org.cts.parser.prj.PrjKeyParameters;
 import org.cts.parser.proj.ProjKeyParameters;
 import org.cts.parser.proj.ProjValueParameters;
@@ -58,7 +50,7 @@ import org.slf4j.LoggerFactory;
  * generally obtained from the parser of a {@link org.cts.registry.Registry}
  * or from an OGC WKT String.
  *
- * @TODO Not sure this class is useful here. I'd prefer a clear separation
+ * @TODO Not sure this class is useful here. I would prefer a clear separation
  * between the model (CRS/Datum/Ellipsoid/Projection...) and the parsers which
  * create CRS from a file or from a stream. CRSHelper is in-between, no more a
  * file, but not yet a model.
@@ -76,9 +68,10 @@ public class CRSHelper {
      * CRS
      * @param parameters the map of parameters defining the properties of the
      * desired CRS
+     * @return 
+     * @throws org.cts.crs.CRSException
      */
     public static CoordinateReferenceSystem createCoordinateReferenceSystem(Identifier identifier, Map<String, String> parameters) throws CRSException {
-
         if ((parameters.get(PrjKeyParameters.PROJCS) != null || parameters.get(PrjKeyParameters.GEOGCS) != null)
                 && parameters.get(PrjKeyParameters.VERTCS) != null) {
             Identifier id = getIdentifier(parameters);
@@ -126,6 +119,11 @@ public class CRSHelper {
                     parameters);
             if (null != proj) {
                 crs = new ProjectedCRS(identifier, geodeticDatum, cs, proj);
+                // SPECIAL CASE OF THE PSEUDO-MERCATOR PROJECTION (EPSG:3857)
+                // In the case of EPSG:3857 (pseudo-mercator), the proj4 description
+                // gives the a and b parameters of the ellipsoid to be used for the projection
+                // but does not give the datum/ellipsoid to be used (WGS 84)
+                if (identifier.getCode().equals("EPSG:3857")) crs = new ProjectedCRS(identifier, GeodeticDatum.WGS84, cs, proj);
             } else {
                 throw new CRSException("Unknown projection : " + sproj);
             }
@@ -174,7 +172,7 @@ public class CRSHelper {
      * Returns a {@link org.cts.cs.CoordinateSystem} from parameters.
      *
      * @param param the map of parameters defining the properties of a CRS
-     * @param crsType 1 = VerticalCRS, 2 = GeocentricCRS, 3 = Geographic2DCRS, 4
+     * @param crsType 1 = VerticalCRS, 2 = GeocentricCRS, 3 = GeographicCRS, 4
      * = ProjectedCRS
      */
     private static CoordinateSystem getCoordinateSystem(Map<String, String> param, int crsType) throws CRSException {
@@ -306,7 +304,7 @@ public class CRSHelper {
      * parameters. By default, it returns the base unit of the {@link Quantity}
      * in parameter or DEGREE, if the {@link Quantity} is ANGLE..
      *
-     * @param quant the quanity of the desired unit (ANGLE for a geographic CRS,
+     * @param quant the quantity of the desired unit (ANGLE for a geographic CRS,
      * else LENGTH)
      * @param param the map of parameters defining the properties of a CRS
      * @param isVertical true if the returned unit shall be used for a
@@ -347,20 +345,18 @@ public class CRSHelper {
         return unit;
     }
 
+
     /**
-     * Set default toWGS84 operation to a {@link org.cts.datum.GeodeticDatum},
-     * using {@code towgs84} keyword.
+     * Get the default toWGS84 operation from parameters given by the
+     * {@code towgs84} keyword.
      *
-     * @param gd the GeodeticDatum we want to associate default toWGS84
-     * operation with.
      * @param param the map of parameters defining the properties of a CRS
      */
-    private static void setDefaultWGS84Parameters(GeodeticDatum gd, Map<String, String> param) {
-        CoordinateOperation op;
+    private static GeocentricTransformation getToWGS84(Map<String, String> param) {
+        GeocentricTransformation op;
         String towgs84Parameters = param.remove(ProjKeyParameters.towgs84);
         if (null == towgs84Parameters) {
-            gd.setDefaultToWGS84Operation(Identity.IDENTITY);
-            return;
+            return Identity.IDENTITY;
         }
         double[] bwp = new double[7];
         String[] sbwp = towgs84Parameters.split(",");
@@ -383,9 +379,7 @@ public class CRSHelper {
             op = SevenParameterTransformation.createBursaWolfTransformation(
                     bwp[0], bwp[1], bwp[2], bwp[3], bwp[4], bwp[5], bwp[6]);
         }
-        if (op != null) {
-            gd.setDefaultToWGS84Operation(op);
-        }
+        return op == null ? Identity.IDENTITY : op;
     }
 
     /**
@@ -451,7 +445,7 @@ public class CRSHelper {
         String authCode = param.remove(PrjKeyParameters.DATUMREFNAME);
         GeodeticDatum gd = null;
         if (null != datumName) {
-            gd = GeodeticDatum.datumFromName.get(datumName.toLowerCase());
+            gd = GeodeticDatum.getGeodeticDatum(datumName.toLowerCase());
         }
         if (gd == null && authCode != null) {
             String[] authNameWithKey = authCode.split(":");
@@ -459,13 +453,23 @@ public class CRSHelper {
                     : new Identifier(authNameWithKey[0], authNameWithKey[1], Identifiable.UNKNOWN);
             gd = (GeodeticDatum) IdentifiableComponent.getComponent(id);
         }
+        // Short circuit identifying NTF datum when the ntf_r93.gsb nadgrids is used
+        // Getting a pre-built datum is always better than creating a new one
+        if (param.get(ProjKeyParameters.nadgrids) != null &&
+                param.get(ProjKeyParameters.nadgrids).contains("ntf_r93.gsb")) {
+            if (PrimeMeridian.PARIS.equals(getPrimeMeridian(param))) {
+                gd = GeodeticDatum.NTF_PARIS;
+            } else if (PrimeMeridian.GREENWICH.equals(getPrimeMeridian(param))) {
+                gd = GeodeticDatum.NTF;
+            }
+        }
+        // Create a new GeodeticDatum from its primeMeridian, ellipsoid and toWGS84
         if (gd == null) {
             Ellipsoid ell = getEllipsoid(param);
             PrimeMeridian pm = getPrimeMeridian(param);
             if (null != pm && null != ell) {
-                gd = new GeodeticDatum(pm, ell);
-                setDefaultWGS84Parameters(gd, param);
-                gd = gd.checkExistingGeodeticDatum();
+                GeocentricTransformation toWGS84 = getToWGS84(param);
+                gd = GeodeticDatum.createGeodeticDatum(pm, ell, toWGS84);
             }
         }
         param.remove(ProjKeyParameters.ellps);
@@ -525,35 +529,41 @@ public class CRSHelper {
             String[] grids = nadgrids.split(",");
             for (String grid : grids) {
                 if (!grid.equals("null")) {
-                    LOGGER.warn("A grid has been founded.");
+                    LOGGER.warn("A grid has been found.");
                     if (grid.equals("@null")) {
-                        crs.addGridTransformation(GeodeticDatum.WGS84, Identity.IDENTITY);
+                        crs.getDatum().addGeocentricTransformation(GeodeticDatum.WGS84, Identity.IDENTITY);
                     } else {
                         try {
                             if (grid.equals("ntf_r93.gsb")) {
-                                // Use a transformation based on IGN grid that is the official way to convert coordinates from NTF to RGF93.
-                                if (crs.getDatum().equals(GeodeticDatum.NTF)) {
-                                    crs.addGridTransformation(
-                                            GeodeticDatum.RGF93,
-                                            new CoordinateOperationSequence(
-                                            new Identifier(CoordinateOperation.class, "NTF" + " to " + "RGF93"),
-                                            new Geographic2Geocentric(GeodeticDatum.NTF.getEllipsoid()),
-                                            new FrenchGeocentricNTF2RGF(),
-                                            new Geocentric2Geographic(GeodeticDatum.RGF93.getEllipsoid())));
-                                } else if (crs.getDatum().equals(GeodeticDatum.NTF_PARIS)) {
-                                    crs.addGridTransformation(
-                                            GeodeticDatum.RGF93,
-                                            new CoordinateOperationSequence(
-                                            new Identifier(CoordinateOperation.class, "NTF" + " to " + "RGF93"),
-                                            GeodeticDatum.NTF_PARIS.getCoordinateOperations(GeodeticDatum.NTF).get(0),
-                                            new Geographic2Geocentric(GeodeticDatum.NTF.getEllipsoid()),
-                                            new FrenchGeocentricNTF2RGF(),
-                                            new Geocentric2Geographic(GeodeticDatum.RGF93.getEllipsoid())));
-                                }
+                                // If this CRS uses the ntf_r93.gsb, we know it is based on NTF, and we can
+                                // use FrenchGeocentricNTF2RGF to transform coordinates to WGS or RGF93
+                                FrenchGeocentricNTF2RGF ntf2rgf = FrenchGeocentricNTF2RGF.getInstance();
+                                crs.getDatum().addGeocentricTransformation(GeodeticDatum.RGF93, ntf2rgf);
+                                crs.getDatum().addGeocentricTransformation(GeodeticDatum.WGS84, ntf2rgf);
+                                LOGGER.info("Add French Geocentric Grid transformation from " + crs.getDatum() + " to RGF93 and WGS84");
+
+                                NTv2GridShiftTransformation ntf_r93 = NTv2GridShiftTransformation.createNTv2GridShiftTransformation(grid);
+                                ntf_r93.loadGridShiftFile();
+                                crs.getDatum().addGeographicTransformation(GeodeticDatum.WGS84,
+                                        new CoordinateOperationSequence(ntf_r93.getIdentifier(),
+                                                LongitudeRotation.getLongitudeRotationFrom(crs.getDatum().getPrimeMeridian()), ntf_r93));
+                                crs.getDatum().addGeographicTransformation(GeodeticDatum.RGF93,
+                                        new CoordinateOperationSequence(ntf_r93.getIdentifier(),
+                                                LongitudeRotation.getLongitudeRotationFrom(crs.getDatum().getPrimeMeridian()), ntf_r93));
+                                LOGGER.info("Add NTv2 transformation from " + crs.getDatum() + " to RGF93 and WGS84");
+                            } else {
+                                // This is the general case where we want to add a NTv2 transformation
+                                // using the file header to determine source and target datums
+                                NTv2GridShiftTransformation gt = NTv2GridShiftTransformation.createNTv2GridShiftTransformation(grid);
+                                gt.loadGridShiftFile();
+                                GeodeticDatum datum = GeodeticDatum.getGeodeticDatum(gt.getToDatum());
+                                crs.getDatum().addGeographicTransformation(datum,
+                                        new CoordinateOperationSequence(
+                                                gt.getIdentifier(),
+                                                new LongitudeRotation(crs.getDatum().getPrimeMeridian().getLongitudeFromGreenwichInRadians()),
+                                                gt));
+                                LOGGER.info("Add NTv2 transformation from " + crs.getDatum() + " to " + datum);
                             }
-                            NTv2GridShiftTransformation gt = NTv2GridShiftTransformation.createNTv2GridShiftTransformation(grid);
-                            gt.setMode(NTv2GridShiftTransformation.SPEED);
-                            crs.addGridTransformation(GeodeticDatum.datumFromName.get(gt.getToDatum()), gt);
                         } catch (Exception ex) {
                             LOGGER.error("Cannot find the nadgrid " + grid + ".", ex);
                         }

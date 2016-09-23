@@ -21,13 +21,9 @@
  *
  * For more information, please consult: <https://github.com/orbisgis/cts/>
  */
-
 package org.cts.op;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.cts.op.transformation.GeocentricTranslation;
 import org.junit.Test;
@@ -89,10 +85,10 @@ public class UserDefinedTransform extends BaseCoordinateTransformTest {
         double[] pointDest = new double[]{50.345609791, 2.114551393};
         CoordinateOperation LAMBERT2E = LambertConicConformal1SP.LAMBERT2E.inverse();
         double[] result = LAMBERT2E.transform(pointSource);
-        List<CoordinateOperation> ops = GeodeticDatum.NTF_PARIS.getCoordinateOperations(GeodeticDatum.WGS84);
+        Set<CoordinateOperation> ops = GeodeticDatum.NTF_PARIS.getGeographicTransformations(GeodeticDatum.WGS84);
         if (!ops.isEmpty()) {
             result = ChangeCoordinateDimension.TO3D.transform(result);
-            result = ops.get(0).transform(result);
+            result = ops.iterator().next().transform(result);
         }
         result = RAD2DD.transform(result);
         assertTrue(checkEquals("Lambert 2 etendu to WGS84 degrees", result, pointDest, 10E-7));
@@ -115,7 +111,6 @@ public class UserDefinedTransform extends BaseCoordinateTransformTest {
                 GREENWICH2PARIS,
                 LambertConicConformal1SP.LAMBERT2E,
                 CoordinateRounding.MILLIMETER);
-        System.out.println(WGS84_LAMB2E.toString());
         double[] result = WGS84_LAMB2E.transform(pointSource);
         assertTrue(checkEquals("WGS84 degrees to Lambert 2 etendu", result, pointDest, 10E-3));
     }

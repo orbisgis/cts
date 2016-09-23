@@ -21,7 +21,6 @@
  *
  * For more information, please consult: <https://github.com/orbisgis/cts/>
  */
-
 package org.cts.op.transformation.grids;
 
 import java.io.DataInputStream;
@@ -262,7 +261,7 @@ public class BleggGeographicGrid extends GeographicGrid {
                 int[] blockClone = new int[groupSize];
                 System.arraycopy(block, 0, blockClone, 0, groupSize);
                 Arrays.sort(blockClone);
-                int maxAbs = (int) Math.max(Math.abs(blockClone[0]),
+                int maxAbs = Math.max(Math.abs(blockClone[0]),
                         Math.abs(blockClone[blockClone.length - 1]));
                 // Nombre de bits necessaires = log2(maxAbs)
                 // + 1 pour compenser l'arrondi
@@ -382,7 +381,7 @@ public class BleggGeographicGrid extends GeographicGrid {
          */
         public void setValue(int value, int n, int size) {
             int powerOf2 = 1;
-            int abs = (int) Math.abs(value);
+            int abs = Math.abs(value);
             for (int i = 0; i < (size - 1); i++) {
                 if ((abs & powerOf2) == powerOf2) {
                     bitSet.set(n * size + i);

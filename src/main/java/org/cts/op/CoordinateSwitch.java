@@ -21,7 +21,6 @@
  *
  * For more information, please consult: <https://github.com/orbisgis/cts/>
  */
-
 package org.cts.op;
 
 import org.cts.CoordinateDimensionException;
@@ -79,8 +78,22 @@ public class CoordinateSwitch extends AbstractCoordinateOperation {
      * @param pos2 position of the ordinate to switch to pos1
      */
     public CoordinateSwitch(int pos1, int pos2) {
-        super(new Identifier(CoordinateSwitch.class));
+        super(new Identifier(CoordinateOperation.class, "Coordinates switch"));
         this.pos1 = pos1;
         this.pos2 = pos2;
+    }
+
+    /**
+     * Returns true if o is equals to <code>this</code> operation.
+     *
+     * @param o The object to compare to
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        return o != null &&
+               o instanceof CoordinateSwitch &&
+               pos1 == ((CoordinateSwitch)o).pos1 &&
+               pos2 == ((CoordinateSwitch)o).pos2;
     }
 }
