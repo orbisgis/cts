@@ -38,7 +38,7 @@ CTS.  If not, see <http://www.gnu.org/licenses/>.
 <dependency>
     <groupId>org.orbisgis</groupId>
     <artifactId>cts</artifactId>
-    <version>1.4.0</version>
+    <version>1.X.X</version>
 </dependency>
 ```
 
