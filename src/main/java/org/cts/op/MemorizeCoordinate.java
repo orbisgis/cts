@@ -51,7 +51,6 @@ public class MemorizeCoordinate extends AbstractCoordinateOperation {
      */
     public MemorizeCoordinate(int... indexes) {
         super(new Identifier(CoordinateOperation.class, "Save coordinates at indexes " + Arrays.toString(indexes)));
-        for (int i : indexes) assert i < 3;
         this.indexesSaved = indexes;
     }
 

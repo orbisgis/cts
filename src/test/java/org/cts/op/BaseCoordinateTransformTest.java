@@ -96,9 +96,8 @@ public class BaseCoordinateTransformTest extends CTSTestCase {
                     }
                 }
             }
-            //return ops.get(0).transform(new double[]{inputPoint[0], inputPoint[1], inputPoint[2]});
             double[] input = new double[inputPoint.length];
-            for (int i = 0 ; i < inputPoint.length ; i++) input[i] = inputPoint[i];
+            System.arraycopy(inputPoint, 0, input, 0, inputPoint.length);
             return op.transform(input);
         } else {
             System.out.println("No transformation found from " + sourceCRS + " to " + targetCRS);

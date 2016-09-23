@@ -58,7 +58,6 @@ public class UnitConversion extends AbstractCoordinateOperation {
     private UnitConversion(Unit[] sourceUnits, Unit[] targetUnits) {
         super(new Identifier(CoordinateOperation.class,
                 sourceUnits[0].getName() + " to " + targetUnits[0].getName()));
-        assert sourceUnits.length == targetUnits.length : "sourceUnits[] and targetUnits[] must have the same size";
         this.sourceUnits = sourceUnits;
         this.targetUnits = targetUnits;
     }
@@ -71,7 +70,6 @@ public class UnitConversion extends AbstractCoordinateOperation {
      */
     private UnitConversion(Identifier identifier, Unit[] sourceUnits, Unit[] targetUnits) {
         super(identifier);
-        assert sourceUnits.length == targetUnits.length : "sourceUnit[] and targetUnit[] must have the same size";
         this.sourceUnits = sourceUnits;
         this.targetUnits = targetUnits;
         unitConverters.put(Arrays.toString(sourceUnits)+Arrays.toString(targetUnits),this);
@@ -132,9 +130,7 @@ public class UnitConversion extends AbstractCoordinateOperation {
      * or 3-D coordinates
      */
     public static UnitConversion createUnitConverter(Unit sourceUnit, Unit targetUnit) {
-        Identifier identifier;
-        assert sourceUnit.isComparable(targetUnit) : "source and target units must be comparable";
-
+        Identifier identifier;        
         if (sourceUnit.getQuantity().equals(Quantity.LENGTH)) {
             identifier = new Identifier(CoordinateOperation.class,
                     sourceUnit.getName() + " to " + targetUnit.getName());
@@ -178,8 +174,6 @@ public class UnitConversion extends AbstractCoordinateOperation {
     public static UnitConversion createUnitConverter(Unit planiSourceUnit,
             Unit planiTargetUnit, Unit altiSourceUnit, Unit altiTargetUnit) {
         Identifier identifier;
-        assert planiSourceUnit.isComparable(planiTargetUnit) : "source and target horizontal units must be comparable";
-        assert altiSourceUnit.isComparable(altiTargetUnit) : "source and target vertical units must be comparable";
         if (planiSourceUnit.getQuantity().equals(Quantity.LENGTH)) {
             identifier = new Identifier(CoordinateOperation.class,
                     planiSourceUnit.getName() + " to " + planiTargetUnit.getName());

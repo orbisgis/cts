@@ -53,7 +53,6 @@ public class CoordinateSystem {
      * axes.
      */
     public CoordinateSystem(Axis[] axes, Unit[] units) {
-        assert axes.length == units.length;
         this.axes = axes;
         this.units = units;
     }

@@ -74,7 +74,6 @@ public class ChangeCoordinateDimension extends AbstractCoordinateOperation {
      */
     @Override
     public double[] transform(double[] coord) throws IllegalCoordinateException {
-        assert coord.length == inputDim : Arrays.toString(coord) + " length is not " + inputDim;
         if (inputDim == outputDim) {
             return coord;
         }

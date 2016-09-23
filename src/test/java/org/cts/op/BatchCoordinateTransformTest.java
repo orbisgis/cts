@@ -25,7 +25,6 @@ package org.cts.op;
 
 import java.io.FileReader;
 import java.io.LineNumberReader;
-import java.util.Arrays;
 import org.cts.crs.CoordinateReferenceSystem;
 import org.cts.crs.GeodeticCRS;
 
