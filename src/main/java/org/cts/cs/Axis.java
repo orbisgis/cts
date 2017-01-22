@@ -248,6 +248,22 @@ public class Axis {
         return w.toString();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Axis axis = (Axis) o;
+
+        return direction == axis.direction;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return direction.hashCode();
+    }
+
     /**
      * Return a String representation of this Axis.
      */

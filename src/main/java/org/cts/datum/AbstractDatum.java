@@ -78,7 +78,6 @@ public abstract class AbstractDatum extends IdentifiableComponent
     /**
      * Returns the valid extent of this Datum.
      */
-    @Override
     public Extent getExtent() {
         return extent;
     }
@@ -86,7 +85,6 @@ public abstract class AbstractDatum extends IdentifiableComponent
     /**
      * Returns the description of this Datum origin.
      */
-    @Override
     public String getOrigin() {
         return origin;
     }
@@ -94,7 +92,6 @@ public abstract class AbstractDatum extends IdentifiableComponent
     /**
      * Returns the realization epoch of this Datum as a String.
      */
-    @Override
     public String getEpoch() {
         return epoch;
     }

@@ -144,7 +144,11 @@ public abstract class Projection extends AbstractCoordinateOperation {
         if (parameters == null) {
             this.parameters = Collections.<String, Measure>unmodifiableMap(new HashMap<String, Measure>());
         } else {
-            this.parameters = Collections.<String, Measure>unmodifiableMap(new HashMap(parameters));
+            HashMap<String,Measure> lowerCaseMap = new HashMap<String,Measure>(parameters.size());
+            for (Map.Entry<String,Measure> entry : parameters.entrySet()) {
+                lowerCaseMap.put(entry.getKey().toLowerCase(), entry.getValue());
+            }
+            this.parameters = Collections.unmodifiableMap(lowerCaseMap);
         }
     }
 

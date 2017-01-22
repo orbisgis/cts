@@ -74,7 +74,6 @@ public class IdentifiableComponent implements Identifiable {
      * Return the namespace of this identifier (ex. EPSG, IGNF) The namespace
      * may represent a database name, a URL, a URN...
      */
-    @Override
     public String getAuthorityName() {
         return identifier.getAuthorityName();
     }
@@ -82,7 +81,6 @@ public class IdentifiableComponent implements Identifiable {
     /**
      * Returns the id of this identifier (id must be unique inside a namespace).
      */
-    @Override
     public String getAuthorityKey() {
         return identifier.getAuthorityKey();
     }
@@ -93,7 +91,6 @@ public class IdentifiableComponent implements Identifiable {
      *
      * @return a String of the form namespace:identifier
      */
-    @Override
     public String getCode() {
         return identifier.getCode();
     }
@@ -101,7 +98,6 @@ public class IdentifiableComponent implements Identifiable {
     /**
      * Returns a string used to identify clearly the object.
      */
-    @Override
     public String getName() {
         return identifier.getName();
     }
@@ -110,7 +106,6 @@ public class IdentifiableComponent implements Identifiable {
      * Returns a short string used to identify unambiguously the object. The
      * string must have a maximum of 16 characters to fit menus with ease.
      */
-    @Override
     public String getShortName() {
         return identifier.getShortName();
     }
@@ -121,7 +116,6 @@ public class IdentifiableComponent implements Identifiable {
      *
      * @param uiName the new short name of the component
      */
-    @Override
     public void setShortName(String uiName) {
         identifier.setShortName(uiName);
     }
@@ -129,7 +123,6 @@ public class IdentifiableComponent implements Identifiable {
     /**
      * Returns the name of this extent.
      */
-    @Override
     public String getRemarks() {
         return identifier.getRemarks();
     }
@@ -139,7 +132,6 @@ public class IdentifiableComponent implements Identifiable {
      *
      * @param remarks the new remarks of the component
      */
-    @Override
     public void setRemarks(String remarks) {
         identifier.setRemarks(remarks);
     }
@@ -149,7 +141,6 @@ public class IdentifiableComponent implements Identifiable {
      *
      * @param new_remark the remark to add to the component
      */
-    @Override
     public void addRemark(String new_remark) {
         identifier.addRemark(new_remark);
     }
@@ -157,7 +148,6 @@ public class IdentifiableComponent implements Identifiable {
     /**
      * Get aliases
      */
-    @Override
     public List<Identifiable> getAliases() {
         return identifier.getAliases();
     }
@@ -167,7 +157,6 @@ public class IdentifiableComponent implements Identifiable {
      *
      * @param alias an alias for this object
      */
-    @Override
     public boolean addAlias(Identifiable alias) {
         return identifier.addAlias(alias);
     }
@@ -203,7 +192,9 @@ public class IdentifiableComponent implements Identifiable {
     public boolean equals(Object object) {
         if (object instanceof Identifiable) {
             Identifiable other = (Identifiable) object;
-            return ((getAuthorityName().equals(other.getAuthorityName())
+            return ((getAuthorityName() != null && other.getAuthorityName() != null
+                    && getAuthorityName().toUpperCase().equals(other.getAuthorityName().toUpperCase())
+                    && getAuthorityKey() != null && other.getAuthorityKey() != null
                     && getAuthorityKey().equals(other.getAuthorityKey()))
                     || getName().equals(other.getName()));
         } else {

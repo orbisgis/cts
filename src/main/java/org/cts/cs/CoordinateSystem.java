@@ -34,6 +34,8 @@ package org.cts.cs;
 import org.cts.CoordinateDimensionException;
 import org.cts.units.Unit;
 
+import java.util.Arrays;
+
 /**
  * A CoordinateSystem is a set of ordered {@link Axis} defining how coordinates
  * assigned to a point have to be interpreted.</p>
@@ -136,6 +138,25 @@ public class CoordinateSystem {
             sb.append("").append(axes[i]).append("=").append(coord[i]);
         }
         return sb.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CoordinateSystem that = (CoordinateSystem) o;
+
+        if (!Arrays.equals(axes, that.axes)) return false;
+        return Arrays.equals(units, that.units);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Arrays.hashCode(axes);
+        result = 31 * result + Arrays.hashCode(units);
+        return result;
     }
 
     /**

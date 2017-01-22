@@ -185,7 +185,6 @@ public class Identifier implements Identifiable {
      * Return the authority name of this identifier (ex. EPSG, IGN-F) The
      * namespace may represent a database name, a URL, a URN...
      */
-    @Override
     public String getAuthorityName() {
         return authorityName;
     }
@@ -194,7 +193,6 @@ public class Identifier implements Identifiable {
      * Returns the key of this identifier (id must be unique inside the
      * authority name).
      */
-    @Override
     public String getAuthorityKey() {
         return authorityKey;
     }
@@ -205,7 +203,6 @@ public class Identifier implements Identifiable {
      *
      * @return a String of the form namespace:identifier
      */
-    @Override
     public String getCode() {
         // return namespace+":"+id;
         //EX: 
@@ -217,7 +214,6 @@ public class Identifier implements Identifiable {
     /**
      * Returns a string used to identify clearly the object.
      */
-    @Override
     public String getName() {
         return name;
     }
@@ -227,7 +223,6 @@ public class Identifier implements Identifiable {
      * name should have less than 16 characters whenever possible, and should
      * never exceed 48 characters.
      */
-    @Override
     public String getShortName() {
         return shortName == null ? name : shortName;
     }
@@ -239,7 +234,6 @@ public class Identifier implements Identifiable {
      *
      * @param shortName the new short name for the Identifier
      */
-    @Override
     public void setShortName(String shortName) {
         this.shortName = shortName;
     }
@@ -247,7 +241,6 @@ public class Identifier implements Identifiable {
     /**
      * Returns remarks.
      */
-    @Override
     public String getRemarks() {
         return remarks;
     }
@@ -257,7 +250,6 @@ public class Identifier implements Identifiable {
      *
      * @param remarks the new remarks on this identifier
      */
-    @Override
     public void setRemarks(String remarks) {
         this.remarks = remarks;
     }
@@ -267,7 +259,6 @@ public class Identifier implements Identifiable {
      *
      * @param new_remark the remark to add to the Identifier's remarks
      */
-    @Override
     public void addRemark(String new_remark) {
         this.remarks = this.remarks + "\n" + new_remark;
     }
@@ -275,7 +266,6 @@ public class Identifier implements Identifiable {
     /**
      * Get aliases
      */
-    @Override
     public List<Identifiable> getAliases() {
         return aliases == null ? new ArrayList<Identifiable>() : aliases;
     }
@@ -285,7 +275,6 @@ public class Identifier implements Identifiable {
      *
      * @param alias an alias for this object
      */
-    @Override
     public boolean addAlias(Identifiable alias) {
         if (aliases == null) {
             aliases = new ArrayList<Identifiable>();
@@ -321,23 +310,47 @@ public class Identifier implements Identifiable {
         if (object instanceof Identifier) {
             Identifier other = (Identifier) object;
             // Test equality between this code and object's code
-            if (getCode().equals(other.getCode())) {
+            if (getAuthorityName() != null && other.getAuthorityName() != null &&
+                    getAuthorityName().toUpperCase().equals(other.getAuthorityName().toUpperCase())
+                    && getAuthorityKey() != null && other.getAuthorityKey() != null
+                    && getAuthorityKey().equals(other.getAuthorityKey())) {
                 return true;
             }
             // If not equal, test equality between this aliases and
             // the other object aliases
             boolean areEquals;
+            for (Identifiable id2 : other.getAliases()) {
+                areEquals =
+                        this.getAuthorityName() != null
+                                && id2.getAuthorityName() != null
+                                && this.getAuthorityName().toUpperCase().equals(id2.getAuthorityName().toUpperCase())
+                                && this.getAuthorityKey() != null
+                                && id2.getAuthorityKey() != null
+                                && this.getAuthorityKey().equals(id2.getAuthorityKey());
+                if (areEquals) {
+                    return true;
+                }
+            }
             for (Identifiable id1 : getAliases()) {
-                areEquals = id1.getCode().equals(other.getCode());
+                areEquals =
+                        id1.getAuthorityName() != null
+                        && other.getAuthorityName() != null
+                        && id1.getAuthorityName().toUpperCase().equals(other.getAuthorityName().toUpperCase())
+                        && id1.getAuthorityKey() != null
+                        && other.getAuthorityKey() != null
+                        && id1.getAuthorityKey().equals(other.getAuthorityKey());
                 if (areEquals) {
                     return true;
                 }
                 for (Identifiable id2 : other.getAliases()) {
-                    areEquals = id2.getCode().equals(this.getCode());
+                    areEquals =
+                            id1.getAuthorityName() != null
+                            && id2.getAuthorityName() != null
+                            && id1.getAuthorityName().toUpperCase().equals(id2.getAuthorityName().toUpperCase())
+                            && id1.getAuthorityKey() != null
+                            && id2.getAuthorityKey() != null
+                            && id1.getAuthorityKey().equals(id2.getAuthorityKey());
                     if (areEquals) {
-                        return true;
-                    }
-                    if (id1.getCode().equals(id2.getCode())) {
                         return true;
                     }
                 }
@@ -354,6 +367,7 @@ public class Identifier implements Identifiable {
     @Override
     public int hashCode() {
         int hash = 7;
+        hash = 11 * hash + (this.authorityName.toUpperCase() != null ? this.authorityName.toUpperCase().hashCode() : 0);
         hash = 11 * hash + (this.authorityKey != null ? this.authorityKey.hashCode() : 0);
         hash = 11 * hash + (this.aliases != null ? this.aliases.hashCode() : 0);
         return hash;

@@ -131,7 +131,6 @@ public class GeographicExtent implements Extent {
     /**
      * Return the name of this geographic area.
      */
-    @Override
     public String getName() {
         return name;
     }
@@ -197,7 +196,6 @@ public class GeographicExtent implements Extent {
      *
      * @param coord the coordinates to test
      */
-    @Override
     public boolean isInside(double[] coord) {
         return isInside(coord[0], coord[1]);
     }

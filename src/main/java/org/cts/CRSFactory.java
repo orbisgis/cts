@@ -90,7 +90,7 @@ public class CRSFactory {
      * @throws CRSException
      */
     public CoordinateReferenceSystem getCRS(String authorityAndSrid) throws CRSException {
-        CoordinateReferenceSystem crs = CRSPOOL.get(authorityAndSrid);
+        CoordinateReferenceSystem crs = CRSPOOL.get(authorityAndSrid.toUpperCase());
         if (crs == null) {
             try {
                 String[] registryNameWithCode = splitRegistryNameAndCode(authorityAndSrid);
@@ -100,7 +100,7 @@ public class CRSFactory {
                     Registry registry = getRegistryManager().getRegistry(authority);
                     crs = registry.getCoordinateReferenceSystem(new Identifier(authority, code, ""));
                     if (crs != null) {
-                        CRSPOOL.put(authorityAndSrid, crs);
+                        CRSPOOL.put(authorityAndSrid.toUpperCase(), crs);
                     }
                 }
             } catch (RegistryException ex) {

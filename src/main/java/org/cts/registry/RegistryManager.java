@@ -39,6 +39,7 @@ import org.slf4j.LoggerFactory;
 /**
  * This class manages all supported registry. It permits to declare a custom
  * registry or remove one.
+ * Registries are stored in a case-insensitive map (keys are uppercase)
  *
  * @author Erwan Bocher
  */
@@ -90,23 +91,23 @@ public final class RegistryManager {
      */
     public void addRegistry(Registry registry, boolean replace) {
         LOGGER.trace("Adding a new registry " + registry.getRegistryName());
-        String registryName = registry.getRegistryName().toLowerCase();
+        String registryName = registry.getRegistryName().toUpperCase();
         if (!replace && registries.containsKey(registryName)) {
             throw new IllegalArgumentException("Registry " + registryName
                     + " already exists");
         }
         registries.put(registryName, registry);
-        fireRegistryAdded(registryName);
+        fireRegistryAdded(registry.getRegistryName());
     }
 
     /**
      * Informs listeners that a registry has been added.
      *
-     * @param functionName
+     * @param registryName name of the registry
      */
-    private void fireRegistryAdded(String functionName) {
+    private void fireRegistryAdded(String registryName) {
         for (RegistryManagerListener listener : listeners) {
-            listener.registryAdded(functionName);
+            listener.registryAdded(registryName);
         }
     }
 
@@ -118,18 +119,21 @@ public final class RegistryManager {
      * @return true if name is already registered
      */
     public boolean contains(String name) {
-        return registries.containsKey(name);
+        return registries.containsKey(name.toUpperCase());
     }
 
     /**
      * Gets all registered registry names
-     *
+     * The returned array contains a case-sensitive version of registry names.
      * @return an array of names
      */
     public String[] getRegistryNames() {
-        LOGGER.trace("Getting all function names");
-        Set<String> k = registries.keySet();
-        return k.toArray(new String[k.size()]);
+        LOGGER.trace("Getting all registry names");
+        List<String> names = new ArrayList<String>();
+        for (Registry r : registries.values()) {
+            names.add(r.getRegistryName());
+        }
+        return names.toArray(new String[names.size()]);
     }
 
     /**
@@ -138,6 +142,6 @@ public final class RegistryManager {
      */
     public Registry getRegistry(String registryName) {
         LOGGER.trace("Getting the registry " + registryName);
-        return registries.get(registryName.toLowerCase());
+        return registries.get(registryName.toUpperCase());
     }
 }
