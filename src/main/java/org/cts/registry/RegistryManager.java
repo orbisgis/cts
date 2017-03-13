@@ -50,6 +50,7 @@ public final class RegistryManager {
 
     /**
      * Adds a listener able to process add/remove registry events.
+     * @param listener
      */
     public void addRegistryManagerListener(RegistryManagerListener listener) {
         listeners.add(listener);
@@ -58,6 +59,7 @@ public final class RegistryManager {
     /**
      * Removes the listener if it is present in the listener list.
      *
+     * @param listener
      * @return true if the listener was successfully removed. False if the
      * specified parameter was not a listener
      */
@@ -67,6 +69,7 @@ public final class RegistryManager {
 
     /**
      * Register a {@link Registry} in this {@code RegistryManager}.
+     * @param registryClass
      */
     public void addRegistry(Registry registryClass) {
         addRegistry(registryClass, false);
@@ -75,30 +78,31 @@ public final class RegistryManager {
     /**
      * Register a {@link Registry} in this {@code RegistryManager}.
      * An existing registry can be replaced by a new one.
-     *
+     * Registries are stored in a case-insensitive map (keys are uppercase)
+     * 
      * @param registry the Registry to add
      * @param replace whether an existing Registry with the same name should be
      *                replaced  or not.
      */
     public void addRegistry(Registry registry, boolean replace) {
         LOGGER.trace("Adding a new registry " + registry.getRegistryName());
-        String registryName = registry.getRegistryName().toLowerCase();
+        String registryName = registry.getRegistryName().toUpperCase();
         if (!replace && registries.containsKey(registryName)) {
             throw new IllegalArgumentException("Registry " + registryName
                     + " already exists");
         }
         registries.put(registryName, registry);
-        fireRegistryAdded(registryName);
+        fireRegistryAdded(registry.getRegistryName());
     }
 
     /**
      * Informs listeners that a registry has been added.
      *
-     * @param functionName
+     * @param registryName name of the registry
      */
-    private void fireRegistryAdded(String functionName) {
+    private void fireRegistryAdded(String registryName) {
         for (RegistryManagerListener listener : listeners) {
-            listener.registryAdded(functionName);
+            listener.registryAdded(registryName);
         }
     }
 
@@ -110,27 +114,32 @@ public final class RegistryManager {
      * @return true if name is already registered
      */
     public boolean contains(String name) {
-        return registries.containsKey(name);
+        return registries.containsKey(name.toUpperCase());
     }
 
     /**
      * Gets all registered registry names
+     * The returned array contains a case-sensitive version of registry names.
      *
      * @return an array of names
      */
     public String[] getRegistryNames() {
-        LOGGER.trace("Getting all function names");
-        Set<String> k = registries.keySet();
-        return k.toArray(new String[k.size()]);
+        LOGGER.trace("Getting all registry names");
+        List<String> names = new ArrayList<String>();
+        for (Registry r : registries.values()) {
+            names.add(r.getRegistryName());
+        }
+        return names.toArray(new String[names.size()]);
     }
 
     /**
      * Gets the {@link Registry} registered with this name or
      * null if no Registry has been registered with this name.
      * @param registryName
+     * @return 
      */
     public Registry getRegistry(String registryName) {
         LOGGER.trace("Getting the registry " + registryName);
-        return registries.get(registryName.toLowerCase());
+        return registries.get(registryName.toUpperCase());
     }
 }

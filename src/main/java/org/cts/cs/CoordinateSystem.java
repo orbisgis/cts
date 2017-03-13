@@ -23,6 +23,7 @@
  */
 package org.cts.cs;
 
+import java.util.Arrays;
 import org.cts.CoordinateDimensionException;
 import org.cts.units.Unit;
 
@@ -61,6 +62,7 @@ public class CoordinateSystem {
      * Return the {@link Axis} with index i of this CoordinateSystem.
      *
      * @param i index of the {@link Axis} to return
+     * @return 
      */
     public Axis getAxis(int i) throws ArrayIndexOutOfBoundsException {
         try {
@@ -75,6 +77,7 @@ public class CoordinateSystem {
      * Return the {@link Unit} for Axis with index i of this CoordinateSystem.
      *
      * @param i index of the {@link Axis} for which Unit is returned
+     * @return 
      */
     public Unit getUnit(int i) throws ArrayIndexOutOfBoundsException {
         try {
@@ -88,6 +91,7 @@ public class CoordinateSystem {
 
     /**
      * Return the axes number of this CoordinateSystem.
+     * @return 
      */
     public int getDimension() {
         return axes.length;
@@ -99,6 +103,7 @@ public class CoordinateSystem {
      * the axis in argument, the minimum index of these axes is returned.
      *
      * @param axis the axis whose index is looked for
+     * @return 
      */
     public int getIndex(Axis axis) {
         for (int i = 0; i < axes.length; i++) {
@@ -114,6 +119,8 @@ public class CoordinateSystem {
      * <code>CoordinateSystem</code>.
      *
      * @param coord the coordinate to format
+     * @return 
+     * @throws org.cts.CoordinateDimensionException
      */
     public String format(double[] coord) throws CoordinateDimensionException {
         if (coord.length < axes.length) {
@@ -131,6 +138,7 @@ public class CoordinateSystem {
 
     /**
      * Return a String representation of this CoordinateSystem.
+     * @return 
      */
     @Override
     public String toString() {
@@ -139,5 +147,30 @@ public class CoordinateSystem {
             sb.append(i > 0 ? "|" : "").append(axes[i].toString()).append(" (").append(units[i].getSymbol()).append(")");
         }
         return sb.toString();
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        CoordinateSystem that = (CoordinateSystem) o;
+
+        if (!Arrays.equals(axes, that.axes)) {
+            return false;
+        }
+        return Arrays.equals(units, that.units);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Arrays.hashCode(axes);
+        result = 31 * result + Arrays.hashCode(units);
+        return result;
     }
 }

@@ -48,6 +48,7 @@ public class IdentifiableComponent implements Identifiable {
 
     /**
      * Return this component's Identifier
+     * @return 
      */
     public Identifier getIdentifier() {
         return identifier;
@@ -65,6 +66,7 @@ public class IdentifiableComponent implements Identifiable {
     /**
      * Return the namespace of this identifier (ex. EPSG, IGNF) The namespace
      * may represent a database name, a URL, a URN...
+     * @return 
      */
     @Override
     public String getAuthorityName() {
@@ -73,6 +75,7 @@ public class IdentifiableComponent implements Identifiable {
 
     /**
      * Returns the id of this identifier (id must be unique inside a namespace).
+     * @return 
      */
     @Override
     public String getAuthorityKey() {
@@ -92,6 +95,7 @@ public class IdentifiableComponent implements Identifiable {
 
     /**
      * Returns a string used to identify clearly the object.
+     * @return 
      */
     @Override
     public String getName() {
@@ -101,6 +105,7 @@ public class IdentifiableComponent implements Identifiable {
     /**
      * Returns a short string used to identify unambiguously the object. The
      * string must have a maximum of 16 characters to fit menus with ease.
+     * @return 
      */
     @Override
     public String getShortName() {
@@ -120,6 +125,7 @@ public class IdentifiableComponent implements Identifiable {
 
     /**
      * Returns the name of this extent.
+     * @return 
      */
     @Override
     public String getRemarks() {
@@ -148,6 +154,7 @@ public class IdentifiableComponent implements Identifiable {
 
     /**
      * Get aliases
+     * @return 
      */
     @Override
     public List<Identifiable> getAliases() {
@@ -158,6 +165,7 @@ public class IdentifiableComponent implements Identifiable {
      * Add an alias
      *
      * @param alias an alias for this object
+     * @return 
      */
     @Override
     public boolean addAlias(Identifiable alias) {
@@ -190,12 +198,15 @@ public class IdentifiableComponent implements Identifiable {
      * Returns true if object is an Identifier equals to this one.
      *
      * @param object The object to compare this IdentifiableComponent against
+     * @return 
      */
     @Override
     public boolean equals(Object object) {
         if (object instanceof Identifiable) {
             Identifiable other = (Identifiable) object;
-            return ((getAuthorityName().equals(other.getAuthorityName())
+            return ((getAuthorityName() != null && other.getAuthorityName() != null
+                   && getAuthorityName().toUpperCase().equals(other.getAuthorityName().toUpperCase())
+                    && getAuthorityKey() != null && other.getAuthorityKey() != null
                     && getAuthorityKey().equals(other.getAuthorityKey()))
                     || getName().equals(other.getName()));
         } else {
@@ -205,6 +216,7 @@ public class IdentifiableComponent implements Identifiable {
 
     /**
      * Returns a hash code for this IdentifiableComponent.
+     * @return 
      */
     @Override
     public int hashCode() {
@@ -215,6 +227,7 @@ public class IdentifiableComponent implements Identifiable {
 
     /**
      * Returns a String representation of this identifier.
+     * @return 
      */
     @Override
     public String toString() {

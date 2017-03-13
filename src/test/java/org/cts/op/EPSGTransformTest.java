@@ -63,4 +63,19 @@ public class EPSGTransformTest extends BaseCoordinateTransformTest {
         double[] result = transform((GeodeticCRS) inputCRS, (GeodeticCRS) outputCRS, pointSource);
         assertTrue(checkEquals2D("EPSG:27582 to EPSG:4326", result, pointDest, tolerance));
     }
+    
+    
+     @Test
+    public void testFrenchEPSGCodeFrom27572To3857() throws Exception {
+        String csNameSrc = "EPSG:27572"; //Input EPSG
+        double[] pointSource = new double[]{282331, 2273699.7};
+        String csNameDest = "EPSG:3857";  //Target EPSG 
+        double[] pointDest = new double[]{-208496.53743537163, 6005369.877027287};
+        double tolerance = 0.0001;
+        CoordinateReferenceSystem inputCRS = cRSFactory.getCRS(csNameSrc);
+        CoordinateReferenceSystem outputCRS = cRSFactory.getCRS(csNameDest);
+        verbose = true;
+        double[] result = transform((GeodeticCRS) inputCRS, (GeodeticCRS) outputCRS, pointSource);
+        assertTrue(checkEquals2D("EPSG:27572 to EPSG:3857", result, pointDest, tolerance));
+    }
 }

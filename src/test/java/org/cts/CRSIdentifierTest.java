@@ -44,12 +44,11 @@ public class CRSIdentifierTest extends CTSTestCase {
         assertTrue(cRSFactory.getCRS("EPSG:4326").getAuthorityKey().equals("4326"));
     }
 
-    //Disable this test because the javadoc is not coherent
     @Test
     public void testEPSG4326Code() throws Exception {
         assertTrue(cRSFactory.getCRS("EPSG:4326").getCode().equals("EPSG:4326"));
     }
-
+    
     @Test
     public void testEPSG4326Name() throws Exception {
         assertTrue(cRSFactory.getCRS("EPSG:4326").getName().equals("WGS 84"));
