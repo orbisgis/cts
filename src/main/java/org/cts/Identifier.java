@@ -50,6 +50,7 @@ public class Identifier implements Identifiable {
     /**
      * Return an identifier which is unique for this program session. This
      * identifier is usually associated with the LOCAL namespace
+     * @return 
      */
     public static int getNewId() {
         return localId++;
@@ -176,6 +177,7 @@ public class Identifier implements Identifiable {
     /**
      * Return the authority name of this identifier (ex. EPSG, IGN-F) The
      * namespace may represent a database name, a URL, a URN...
+     * @return 
      */
     @Override
     public String getAuthorityName() {
@@ -185,6 +187,7 @@ public class Identifier implements Identifiable {
     /**
      * Returns the key of this identifier (id must be unique inside the
      * authority name).
+     * @return 
      */
     @Override
     public String getAuthorityKey() {
@@ -199,15 +202,12 @@ public class Identifier implements Identifiable {
      */
     @Override
     public String getCode() {
-        // return namespace+":"+id;
-        //EX: 
-        //-EPSG : LAMBE
-        //-IGNF : 27572
         return authorityName + ":" + authorityKey;
     }
 
     /**
      * Returns a string used to identify clearly the object.
+     * @return 
      */
     @Override
     public String getName() {
@@ -218,6 +218,7 @@ public class Identifier implements Identifiable {
      * Returns a short string used to identify unambiguously the object. A short
      * name should have less than 16 characters whenever possible, and should
      * never exceed 48 characters.
+     * @return 
      */
     @Override
     public String getShortName() {
@@ -238,6 +239,7 @@ public class Identifier implements Identifiable {
 
     /**
      * Returns remarks.
+     * @return 
      */
     @Override
     public String getRemarks() {
@@ -266,6 +268,7 @@ public class Identifier implements Identifiable {
 
     /**
      * Get aliases
+     * @return 
      */
     @Override
     public List<Identifiable> getAliases() {
@@ -276,6 +279,7 @@ public class Identifier implements Identifiable {
      * Add an alias
      *
      * @param alias an alias for this object
+     * @return 
      */
     @Override
     public boolean addAlias(Identifiable alias) {
@@ -288,6 +292,7 @@ public class Identifier implements Identifiable {
     /**
      * Returns a WKT representation of the identifier.
      *
+     * @return 
      */
     public String toWKT() {
         StringBuilder w = new StringBuilder();
@@ -304,6 +309,7 @@ public class Identifier implements Identifiable {
      * (namespace + id), then between aliases.
      *
      * @param object The object to compare this Identifier against
+     * @return 
      */
     @Override
     public boolean equals(Object object) {
@@ -313,23 +319,47 @@ public class Identifier implements Identifiable {
         if (object instanceof Identifier) {
             Identifier other = (Identifier) object;
             // Test equality between this code and object's code
-            if (getCode().equals(other.getCode())) {
+            if (getAuthorityName() != null && other.getAuthorityName() != null
+                    && getAuthorityName().toUpperCase().equals(other.getAuthorityName().toUpperCase())
+                    && getAuthorityKey() != null && other.getAuthorityKey() != null
+                    && getAuthorityKey().equals(other.getAuthorityKey())) {
                 return true;
             }
             // If not equal, test equality between this aliases and
             // the other object aliases
             boolean areEquals;
+            for (Identifiable id2 : other.getAliases()) {
+                areEquals
+                        = this.getAuthorityName() != null
+                        && id2.getAuthorityName() != null
+                        && this.getAuthorityName().toUpperCase().equals(id2.getAuthorityName().toUpperCase())
+                        && this.getAuthorityKey() != null
+                        && id2.getAuthorityKey() != null
+                        && this.getAuthorityKey().equals(id2.getAuthorityKey());
+                if (areEquals) {
+                    return true;
+                }
+            }
             for (Identifiable id1 : getAliases()) {
-                areEquals = id1.getCode().equals(other.getCode());
+                areEquals
+                        = id1.getAuthorityName() != null
+                        && other.getAuthorityName() != null
+                        && id1.getAuthorityName().toUpperCase().equals(other.getAuthorityName().toUpperCase())
+                        && id1.getAuthorityKey() != null
+                        && other.getAuthorityKey() != null
+                        && id1.getAuthorityKey().equals(other.getAuthorityKey());
                 if (areEquals) {
                     return true;
                 }
                 for (Identifiable id2 : other.getAliases()) {
-                    areEquals = id2.getCode().equals(this.getCode());
+                    areEquals
+                            = id1.getAuthorityName() != null
+                            && id2.getAuthorityName() != null
+                            && id1.getAuthorityName().toUpperCase().equals(id2.getAuthorityName().toUpperCase())
+                            && id1.getAuthorityKey() != null
+                            && id2.getAuthorityKey() != null
+                            && id1.getAuthorityKey().equals(id2.getAuthorityKey());
                     if (areEquals) {
-                        return true;
-                    }
-                    if (id1.getCode().equals(id2.getCode())) {
                         return true;
                     }
                 }
@@ -342,10 +372,12 @@ public class Identifier implements Identifiable {
 
     /**
      * Returns the hash code for this Identifier.
+     * @return 
      */
     @Override
     public int hashCode() {
         int hash = 7;
+        hash = 11 * hash + (this.authorityName.toUpperCase() != null ? this.authorityName.toUpperCase().hashCode() : 0);
         hash = 11 * hash + (this.authorityKey != null ? this.authorityKey.hashCode() : 0);
         hash = 11 * hash + (this.aliases != null ? this.aliases.hashCode() : 0);
         return hash;
@@ -353,6 +385,7 @@ public class Identifier implements Identifiable {
 
     /**
      * Returns a String representation of this identifier.
+     * @return 
      */
     @Override
     public String toString() {

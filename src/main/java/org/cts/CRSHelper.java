@@ -103,10 +103,10 @@ public class CRSHelper {
         }
 
         //It's not a projected CRS
-        if (sproj.equals(ProjValueParameters.GEOCENT)) {
+        if (sproj.equalsIgnoreCase(ProjValueParameters.GEOCENT)) {
             CoordinateSystem cs = getCoordinateSystem(parameters, 2);
             crs = new GeocentricCRS(identifier, geodeticDatum, cs);
-        } else if (sproj.equals(ProjValueParameters.LONGLAT)) {
+        } else if (sproj.equalsIgnoreCase(ProjValueParameters.LONGLAT)) {
             CoordinateSystem cs = getCoordinateSystem(parameters, 3);
             if (cs.getDimension() == 2) {
                 crs = new Geographic2DCRS(identifier, geodeticDatum, cs);
@@ -456,7 +456,7 @@ public class CRSHelper {
         // Short circuit identifying NTF datum when the ntf_r93.gsb nadgrids is used
         // Getting a pre-built datum is always better than creating a new one
         if (param.get(ProjKeyParameters.nadgrids) != null &&
-                param.get(ProjKeyParameters.nadgrids).contains("ntf_r93.gsb")) {
+                param.get(ProjKeyParameters.nadgrids).toLowerCase().contains("ntf_r93.gsb")) {
             if (PrimeMeridian.PARIS.equals(getPrimeMeridian(param))) {
                 gd = GeodeticDatum.NTF_PARIS;
             } else if (PrimeMeridian.GREENWICH.equals(getPrimeMeridian(param))) {
@@ -528,13 +528,13 @@ public class CRSHelper {
         if (nadgrids != null) {
             String[] grids = nadgrids.split(",");
             for (String grid : grids) {
-                if (!grid.equals("null")) {
+                if (!grid.equalsIgnoreCase("null")) {
                     LOGGER.warn("A grid has been found.");
-                    if (grid.equals("@null")) {
+                    if (grid.equalsIgnoreCase("@null")) {
                         crs.getDatum().addGeocentricTransformation(GeodeticDatum.WGS84, Identity.IDENTITY);
                     } else {
                         try {
-                            if (grid.equals("ntf_r93.gsb")) {
+                            if (grid.equalsIgnoreCase("ntf_r93.gsb")) {
                                 // If this CRS uses the ntf_r93.gsb, we know it is based on NTF, and we can
                                 // use FrenchGeocentricNTF2RGF to transform coordinates to WGS or RGF93
                                 FrenchGeocentricNTF2RGF ntf2rgf = FrenchGeocentricNTF2RGF.getInstance();

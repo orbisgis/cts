@@ -65,6 +65,7 @@ public class ProjParser {
      * extracted from the registry
      * @param regexPattern the pattern used to split the line that describes the
      * coordinate system
+     * @return 
      * @throws IOException
      */
     public Map<String, String> readParameters(String crsCode, Pattern regexPattern)
@@ -168,13 +169,15 @@ public class ProjParser {
         if (key.startsWith("+")) {
             formatKey = key.substring(1);
         }
-        return formatKey;
+        return formatKey.toLowerCase();
     }
 
     /**
      * Return the list of all codes defined by this registry
      *
      * @param regex pattern
+     * @return 
+     * @throws java.io.IOException
      */
     public Set<String> getSupportedCodes(Pattern regex) throws IOException {
         InputStream inStr = Registry.class.getResourceAsStream(registry.getRegistryName());
