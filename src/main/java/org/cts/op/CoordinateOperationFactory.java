@@ -60,6 +60,8 @@ public final class CoordinateOperationFactory {
      *
      * @param source the (non null) source geodetic coordinate reference system
      * @param target the (non null) target geodetic coordinate reference system
+     * @return 
+     * @throws org.cts.op.CoordinateOperationException 
      */
     public static Set<CoordinateOperation> createCoordinateOperations(
             GeodeticCRS source, GeodeticCRS target) throws CoordinateOperationException {
@@ -260,6 +262,9 @@ public final class CoordinateOperationFactory {
 
     /**
      * Returns {@link org.cts.op.CoordinateOperation}s excluding sequence containing a particular operation type.
+     * @param ops
+     * @param clazz
+     * @return 
      */
     public static Set<CoordinateOperation> excludeFilter(Collection<? extends CoordinateOperation> ops, Class clazz) {
         Set<CoordinateOperation> list = new HashSet<CoordinateOperation>();
@@ -281,6 +286,8 @@ public final class CoordinateOperationFactory {
 
     /**
      * Returns the most precise among the list of {@link org.cts.op.CoordinateOperation}s.
+     * @param ops
+     * @return 
      */
     public static CoordinateOperation getMostPrecise(Collection<? extends CoordinateOperation> ops) {
         CoordinateOperation preciseOp = null;
@@ -296,6 +303,8 @@ public final class CoordinateOperationFactory {
 
     /**
      * Returns the most precise among the list of {@link org.cts.op.CoordinateOperation}s.
+     * @param ops
+     * @return 
      */
     public static CoordinateOperation getMostPrecise3DTransformation(Collection<? extends CoordinateOperation> ops) {
         CoordinateOperation preciseOp = null;
