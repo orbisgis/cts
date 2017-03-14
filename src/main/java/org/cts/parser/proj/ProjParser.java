@@ -169,7 +169,7 @@ public class ProjParser {
         if (key.startsWith("+")) {
             formatKey = key.substring(1);
         }
-        return formatKey.toLowerCase();
+        return formatKey;
     }
 
     /**

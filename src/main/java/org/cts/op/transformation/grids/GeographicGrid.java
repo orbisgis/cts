@@ -83,6 +83,7 @@ public class GeographicGrid implements Grid {
      * @param dim dimension of the stored value(s)
      * @param modulo a tour (360.0 for longitude in degrees, PI*2 for radians
      * and 400 for grades)
+     * @param scale
      * @param context optional context object
      */
     public GeographicGrid(double westernLongitude, double northernLatitude,
@@ -139,6 +140,7 @@ public class GeographicGrid implements Grid {
 
     /**
      * Get the first ordinate of the last grid column.
+     * @return 
      */
     @Override
     public double getXL() {
@@ -147,6 +149,7 @@ public class GeographicGrid implements Grid {
 
     /**
      * Get the second ordinate of the last grid row.
+     * @return 
      */
     @Override
     public double getYL() {
@@ -173,6 +176,7 @@ public class GeographicGrid implements Grid {
 
     /**
      * Get the total grid width as a positive number.
+     * @return 
      */
     public double getGridWidth() {
         return Math.abs(xL - x0);
@@ -180,6 +184,7 @@ public class GeographicGrid implements Grid {
 
     /**
      * Get the total grid height as a positive number.
+     * @return 
      */
     public double getGridHeight() {
         return Math.abs(yL - y0);
@@ -188,6 +193,7 @@ public class GeographicGrid implements Grid {
     /**
      * Get the scale which determine the number of decimal to read/write or to
      * 'scale' factor to use to obtain an integer parameter.
+     * @return 
      */
     public int getScale() {
         return scale;
@@ -196,6 +202,7 @@ public class GeographicGrid implements Grid {
     /**
      * Set the scale which determine the number of decimal to read/write or the
      * 'scale' factor to use to obtain an integer parameter.
+     * @param scale
      */
     public void setScale(int scale) {
         this.scale = scale;
@@ -203,6 +210,7 @@ public class GeographicGrid implements Grid {
 
     /**
      * Get the context Object.
+     * @return 
      */
     public Object getContext() {
         return context;
@@ -213,6 +221,7 @@ public class GeographicGrid implements Grid {
      *
      * @param r row index
      * @param c column index
+     * @return 
      */
     public double[] getValues(int r, int c) {
         return values[r][c];
@@ -247,6 +256,7 @@ public class GeographicGrid implements Grid {
 
     /**
      * Return the array of values.
+     * @return 
      */
     public double[][][] getValues() {
         return values;
@@ -269,11 +279,8 @@ public class GeographicGrid implements Grid {
      * @param latitude the latitude
      * @param longitude the longitude
      * @return the interpolated value as a double
+     * @throws org.cts.cs.OutOfExtentException
      */
-    // Bug corrigé le 15/11/03 : les indices de grille i+1 ou j+1 provoquent des
-    // IndexOutOfBoundsException --> remplacé par
-    // i\<nbL-1?i+1:i<br>
-    // j\<nbC-1?j+1:j
     public double[] bilinearInterpolation(double latitude, double longitude)
             throws OutOfExtentException {
         if (!extent.isInside(latitude, longitude)) {
@@ -307,6 +314,7 @@ public class GeographicGrid implements Grid {
 
     /**
      * Return a short string representation of the grid.
+     * @return 
      */
     @Override
     public String toString() {
@@ -316,6 +324,7 @@ public class GeographicGrid implements Grid {
 
     /**
      * Return a complete string representation of the grid.
+     * @return 
      */
     public String toStringAll() {
         StringBuilder sb = new StringBuilder("Geographic grid (westLon=" + x0 + " northLat=" + y0

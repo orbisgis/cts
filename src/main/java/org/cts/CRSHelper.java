@@ -123,7 +123,9 @@ public class CRSHelper {
                 // In the case of EPSG:3857 (pseudo-mercator), the proj4 description
                 // gives the a and b parameters of the ellipsoid to be used for the projection
                 // but does not give the datum/ellipsoid to be used (WGS 84)
-                if (identifier.getCode().equals("EPSG:3857")) crs = new ProjectedCRS(identifier, GeodeticDatum.WGS84, cs, proj);
+                if (identifier.getCode().equalsIgnoreCase("EPSG:3857")) {
+                    crs = new ProjectedCRS(identifier, GeodeticDatum.WGS84, cs, proj);
+                }
             } else {
                 throw new CRSException("Unknown projection : " + sproj);
             }
