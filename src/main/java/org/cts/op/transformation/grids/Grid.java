@@ -75,21 +75,25 @@ public interface Grid {
 
     /**
      * Get the number of columns of this grid.
+     * @return 
      */
     public int getColumnNumber();
 
     /**
      * Get the number of rows of this grid.
+     * @return 
      */
     public int getRowNumber();
 
     /**
      * Get the real world abscisse (x) of the first column.
+     * @return 
      */
     public double getX0();
 
     /**
      * Get the real world ordinate (y) of the first row.
+     * @return 
      */
     public double getY0();
 
@@ -106,18 +110,26 @@ public interface Grid {
     /**
      * Real world interval between two consecutive columns. The method returns a
      * negative value if x values decreases when column indices increases.
+     * @return 
      */
     public double getDX();
 
     /**
      * Real world interval between two consecutive row. The method returns a
      * negative value if y values decreases when column indices increases.
+     * @return 
      */
     public double getDY();
 
     /**
      * Get the value corrsponding to the x,y position. WARNING : x, y represent
      * the real world coordinates and not the matrix coordinate.
+     * @param x
+     * @param y
+     * @param method
+     * @return 
+     * @throws org.cts.cs.OutOfExtentException 
+     * @throws org.cts.op.transformation.grids.InterpolationMethodException 
      */
     public double[] getValue(double x, double y, InterpolationMethod method)
             throws OutOfExtentException, InterpolationMethodException;

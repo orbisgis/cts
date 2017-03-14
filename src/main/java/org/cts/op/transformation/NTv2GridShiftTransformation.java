@@ -39,7 +39,6 @@ import org.cts.op.NonInvertibleOperationException;
 import org.cts.op.transformation.grid.GridShift;
 import org.cts.op.transformation.grid.GridShiftFile;
 import org.cts.op.transformation.grids.GridUtils;
-import org.cts.op.transformation.grids.IGNVerticalGrid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -199,6 +198,7 @@ public class NTv2GridShiftTransformation extends AbstractCoordinateOperation imp
 
     /**
      * Load the grid file that will be used to transform the coordinates.
+     * @throws java.io.IOException
      */
     public void loadGridShiftFile() throws IOException {
         if (grid_file != null) {
@@ -233,7 +233,6 @@ public class NTv2GridShiftTransformation extends AbstractCoordinateOperation imp
                             gsf.loadGridShiftFile(is, false);
                         }
                     } catch (IOException e) {
-                        e.printStackTrace();
                         LOGGER.error("This grid doesn't exist or cannot be read.", e);
                     }
                 } else {
@@ -250,6 +249,7 @@ public class NTv2GridShiftTransformation extends AbstractCoordinateOperation imp
     /**
      * Return whether the grid shift file used by this transformation is loaded
      * or not.
+     * @return 
      */
     public boolean isLoaded() {
         return gsf.isLoaded();
@@ -289,6 +289,7 @@ public class NTv2GridShiftTransformation extends AbstractCoordinateOperation imp
 
     /**
      * Returns this Geocentric translation as a String.
+     * @return 
      */
     @Override
     public String toString() {
@@ -298,6 +299,7 @@ public class NTv2GridShiftTransformation extends AbstractCoordinateOperation imp
     /**
      * Return the short name of the datum from which the nadgrids transformation
      * must be used.
+     * @return 
      */
     public String getFromDatum() {
         return gsf.getFromEllipsoid().trim().toLowerCase();
@@ -306,6 +308,7 @@ public class NTv2GridShiftTransformation extends AbstractCoordinateOperation imp
     /**
      * Return the short name of the datum toward which the nadgrids
      * transformation must be used.
+     * @return 
      */
     public String getToDatum() {
         return gsf.getToEllipsoid().trim().toLowerCase();

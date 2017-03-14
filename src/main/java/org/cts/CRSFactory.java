@@ -106,7 +106,7 @@ public class CRSFactory {
      * Return the registry name and the code in a string array.
      *
      * @param authorityAndSrid a string following the pattern "name:code"
-     * @return an array of two strings (ex. {"epsg", "4326"})
+     * @return an array of two strings (ex. {"EPSG", "4326"})
      * @throws RegistryException
      */
     public String[] splitRegistryNameAndCode(String authorityAndSrid) throws RegistryException {
