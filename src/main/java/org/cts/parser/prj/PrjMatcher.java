@@ -374,7 +374,6 @@ public final class PrjMatcher {
      * set of parameters.
      *
      * @param ll the children of the COMPD_CS node
-     * @param rootElement true if COMPD_CS is the root element given in match
      */
     private void parseCompdcs(List<PrjElement> ll) {
         parseString(ll.get(0), PrjKeyParameters.NAME);
@@ -799,7 +798,10 @@ public final class PrjMatcher {
      */
     private void parseDatum(List<PrjElement> ll) {
         String datum = getString(ll.get(0));
-        String datm = PrjValueParameters.DATUMNAMES.get(datum.toLowerCase().replaceAll("[^a-zA-Z0-9]", ""));
+        String datm = PrjValueParameters.DATUMNAMES.get(datum.toLowerCase()
+                .replaceAll("^d_","")
+                .replaceAll("[^a-zA-Z0-9]", "")
+                .replaceAll("datum",""));
         datum = datm != null ? datm : datum;
         params.put(ProjKeyParameters.datum, datum);
 

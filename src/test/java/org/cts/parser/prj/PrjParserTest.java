@@ -24,14 +24,22 @@
 
 package org.cts.parser.prj;
 
+import java.io.File;
+import java.net.URI;
 import java.nio.CharBuffer;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Map;
 
 import org.cts.CRSFactory;
+import org.cts.CTSTestCase;
 import org.cts.crs.CoordinateReferenceSystem;
 import org.cts.crs.GeocentricCRS;
+import org.cts.datum.GeodeticDatum;
 import org.cts.registry.EPSGRegistry;
 
+import org.cts.units.Unit;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -43,7 +51,7 @@ import static org.junit.Assert.assertTrue;
  *
  * @author Erwan Bocher
  */
-public class PrjParserTest {
+public class PrjParserTest extends CTSTestCase {
 
     private PrjParser parser;
 
@@ -263,5 +271,20 @@ public class PrjParserTest {
                 + "PARAMETER[\"Longitude_Of_Center\",7.439583333333333],PARAMETER[\"Latitude_Of_Center\",46.95240555555556],UNIT[\"Meter\",1.0],AUTHORITY[\"EPSG\",21781]]";
         Map<String, String> p = parser.getParameters(prj);
         assertTrue(p.get(PrjKeyParameters.REFNAME).equals("EPSG:21781"));
+    }
+
+    @Test
+    public void testNAD_1983_StatePlane_Iowa_South_FIPS_1402_Feet_PRJ() throws Exception {
+        URI uri = IOPrjTest.class.getResource("WaukeeStreets.prj").toURI();
+        Map<String,String> params = new PrjParser().getParameters(new String(Files.readAllBytes(Paths.get(uri))));
+        assertEquals(6378137.0, Double.parseDouble(params.get("a")), 0.001);
+        assertEquals(500000, Double.parseDouble(params.get("x_0")), 0.001);
+
+        // Check that wkt has the same parameters after it has been parsed and written back
+        String filePath = uri.getPath();
+        CoordinateReferenceSystem crs = cRSFactory.createFromPrj(new File(filePath));
+        params = new PrjParser().getParameters(crs.toWKT());
+        assertEquals(6378137.0, Double.parseDouble(params.get("a")), 0.001);
+        assertEquals(500000, Double.parseDouble(params.get("x_0")), 0.001);
     }
 }

@@ -290,7 +290,7 @@ public abstract class Projection extends AbstractCoordinateOperation {
      *
      * @return 
      */
-    public String toWKT() {
+    public String toWKT(Unit unit) {
         StringBuilder w = new StringBuilder();
         w.append("PROJECTION[\"");
         w.append(this.getName());
@@ -317,9 +317,9 @@ public abstract class Projection extends AbstractCoordinateOperation {
         w.append("],PARAMETER[\"").append(Parameter.SCALE_FACTOR).append("\",");
         w.append(PrjWriter.roundToString(this.getScaleFactor(), 1e-11));
         w.append("],PARAMETER[\"").append(Parameter.FALSE_EASTING).append("\",");
-        w.append(PrjWriter.roundToString(this.getFalseEasting(), 1e-11));
+        w.append(PrjWriter.roundToString(this.getFalseEasting() / unit.getScale(), 1e-11));
         w.append("],PARAMETER[\"").append(Parameter.FALSE_NORTHING).append("\",");
-        w.append(PrjWriter.roundToString(this.getFalseNorthing(), 1e-11));
+        w.append(PrjWriter.roundToString(this.getFalseNorthing() / unit.getScale(), 1e-11));
         w.append("]");
         return w.toString();
     }
