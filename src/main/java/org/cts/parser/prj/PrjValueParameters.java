@@ -186,6 +186,7 @@ public class PrjValueParameters {
         DATUMNAMES.put("wgs1984", "wgs84");
         DATUMNAMES.put("worldgeodeticsystem1984", "wgs84");
         DATUMNAMES.put("rgf93", "rgf93");
+        DATUMNAMES.put("rgf1993", "rgf93");
         DATUMNAMES.put("reseaugeodesiquefrancais1993", "rgf93");
         DATUMNAMES.put("ed50", "ed50");
         DATUMNAMES.put("europeandatum1950", "ed50");
