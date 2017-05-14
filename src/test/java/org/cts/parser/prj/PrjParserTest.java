@@ -25,21 +25,17 @@
 package org.cts.parser.prj;
 
 import java.io.File;
+import java.io.RandomAccessFile;
 import java.net.URI;
 import java.nio.CharBuffer;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Map;
 
 import org.cts.CRSFactory;
 import org.cts.CTSTestCase;
 import org.cts.crs.CoordinateReferenceSystem;
 import org.cts.crs.GeocentricCRS;
-import org.cts.datum.GeodeticDatum;
 import org.cts.registry.EPSGRegistry;
 
-import org.cts.units.Unit;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -276,7 +272,10 @@ public class PrjParserTest extends CTSTestCase {
     @Test
     public void testNAD_1983_StatePlane_Iowa_South_FIPS_1402_Feet_PRJ() throws Exception {
         URI uri = IOPrjTest.class.getResource("WaukeeStreets.prj").toURI();
-        Map<String,String> params = new PrjParser().getParameters(new String(Files.readAllBytes(Paths.get(uri))));
+        RandomAccessFile f = new RandomAccessFile(uri.getPath(), "r");
+        byte[] bb = new byte[(int)f.length()];
+        f.readFully(bb);
+        Map<String,String> params = new PrjParser().getParameters(new String(bb));
         assertEquals(6378137.0, Double.parseDouble(params.get("a")), 0.001);
         assertEquals(500000, Double.parseDouble(params.get("x_0")), 0.001);
 
