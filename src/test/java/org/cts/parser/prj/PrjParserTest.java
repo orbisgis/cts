@@ -45,7 +45,7 @@ import static org.junit.Assert.assertTrue;
 
 /**
  *
- * @author Erwan Bocher
+ * @author Erwan Bocher, Michaël Michaud
  */
 public class PrjParserTest extends CTSTestCase {
 

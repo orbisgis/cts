@@ -38,7 +38,7 @@ import org.cts.units.Unit;
 /**
  * This class is used to get values from parameter in the prj file.
  *
- * @author Antoine Gourlay, Erwan Bocher, Jules Party
+ * @author Antoine Gourlay, Erwan Bocher, Jules Party, Michaël Michaud
  */
 public final class PrjMatcher {
 

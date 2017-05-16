@@ -29,7 +29,7 @@ import java.util.Map;
 /**
  * A class to manage all values used to fill a PRJ file
  *
- * @author Erwan Bocher, Jules Party
+ * @author Erwan Bocher, Jules Party, Michaël Michaud
  */
 public class PrjValueParameters {
 
