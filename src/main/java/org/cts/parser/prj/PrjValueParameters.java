@@ -29,7 +29,7 @@ import java.util.Map;
 /**
  * A class to manage all values used to fill a PRJ file
  *
- * @author Erwan Bocher, Jules Party
+ * @author Erwan Bocher, Jules Party, Michaël Michaud
  */
 public class PrjValueParameters {
 
@@ -173,10 +173,11 @@ public class PrjValueParameters {
         PROJNAMES.put("winkel" + "tripel", "wintri");
         DATUMNAMES.put("airy1830", "osgb36");
         DATUMNAMES.put("carthage1934tunisia", "carthage");
-        DATUMNAMES.put("dntf", "ntf");
         DATUMNAMES.put("greekgeodeticreferencesystem1987", "ggrs87");
         DATUMNAMES.put("ireland1965", "ire65");
         DATUMNAMES.put("newzealandgeodeticdatum1949", "nzgd49");
+        DATUMNAMES.put("northamerican1927", "nad27");
+        DATUMNAMES.put("northamerican1983", "nad83");
         DATUMNAMES.put("northamericandatum1927", "nad27");
         DATUMNAMES.put("northamericandatum1983", "nad83");
         DATUMNAMES.put("nouvelletriangulationfrancaiseparis", "ntfparis");
@@ -185,8 +186,8 @@ public class PrjValueParameters {
         DATUMNAMES.put("wgs1984", "wgs84");
         DATUMNAMES.put("worldgeodeticsystem1984", "wgs84");
         DATUMNAMES.put("rgf93", "rgf93");
+        DATUMNAMES.put("rgf1993", "rgf93");
         DATUMNAMES.put("reseaugeodesiquefrancais1993", "rgf93");
-        DATUMNAMES.put("drgf1993", "rgf93");
         DATUMNAMES.put("ed50", "ed50");
         DATUMNAMES.put("europeandatum1950", "ed50");
         DATUMNAMES.put("ntf", "ntf");

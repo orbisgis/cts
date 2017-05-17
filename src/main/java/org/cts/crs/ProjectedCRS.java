@@ -223,7 +223,8 @@ public class ProjectedCRS extends GeodeticCRS {
         w.append(',');
         w.append(this.getDatum().getPrimeMeridian().toWKT());
         w.append("],");
-        w.append(this.getProjection().toWKT());
+        // Need CRS context to write projection parameters with the same units
+        w.append(this.getProjection().toWKT(this.getCoordinateSystem().getUnit(0)));
         w.append(',');
         w.append(this.getCoordinateSystem().getUnit(0).toWKT());
         for (int i = 0; i < this.getCoordinateSystem().getDimension(); i++) {
