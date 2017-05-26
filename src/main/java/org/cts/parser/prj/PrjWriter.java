@@ -23,11 +23,24 @@
  */
 package org.cts.parser.prj;
 
+import java.util.Locale;
+
 /**
  *
  * @author Antoine Gourlay, Erwan Bocher, Jules Party
  */
 public final class PrjWriter {
+
+    private static final double[] currentRatios = new double[]{
+            1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0,
+            Math.PI/180.0, 180.0/Math.PI,     // ratio used during conversions between radians and degrees
+            2*Math.PI/180.0, 2*180.0/Math.PI, // ratio used during conversions between radians and degrees
+            3*Math.PI/180.0, 3*180.0/Math.PI, // ratio used during conversions between radians and degrees
+            4*Math.PI/180.0, 4*180.0/Math.PI, // ratio used during conversions between radians and degrees
+            0.9, 1.0/0.9,            // ratio used during conversions between degrees and grades
+            0.3048, 1.0/0.3048,      // ratio used during conversions between meters and feet
+            1200d/3937d, 3937d/1200d // ratio used during conversions between meters and feet
+    };
 
     /**
      * Return a String representing the number round to the given tolerance. If
@@ -36,8 +49,10 @@ public final class PrjWriter {
      *
      * @param number the double to transform
      * @param tol the tolerance
-     * @return 
+     * @return
+     * @deprecated this method is repaced by prettyRound, more precise
      */
+    @Deprecated
     public static String roundToString(double number, double tol) {
         StringBuilder w = new StringBuilder();
         if (isInteger(number, tol)) {
@@ -47,6 +62,29 @@ public final class PrjWriter {
             w.append(Math.rint(number * res) / res);
         }
         return w.toString();
+    }
+
+    /**
+     * Returns a String representing the number. If the number represents an integer
+     * or a simple fraction, the number will try to retrieve the full double precision
+     * number even if last decimals are missing or erroneous.
+     * For integers, it will omit the decimal part.
+     *
+     * @param number the double to transform
+     * @return
+     */
+    public static String prettyRound(double number, double tol) {
+        for (double f : currentRatios) {
+            if (Math.abs(number*f-Math.round(number*f)) < tol) {
+                if (f == 1.0 || f == 10.0) return Integer.toString((int)(Math.round(number*f)/f));
+                else return String
+                        .format(Locale.ENGLISH, "%.32f", Math.round(number*f)/f)
+                        .replaceAll("(.)0*$","$1");
+            }
+        }
+        return String
+                .format(Locale.ENGLISH,"%.32f", number)
+                .replaceAll("0*$","");
     }
 
     /**
