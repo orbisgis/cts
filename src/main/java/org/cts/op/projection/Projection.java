@@ -295,31 +295,31 @@ public abstract class Projection extends AbstractCoordinateOperation {
         w.append("PROJECTION[\"");
         w.append(this.getName());
         w.append("\"],PARAMETER[\"").append(Parameter.LATITUDE_OF_ORIGIN).append("\",");
-        w.append(PrjWriter.roundToString(AngleFormat.rad2deg(this.getLatitudeOfOrigin()), 1e-11));
+        w.append(PrjWriter.prettyRound(AngleFormat.rad2deg(this.getLatitudeOfOrigin()), 1e-11));
         if (this.getStandardParallel1() != 0.0) {
             w.append("],PARAMETER[\"").append(Parameter.STANDARD_PARALLEL_1).append("\",");
-            w.append(PrjWriter.roundToString(AngleFormat.rad2deg(this.getStandardParallel1()), 1e-11));
+            w.append(PrjWriter.prettyRound(AngleFormat.rad2deg(this.getStandardParallel1()), 1e-11));
         }
         if (this.getStandardParallel2() != 0.0) {
             w.append("],PARAMETER[\"").append(Parameter.STANDARD_PARALLEL_2).append("\",");
-            w.append(PrjWriter.roundToString(AngleFormat.rad2deg(this.getStandardParallel2()), 1e-11));
+            w.append(PrjWriter.prettyRound(AngleFormat.rad2deg(this.getStandardParallel2()), 1e-11));
         }
         w.append("],PARAMETER[\"").append(Parameter.CENTRAL_MERIDIAN).append("\",");
-        w.append(PrjWriter.roundToString(AngleFormat.rad2deg(this.getCentralMeridian()), 1e-11));
+        w.append(PrjWriter.prettyRound(AngleFormat.rad2deg(this.getCentralMeridian()), 1e-11));
         if (this.getAzimuth() != 0.0) {
             w.append("],PARAMETER[\"").append(Parameter.AZIMUTH).append("\",");
-            w.append(PrjWriter.roundToString(AngleFormat.rad2deg(this.getAzimuth()), 1e-11));
+            w.append(PrjWriter.prettyRound(AngleFormat.rad2deg(this.getAzimuth()), 1e-11));
         }
         if (this.getRectifiedGridAngle() != 0.0) {
             w.append("],PARAMETER[\"").append(Parameter.RECTIFIED_GRID_ANGLE).append("\",");
-            w.append(PrjWriter.roundToString(AngleFormat.rad2deg(this.getRectifiedGridAngle()), 1e-11));
+            w.append(PrjWriter.prettyRound(AngleFormat.rad2deg(this.getRectifiedGridAngle()), 1e-11));
         }
         w.append("],PARAMETER[\"").append(Parameter.SCALE_FACTOR).append("\",");
-        w.append(PrjWriter.roundToString(this.getScaleFactor(), 1e-11));
+        w.append(PrjWriter.prettyRound(this.getScaleFactor(), 1e-16));
         w.append("],PARAMETER[\"").append(Parameter.FALSE_EASTING).append("\",");
-        w.append(PrjWriter.roundToString(this.getFalseEasting() / unit.getScale(), 1e-11));
+        w.append(PrjWriter.prettyRound(this.getFalseEasting() / unit.getScale(), 1e-5));
         w.append("],PARAMETER[\"").append(Parameter.FALSE_NORTHING).append("\",");
-        w.append(PrjWriter.roundToString(this.getFalseNorthing() / unit.getScale(), 1e-11));
+        w.append(PrjWriter.prettyRound(this.getFalseNorthing() / unit.getScale(), 1e-5));
         w.append("]");
         return w.toString();
     }
