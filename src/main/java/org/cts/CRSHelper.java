@@ -542,17 +542,21 @@ public class CRSHelper {
                             if (grid.equalsIgnoreCase("ntf_r93.gsb")) {
                                 // If this CRS uses the ntf_r93.gsb, we know it is based on NTF, and we can
                                 // use FrenchGeocentricNTF2RGF to transform coordinates to WGS or RGF93
-                                FrenchGeocentricNTF2RGF ntf2rgf = (FrenchGeocentricNTF2RGF) CRSGRIDPOOL.get("ntf_r93");
+                                FrenchGeocentricNTF2RGF ntf2rgf = (FrenchGeocentricNTF2RGF) CRSGRIDPOOL.get("NTF2RGF93");
                                 if(ntf2rgf==null){
                                     ntf2rgf = new FrenchGeocentricNTF2RGF();
-                                    CRSGRIDPOOL.put("ntf_r93",ntf2rgf);
+                                    CRSGRIDPOOL.put("NTF2RGF93",ntf2rgf);
                                 }
                                 crs.getDatum().addGeocentricTransformation(GeodeticDatum.RGF93, ntf2rgf);
                                 crs.getDatum().addGeocentricTransformation(GeodeticDatum.WGS84, ntf2rgf);
                                 LOGGER.info("Add French Geocentric Grid transformation from " + crs.getDatum() + " to RGF93 and WGS84");
-
-                                NTv2GridShiftTransformation ntf_r93 = NTv2GridShiftTransformation.createNTv2GridShiftTransformation(grid);
-                                ntf_r93.loadGridShiftFile();
+                                NTv2GridShiftTransformation ntf_r93 = (NTv2GridShiftTransformation) CRSGRIDPOOL.get("NTv2");                                
+                                if (ntf_r93 == null) {
+                                    ntf_r93 = NTv2GridShiftTransformation.createNTv2GridShiftTransformation(grid);
+                                    ntf_r93.loadGridShiftFile();
+                                    CRSGRIDPOOL.put("NTv2", ntf_r93);
+                                }                              
+                                
                                 crs.getDatum().addGeographicTransformation(GeodeticDatum.WGS84,
                                         new CoordinateOperationSequence(ntf_r93.getIdentifier(),
                                                 LongitudeRotation.getLongitudeRotationFrom(crs.getDatum().getPrimeMeridian()), ntf_r93));
@@ -563,14 +567,18 @@ public class CRSHelper {
                             } else {
                                 // This is the general case where we want to add a NTv2 transformation
                                 // using the file header to determine source and target datums
-                                NTv2GridShiftTransformation gt = NTv2GridShiftTransformation.createNTv2GridShiftTransformation(grid);
-                                gt.loadGridShiftFile();
-                                GeodeticDatum datum = GeodeticDatum.getGeodeticDatum(gt.getToDatum());
+                                NTv2GridShiftTransformation ntf_r93 = (NTv2GridShiftTransformation) CRSGRIDPOOL.get("NTv2");                                
+                                if (ntf_r93 == null) {
+                                    ntf_r93 = NTv2GridShiftTransformation.createNTv2GridShiftTransformation(grid);
+                                    ntf_r93.loadGridShiftFile();
+                                    CRSGRIDPOOL.put("NTv2", ntf_r93);
+                                }
+                                GeodeticDatum datum = GeodeticDatum.getGeodeticDatum(ntf_r93.getToDatum());
                                 crs.getDatum().addGeographicTransformation(datum,
                                         new CoordinateOperationSequence(
-                                                gt.getIdentifier(),
+                                                ntf_r93.getIdentifier(),
                                                 new LongitudeRotation(crs.getDatum().getPrimeMeridian().getLongitudeFromGreenwichInRadians()),
-                                                gt));
+                                                ntf_r93));
                                 LOGGER.info("Add NTv2 transformation from " + crs.getDatum() + " to " + datum);
                             }
                         } catch (Exception ex) {

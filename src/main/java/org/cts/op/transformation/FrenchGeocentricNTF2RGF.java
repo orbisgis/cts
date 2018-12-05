@@ -163,7 +163,6 @@ public class FrenchGeocentricNTF2RGF extends AbstractCoordinateOperation
     @Override
     public GeocentricTransformation inverse() throws NonInvertibleOperationException {
         if (inverse == null) {
-            synchronized (FrenchGeocentricNTF2RGF.class) {
                 try {
                     inverse = new FrenchGeocentricNTF2RGF() {
                         @Override
@@ -211,7 +210,6 @@ public class FrenchGeocentricNTF2RGF extends AbstractCoordinateOperation
                 } catch (Exception e) {
                     throw new NonInvertibleOperationException(e.getMessage());
                 }
-            }
         }
         return inverse;
     }
