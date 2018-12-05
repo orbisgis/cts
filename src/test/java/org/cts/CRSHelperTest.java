@@ -36,11 +36,8 @@ import org.cts.op.transformation.GeocentricTranslation;
 import org.cts.op.transformation.NTv2GridShiftTransformation;
 import org.cts.registry.EPSGRegistry;
 import org.cts.registry.IGNFRegistry;
-import org.cts.registry.RegistryManager;
-import org.junit.Before;
 import org.junit.Test;
 
-import java.util.List;
 import java.util.Set;
 
 import static org.junit.Assert.assertTrue;

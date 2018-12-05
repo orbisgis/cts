@@ -127,6 +127,7 @@ public class NTv2GridShiftTransformation extends AbstractCoordinateOperation imp
      * interpolated in a grid.
      *
      * @param coord coordinate to shift
+     * @return 
      * @throws IllegalCoordinateException if <code>coord</code> is not
      * compatible with this <code>CoordinateOperation</code>.
      */
@@ -155,6 +156,8 @@ public class NTv2GridShiftTransformation extends AbstractCoordinateOperation imp
 
     /**
      * Creates the inverse CoordinateOperation.
+     * @return 
+     * @throws org.cts.op.NonInvertibleOperationException
      */
     @Override
     public CoordinateOperation inverse() throws NonInvertibleOperationException {

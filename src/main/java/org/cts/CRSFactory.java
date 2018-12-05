@@ -131,6 +131,7 @@ public class CRSFactory {
      * Check if the registry name (ie EPSG, IGNF...) is supported.
      *
      * @param registryName (ex : ESPG, IGNF, ESRI)
+     * @throws org.cts.registry.RegistryException
      */
     public boolean isRegistrySupported(String registryName) throws RegistryException {
         if (getRegistryManager().contains(registryName.toLowerCase())) {
@@ -145,6 +146,8 @@ public class CRSFactory {
      * (PRJ).
      *
      * @param prjString the OGC WKT String defining the CRS
+     * @return 
+     * @throws org.cts.crs.CRSException
      */
     public CoordinateReferenceSystem createFromPrj(String prjString) throws CRSException {
         PrjParser p = new PrjParser();

@@ -66,7 +66,6 @@ public class BaseCoordinateTransformTest extends CTSTestCase {
         int tot, subtot;
         ops = CoordinateOperationFactory.createCoordinateOperations(sourceCRS, targetCRS);
         tot = ops.size();
-        //for (CoordinateOperation  op : ops) System.out.println("   " + op.getName());
         if (sourceCRS.getDatum() == GeodeticDatum.WGS84 || targetCRS.getDatum() == GeodeticDatum.WGS84) {
             ops = CoordinateOperationFactory.excludeFilter(ops, FrenchGeocentricNTF2RGF.class);
             ops = CoordinateOperationFactory.excludeFilter(ops, NTv2GridShiftTransformation.class);

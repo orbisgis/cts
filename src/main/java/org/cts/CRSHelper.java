@@ -24,6 +24,7 @@
 package org.cts;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.cts.crs.*;
@@ -59,6 +60,8 @@ import org.slf4j.LoggerFactory;
 public class CRSHelper {
 
     static final Logger LOGGER = LoggerFactory.getLogger(CRSHelper.class);
+    
+    private static CRSGridCache<String, AbstractCoordinateOperation> CRSGRIDPOOL = new CRSGridCache<String, AbstractCoordinateOperation>(5);
 
     /**
      * Creates a new {@link org.cts.crs.CoordinateReferenceSystem} with the
@@ -539,7 +542,11 @@ public class CRSHelper {
                             if (grid.equalsIgnoreCase("ntf_r93.gsb")) {
                                 // If this CRS uses the ntf_r93.gsb, we know it is based on NTF, and we can
                                 // use FrenchGeocentricNTF2RGF to transform coordinates to WGS or RGF93
-                                FrenchGeocentricNTF2RGF ntf2rgf = FrenchGeocentricNTF2RGF.getInstance();
+                                FrenchGeocentricNTF2RGF ntf2rgf = (FrenchGeocentricNTF2RGF) CRSGRIDPOOL.get("ntf_r93");
+                                if(ntf2rgf==null){
+                                    ntf2rgf = new FrenchGeocentricNTF2RGF();
+                                    CRSGRIDPOOL.put("ntf_r93",ntf2rgf);
+                                }
                                 crs.getDatum().addGeocentricTransformation(GeodeticDatum.RGF93, ntf2rgf);
                                 crs.getDatum().addGeocentricTransformation(GeodeticDatum.WGS84, ntf2rgf);
                                 LOGGER.info("Add French Geocentric Grid transformation from " + crs.getDatum() + " to RGF93 and WGS84");
@@ -733,6 +740,24 @@ public class CRSHelper {
             return new AlbersEqualArea(ell, map);
         } else {
             throw new CRSException("Cannot create the projection " + projectionName);
+        }
+    }
+    
+     /**
+     * A simple cache to manage {@link AbstractCoordinateOperation}
+     */
+    public static class CRSGridCache<K, V> extends LinkedHashMap<K, V> {
+
+        private final int limit;
+
+        public CRSGridCache(int limit) {
+            super(16, 0.75f, true);
+            this.limit = limit;
+        }
+
+        @Override
+        protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
+            return size() > limit;
         }
     }
 }
