@@ -82,7 +82,7 @@ public class LongitudeRotation extends AbstractCoordinateOperation {
      * Creates the inverse CoordinateOperation.
      */
     @Override
-    public CoordinateOperation inverse() throws NonInvertibleOperationException {
+    public CoordinateOperation inverse() {
         return new LongitudeRotation(-rotationAngle);
     }
 

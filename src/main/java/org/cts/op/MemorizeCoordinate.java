@@ -62,8 +62,7 @@ public class MemorizeCoordinate extends AbstractCoordinateOperation {
      * compatible with this <code>CoordinateOperation</code>.
      */
     @Override
-    public double[] transform(double[] coord)
-            throws IllegalCoordinateException {
+    public double[] transform(double[] coord) {
         double[] cc = new double[Math.max(coord.length + indexesSaved.length, 4)];
         System.arraycopy(coord, 0, cc, 0, Math.min(coord.length, cc.length));
         for (int i = 0 ; i < indexesSaved.length ; i++) {

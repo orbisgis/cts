@@ -175,11 +175,7 @@ public class GeographicExtent implements Extent {
         double lon_ = lon < westernBound ? lon + modulo : lon;
         if (lat < southernBound || lat > northernBound) {
             return false;
-        } else if (lon_ < westernBound || lon_ > easternBound) {
-            return false;
-        } else {
-            return true;
-        }
+        } else return !(lon_ < westernBound) && !(lon_ > easternBound);
     }
 
     /**

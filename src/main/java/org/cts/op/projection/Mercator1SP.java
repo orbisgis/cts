@@ -149,7 +149,7 @@ public class Mercator1SP extends Projection {
      * compatible with this <code>CoordinateOperation</code>.
      */
     @Override
-    public double[] transform(double[] coord) throws CoordinateDimensionException {
+    public double[] transform(double[] coord) {
         double lon = coord[1];
         double lat = abs(coord[0]) > PI * 85 / 180 ? PI * 85 / 180 : coord[0];
         double E = n * (lon - lon0);
@@ -166,10 +166,10 @@ public class Mercator1SP extends Projection {
      * <http://www.epsg.org/guides/G7-2.html>
      */
     @Override
-    public Projection inverse() throws NonInvertibleOperationException {
+    public Projection inverse() {
         return new Mercator1SP(ellipsoid, parameters) {
             @Override
-            public double[] transform(double[] coord) throws CoordinateDimensionException {
+            public double[] transform(double[] coord) {
                 double t = exp((FN - coord[1]) / n);
                 double ki = PI / 2 - 2 * atan(t);
                 double lat = ki;
@@ -182,8 +182,7 @@ public class Mercator1SP extends Projection {
             }
 
             @Override
-            public Projection inverse()
-                    throws NonInvertibleOperationException {
+            public Projection inverse() {
                 return Mercator1SP.this;
             }
             @Override

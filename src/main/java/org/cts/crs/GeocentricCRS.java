@@ -94,12 +94,10 @@ public class GeocentricCRS extends GeodeticCRS {
 
     /**
      * @return 
-     * @throws org.cts.op.NonInvertibleOperationException 
      * @see GeodeticCRS#toGeographicCoordinateConverter()
      */
     @Override
-    public CoordinateOperation toGeographicCoordinateConverter()
-            throws NonInvertibleOperationException {
+    public CoordinateOperation toGeographicCoordinateConverter() {
         List<CoordinateOperation> ops = new ArrayList<CoordinateOperation>();
         ops.add(new Geocentric2Geographic(getDatum().getEllipsoid()));
         if (!getDatum().getPrimeMeridian().equals(PrimeMeridian.GREENWICH)) {
@@ -111,12 +109,10 @@ public class GeocentricCRS extends GeodeticCRS {
 
     /**
      * @return 
-     * @throws org.cts.op.NonInvertibleOperationException 
      * @see GeodeticCRS#fromGeographicCoordinateConverter()
      */
     @Override
-    public CoordinateOperation fromGeographicCoordinateConverter()
-            throws NonInvertibleOperationException {
+    public CoordinateOperation fromGeographicCoordinateConverter() {
         List<CoordinateOperation> ops = new ArrayList<CoordinateOperation>();
         if (!getDatum().getPrimeMeridian().equals(PrimeMeridian.GREENWICH)) {
             ops.add(LongitudeRotation.getLongitudeRotationFrom(getDatum().getPrimeMeridian()));

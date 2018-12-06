@@ -68,8 +68,7 @@ public class PrjParser {
         } catch (BufferUnderflowException ex) {
             throw new PrjParserException("Failed to read PRJ.", ex);
         }
-        Map<String, String> prjParameters = PrjMatcher.match(e);
-        return prjParameters;
+        return PrjMatcher.match(e);
     }
 
     /**

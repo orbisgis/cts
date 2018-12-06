@@ -52,7 +52,7 @@ public interface CoordinateReferenceSystem extends Identifiable {
     /**
      * Coordinate Reference System Type.
      */
-    public static enum Type {
+    enum Type {
 
         GEOCENTRIC, GEOGRAPHIC3D, GEOGRAPHIC2D, PROJECTED, VERTICAL, COMPOUND, ENGINEERING
     }
@@ -61,14 +61,14 @@ public interface CoordinateReferenceSystem extends Identifiable {
      * Returns this CoordinateReferenceSystem Type.
      * @return 
      */
-    public Type getType();
+    Type getType();
 
     /**
      * Returns the {@link CoordinateSystem} used by this
      * <code>CoordinateReferenceSystem</code>.
      * @return 
      */
-    public CoordinateSystem getCoordinateSystem();
+    CoordinateSystem getCoordinateSystem();
 
     /**
      * Returns the {@link Datum} to which this
@@ -77,7 +77,7 @@ public interface CoordinateReferenceSystem extends Identifiable {
      * datum, ie the {@link org.cts.datum.GeodeticDatum} (or horizontal Datum).
      * @return 
      */
-    public Datum getDatum();
+    Datum getDatum();
 
     /**
      * Returns the {@link Projection} to which this
@@ -85,12 +85,12 @@ public interface CoordinateReferenceSystem extends Identifiable {
      * projection is defined for this CRS.
      * @return 
      */
-    public Projection getProjection();
+    Projection getProjection();
 
     /**
      * Returns a WKT representation of the CoordinateReferenceSystem.
      *
      * @return 
      */
-    public String toWKT();
+    String toWKT();
 }

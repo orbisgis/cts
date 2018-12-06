@@ -183,10 +183,7 @@ public class SubGrid implements Cloneable, Serializable {
     }
 
     private boolean isCoordWithin(double lon, double lat) {
-        if ((lon >= this.minLon) && (lon < this.maxLon) && (lat >= this.minLat) && (lat < this.maxLat)) {
-            return true;
-        }
-        return false;
+        return (lon >= this.minLon) && (lon < this.maxLon) && (lat >= this.minLat) && (lat < this.maxLat);
     }
 
     private double interpolate(float a, float b, float c, float d, double X, double Y) {
@@ -225,7 +222,6 @@ public class SubGrid implements Cloneable, Serializable {
                 gs.setLatAccuracySeconds(interpolate(this.latAccuracy[indexA], this.latAccuracy[indexB], this.latAccuracy[indexC], this.latAccuracy[indexD], X, Y));
             }
         } else {
-            synchronized (this.raf) {
                 byte[] b4 = new byte[4];
                 long nodeOffset = this.subGridOffset + 176L + indexA * 16;
                 this.raf.seek(nodeOffset);
@@ -280,7 +276,7 @@ public class SubGrid implements Cloneable, Serializable {
 
                 gs.setLatAccuracyAvailable(true);
                 gs.setLatAccuracySeconds(interpolate(latAccuracyA, latAccuracyB, latAccuracyC, latAccuracyD, X, Y));
-            }
+            
         }
 
         return gs;

@@ -50,7 +50,7 @@ public final class PrjWriter {
      * @param number the double to transform
      * @param tol the tolerance
      * @return
-     * @deprecated this method is repaced by prettyRound, more precise
+     * @deprecated this method is replaced by prettyRound, more precise
      */
     @Deprecated
     public static String roundToString(double number, double tol) {

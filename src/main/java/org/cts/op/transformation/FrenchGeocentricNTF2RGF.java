@@ -196,8 +196,7 @@ public class FrenchGeocentricNTF2RGF extends AbstractCoordinateOperation
                         }
 
                         @Override
-                        public GeocentricTransformation inverse()
-                                throws NonInvertibleOperationException {
+                        public GeocentricTransformation inverse() {
                             return FrenchGeocentricNTF2RGF.this;
                         }
 

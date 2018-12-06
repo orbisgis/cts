@@ -35,5 +35,5 @@ import org.cts.op.NonInvertibleOperationException;
  */
 public interface GeocentricTransformation extends CoordinateOperation {
 
-    public GeocentricTransformation inverse() throws NonInvertibleOperationException;
+    GeocentricTransformation inverse() throws NonInvertibleOperationException;
 }

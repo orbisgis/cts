@@ -134,7 +134,7 @@ public class Krovak extends Projection {
      * compatible with this <code>CoordinateOperation</code>.
      */
     @Override
-    public double[] transform(double[] coord) throws CoordinateDimensionException {
+    public double[] transform(double[] coord) {
         double lat = coord[0];
         double lon = coord[1];
         double e = ellipsoid.getEccentricity();
@@ -159,10 +159,10 @@ public class Krovak extends Projection {
      * <http://www.epsg.org/guides/G7-2.html>
      */
     @Override
-    public Projection inverse() throws NonInvertibleOperationException {
+    public Projection inverse() {
         return new Krovak(ellipsoid, parameters) {
             @Override
-            public double[] transform(double[] coord) throws CoordinateDimensionException {
+            public double[] transform(double[] coord) {
                 double Xp = -coord[1] + FN;
                 double Yp = -coord[0] + FE;
                 double r = sqrt(Xp * Xp + Yp * Yp);
@@ -190,8 +190,7 @@ public class Krovak extends Projection {
             }
 
             @Override
-            public Projection inverse()
-                    throws NonInvertibleOperationException {
+            public Projection inverse() {
                 return Krovak.this;
             }
 

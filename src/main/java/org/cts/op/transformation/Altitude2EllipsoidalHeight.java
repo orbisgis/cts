@@ -167,8 +167,7 @@ public class Altitude2EllipsoidalHeight extends AbstractCoordinateOperation impl
                 }
 
                 @Override
-                public CoordinateOperation inverse()
-                        throws NonInvertibleOperationException {
+                public CoordinateOperation inverse() {
                     return Altitude2EllipsoidalHeight.this;
                 }
             };

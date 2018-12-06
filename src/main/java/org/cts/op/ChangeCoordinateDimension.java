@@ -73,7 +73,7 @@ public class ChangeCoordinateDimension extends AbstractCoordinateOperation {
      * compatible with this <code>CoordinateOperation</code>.
      */
     @Override
-    public double[] transform(double[] coord) throws IllegalCoordinateException {
+    public double[] transform(double[] coord) {
         if (inputDim == outputDim) {
             return coord;
         }
@@ -86,7 +86,7 @@ public class ChangeCoordinateDimension extends AbstractCoordinateOperation {
      * Creates the inverse CoordinateOperation.
      */
     @Override
-    public CoordinateOperation inverse() throws NonInvertibleOperationException {
+    public CoordinateOperation inverse() {
         return new ChangeCoordinateDimension(new Identifier(CoordinateOperation.class), outputDim, inputDim);
     }
 }

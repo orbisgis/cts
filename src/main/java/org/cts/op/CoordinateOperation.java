@@ -49,7 +49,7 @@ public interface CoordinateOperation extends Identifiable {
      * @throws org.cts.op.CoordinateOperationException if this operation
      * failed during the transformation process.
      */
-    public double[] transform(double[] coord) throws IllegalCoordinateException, CoordinateOperationException;
+    double[] transform(double[] coord) throws IllegalCoordinateException, CoordinateOperationException;
 
     /**
      * Return the inverse CoordinateOperation, or throw a
@@ -58,7 +58,7 @@ public interface CoordinateOperation extends Identifiable {
      * op.inverse().transform(op.transform(point));
      * </pre> should let point unchanged.
      */
-    public CoordinateOperation inverse() throws NonInvertibleOperationException;
+    CoordinateOperation inverse() throws NonInvertibleOperationException;
 
     /**
      * Return the precision of the transformation.<p> Precision is a double
@@ -70,10 +70,10 @@ public interface CoordinateOperation extends Identifiable {
      * value of an ulp (units in the last place) for a double value equals to
      * 6378137.0 (Earth semi-major axis).
      */
-    public double getPrecision();
+    double getPrecision();
 
     /**
      * @return true if this operation does not change coordinates.
      */
-    public boolean isIdentity();
+    boolean isIdentity();
 }

@@ -119,7 +119,7 @@ public class CassiniSoldner extends Projection {
      * compatible with this <code>CoordinateOperation</code>.
      */
     @Override
-    public double[] transform(double[] coord) throws CoordinateDimensionException {
+    public double[] transform(double[] coord) {
         double lon = coord[1];
         double lat = coord[0];
         double A = (lon - lon0) * cos(lat);
@@ -143,10 +143,10 @@ public class CassiniSoldner extends Projection {
      * <http://www.epsg.org/guides/G7-2.html>
      */
     @Override
-    public Projection inverse() throws NonInvertibleOperationException {
+    public Projection inverse() {
         return new CassiniSoldner(ellipsoid, parameters) {
             @Override
-            public double[] transform(double[] coord) throws CoordinateDimensionException {
+            public double[] transform(double[] coord) {
                 double M1 = M0 + coord[1] - FN;
                 double lat1 = ellipsoid.latFromArc(M1);
                 double T1 = pow(tan(lat1), 2);
@@ -160,8 +160,7 @@ public class CassiniSoldner extends Projection {
             }
 
             @Override
-            public Projection inverse()
-                    throws NonInvertibleOperationException {
+            public Projection inverse() {
                 return CassiniSoldner.this;
             }
 

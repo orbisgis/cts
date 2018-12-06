@@ -117,7 +117,7 @@ public class UnitConversion extends AbstractCoordinateOperation {
      * Creates the inverse CoordinateOperation.
      */
     @Override
-    public CoordinateOperation inverse() throws NonInvertibleOperationException {
+    public CoordinateOperation inverse() {
         return new UnitConversion(targetUnits, sourceUnits);
     }
 

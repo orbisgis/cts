@@ -135,7 +135,7 @@ public class SwissObliqueMercator extends Projection {
      * compatible with this <code>CoordinateOperation</code>.
      */
     @Override
-    public double[] transform(double[] coord) throws CoordinateDimensionException {
+    public double[] transform(double[] coord) {
         double e = ellipsoid.getEccentricity();
         double S = alpha * log(tan((PI / 2 + coord[0]) / 2)) - alpha * e / 2 * log((1 + e * sin(coord[0])) / (1 - e * sin(coord[0]))) + K;
         double b = 2 * (atan(exp(S)) - PI / 4);
@@ -175,10 +175,10 @@ public class SwissObliqueMercator extends Projection {
      * <http://www.swisstopo.admin.ch/internet/swisstopo/en/home/topics/survey/sys/refsys/switzerland.parsysrelated1.37696.downloadList.97912.DownloadFile.tmp/swissprojectionen.pdf>
      */
     @Override
-    public Projection inverse() throws NonInvertibleOperationException {
+    public Projection inverse() {
         return new SwissObliqueMercator(ellipsoid, parameters) {
             @Override
-            public double[] transform(double[] coord) throws CoordinateDimensionException {
+            public double[] transform(double[] coord) {
                 double X = (coord[1] - FN);
                 double Y = (coord[0] - FE);
                 double Ibar = Y / R;
@@ -191,8 +191,7 @@ public class SwissObliqueMercator extends Projection {
             }
 
             @Override
-            public Projection inverse()
-                    throws NonInvertibleOperationException {
+            public Projection inverse() {
                 return SwissObliqueMercator.this;
             }
             @Override

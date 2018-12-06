@@ -195,20 +195,20 @@ public class GridShiftFile
         }
         SubGrid[] topLevelSubGridTemp = new SubGrid[topLevelCount];
         topLevelCount = 0;
-        for (int i = 0; i < subGrid.length; i++) {
-            if (subGrid[i].getParentSubGridName().equalsIgnoreCase("NONE")) {
-                topLevelSubGridTemp[(topLevelCount++)] = subGrid[i];
+        for (SubGrid subGrid1 : subGrid) {
+            if (subGrid1.getParentSubGridName().equalsIgnoreCase("NONE")) {
+                topLevelSubGridTemp[(topLevelCount++)] = subGrid1;
             } else {
-                ArrayList parent = (ArrayList) subGridMap.get(subGrid[i].getParentSubGridName());
-                parent.add(subGrid[i]);
+                ArrayList parent = (ArrayList) subGridMap.get(subGrid1.getParentSubGridName());
+                parent.add(subGrid1);
             }
         }
         SubGrid[] nullArray = new SubGrid[0];
-        for (int i = 0; i < subGrid.length; i++) {
-            ArrayList subSubGrids = (ArrayList) subGridMap.get(subGrid[i].getSubGridName());
+        for (SubGrid subGrid1 : subGrid) {
+            ArrayList subSubGrids = (ArrayList) subGridMap.get(subGrid1.getSubGridName());
             if (subSubGrids.size() > 0) {
                 SubGrid[] subGridArray = (SubGrid[]) subSubGrids.toArray(nullArray);
-                subGrid[i].setSubGridArray(subGridArray);
+                subGrid1.setSubGridArray(subGridArray);
             }
         }
         return topLevelSubGridTemp;

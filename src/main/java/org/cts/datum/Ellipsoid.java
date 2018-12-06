@@ -63,7 +63,7 @@ public class Ellipsoid extends IdentifiableComponent {
      * The second parameter use to create the ellipsoid, this parameter can be
      * the inverse flattening, the semi-minor axis or the eccentricity.
      */
-    public static enum SecondParameter {
+    public enum SecondParameter {
 
         InverseFlattening, SemiMinorAxis, Eccentricity
     }
@@ -230,11 +230,6 @@ public class Ellipsoid extends IdentifiableComponent {
     final private double e2;
 
     /**
-     * The second square eccentricity of this Ellipsoid.
-     */
-    final private double eprime2;
-
-    /**
      * The coefficients used to compute the meridian arc length.
      */
     transient private double[] arc_coeff;
@@ -336,7 +331,10 @@ public class Ellipsoid extends IdentifiableComponent {
                 this.e = 0.0;
                 this.e2 = 0.0;
         }
-        eprime2 = e2 / (1.0 - e2);
+        /**
+         * The second square eccentricity of this Ellipsoid.
+         */
+        double eprime2 = e2 / (1.0 - e2);
     }
 
     /**
@@ -742,8 +740,7 @@ public class Ellipsoid extends IdentifiableComponent {
      */
     public final double latitude(double isoLatitude, double epsilon) {
         double exp_isolatitude = exp(isoLatitude);
-        double lat0 = 2 * atan(exp_isolatitude) - PI_2;
-        double lati = lat0;
+        double lati = 2 * atan(exp_isolatitude) - PI_2;
         double latj = 1000;
         while (abs(latj - lati) >= epsilon) {
             lati = latj;

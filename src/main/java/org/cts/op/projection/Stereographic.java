@@ -136,7 +136,7 @@ public class Stereographic extends Projection {
      * compatible with this <code>CoordinateOperation</code>.
      */
     @Override
-    public double[] transform(double[] coord) throws CoordinateDimensionException {
+    public double[] transform(double[] coord) {
         double lon = coord[1];
         double lat = coord[0];
         double esin = e * sin(lat);
@@ -165,10 +165,10 @@ public class Stereographic extends Projection {
      * <http://www.epsg.org/guides/G7-2.html>
      */
     @Override
-    public Projection inverse() throws NonInvertibleOperationException {
+    public Projection inverse() {
         return new Stereographic(ellipsoid, parameters) {
             @Override
-            public double[] transform(double[] coord) throws CoordinateDimensionException {
+            public double[] transform(double[] coord) {
                 double rho = sqrt((coord[0] - FE) * (coord[0] - FE) + (coord[1] - FN) * (coord[1] - FN));
                 double t = rho * sqrt(pow(1 + e, 1 + e) * pow(1 - e, 1 - e)) / 2 / a / k0;
                 double ki;
@@ -191,8 +191,7 @@ public class Stereographic extends Projection {
             }
 
             @Override
-            public Projection inverse()
-                    throws NonInvertibleOperationException {
+            public Projection inverse() {
                 return Stereographic.this;
             }
             @Override

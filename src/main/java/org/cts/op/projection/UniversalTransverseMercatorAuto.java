@@ -81,7 +81,7 @@ public class UniversalTransverseMercatorAuto extends Projection {
      * compatible with this <code>CoordinateOperation</code>.
      */
     @Override
-    public double[] transform(double[] coord) throws CoordinateDimensionException {
+    public double[] transform(double[] coord) {
         int zone = getZone(coord);
         double lon0 = (6 * zone - 183) * Math.PI / 180;
         double y0 = coord[0] >= 0 ? 0 : 10000000;
@@ -104,10 +104,10 @@ public class UniversalTransverseMercatorAuto extends Projection {
      * Creates the inverse CoordinateOperation.
      */
     @Override
-    public Projection inverse() throws NonInvertibleOperationException {
+    public Projection inverse() {
         return new UniversalTransverseMercatorAuto(ellipsoid, parameters) {
             @Override
-            public double[] transform(double[] coord) throws CoordinateDimensionException {
+            public double[] transform(double[] coord) {
                 double lon0 = 0;
                 double ys = coord[0] >= 0 ? 0 : 10000000;
                 Complex z = new Complex((coord[1] - ys) / (n * invcoeff[0]),
@@ -126,8 +126,7 @@ public class UniversalTransverseMercatorAuto extends Projection {
             }
 
             @Override
-            public Projection inverse()
-                    throws NonInvertibleOperationException {
+            public Projection inverse() {
                 return UniversalTransverseMercatorAuto.this;
             }
             @Override

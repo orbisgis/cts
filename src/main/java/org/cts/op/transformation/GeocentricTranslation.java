@@ -109,7 +109,7 @@ public class GeocentricTranslation extends AbstractCoordinateOperation implement
      * Creates the inverse CoordinateOperation.
      */
     @Override
-    public GeocentricTransformation inverse() throws NonInvertibleOperationException {
+    public GeocentricTransformation inverse() {
         if (inverse != null) return inverse;
         else {
             return inverse = new GeocentricTranslation(-tx, -ty, -tz, precision);

@@ -71,7 +71,7 @@ public abstract class Projection extends AbstractCoordinateOperation {
     /**
      * Projection classification based on the surface type.
      */
-    public static enum Surface {
+    public enum Surface {
 
         AZIMUTHAL, // or stereographic
         CONICAL,
@@ -88,7 +88,7 @@ public abstract class Projection extends AbstractCoordinateOperation {
     /**
      * Projection property.
      */
-    public static enum Property {
+    public enum Property {
 
         APHYLACTIC, // A term sometimes used to describe a map projection
         //which is neither equal-area  nor conformal
@@ -101,7 +101,7 @@ public abstract class Projection extends AbstractCoordinateOperation {
     /**
      * Projection orientation.
      */
-    public static enum Orientation {
+    public enum Orientation {
 
         OBLIQUE,
         SECANT,
@@ -133,7 +133,7 @@ public abstract class Projection extends AbstractCoordinateOperation {
         // NOTE : I also wanted to make it unmodifiable, but could not
         // use Collections.<String,Measure>unmodifiableMap(clone)
         if (parameters == null) {
-            this.parameters = Collections.<String, Measure>unmodifiableMap(new HashMap<String, Measure>());
+            this.parameters = Collections.unmodifiableMap(new HashMap<String, Measure>());
         } else {
             HashMap<String, Measure> lowerCaseMap = new HashMap<String, Measure>(parameters.size());
             for (Map.Entry<String, Measure> entry : parameters.entrySet()) {

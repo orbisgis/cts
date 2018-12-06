@@ -90,7 +90,7 @@ public class TransverseMercator extends Projection {
      * compatible with this <code>CoordinateOperation</code>.
      */
     @Override
-    public double[] transform(double[] coord) throws CoordinateDimensionException {
+    public double[] transform(double[] coord) {
         double latIsoPhi = ellipsoid.isometricLatitude(coord[0]);
         double PHI = Math.asin(Math.sin(coord[1] - lon0) / Math.cosh(latIsoPhi));
         double latIsoPHI = Ellipsoid.SPHERE.isometricLatitude(PHI);
@@ -109,10 +109,10 @@ public class TransverseMercator extends Projection {
      * Creates the inverse CoordinateOperation.
      */
     @Override
-    public Projection inverse() throws NonInvertibleOperationException {
+    public Projection inverse() {
         return new TransverseMercator(ellipsoid, parameters) {
             @Override
-            public double[] transform(double[] coord) throws CoordinateDimensionException {
+            public double[] transform(double[] coord) {
                 Complex z = new Complex((coord[1] - ys) / (n * invcoeff[0]),
                         (coord[0] - xs) / (n * invcoeff[0]));
                 Complex Z = z;
@@ -129,8 +129,7 @@ public class TransverseMercator extends Projection {
             }
 
             @Override
-            public Projection inverse()
-                    throws NonInvertibleOperationException {
+            public Projection inverse() {
                 return TransverseMercator.this;
             }
             @Override

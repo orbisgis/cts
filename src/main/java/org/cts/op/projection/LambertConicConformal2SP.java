@@ -161,7 +161,7 @@ public class LambertConicConformal2SP extends Projection {
      * compatible with this <code>CoordinateOperation</code>..
      */
     @Override
-    public double[] transform(double[] coord) throws IllegalCoordinateException {
+    public double[] transform(double[] coord) {
         double latIso = ellipsoid.isometricLatitude(coord[0]);
         double x = xs + C * exp(-n * latIso) * sin(n * (coord[1] - lon0));
         double y = ys - C * exp(-n * latIso) * cos(n * (coord[1] - lon0));
@@ -174,11 +174,10 @@ public class LambertConicConformal2SP extends Projection {
      * Creates the inverse CoordinateOperation.
      */
     @Override
-    public Projection inverse() throws NonInvertibleOperationException {
+    public Projection inverse() {
         return new LambertConicConformal2SP(ellipsoid, parameters) {
             @Override
-            public double[] transform(double[] coord)
-                    throws IllegalCoordinateException {
+            public double[] transform(double[] coord) {
                 double x = coord[0];
                 double y = coord[1];
                 double R = sqrt((x - xs) * (x - xs) + (y - ys) * (y - ys));
@@ -192,8 +191,7 @@ public class LambertConicConformal2SP extends Projection {
             }
 
             @Override
-            public Projection inverse()
-                    throws NonInvertibleOperationException {
+            public Projection inverse() {
                 return LambertConicConformal2SP.this;
             }
             @Override

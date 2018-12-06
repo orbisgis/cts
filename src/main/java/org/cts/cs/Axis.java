@@ -129,7 +129,7 @@ public class Axis {
     /**
      * Axis different directions.
      */
-    public static enum Direction {
+    public enum Direction {
 
         EAST,
         WEST,
@@ -138,7 +138,7 @@ public class Axis {
         UP,
         DOWN,
         OTHER
-    };
+    }
 
     /**
      * The name of this Axis (X, Y, Z, LONGITUDE, ALTITUDE,&hellip;).
