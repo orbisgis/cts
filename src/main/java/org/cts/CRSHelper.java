@@ -542,44 +542,56 @@ public class CRSHelper {
                             if (grid.equalsIgnoreCase("ntf_r93.gsb")) {
                                 // If this CRS uses the ntf_r93.gsb, we know it is based on NTF, and we can
                                 // use FrenchGeocentricNTF2RGF to transform coordinates to WGS or RGF93
-                                FrenchGeocentricNTF2RGF ntf2rgf = (FrenchGeocentricNTF2RGF) CRSGRIDPOOL.get("NTF2RGF93");
-                                if(ntf2rgf==null){
-                                    ntf2rgf = new FrenchGeocentricNTF2RGF();
-                                    CRSGRIDPOOL.put("NTF2RGF93",ntf2rgf);
+                                AbstractCoordinateOperation aco = CRSGRIDPOOL.get("NTF2RGF93");
+                                if(aco==null){
+                                    aco = new FrenchGeocentricNTF2RGF();
+                                    CRSGRIDPOOL.put("NTF2RGF93",aco);
                                 }
-                                crs.getDatum().addGeocentricTransformation(GeodeticDatum.RGF93, ntf2rgf);
-                                crs.getDatum().addGeocentricTransformation(GeodeticDatum.WGS84, ntf2rgf);
-                                LOGGER.info("Add French Geocentric Grid transformation from " + crs.getDatum() + " to RGF93 and WGS84");
-                                NTv2GridShiftTransformation ntf_r93 = (NTv2GridShiftTransformation) CRSGRIDPOOL.get("NTv2");                                
-                                if (ntf_r93 == null) {
-                                    ntf_r93 = NTv2GridShiftTransformation.createNTv2GridShiftTransformation(grid);
-                                    ntf_r93.loadGridShiftFile();
-                                    CRSGRIDPOOL.put("NTv2", ntf_r93);
-                                }                              
-                                
-                                crs.getDatum().addGeographicTransformation(GeodeticDatum.WGS84,
-                                        new CoordinateOperationSequence(ntf_r93.getIdentifier(),
-                                                LongitudeRotation.getLongitudeRotationFrom(crs.getDatum().getPrimeMeridian()), ntf_r93));
-                                crs.getDatum().addGeographicTransformation(GeodeticDatum.RGF93,
-                                        new CoordinateOperationSequence(ntf_r93.getIdentifier(),
-                                                LongitudeRotation.getLongitudeRotationFrom(crs.getDatum().getPrimeMeridian()), ntf_r93));
-                                LOGGER.info("Add NTv2 transformation from " + crs.getDatum() + " to RGF93 and WGS84");
+                                if(aco instanceof FrenchGeocentricNTF2RGF) {
+                                    FrenchGeocentricNTF2RGF ntf2rgf = (FrenchGeocentricNTF2RGF) aco;
+                                    crs.getDatum().addGeocentricTransformation(GeodeticDatum.RGF93, ntf2rgf);
+                                    crs.getDatum().addGeocentricTransformation(GeodeticDatum.WGS84, ntf2rgf);
+                                    LOGGER.info("Add French Geocentric Grid transformation from " + crs.getDatum() + " to RGF93 and WGS84");                                    
+                                    
+                                    AbstractCoordinateOperation gridNTF =  CRSGRIDPOOL.get("NTv2");
+                                    if(gridNTF==null){
+                                        NTv2GridShiftTransformation gridNTFNew = NTv2GridShiftTransformation.createNTv2GridShiftTransformation(grid);
+                                        gridNTFNew.loadGridShiftFile();
+                                        CRSGRIDPOOL.put("NTv2", gridNTFNew);
+                                        gridNTF=gridNTFNew;
+                                    }                                    
+                                    if (gridNTF instanceof NTv2GridShiftTransformation) {
+                                        NTv2GridShiftTransformation ntf_r93 = (NTv2GridShiftTransformation) gridNTF;
+                                        crs.getDatum().addGeographicTransformation(GeodeticDatum.WGS84,
+                                                new CoordinateOperationSequence(ntf_r93.getIdentifier(),
+                                                        LongitudeRotation.getLongitudeRotationFrom(crs.getDatum().getPrimeMeridian()), ntf_r93));
+                                        crs.getDatum().addGeographicTransformation(GeodeticDatum.RGF93,
+                                                new CoordinateOperationSequence(ntf_r93.getIdentifier(),
+                                                        LongitudeRotation.getLongitudeRotationFrom(crs.getDatum().getPrimeMeridian()), ntf_r93));
+                                        LOGGER.info("Add NTv2 transformation from " + crs.getDatum() + " to RGF93 and WGS84");
+                                    }
+                                }else{
+                                    LOGGER.info("Cannot find the  French Geocentric Grid transformation from " + crs.getDatum() + " to RGF93 and WGS84");
+                                }
                             } else {
                                 // This is the general case where we want to add a NTv2 transformation
-                                // using the file header to determine source and target datums
-                                NTv2GridShiftTransformation ntf_r93 = (NTv2GridShiftTransformation) CRSGRIDPOOL.get("NTv2");                                
-                                if (ntf_r93 == null) {
-                                    ntf_r93 = NTv2GridShiftTransformation.createNTv2GridShiftTransformation(grid);
+                                // using the file header to determine source and target datums                              
+                                AbstractCoordinateOperation aco = CRSGRIDPOOL.get("NTv2");
+                                if (aco == null) {
+                                    NTv2GridShiftTransformation ntf_r93 = NTv2GridShiftTransformation.createNTv2GridShiftTransformation(grid);
                                     ntf_r93.loadGridShiftFile();
                                     CRSGRIDPOOL.put("NTv2", ntf_r93);
                                 }
-                                GeodeticDatum datum = GeodeticDatum.getGeodeticDatum(ntf_r93.getToDatum());
-                                crs.getDatum().addGeographicTransformation(datum,
-                                        new CoordinateOperationSequence(
-                                                ntf_r93.getIdentifier(),
-                                                new LongitudeRotation(crs.getDatum().getPrimeMeridian().getLongitudeFromGreenwichInRadians()),
-                                                ntf_r93));
-                                LOGGER.info("Add NTv2 transformation from " + crs.getDatum() + " to " + datum);
+                                if (aco instanceof NTv2GridShiftTransformation) {
+                                    NTv2GridShiftTransformation ntf_r93 = (NTv2GridShiftTransformation) aco;
+                                    GeodeticDatum datum = GeodeticDatum.getGeodeticDatum(ntf_r93.getToDatum());
+                                    crs.getDatum().addGeographicTransformation(datum,
+                                            new CoordinateOperationSequence(
+                                                    ntf_r93.getIdentifier(),
+                                                    new LongitudeRotation(crs.getDatum().getPrimeMeridian().getLongitudeFromGreenwichInRadians()),
+                                                    ntf_r93));
+                                    LOGGER.info("Add NTv2 transformation from " + crs.getDatum() + " to " + datum);
+                                }
                             }
                         } catch (Exception ex) {
                             LOGGER.error("Cannot find the nadgrid " + grid + ".", ex);
