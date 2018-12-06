@@ -53,35 +53,14 @@ public class FrenchGeocentricNTF2RGF extends AbstractCoordinateOperation
         implements GeocentricTransformation, GridBasedTransformation {
 
     static final Logger LOGGER = LoggerFactory.getLogger(FrenchGeocentricNTF2RGF.class);
-
-    /**
-     * The Identifier used for the French Geocentric NTF to RGF transformation.
-     */
-    private static final Identifier opId =
-            new Identifier("EPSG", "9655", "French geographic interpolation", "NTF2RGF93");
-    private static final GeocentricTranslation NTF2WGS84 =
+    
+    private  final GeocentricTranslation NTF2WGS84 =
             new GeocentricTranslation(-168.0, -60.0, 320.0);
-    private static final Geocentric2Geographic GEOC2GEOG =
+    private  final Geocentric2Geographic GEOC2GEOG =
             new Geocentric2Geographic(Ellipsoid.GRS80);
-    private final static UnitConversion RAD2DD = UnitConversion.createUnitConverter(Unit.RADIAN, Unit.DEGREE);
-
-    private volatile static FrenchGeocentricNTF2RGF GR3DF97A;
-
-    public final static FrenchGeocentricNTF2RGF getInstance() {
-        if (GR3DF97A == null) {
-            synchronized (FrenchGeocentricNTF2RGF.class) {
-                if (GR3DF97A == null) {
-                    try {
-                        GR3DF97A = new FrenchGeocentricNTF2RGF();
-                    } catch(Exception e) {
-                        LOGGER.error("Error initializing GR3DF97A french geocentric transformation", e);
-                    }
-                }
-            }
-        }
-        return GR3DF97A;
-    };
-
+    private final UnitConversion RAD2DD = UnitConversion.createUnitConverter(Unit.RADIAN, Unit.DEGREE);
+  
+    
 
     /**
      * The GeographicGrid that define this transformation.
@@ -97,8 +76,8 @@ public class FrenchGeocentricNTF2RGF extends AbstractCoordinateOperation
      * gride can be found <a href =
      * http://geodesie.ign.fr/contenu/fichiers/documentation/rgf93/gr3df97a.txt>here</a>.
      */
-    private FrenchGeocentricNTF2RGF() throws Exception {
-        super(opId);
+    public FrenchGeocentricNTF2RGF() throws Exception {
+        super(new Identifier("EPSG", "9655", "French geographic interpolation", "NTF2RGF93"));
         this.precision = 0.001;
         try {
             String gridName = "gr3df97a.txt";
@@ -178,11 +157,12 @@ public class FrenchGeocentricNTF2RGF extends AbstractCoordinateOperation
 
     /**
      * Creates the inverse CoordinateOperation.
+     * @return 
+     * @throws org.cts.op.NonInvertibleOperationException
      */
     @Override
     public GeocentricTransformation inverse() throws NonInvertibleOperationException {
         if (inverse == null) {
-            synchronized (this) {
                 try {
                     inverse = new FrenchGeocentricNTF2RGF() {
                         @Override
@@ -230,7 +210,6 @@ public class FrenchGeocentricNTF2RGF extends AbstractCoordinateOperation
                 } catch (Exception e) {
                     throw new NonInvertibleOperationException(e.getMessage());
                 }
-            }
         }
         return inverse;
     }
@@ -240,6 +219,7 @@ public class FrenchGeocentricNTF2RGF extends AbstractCoordinateOperation
      * <code>this</code>.
      *
      * @param o The object to compare this transformation to
+     * @return 
      */
     @Override
     public boolean equals(Object o) {
@@ -249,6 +229,7 @@ public class FrenchGeocentricNTF2RGF extends AbstractCoordinateOperation
 
     /**
      * Returns the hash code for this GeocentricTranslation.
+     * @return 
      */
     @Override
     public int hashCode() {
@@ -258,6 +239,7 @@ public class FrenchGeocentricNTF2RGF extends AbstractCoordinateOperation
 
     /**
      * Return a string representation of this transformation.
+     * @return 
      */
     @Override
     public String toString() {

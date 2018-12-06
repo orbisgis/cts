@@ -203,10 +203,11 @@ public class CirceMetropoleComplianceTest extends BaseCoordinateTransformTest {
         ETRS_UTM32N = new ProjectedCRS(new Identifier("IGNF","ETRS_UTM32N","ETRS UTM32N"), ETRS89,
                 new UniversalTransverseMercator(Ellipsoid.GRS80, params));
         try {
-            NTF_G.addGeocentricTransformation(RGF93, FrenchGeocentricNTF2RGF.getInstance());
-            NTF_P.addGeocentricTransformation(RGF93, FrenchGeocentricNTF2RGF.getInstance());
-            NTF_G.addGeocentricTransformation(ETRS89, FrenchGeocentricNTF2RGF.getInstance());
-            NTF_P.addGeocentricTransformation(ETRS89, FrenchGeocentricNTF2RGF.getInstance());
+            FrenchGeocentricNTF2RGF ntf2RGF = new FrenchGeocentricNTF2RGF();
+            NTF_G.addGeocentricTransformation(RGF93, ntf2RGF);
+            NTF_P.addGeocentricTransformation(RGF93,ntf2RGF);
+            NTF_G.addGeocentricTransformation(ETRS89, ntf2RGF);
+            NTF_P.addGeocentricTransformation(ETRS89, ntf2RGF);
             LAMBE_IGN69 = new CompoundCRS(new Identifier("IGNF","LAMBE_IGN69","Lambert 2 étendu + IGN69"), LAMBE, IGN69);
             LAMBE_IGN78 = new CompoundCRS(new Identifier("IGNF","LAMBE_IGN78","Lambert 2 étendu + IGN78"), LAMBE, IGN69);
             LAMB93_IGN69 = new CompoundCRS(new Identifier("IGNF","LAMB93_IGN69","Lambert 93 + IGN69"), LAMB93, IGN69);
