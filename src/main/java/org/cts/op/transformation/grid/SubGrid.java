@@ -312,29 +312,28 @@ public class SubGrid implements Cloneable, Serializable {
     }
 
     public String getDetails() {
-        StringBuilder buf = new StringBuilder("Sub Grid : ");
-        buf.append(this.subGridName);
-        buf.append("\nParent   : ");
-        buf.append(this.parentSubGridName);
-        buf.append("\nCreated  : ");
-        buf.append(this.created);
-        buf.append("\nUpdated  : ");
-        buf.append(this.updated);
-        buf.append("\nMin Lat  : ");
-        buf.append(this.minLat);
-        buf.append("\nMax Lat  : ");
-        buf.append(this.maxLat);
-        buf.append("\nMin Lon  : ");
-        buf.append(this.minLon);
-        buf.append("\nMax Lon  : ");
-        buf.append(this.maxLon);
-        buf.append("\nLat Intvl: ");
-        buf.append(this.latInterval);
-        buf.append("\nLon Intvl: ");
-        buf.append(this.lonInterval);
-        buf.append("\nNode Cnt : ");
-        buf.append(this.nodeCount);
-        return buf.toString();
+        String buf = "Sub Grid : " + this.subGridName +
+                "\nParent   : " +
+                this.parentSubGridName +
+                "\nCreated  : " +
+                this.created +
+                "\nUpdated  : " +
+                this.updated +
+                "\nMin Lat  : " +
+                this.minLat +
+                "\nMax Lat  : " +
+                this.maxLat +
+                "\nMin Lon  : " +
+                this.minLon +
+                "\nMax Lon  : " +
+                this.maxLon +
+                "\nLat Intvl: " +
+                this.latInterval +
+                "\nLon Intvl: " +
+                this.lonInterval +
+                "\nNode Cnt : " +
+                this.nodeCount;
+        return buf;
     }
 
     @Override

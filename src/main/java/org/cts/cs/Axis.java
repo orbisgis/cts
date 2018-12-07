@@ -235,13 +235,12 @@ public class Axis {
      * @return 
      */
     public String toWKT() {
-        StringBuilder w = new StringBuilder();
-        w.append("AXIS[\"");
-        w.append(this.getName());
-        w.append("\",");
-        w.append(this.getDirection());
-        w.append(']');
-        return w.toString();
+        String w = "AXIS[\"" +
+                this.getName() +
+                "\"," +
+                this.getDirection() +
+                ']';
+        return w;
     }
 
     /**

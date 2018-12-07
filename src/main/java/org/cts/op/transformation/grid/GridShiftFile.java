@@ -280,29 +280,28 @@ public class GridShiftFile
 
     @Override
     public String toString() {
-        StringBuilder buf = new StringBuilder("Headers  : ");
-        buf.append(this.overviewHeaderCount);
-        buf.append("\nSub Hdrs : ");
-        buf.append(this.subGridHeaderCount);
-        buf.append("\nSub Grids: ");
-        buf.append(this.subGridCount);
-        buf.append("\nType     : ");
-        buf.append(this.shiftType);
-        buf.append("\nVersion  : ");
-        buf.append(this.version);
-        buf.append("\nFr Ellpsd: ");
-        buf.append(this.fromEllipsoid);
-        buf.append("\nTo Ellpsd: ");
-        buf.append(this.toEllipsoid);
-        buf.append("\nFr Maj Ax: ");
-        buf.append(this.fromSemiMajorAxis);
-        buf.append("\nFr Min Ax: ");
-        buf.append(this.fromSemiMinorAxis);
-        buf.append("\nTo Maj Ax: ");
-        buf.append(this.toSemiMajorAxis);
-        buf.append("\nTo Min Ax: ");
-        buf.append(this.toSemiMinorAxis);
-        return buf.toString();
+        String buf = "Headers  : " + this.overviewHeaderCount +
+                "\nSub Hdrs : " +
+                this.subGridHeaderCount +
+                "\nSub Grids: " +
+                this.subGridCount +
+                "\nType     : " +
+                this.shiftType +
+                "\nVersion  : " +
+                this.version +
+                "\nFr Ellpsd: " +
+                this.fromEllipsoid +
+                "\nTo Ellpsd: " +
+                this.toEllipsoid +
+                "\nFr Maj Ax: " +
+                this.fromSemiMajorAxis +
+                "\nFr Min Ax: " +
+                this.fromSemiMinorAxis +
+                "\nTo Maj Ax: " +
+                this.toSemiMajorAxis +
+                "\nTo Min Ax: " +
+                this.toSemiMinorAxis;
+        return buf;
     }
 
     public SubGrid[] getSubGridTree() {
