@@ -42,7 +42,6 @@ import java.util.Map;
  */
 public abstract class AbstractProjRegistry implements Registry {
 
-    public Logger LOGGER = LoggerFactory.getLogger(org.cts.registry.AbstractProjRegistry.class);
     /**
      * The parser associated to the PROJ registry.
      */

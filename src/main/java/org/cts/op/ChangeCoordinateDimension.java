@@ -26,8 +26,6 @@ package org.cts.op;
 import org.cts.Identifier;
 import org.cts.IllegalCoordinateException;
 
-import java.util.Arrays;
-
 /**
  * Change de coordinate dimension. For example, this operation can add or remove
  * a vertical dimension to a 2D coordinate.

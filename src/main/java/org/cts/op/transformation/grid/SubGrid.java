@@ -171,9 +171,9 @@ public class SubGrid implements Cloneable, Serializable {
             if (this.subGrid == null) {
                 return this;
             }
-            for (int i = 0; i < this.subGrid.length; i++) {
-                if (this.subGrid[i].isCoordWithin(lon, lat)) {
-                    return this.subGrid[i].getSubGridForCoord(lon, lat);
+            for (SubGrid aSubGrid : this.subGrid) {
+                if (aSubGrid.isCoordWithin(lon, lat)) {
+                    return aSubGrid.getSubGridForCoord(lon, lat);
                 }
             }
             return this;

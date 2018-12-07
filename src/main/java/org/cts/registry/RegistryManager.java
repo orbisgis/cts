@@ -129,7 +129,7 @@ public final class RegistryManager {
         for (Registry r : registries.values()) {
             names.add(r.getRegistryName());
         }
-        return names.toArray(new String[names.size()]);
+        return names.toArray(new String[0]);
     }
 
     /**

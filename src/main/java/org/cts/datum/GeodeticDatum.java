@@ -366,31 +366,27 @@ public class GeodeticDatum extends AbstractDatum {
         if (geographicTransformations.get(targetDatum) == null) {
             geographicTransformations.put(targetDatum, new HashSet<CoordinateOperation>());
         }
-        try {
-            CoordinateOperationSequence cos = null;
-            // datum change with only prime meridian change
-            if (coordOp.isIdentity() && this.getEllipsoid().equals(targetDatum.getEllipsoid())) {
-                cos = new CoordinateOperationSequence(
-                        new Identifier(CoordinateOperationSequence.class,
-                                "Geographic Transformation from " + this.getShortName() + " to " + targetDatum.getShortName()),
-                        new LongitudeRotation(this.primeMeridian.getLongitudeFromGreenwichInRadians()),
-                        new LongitudeRotation(targetDatum.getPrimeMeridian().getLongitudeFromGreenwichInRadians()).inverse());
-            }
-            else {
-                cos = new CoordinateOperationSequence(
-                        new Identifier(CoordinateOperationSequence.class,
-                                "Geographic Transformation from " + this.getShortName() + " to " + targetDatum.getShortName()),
-                        new LongitudeRotation(this.primeMeridian.getLongitudeFromGreenwichInRadians()),
-                        new Geographic2Geocentric(ellipsoid),
-                        coordOp,
-                        new Geocentric2Geographic(targetDatum.getEllipsoid()),
-                        new LongitudeRotation(targetDatum.getPrimeMeridian().getLongitudeFromGreenwichInRadians()).inverse());
-            }
-            geographicTransformations.get(targetDatum).add(cos);
-            // Inverse geographic operation is added through previous instruction
-        } catch(NonInvertibleOperationException e) {
-                e.printStackTrace();
+        CoordinateOperationSequence cos = null;
+        // datum change with only prime meridian change
+        if (coordOp.isIdentity() && this.getEllipsoid().equals(targetDatum.getEllipsoid())) {
+            cos = new CoordinateOperationSequence(
+                    new Identifier(CoordinateOperationSequence.class,
+                            "Geographic Transformation from " + this.getShortName() + " to " + targetDatum.getShortName()),
+                    new LongitudeRotation(this.primeMeridian.getLongitudeFromGreenwichInRadians()),
+                    new LongitudeRotation(targetDatum.getPrimeMeridian().getLongitudeFromGreenwichInRadians()).inverse());
         }
+        else {
+            cos = new CoordinateOperationSequence(
+                    new Identifier(CoordinateOperationSequence.class,
+                            "Geographic Transformation from " + this.getShortName() + " to " + targetDatum.getShortName()),
+                    new LongitudeRotation(this.primeMeridian.getLongitudeFromGreenwichInRadians()),
+                    new Geographic2Geocentric(ellipsoid),
+                    coordOp,
+                    new Geocentric2Geographic(targetDatum.getEllipsoid()),
+                    new LongitudeRotation(targetDatum.getPrimeMeridian().getLongitudeFromGreenwichInRadians()).inverse());
+        }
+        geographicTransformations.get(targetDatum).add(cos);
+        // Inverse geographic operation is added through previous instruction
     }
 
     /**

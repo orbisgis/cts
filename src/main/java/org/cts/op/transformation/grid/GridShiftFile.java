@@ -187,11 +187,11 @@ public class GridShiftFile
     private SubGrid[] createSubGridTree(SubGrid[] subGrid) {
         int topLevelCount = 0;
         HashMap subGridMap = new HashMap();
-        for (int i = 0; i < subGrid.length; i++) {
-            if (subGrid[i].getParentSubGridName().equalsIgnoreCase("NONE")) {
+        for (SubGrid aSubGrid : subGrid) {
+            if (aSubGrid.getParentSubGridName().equalsIgnoreCase("NONE")) {
                 topLevelCount++;
             }
-            subGridMap.put(subGrid[i].getSubGridName(), new ArrayList());
+            subGridMap.put(aSubGrid.getSubGridName(), new ArrayList());
         }
         SubGrid[] topLevelSubGridTemp = new SubGrid[topLevelCount];
         topLevelCount = 0;
@@ -257,8 +257,8 @@ public class GridShiftFile
 
     private SubGrid getSubGrid(double lon, double lat) {
         SubGrid sub = null;
-        for (int i = 0; i < this.topLevelSubGrid.length; i++) {
-            sub = this.topLevelSubGrid[i].getSubGridForCoord(lon, lat);
+        for (SubGrid aTopLevelSubGrid : this.topLevelSubGrid) {
+            sub = aTopLevelSubGrid.getSubGridForCoord(lon, lat);
             if (sub != null) {
                 break;
             }

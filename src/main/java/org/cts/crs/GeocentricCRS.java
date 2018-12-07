@@ -37,7 +37,6 @@ import org.cts.op.CoordinateOperationSequence;
 import org.cts.op.Geocentric2Geographic;
 import org.cts.op.Geographic2Geocentric;
 import org.cts.op.LongitudeRotation;
-import org.cts.op.NonInvertibleOperationException;
 import org.cts.units.Unit;
 
 import static org.cts.cs.Axis.*;
