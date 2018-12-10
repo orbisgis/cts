@@ -103,11 +103,7 @@ public class GeodeticDatumTest extends CTSTestCase {
                 ED50.getExtent().equals(GeographicExtent.WORLD));
     }
 
-    @Test
-    public void testGetDatum() {
-        Identifier id = new Identifier("EPSG", "6171", "Réseau géodésique français 1993", "RGF93");
-        assertTrue("test de getDatum(id)", IdentifiableComponent.getComponent(id).equals(RGF93));
-    }
+    
     
     @Test
     public void testCreateGeodeticDatum() {
