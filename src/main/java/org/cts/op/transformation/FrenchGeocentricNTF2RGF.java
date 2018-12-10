@@ -81,7 +81,7 @@ public class FrenchGeocentricNTF2RGF extends AbstractCoordinateOperation
         this.precision = 0.001;
         try {
             String gridName = "gr3df97a.txt";
-            InputStream is = GridUtils.class.getClassLoader().getResourceAsStream("org/cts/op/transformation/grids/"+gridName);
+            InputStream is = GridUtils.class.getResourceAsStream(gridName);
             if(is!=null){
             GRID3D = new IGNGeographicGrid(is, false);
             }
@@ -196,8 +196,7 @@ public class FrenchGeocentricNTF2RGF extends AbstractCoordinateOperation
                         }
 
                         @Override
-                        public GeocentricTransformation inverse()
-                                throws NonInvertibleOperationException {
+                        public GeocentricTransformation inverse() {
                             return FrenchGeocentricNTF2RGF.this;
                         }
 

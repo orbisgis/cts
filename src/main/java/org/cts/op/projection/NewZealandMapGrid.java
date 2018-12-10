@@ -117,7 +117,7 @@ public class NewZealandMapGrid extends Projection {
      * compatible with this <code>CoordinateOperation</code>.
      */
     @Override
-    public double[] transform(double[] coord) throws CoordinateDimensionException {
+    public double[] transform(double[] coord) {
         double lambda = coord[1] - lon0;
         double isoPhi = ellipsoid.isometricLatitude(coord[0]) - ellipsoid.isometricLatitude(lat0);
         Complex zeta = new Complex(isoPhi, lambda);
@@ -137,10 +137,10 @@ public class NewZealandMapGrid extends Projection {
      * <http://pubs.er.usgs.gov/publication/pp1395>
      */
     @Override
-    public Projection inverse() throws NonInvertibleOperationException {
+    public Projection inverse() {
         return new NewZealandMapGrid(ellipsoid, parameters) {
             @Override
-            public double[] transform(double[] coord) throws CoordinateDimensionException {
+            public double[] transform(double[] coord) {
                 Complex z = (new Complex(coord[1] - FN, coord[0] - FE)).divideBy(new Complex(ellipsoid.getSemiMajorAxis()));
                 Complex[] b = new Complex[7];
                 b[1] = new Complex(1.3231270439);
@@ -162,8 +162,7 @@ public class NewZealandMapGrid extends Projection {
             }
 
             @Override
-            public Projection inverse()
-                    throws NonInvertibleOperationException {
+            public Projection inverse() {
                 return NewZealandMapGrid.this;
             }
             @Override

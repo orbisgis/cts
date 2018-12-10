@@ -383,7 +383,7 @@ public class SevenParameterTransformation extends AbstractCoordinateOperation
      * Creates the inverse CoordinateOperation.
      */
     @Override
-    public SevenParameterTransformation inverse() throws NonInvertibleOperationException {
+    public SevenParameterTransformation inverse() {
         // If inverse has already been calculated, return cached object.
         if (inverse != null) return inverse;
         return inverse = inverseStandard();
@@ -417,7 +417,7 @@ public class SevenParameterTransformation extends AbstractCoordinateOperation
             }
 
             @Override
-            public SevenParameterTransformation inverse() throws NonInvertibleOperationException {
+            public SevenParameterTransformation inverse() {
                 return SevenParameterTransformation.this;
             }
 
@@ -464,7 +464,7 @@ public class SevenParameterTransformation extends AbstractCoordinateOperation
             }
 
             @Override
-            public SevenParameterTransformation inverse() throws NonInvertibleOperationException {
+            public SevenParameterTransformation inverse() {
                 return SevenParameterTransformation.this;
             }
 

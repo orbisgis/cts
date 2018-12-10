@@ -26,8 +26,6 @@ package org.cts.op.transformation;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
 
 import org.cts.CoordinateDimensionException;
@@ -82,11 +80,9 @@ public class NTv2GridShiftTransformation extends AbstractCoordinateOperation imp
      *
      * @param ntv2_gridName the name of the file that defined the wanted grid
      * transformation (for instance : ntf_r93.gsb).
-     * @return 
-     * @throws URISyntaxException
-     * @throws MalformedURLException
+     * @return
      */
-    public static NTv2GridShiftTransformation createNTv2GridShiftTransformation(String ntv2_gridName) throws URISyntaxException, MalformedURLException, NullPointerException, IOException {
+    public static NTv2GridShiftTransformation createNTv2GridShiftTransformation(String ntv2_gridName) throws NullPointerException, IOException {
         URL urlGRID = GridUtils.class.getResource(ntv2_gridName);
         if (urlGRID == null) {
             urlGRID = GridUtils.findGrid(ntv2_gridName).toURI().toURL();
@@ -162,7 +158,7 @@ public class NTv2GridShiftTransformation extends AbstractCoordinateOperation imp
      * @throws org.cts.op.NonInvertibleOperationException
      */
     @Override
-    public CoordinateOperation inverse() throws NonInvertibleOperationException {
+    public CoordinateOperation inverse() {
         if (inverse != null) return inverse;
         try {
             if (gsf == null || !gsf.isLoaded()) {
@@ -194,8 +190,7 @@ public class NTv2GridShiftTransformation extends AbstractCoordinateOperation imp
             }
 
             @Override
-            public CoordinateOperation inverse()
-                    throws NonInvertibleOperationException {
+            public CoordinateOperation inverse() {
                 return NTv2GridShiftTransformation.this;
             }
         };

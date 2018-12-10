@@ -56,22 +56,22 @@ import org.cts.cs.OutOfExtentException;
  */
 public interface Grid {
 
-    public static enum InterpolationMethod {
+    public enum InterpolationMethod {
 
         NEAREST, BILINEAR, BICUBIC
     }
     /**
      * Nearest interpolation method.
      */
-    public final static int NEAREST = 1;
+    public int NEAREST = 1;
     /**
      * Bilinear interpolation method.
      */
-    public final static int BILINEAR = 2;
+    public int BILINEAR = 2;
     /**
      * Bicubic interpolation method.
      */
-    public final static int BICUBIC = 3;
+    public int BICUBIC = 3;
 
     /**
      * Get the number of columns of this grid.

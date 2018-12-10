@@ -77,7 +77,7 @@ public class CoordinateOperationSequence extends AbstractCoordinateOperation {
     public CoordinateOperationSequence(Identifier identifier,
             List<CoordinateOperation> list) {
         super(identifier);
-        this.sequence = list.toArray(new CoordinateOperation[list.size()]);
+        this.sequence = list.toArray(new CoordinateOperation[0]);
         this.sequence = cleanSequence(sequence);
         for (CoordinateOperation op : sequence) {
             precision += op.getPrecision();
@@ -114,7 +114,7 @@ public class CoordinateOperationSequence extends AbstractCoordinateOperation {
     public CoordinateOperationSequence(Identifier identifier,
             List<CoordinateOperation> list, double precision) {
         super(identifier);
-        this.sequence = list.toArray(new CoordinateOperation[list.size()]);
+        this.sequence = list.toArray(new CoordinateOperation[0]);
         this.sequence = cleanSequence(sequence);
         this.precision = precision;
     }
@@ -257,7 +257,7 @@ public class CoordinateOperationSequence extends AbstractCoordinateOperation {
         if (sequence.length > 0 && result.isEmpty()) {
             result.add(Identity.IDENTITY);
         }
-        return result.toArray(new CoordinateOperation[result.size()]);
+        return result.toArray(new CoordinateOperation[0]);
     }
 
     /**
@@ -295,7 +295,7 @@ public class CoordinateOperationSequence extends AbstractCoordinateOperation {
         for (CoordinateOperation op : sequence) {
             sb.append("\n   ").append(op.toString());
         }
-        sb.append("\n} precision = " + getPrecision());
+        sb.append("\n} precision = ").append(getPrecision());
         return sb.toString();
     }
 

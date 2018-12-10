@@ -131,8 +131,7 @@ public class Geocentric2Geographic extends AbstractCoordinateOperation {
         double lon = atan2(Y, X);
         // Calcul de la latitude
         double XY2 = sqrt(X * X + Y * Y);
-        double lat0 = atan(Z / (XY2 * (1 - (a * e2 / sqrt(X * X + Y * Y + Z * Z)))));
-        double lati = lat0;
+        double lati = atan(Z / (XY2 * (1 - (a * e2 / sqrt(X * X + Y * Y + Z * Z)))));
         double lati1 = 0;
         while (abs(lati1 - lati) > epsilon) {
             lati = lati1;
@@ -153,7 +152,7 @@ public class Geocentric2Geographic extends AbstractCoordinateOperation {
      * Creates the inverse CoordinateOperation.
      */
     @Override
-    public CoordinateOperation inverse() throws NonInvertibleOperationException {
+    public CoordinateOperation inverse() {
         return new Geographic2Geocentric(ellipsoid);
     }
 

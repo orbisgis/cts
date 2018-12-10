@@ -295,13 +295,12 @@ public class Identifier implements Identifiable {
      * @return 
      */
     public String toWKT() {
-        StringBuilder w = new StringBuilder();
-        w.append("AUTHORITY[\"");
-        w.append(this.getAuthorityName());
-        w.append("\",\"");
-        w.append(this.getAuthorityKey());
-        w.append("\"]");
-        return w.toString();
+        String w = "AUTHORITY[\"" +
+                this.getAuthorityName() +
+                "\",\"" +
+                this.getAuthorityKey() +
+                "\"]";
+        return w;
     }
 
     /**

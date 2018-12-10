@@ -133,7 +133,7 @@ public class CylindricalEqualArea extends Projection {
      * compatible with this <code>CoordinateOperation</code>.
      */
     @Override
-    public double[] transform(double[] coord) throws CoordinateDimensionException {
+    public double[] transform(double[] coord) {
         double lat = coord[0];
         double a = ellipsoid.getSemiMajorAxis();
         coord[0] = FE + a * k0 * (coord[1] - lon0);
@@ -149,10 +149,10 @@ public class CylindricalEqualArea extends Projection {
      * <http://pubs.er.usgs.gov/publication/pp1395>
      */
     @Override
-    public Projection inverse() throws NonInvertibleOperationException {
+    public Projection inverse() {
         return new CylindricalEqualArea(ellipsoid, parameters) {
             @Override
-            public double[] transform(double[] coord) throws CoordinateDimensionException {
+            public double[] transform(double[] coord) {
                 double a = ellipsoid.getSemiMajorAxis();
                 double e = ellipsoid.getEccentricity();
                 double X = coord[0];
@@ -181,8 +181,7 @@ public class CylindricalEqualArea extends Projection {
             }
 
             @Override
-            public Projection inverse()
-                    throws NonInvertibleOperationException {
+            public Projection inverse() {
                 return CylindricalEqualArea.this;
             }
 

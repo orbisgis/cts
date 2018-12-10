@@ -147,7 +147,7 @@ public class ObliqueMercator extends Projection {
      * compatible with this <code>CoordinateOperation</code>.
      */
     @Override
-    public double[] transform(double[] coord) throws CoordinateDimensionException {
+    public double[] transform(double[] coord) {
         double e = ellipsoid.getEccentricity();
         double esin = e * sin(coord[0]);
         double t = tan((PI / 2 - coord[0]) / 2) / pow((1 - esin) / (1 + esin), e / 2);
@@ -170,10 +170,10 @@ public class ObliqueMercator extends Projection {
      * <http://www.epsg.org/guides/G7-2.html>
      */
     @Override
-    public Projection inverse() throws NonInvertibleOperationException {
+    public Projection inverse() {
         return new ObliqueMercator(ellipsoid, parameters) {
             @Override
-            public double[] transform(double[] coord) throws CoordinateDimensionException {
+            public double[] transform(double[] coord) {
                 double v = (coord[0] - FE) * cos(gammac) - (coord[1] - FN) * sin(gammac);
                 double u = (coord[1] - FN) * cos(gammac) + (coord[0] - FE) * sin(gammac) + abs(uc) * signum(latc);
                 double Q = exp(-B * v / A);
@@ -193,8 +193,7 @@ public class ObliqueMercator extends Projection {
             }
 
             @Override
-            public Projection inverse()
-                    throws NonInvertibleOperationException {
+            public Projection inverse() {
                 return ObliqueMercator.this;
             }
             @Override

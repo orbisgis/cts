@@ -128,7 +128,7 @@ public class LambertAzimuthalEqualArea extends Projection {
      * compatible with this <code>CoordinateOperation</code>.
      */
     @Override
-    public double[] transform(double[] coord) throws CoordinateDimensionException {
+    public double[] transform(double[] coord) {
         double e = ellipsoid.getEccentricity();
         double e2 = ellipsoid.getSquareEccentricity();
         double esin = e * sin(coord[0]);
@@ -148,10 +148,10 @@ public class LambertAzimuthalEqualArea extends Projection {
      * <http://www.epsg.org/guides/G7-2.html>
      */
     @Override
-    public Projection inverse() throws NonInvertibleOperationException {
+    public Projection inverse() {
         return new LambertAzimuthalEqualArea(ellipsoid, parameters) {
             @Override
-            public double[] transform(double[] coord) throws CoordinateDimensionException {
+            public double[] transform(double[] coord) {
                 double e = ellipsoid.getEccentricity();
                 double e2 = ellipsoid.getSquareEccentricity();
                 double x = (coord[0] - FE) / D;
@@ -175,8 +175,7 @@ public class LambertAzimuthalEqualArea extends Projection {
             }
 
             @Override
-            public Projection inverse()
-                    throws NonInvertibleOperationException {
+            public Projection inverse() {
                 return LambertAzimuthalEqualArea.this;
             }
 

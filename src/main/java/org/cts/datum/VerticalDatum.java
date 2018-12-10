@@ -427,7 +427,7 @@ public class VerticalDatum extends AbstractDatum {
     /**
      * Vertical Datum classification based on the surface type.
      */
-    public static enum Type {
+    public enum Type {
 
         GEOIDAL, //WKT code 2005
         ELLIPSOIDAL, //WKT code 2002
@@ -435,7 +435,8 @@ public class VerticalDatum extends AbstractDatum {
         BAROMETRIC, //WKT code 2003
         ORTHOMETRIC, //WKT code 2001
         OTHER_SURFACE //WKT code 2000
-    };
+    }
+
     /**
      * The type of this vertical datum. Default is "geoidal".
      */

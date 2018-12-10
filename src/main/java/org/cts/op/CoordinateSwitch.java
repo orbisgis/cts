@@ -67,7 +67,7 @@ public class CoordinateSwitch extends AbstractCoordinateOperation {
      * Creates the inverse CoordinateOperation.
      */
     @Override
-    public CoordinateOperation inverse() throws NonInvertibleOperationException {
+    public CoordinateOperation inverse() {
         return this;
     }
 
@@ -91,9 +91,8 @@ public class CoordinateSwitch extends AbstractCoordinateOperation {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        return o != null &&
-               o instanceof CoordinateSwitch &&
-               pos1 == ((CoordinateSwitch)o).pos1 &&
-               pos2 == ((CoordinateSwitch)o).pos2;
+        return o instanceof CoordinateSwitch &&
+                pos1 == ((CoordinateSwitch) o).pos1 &&
+                pos2 == ((CoordinateSwitch) o).pos2;
     }
 }

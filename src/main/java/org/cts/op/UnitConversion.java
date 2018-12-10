@@ -117,7 +117,7 @@ public class UnitConversion extends AbstractCoordinateOperation {
      * Creates the inverse CoordinateOperation.
      */
     @Override
-    public CoordinateOperation inverse() throws NonInvertibleOperationException {
+    public CoordinateOperation inverse() {
         return new UnitConversion(targetUnits, sourceUnits);
     }
 
@@ -213,11 +213,11 @@ public class UnitConversion extends AbstractCoordinateOperation {
 
     public int hashCode() {
         int hash = 7;
-        for (int i = 0 ; i < sourceUnits.length ; i++) {
-            hash += 13*hash + sourceUnits[i].hashCode();
+        for (Unit sourceUnit : sourceUnits) {
+            hash += 13 * hash + sourceUnit.hashCode();
         }
-        for (int i = 0 ; i < targetUnits.length ; i++) {
-            hash += 17*hash + targetUnits[i].hashCode();
+        for (Unit targetUnit : targetUnits) {
+            hash += 17 * hash + targetUnit.hashCode();
         }
         return hash;
     }

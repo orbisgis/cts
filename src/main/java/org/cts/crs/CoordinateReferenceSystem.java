@@ -52,7 +52,7 @@ public interface CoordinateReferenceSystem extends Identifiable {
     /**
      * Coordinate Reference System Type.
      */
-    public static enum Type {
+    public enum Type {
 
         GEOCENTRIC, GEOGRAPHIC3D, GEOGRAPHIC2D, PROJECTED, VERTICAL, COMPOUND, ENGINEERING
     }

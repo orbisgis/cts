@@ -171,9 +171,9 @@ public class SubGrid implements Cloneable, Serializable {
             if (this.subGrid == null) {
                 return this;
             }
-            for (int i = 0; i < this.subGrid.length; i++) {
-                if (this.subGrid[i].isCoordWithin(lon, lat)) {
-                    return this.subGrid[i].getSubGridForCoord(lon, lat);
+            for (SubGrid aSubGrid : this.subGrid) {
+                if (aSubGrid.isCoordWithin(lon, lat)) {
+                    return aSubGrid.getSubGridForCoord(lon, lat);
                 }
             }
             return this;
@@ -183,10 +183,7 @@ public class SubGrid implements Cloneable, Serializable {
     }
 
     private boolean isCoordWithin(double lon, double lat) {
-        if ((lon >= this.minLon) && (lon < this.maxLon) && (lat >= this.minLat) && (lat < this.maxLat)) {
-            return true;
-        }
-        return false;
+        return (lon >= this.minLon) && (lon < this.maxLon) && (lat >= this.minLat) && (lat < this.maxLat);
     }
 
     private double interpolate(float a, float b, float c, float d, double X, double Y) {
@@ -225,7 +222,6 @@ public class SubGrid implements Cloneable, Serializable {
                 gs.setLatAccuracySeconds(interpolate(this.latAccuracy[indexA], this.latAccuracy[indexB], this.latAccuracy[indexC], this.latAccuracy[indexD], X, Y));
             }
         } else {
-            synchronized (this.raf) {
                 byte[] b4 = new byte[4];
                 long nodeOffset = this.subGridOffset + 176L + indexA * 16;
                 this.raf.seek(nodeOffset);
@@ -280,7 +276,7 @@ public class SubGrid implements Cloneable, Serializable {
 
                 gs.setLatAccuracyAvailable(true);
                 gs.setLatAccuracySeconds(interpolate(latAccuracyA, latAccuracyB, latAccuracyC, latAccuracyD, X, Y));
-            }
+            
         }
 
         return gs;
@@ -316,29 +312,28 @@ public class SubGrid implements Cloneable, Serializable {
     }
 
     public String getDetails() {
-        StringBuilder buf = new StringBuilder("Sub Grid : ");
-        buf.append(this.subGridName);
-        buf.append("\nParent   : ");
-        buf.append(this.parentSubGridName);
-        buf.append("\nCreated  : ");
-        buf.append(this.created);
-        buf.append("\nUpdated  : ");
-        buf.append(this.updated);
-        buf.append("\nMin Lat  : ");
-        buf.append(this.minLat);
-        buf.append("\nMax Lat  : ");
-        buf.append(this.maxLat);
-        buf.append("\nMin Lon  : ");
-        buf.append(this.minLon);
-        buf.append("\nMax Lon  : ");
-        buf.append(this.maxLon);
-        buf.append("\nLat Intvl: ");
-        buf.append(this.latInterval);
-        buf.append("\nLon Intvl: ");
-        buf.append(this.lonInterval);
-        buf.append("\nNode Cnt : ");
-        buf.append(this.nodeCount);
-        return buf.toString();
+        String buf = "Sub Grid : " + this.subGridName +
+                "\nParent   : " +
+                this.parentSubGridName +
+                "\nCreated  : " +
+                this.created +
+                "\nUpdated  : " +
+                this.updated +
+                "\nMin Lat  : " +
+                this.minLat +
+                "\nMax Lat  : " +
+                this.maxLat +
+                "\nMin Lon  : " +
+                this.minLon +
+                "\nMax Lon  : " +
+                this.maxLon +
+                "\nLat Intvl: " +
+                this.latInterval +
+                "\nLon Intvl: " +
+                this.lonInterval +
+                "\nNode Cnt : " +
+                this.nodeCount;
+        return buf;
     }
 
     @Override

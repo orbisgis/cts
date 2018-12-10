@@ -111,10 +111,7 @@ public final class Complex extends Number {
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Complex) {
-            if (re == ((Complex) obj).re() && im == ((Complex) obj).im()) {
-                return true;
-            }
-            return false;
+            return re == ((Complex) obj).re() && im == ((Complex) obj).im();
         }
         return false;
     }

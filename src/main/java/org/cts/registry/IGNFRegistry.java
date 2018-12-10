@@ -50,8 +50,7 @@ public class IGNFRegistry extends AbstractProjRegistry {
     @Override
     public Map<String, String> getParameters(String code) throws RegistryException {
         try {
-            Map<String, String> crsParameters = projParser.readParameters(code, IGNF_REGEX);
-            return crsParameters;
+            return projParser.readParameters(code, IGNF_REGEX);
         } catch (IOException ex) {
             throw new RegistryException("Cannot load the IGNF registry", ex);
         }

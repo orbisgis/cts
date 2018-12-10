@@ -278,7 +278,7 @@ public class Unit extends IdentifiableComponent implements java.io.Serializable 
         w.append("UNIT[\"");
         w.append(this.getName());
         w.append("\",");
-        w.append(PrjWriter.roundToString(this.getScale(), 1e-11));
+        w.append(PrjWriter.prettyRound(this.getScale(), 1e-11));
         if (!this.getAuthorityName().startsWith(Identifiable.LOCAL)) {
             w.append(',');
             w.append(this.getIdentifier().toWKT());

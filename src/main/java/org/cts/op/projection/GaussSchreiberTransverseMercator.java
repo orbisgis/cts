@@ -130,7 +130,7 @@ public class GaussSchreiberTransverseMercator extends Projection {
      * compatible with this <code>CoordinateOperation</code>.
      */
     @Override
-    public double[] transform(double[] coord) throws CoordinateDimensionException {
+    public double[] transform(double[] coord) {
         double Lambda = n1 * (coord[1] - lon0);
         double isoLats = c + n1 * ellipsoid.isometricLatitude(coord[0]);
         coord[0] = xs + n2 * Ellipsoid.SPHERE.isometricLatitude(asin(sin(Lambda) / cosh(isoLats)));
@@ -146,10 +146,10 @@ public class GaussSchreiberTransverseMercator extends Projection {
      * <http://www.epsg.org/guides/G7-2.html>
      */
     @Override
-    public Projection inverse() throws NonInvertibleOperationException {
+    public Projection inverse() {
         return new GaussSchreiberTransverseMercator(ellipsoid, parameters) {
             @Override
-            public double[] transform(double[] coord) throws CoordinateDimensionException {
+            public double[] transform(double[] coord) {
                 double Lambda = atan(sinh((coord[0] - xs) / n2) / cos((coord[1] - ys) / n2));
                 double isoLats = Ellipsoid.SPHERE.isometricLatitude(asin(sin((coord[1] - ys) / n2) / cosh((coord[0] - xs) / n2)));
                 coord[0] = ellipsoid.latitude((isoLats - c) / n1);
@@ -158,8 +158,7 @@ public class GaussSchreiberTransverseMercator extends Projection {
             }
 
             @Override
-            public Projection inverse()
-                    throws NonInvertibleOperationException {
+            public Projection inverse() {
                 return GaussSchreiberTransverseMercator.this;
             }
 

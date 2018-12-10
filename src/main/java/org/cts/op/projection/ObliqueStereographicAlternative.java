@@ -141,7 +141,7 @@ public class ObliqueStereographicAlternative extends Projection {
      * compatible with this <code>CoordinateOperation</code>.
      */
     @Override
-    public double[] transform(double[] coord) throws CoordinateDimensionException {
+    public double[] transform(double[] coord) {
         double lon = coord[1];
         double lat = coord[0];
         double conLon = n * (lon - lon0) + lon0;
@@ -162,10 +162,10 @@ public class ObliqueStereographicAlternative extends Projection {
      * <http://www.epsg.org/guides/G7-2.html>
      */
     @Override
-    public Projection inverse() throws NonInvertibleOperationException {
+    public Projection inverse() {
         return new ObliqueStereographicAlternative(ellipsoid, parameters) {
             @Override
-            public double[] transform(double[] coord) throws CoordinateDimensionException {
+            public double[] transform(double[] coord) {
                 double dE = coord[0] - FE;
                 double dN = coord[1] - FN;
                 double g = 2 * R * k0 * tan((PI_2 - conLat0) / 2);
@@ -181,8 +181,7 @@ public class ObliqueStereographicAlternative extends Projection {
             }
 
             @Override
-            public Projection inverse()
-                    throws NonInvertibleOperationException {
+            public Projection inverse() {
                 return ObliqueStereographicAlternative.this;
             }
             @Override

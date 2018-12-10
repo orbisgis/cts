@@ -59,17 +59,17 @@ public interface Identifiable {
      * Namespace used to identify objects having no reference in an external
      * persistent database.
      */
-    public static final String LOCAL = "LOCAL";
+    public String LOCAL = "LOCAL";
 
     /**
      * Value used as a dafault name for objects without name.
      */
-    public static final String DEFAULT = "DEFAULT";
+    public String DEFAULT = "DEFAULT";
 
     /**
      * Value used for objects with an unknown name.
      */
-    public static final String UNKNOWN = "UNKNOWN";
+    public String UNKNOWN = "UNKNOWN";
 
     /**
      * Returns the authority name of the CRS as a String.(ex : EPSG) <p>

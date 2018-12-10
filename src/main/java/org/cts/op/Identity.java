@@ -57,7 +57,7 @@ public class Identity extends AbstractCoordinateOperation implements ParamBasedT
      * @throws IllegalCoordinateException
      */
     @Override
-    public double[] transform(double[] coord) throws IllegalCoordinateException {
+    public double[] transform(double[] coord) {
         return coord;
     }
 
@@ -65,7 +65,7 @@ public class Identity extends AbstractCoordinateOperation implements ParamBasedT
      * Creates the inverse CoordinateOperation.
      */
     @Override
-    public GeocentricTransformation inverse() throws NonInvertibleOperationException {
+    public GeocentricTransformation inverse() {
         return this;
     }
 

@@ -187,28 +187,28 @@ public class GridShiftFile
     private SubGrid[] createSubGridTree(SubGrid[] subGrid) {
         int topLevelCount = 0;
         HashMap subGridMap = new HashMap();
-        for (int i = 0; i < subGrid.length; i++) {
-            if (subGrid[i].getParentSubGridName().equalsIgnoreCase("NONE")) {
+        for (SubGrid aSubGrid : subGrid) {
+            if (aSubGrid.getParentSubGridName().equalsIgnoreCase("NONE")) {
                 topLevelCount++;
             }
-            subGridMap.put(subGrid[i].getSubGridName(), new ArrayList());
+            subGridMap.put(aSubGrid.getSubGridName(), new ArrayList());
         }
         SubGrid[] topLevelSubGridTemp = new SubGrid[topLevelCount];
         topLevelCount = 0;
-        for (int i = 0; i < subGrid.length; i++) {
-            if (subGrid[i].getParentSubGridName().equalsIgnoreCase("NONE")) {
-                topLevelSubGridTemp[(topLevelCount++)] = subGrid[i];
+        for (SubGrid subGrid1 : subGrid) {
+            if (subGrid1.getParentSubGridName().equalsIgnoreCase("NONE")) {
+                topLevelSubGridTemp[(topLevelCount++)] = subGrid1;
             } else {
-                ArrayList parent = (ArrayList) subGridMap.get(subGrid[i].getParentSubGridName());
-                parent.add(subGrid[i]);
+                ArrayList parent = (ArrayList) subGridMap.get(subGrid1.getParentSubGridName());
+                parent.add(subGrid1);
             }
         }
         SubGrid[] nullArray = new SubGrid[0];
-        for (int i = 0; i < subGrid.length; i++) {
-            ArrayList subSubGrids = (ArrayList) subGridMap.get(subGrid[i].getSubGridName());
+        for (SubGrid subGrid1 : subGrid) {
+            ArrayList subSubGrids = (ArrayList) subGridMap.get(subGrid1.getSubGridName());
             if (subSubGrids.size() > 0) {
                 SubGrid[] subGridArray = (SubGrid[]) subSubGrids.toArray(nullArray);
-                subGrid[i].setSubGridArray(subGridArray);
+                subGrid1.setSubGridArray(subGridArray);
             }
         }
         return topLevelSubGridTemp;
@@ -257,8 +257,8 @@ public class GridShiftFile
 
     private SubGrid getSubGrid(double lon, double lat) {
         SubGrid sub = null;
-        for (int i = 0; i < this.topLevelSubGrid.length; i++) {
-            sub = this.topLevelSubGrid[i].getSubGridForCoord(lon, lat);
+        for (SubGrid aTopLevelSubGrid : this.topLevelSubGrid) {
+            sub = aTopLevelSubGrid.getSubGridForCoord(lon, lat);
             if (sub != null) {
                 break;
             }
@@ -280,29 +280,28 @@ public class GridShiftFile
 
     @Override
     public String toString() {
-        StringBuilder buf = new StringBuilder("Headers  : ");
-        buf.append(this.overviewHeaderCount);
-        buf.append("\nSub Hdrs : ");
-        buf.append(this.subGridHeaderCount);
-        buf.append("\nSub Grids: ");
-        buf.append(this.subGridCount);
-        buf.append("\nType     : ");
-        buf.append(this.shiftType);
-        buf.append("\nVersion  : ");
-        buf.append(this.version);
-        buf.append("\nFr Ellpsd: ");
-        buf.append(this.fromEllipsoid);
-        buf.append("\nTo Ellpsd: ");
-        buf.append(this.toEllipsoid);
-        buf.append("\nFr Maj Ax: ");
-        buf.append(this.fromSemiMajorAxis);
-        buf.append("\nFr Min Ax: ");
-        buf.append(this.fromSemiMinorAxis);
-        buf.append("\nTo Maj Ax: ");
-        buf.append(this.toSemiMajorAxis);
-        buf.append("\nTo Min Ax: ");
-        buf.append(this.toSemiMinorAxis);
-        return buf.toString();
+        String buf = "Headers  : " + this.overviewHeaderCount +
+                "\nSub Hdrs : " +
+                this.subGridHeaderCount +
+                "\nSub Grids: " +
+                this.subGridCount +
+                "\nType     : " +
+                this.shiftType +
+                "\nVersion  : " +
+                this.version +
+                "\nFr Ellpsd: " +
+                this.fromEllipsoid +
+                "\nTo Ellpsd: " +
+                this.toEllipsoid +
+                "\nFr Maj Ax: " +
+                this.fromSemiMajorAxis +
+                "\nFr Min Ax: " +
+                this.fromSemiMinorAxis +
+                "\nTo Maj Ax: " +
+                this.toSemiMajorAxis +
+                "\nTo Min Ax: " +
+                this.toSemiMinorAxis;
+        return buf;
     }
 
     public SubGrid[] getSubGridTree() {

@@ -58,7 +58,7 @@ public class SevenParameterTransformationTest extends CTSTestCase {
     // Ref = EPSG:9606 or IGN ALG0063
     // Test using IGN test with a precision of 1e-4
     @Test
-    public void testALG0063() throws IllegalCoordinateException, CoordinateOperationException {
+    public void testALG0063() throws IllegalCoordinateException {
         SevenParameterTransformation op = createBursaWolfTransformation(
                 789.524, -626.486, -89.904,
                 0.6, 76.8, -10.6, -32.324, 0.1);
@@ -72,7 +72,7 @@ public class SevenParameterTransformationTest extends CTSTestCase {
     // Ref = EPSG:9606 or IGN ALG0063
     // Test using IGN test with a precision of 1e-4
     @Test
-    public void testALG0063b() throws IllegalCoordinateException, CoordinateOperationException {
+    public void testALG0063b() throws IllegalCoordinateException {
         SevenParameterTransformation op = createBursaWolfTransformation(-80.283, -107.802, -136.031, 0.035, 0.0, 0.547, 0.185, 0.1);
         double[] source = new double[]{3353657.175, 1303862.662, 5249102.055};
         double[] result = op.inverse0063().transform(source.clone());
@@ -84,7 +84,7 @@ public class SevenParameterTransformationTest extends CTSTestCase {
     // Test reversibility of seven parameters transformations
     // with a 100" rotation
     @Test
-    public void testReversibilityALG0013() throws IllegalCoordinateException, CoordinateOperationException {
+    public void testReversibilityALG0013() throws IllegalCoordinateException {
         SevenParameterTransformation op1 = createBursaWolfTransformation(-80.283, -107.802, -136.031, 0.035, 50.0, 0.547, 32.185, 0.1);
         SevenParameterTransformation op2 = createBursaWolfTransformation(80.283, 107.802, 136.031, -0.035, -50.0, -0.547, -32.185, 0.1);
 

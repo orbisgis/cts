@@ -36,8 +36,6 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import java.util.Arrays;
-
 /**
  * This class tests transformation using CoumpoundCRS and VerticalCRS.
  *
@@ -828,7 +826,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void testVerticalCRS() throws CRSException, IllegalCoordinateException {
+    public void testVerticalCRS() throws CRSException {
         String prjString = "VERT_CS[\"GRS80VCS\",\n"
                 + "    VERT_DATUM[\"Hauteur ellipsoidale - GRS80\",2002,\n"
                 + "        AUTHORITY[\"EPSG\",\"5019\"]],\n"

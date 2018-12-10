@@ -89,7 +89,7 @@ public class Altitude2EllipsoidalHeight extends AbstractCoordinateOperation impl
         this.precision = 0.01;
         this.gridFileName = nameGrid;
         try {
-            InputStream is = GridUtils.class.getClassLoader().getResourceAsStream("org/cts/op/transformation/grids/" + nameGrid);
+            InputStream is = GridUtils.class.getResourceAsStream(nameGrid);
             if (is != null) {
                 GRID = new IGNVerticalGrid(is, false);
             } else {
@@ -167,8 +167,7 @@ public class Altitude2EllipsoidalHeight extends AbstractCoordinateOperation impl
                 }
 
                 @Override
-                public CoordinateOperation inverse()
-                        throws NonInvertibleOperationException {
+                public CoordinateOperation inverse() {
                     return Altitude2EllipsoidalHeight.this;
                 }
             };

@@ -114,7 +114,7 @@ public class Polyconic extends Projection {
      * compatible with this <code>CoordinateOperation</code>.
      */
     @Override
-    public double[] transform(double[] coord) throws CoordinateDimensionException {
+    public double[] transform(double[] coord) {
         double a = ellipsoid.getSemiMajorAxis();
         double M0 = a * ellipsoid.curvilinearAbscissa(lat0);
         if (coord[0] == 0) {
@@ -147,10 +147,10 @@ public class Polyconic extends Projection {
      * <http://pubs.er.usgs.gov/publication/pp1395>
      */
     @Override
-    public Projection inverse() throws NonInvertibleOperationException {
+    public Projection inverse() {
         return new Polyconic(ellipsoid, parameters) {
             @Override
-            public double[] transform(double[] coord) throws CoordinateDimensionException {
+            public double[] transform(double[] coord) {
                 double a = ellipsoid.getSemiMajorAxis();
                 double M0 = a * ellipsoid.curvilinearAbscissa(lat0);
                 double e2 = ellipsoid.getSquareEccentricity();
@@ -183,8 +183,7 @@ public class Polyconic extends Projection {
             }
 
             @Override
-            public Projection inverse()
-                    throws NonInvertibleOperationException {
+            public Projection inverse() {
                 return Polyconic.this;
             }
             @Override

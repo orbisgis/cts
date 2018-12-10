@@ -119,7 +119,7 @@ public class EquidistantCylindrical extends Projection {
      * compatible with this <code>CoordinateOperation</code>.
      */
     @Override
-    public double[] transform(double[] coord) throws CoordinateDimensionException {
+    public double[] transform(double[] coord) {
         double lon = coord[1];
         double lat = abs(coord[0]) > PI * 85 / 180 ? PI * 85 / 180 : coord[0];
         double E = C * (lon - lon0);
@@ -136,10 +136,10 @@ public class EquidistantCylindrical extends Projection {
      * <http://www.epsg.org/guides/G7-2.html>
      */
     @Override
-    public Projection inverse() throws NonInvertibleOperationException {
+    public Projection inverse() {
         return new EquidistantCylindrical(ellipsoid, parameters) {
             @Override
-            public double[] transform(double[] coord) throws CoordinateDimensionException {
+            public double[] transform(double[] coord) {
                 double lat = ellipsoid.latFromArc(coord[1] - FN);
                 coord[1] = (coord[0] - FE) / C + lon0;
                 coord[0] = lat;
@@ -147,8 +147,7 @@ public class EquidistantCylindrical extends Projection {
             }
 
             @Override
-            public Projection inverse()
-                    throws NonInvertibleOperationException {
+            public Projection inverse() {
                 return EquidistantCylindrical.this;
             }
 

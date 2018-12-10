@@ -28,8 +28,6 @@ import org.cts.Identifier;
 import org.cts.IllegalCoordinateException;
 import org.cts.datum.PrimeMeridian;
 
-import java.util.Arrays;
-
 /**
  * Longitude rotation is a simple transformation which shift the longitude
  * parameter of a geographic coordinate.
@@ -82,7 +80,7 @@ public class LongitudeRotation extends AbstractCoordinateOperation {
      * Creates the inverse CoordinateOperation.
      */
     @Override
-    public CoordinateOperation inverse() throws NonInvertibleOperationException {
+    public CoordinateOperation inverse() {
         return new LongitudeRotation(-rotationAngle);
     }
 

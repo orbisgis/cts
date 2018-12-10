@@ -50,8 +50,7 @@ public class EPSGRegistry extends AbstractProjRegistry implements Registry {
     @Override
     public Map<String, String> getParameters(String code) throws RegistryException {
         try {
-            Map<String, String> crsParameters = projParser.readParameters(code, EPSG_REGEX);
-            return crsParameters;
+            return projParser.readParameters(code, EPSG_REGEX);
         } catch (IOException ex) {
             throw new RegistryException("Cannot load the EPSG registry", ex);
         }

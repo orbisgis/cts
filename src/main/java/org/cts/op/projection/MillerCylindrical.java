@@ -119,7 +119,7 @@ public class MillerCylindrical extends Projection {
      * compatible with this <code>CoordinateOperation</code>.
      */
     @Override
-    public double[] transform(double[] coord) throws CoordinateDimensionException {
+    public double[] transform(double[] coord) {
         double lon = coord[1];
         double lat = abs(coord[0]) > PI * 85 / 180 ? PI * 85 / 180 : coord[0];
         double E = n * (lon - lon0);
@@ -137,10 +137,10 @@ public class MillerCylindrical extends Projection {
      * <http://pubs.er.usgs.gov/publication/pp1395>
      */
     @Override
-    public Projection inverse() throws NonInvertibleOperationException {
+    public Projection inverse() {
         return new MillerCylindrical(ellipsoid, parameters) {
             @Override
-            public double[] transform(double[] coord) throws CoordinateDimensionException {
+            public double[] transform(double[] coord) {
                 double t = exp(0.8 * (FN - coord[1]) / n);
                 double ki = PI / 2 - 2 * atan(t);
                 double lat = ki;
@@ -153,8 +153,7 @@ public class MillerCylindrical extends Projection {
             }
 
             @Override
-            public Projection inverse()
-                    throws NonInvertibleOperationException {
+            public Projection inverse() {
                 return MillerCylindrical.this;
             }
             @Override

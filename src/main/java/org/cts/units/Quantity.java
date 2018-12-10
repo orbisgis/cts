@@ -45,16 +45,16 @@ package org.cts.units;
  */
 public interface Quantity {
 
-    public static final Quantity LENGTH = Factory.create("Length");
-    public static final Quantity ANGLE = Factory.create("Angle");
-    public static final Quantity NODIM = Factory.create("Dimensionless");
-    public static final Quantity TIME = Factory.create("Time");
+    public Quantity LENGTH = Factory.create("Length");
+    public Quantity ANGLE = Factory.create("Angle");
+    public Quantity NODIM = Factory.create("Dimensionless");
+    public Quantity TIME = Factory.create("Time");
 
     /**
      * A factory to easily create
      * <code>Quantities</code> from simple Strings.
      */
-    public static class Factory {
+    public class Factory {
 
         /**
          * Creates a new Quantity from a String.
@@ -79,8 +79,7 @@ public interface Quantity {
 
                 @Override
                 public int hashCode() {
-                    int hash = 5;
-                    return hash;
+                    return 5;
                 }
             };
         }

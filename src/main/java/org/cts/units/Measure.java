@@ -41,7 +41,7 @@ public class Measure implements java.io.Serializable {
      * @param unit the unit used to express the measure
      */
     public Measure(double value, Unit unit) {
-        this(new Double(value), unit, Double.NaN);
+        this(value, unit, Double.NaN);
     }
 
     /**

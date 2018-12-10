@@ -131,7 +131,7 @@ public class CoordinateSystem {
             if (i > 0) {
                 sb.append(" ");
             }
-            sb.append("").append(axes[i]).append("=").append(coord[i]);
+            sb.append(axes[i]).append("=").append(coord[i]);
         }
         return sb.toString();
     }

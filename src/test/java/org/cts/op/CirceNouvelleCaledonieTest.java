@@ -108,7 +108,7 @@ public class CirceNouvelleCaledonieTest extends BaseCoordinateTransformTest {
 
     // Matches circe results with the seven parameters described in the help, not with those included in dataNC.txt
     @Test
-    public void testIGN72_GRANDE_TERRE_GEO2D_To_RGNC_XYZ() throws IllegalCoordinateException, CoordinateOperationException {
+    public void testIGN72_GRANDE_TERRE_GEO2D_To_RGNC_XYZ() {
         //test(new double[]{-20, 165}, IGN72_GRANDE_TERRE_GEO2D, RGNC1991_GEOC, new double[]{-5791783.050, 1551552.713, -2167430.438}, MM_IN_DEG, MM);
     }
 
