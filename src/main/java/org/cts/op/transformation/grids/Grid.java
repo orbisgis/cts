@@ -56,70 +56,70 @@ import org.cts.cs.OutOfExtentException;
  */
 public interface Grid {
 
-    enum InterpolationMethod {
+    public enum InterpolationMethod {
 
         NEAREST, BILINEAR, BICUBIC
     }
     /**
      * Nearest interpolation method.
      */
-    int NEAREST = 1;
+    public int NEAREST = 1;
     /**
      * Bilinear interpolation method.
      */
-    int BILINEAR = 2;
+    public int BILINEAR = 2;
     /**
      * Bicubic interpolation method.
      */
-    int BICUBIC = 3;
+    public int BICUBIC = 3;
 
     /**
      * Get the number of columns of this grid.
      * @return 
      */
-    int getColumnNumber();
+    public int getColumnNumber();
 
     /**
      * Get the number of rows of this grid.
      * @return 
      */
-    int getRowNumber();
+    public int getRowNumber();
 
     /**
      * Get the real world abscisse (x) of the first column.
      * @return 
      */
-    double getX0();
+    public double getX0();
 
     /**
      * Get the real world ordinate (y) of the first row.
      * @return 
      */
-    double getY0();
+    public double getY0();
 
     /**
      * Get the first ordinate of the last grid column.
      */
-    double getXL();
+    public double getXL();
 
     /**
      * Get the second ordinate of the last grid row.
      */
-    double getYL();
+    public double getYL();
 
     /**
      * Real world interval between two consecutive columns. The method returns a
      * negative value if x values decreases when column indices increases.
      * @return 
      */
-    double getDX();
+    public double getDX();
 
     /**
      * Real world interval between two consecutive row. The method returns a
      * negative value if y values decreases when column indices increases.
      * @return 
      */
-    double getDY();
+    public double getDY();
 
     /**
      * Get the value corrsponding to the x,y position. WARNING : x, y represent
@@ -131,6 +131,6 @@ public interface Grid {
      * @throws org.cts.cs.OutOfExtentException 
      * @throws org.cts.op.transformation.grids.InterpolationMethodException 
      */
-    double[] getValue(double x, double y, InterpolationMethod method)
+    public double[] getValue(double x, double y, InterpolationMethod method)
             throws OutOfExtentException, InterpolationMethodException;
 }

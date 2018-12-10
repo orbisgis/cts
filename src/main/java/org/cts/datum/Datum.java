@@ -47,30 +47,30 @@ public interface Datum extends Identifiable {
     /**
      * Returns origin description of this Datum.
      */
-    String getOrigin();
+    public String getOrigin();
 
     /**
      * Returns the valid extent of this Datum.
      */
-    Extent getExtent();
+    public Extent getExtent();
 
     /**
      * Returns the realization epoch as a String.
      */
-    String getEpoch();
+    public String getEpoch();
 
     /**
      * Returns the ellipsoid of this datum.
      */
-    Ellipsoid getEllipsoid();
+    public Ellipsoid getEllipsoid();
 
     /**
      * Returns the ellipsoid of this datum.
      */
-    CoordinateOperation getToWGS84();
+    public CoordinateOperation getToWGS84();
 
     /**
      * Returns the primemeridian of this datum.
      */
-    PrimeMeridian getPrimeMeridian();
+    public PrimeMeridian getPrimeMeridian();
 }

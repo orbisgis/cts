@@ -39,7 +39,7 @@ public interface Registry {
      * Return the name of the registry.
      * @return 
      */
-    String getRegistryName();
+    public String getRegistryName();
 
     /**
      * Return all parameters need to build a CoordinateReferenceSystem.
@@ -50,7 +50,7 @@ public interface Registry {
      * @throws org.cts.crs.CRSException
      */
     //public Map<String, String> getParameters(String code) throws RegistryException;
-    CoordinateReferenceSystem getCoordinateReferenceSystem(Identifier identifier) throws RegistryException, CRSException;
+    public CoordinateReferenceSystem getCoordinateReferenceSystem(Identifier identifier) throws RegistryException, CRSException;
 
     /**
      * Return all supported codes for this registry.
@@ -58,5 +58,5 @@ public interface Registry {
      * @return 
      * @throws RegistryException
      */
-    Set<String> getSupportedCodes() throws RegistryException;
+    public Set<String> getSupportedCodes() throws RegistryException;
 }

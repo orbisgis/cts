@@ -59,17 +59,17 @@ public interface Identifiable {
      * Namespace used to identify objects having no reference in an external
      * persistent database.
      */
-    String LOCAL = "LOCAL";
+    public String LOCAL = "LOCAL";
 
     /**
      * Value used as a dafault name for objects without name.
      */
-    String DEFAULT = "DEFAULT";
+    public String DEFAULT = "DEFAULT";
 
     /**
      * Value used for objects with an unknown name.
      */
-    String UNKNOWN = "UNKNOWN";
+    public String UNKNOWN = "UNKNOWN";
 
     /**
      * Returns the authority name of the CRS as a String.(ex : EPSG) <p>
@@ -79,13 +79,13 @@ public interface Identifiable {
      * href="http://java.sun.com/javase/6/docs/api/java/net/URI.html">here</a>.
      *
      */
-    String getAuthorityName();
+    public String getAuthorityName();
 
     /**
      * Returns this authority's id (must be unique in this Identifiable's
      * namespace). (ex : 27572)
      */
-    String getAuthorityKey();
+    public String getAuthorityKey();
 
     /**
      * Returns the code formed with the namespace URI, ':' and the id value of
@@ -93,19 +93,19 @@ public interface Identifiable {
      *
      * @return a String of the form namespace:id
      */
-    String getCode();
+    public String getCode();
 
     /**
      * Returns the full readable name of this object.
      */
-    String getName();
+    public String getName();
 
     /**
      * Returns the short name of this Identifiable. A short name should have
      * less than 16 characters whenever possible, and should never exceed 48
      * characters.
      */
-    String getShortName();
+    public String getShortName();
 
     /**
      * Change the short name for this Identifiable. A short name should have
@@ -114,36 +114,36 @@ public interface Identifiable {
      *
      * @param shortName the short name to give to the identifiable
      */
-    void setShortName(String shortName);
+    public void setShortName(String shortName);
 
     /**
      * Returns remarks.
      */
-    String getRemarks();
+    public String getRemarks();
 
     /**
      * Change the remarks.
      *
      * @param remarks the new remarks of the identifiable
      */
-    void setRemarks(String remarks);
+    public void setRemarks(String remarks);
 
     /**
      * Add remarks.
      *
      * @param new_remark the remark to add
      */
-    void addRemark(String new_remark);
+    public void addRemark(String new_remark);
 
     /**
      * Get aliases
      */
-    List<Identifiable> getAliases();
+    public List<Identifiable> getAliases();
 
     /**
      * Adds an alias
      *
      * @param alias an alias for this object
      */
-    boolean addAlias(Identifiable alias);
+    public boolean addAlias(Identifiable alias);
 }
