@@ -31,8 +31,6 @@ import org.cts.crs.CRSException;
 import org.cts.crs.CoordinateReferenceSystem;
 import org.cts.parser.proj.ProjKeyParameters;
 import org.cts.parser.proj.ProjParser;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
@@ -47,6 +45,7 @@ public abstract class AbstractProjRegistry implements Registry {
      */
     protected final ProjParser projParser;
 
+    @Override
     public CoordinateReferenceSystem getCoordinateReferenceSystem(Identifier identifier) throws RegistryException, CRSException {
         Map<String,String> params = getParameters(identifier.getAuthorityKey());
         if (!identifier.getAuthorityName().equalsIgnoreCase(getRegistryName())) {
