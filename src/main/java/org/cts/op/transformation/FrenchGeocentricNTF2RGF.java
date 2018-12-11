@@ -81,13 +81,7 @@ public class FrenchGeocentricNTF2RGF extends AbstractCoordinateOperation
         this.precision = 0.001;
         try {
             String gridName = "gr3df97a.txt";
-            InputStream is = GridUtils.class.getResourceAsStream(gridName);
-            if(is!=null){
-            GRID3D = new IGNGeographicGrid(is, false);
-            }
-            else{
-                GRID3D = new IGNGeographicGrid(new FileInputStream(GridUtils.findGrid(gridName)), false);
-            }
+            GRID3D = new IGNGeographicGrid(new FileInputStream(GridUtils.findGrid(gridName)), false);
         } catch (Exception e) {
             throw new Exception("A problem occured during gr3df97a.txt grid file loading", e);
         }
