@@ -25,98 +25,77 @@
 package org.cts.datum;
 
 import org.cts.CTSTestCase;
-import org.cts.IdentifiableComponent;
 import org.cts.Identifier;
 import org.cts.cs.GeographicExtent;
 import org.cts.op.Identity;
 import org.cts.op.transformation.GeocentricTranslation;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.cts.datum.GeodeticDatum.*;
-
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  *
  * @author Jules Party
  */
-public class GeodeticDatumTest extends CTSTestCase {
+class GeodeticDatumTest extends CTSTestCase {
 
     @Test
-    public void testWGS84() {
-        assertTrue("WGS84_geTtoWGS84",
-                WGS84.getToWGS84().equals(Identity.IDENTITY));
-        assertTrue("WGS84_getPrimeMeridian",
-                WGS84.getPrimeMeridian().equals(PrimeMeridian.GREENWICH));
-        assertTrue("WGS84_getEllipsoid",
-                WGS84.getEllipsoid().equals(Ellipsoid.WGS84));
-        assertTrue("WGS84_getExtend",
-                WGS84.getExtent().equals(GeographicExtent.WORLD));
+    void testWGS84() {
+        assertEquals(WGS84.getToWGS84(), Identity.IDENTITY, "WGS84_geTtoWGS84");
+        assertEquals(WGS84.getPrimeMeridian(), PrimeMeridian.GREENWICH, "WGS84_getPrimeMeridian");
+        assertEquals(WGS84.getEllipsoid(), Ellipsoid.WGS84, "WGS84_getEllipsoid");
+        assertEquals(WGS84.getExtent(), GeographicExtent.WORLD, "WGS84_getExtend");
     }
 
     @Test
-    public void testNTF_PARIS() {
-        assertTrue("NTF_PARIS_geTtoWGS84", NTF_PARIS.getToWGS84().equals(
-                new GeocentricTranslation(-168.0, -60.0, 320.0, 1.0)));
-        assertTrue("NTF_PARIS_getPrimeMeridian",
-                NTF_PARIS.getPrimeMeridian().equals(PrimeMeridian.PARIS));
-        assertTrue("NTF_PARIS_getEllipsoid",
-                NTF_PARIS.getEllipsoid().equals(Ellipsoid.CLARKE1880IGN));
-        assertTrue("NTF_PARIS_getExtend",
-                NTF_PARIS.getExtent().equals(GeographicExtent.WORLD));
+    void testNTF_PARIS() {
+        assertEquals(NTF_PARIS.getToWGS84(), new GeocentricTranslation(-168.0, -60.0, 320.0, 1.0), "WGS84_getExtend");
+        assertEquals(NTF_PARIS.getPrimeMeridian(), PrimeMeridian.PARIS, "NTF_PARIS_getPrimeMeridian");
+        assertEquals(NTF_PARIS.getEllipsoid(), Ellipsoid.CLARKE1880IGN, "NTF_PARIS_getEllipsoid");
+        assertEquals(NTF_PARIS.getExtent(), GeographicExtent.WORLD, "NTF_PARIS_getExtend");
     }
 
     @Test
-    public void testNTF() {
-        assertTrue("NTF_geTtoWGS84", NTF.getToWGS84().equals(
-                new GeocentricTranslation(-168.0, -60.0, 320.0, 1.0)));
-        assertTrue("NTF_getPrimeMeridian",
-                NTF.getPrimeMeridian().equals(PrimeMeridian.GREENWICH));
-        assertTrue("NTF_getEllipsoid",
-                NTF.getEllipsoid().equals(Ellipsoid.CLARKE1880IGN));
-        assertTrue("NTF_getExtend",
-                NTF.getExtent().equals(GeographicExtent.WORLD));
+    void testNTF() {
+        assertEquals(NTF.getToWGS84(), new GeocentricTranslation(-168.0, -60.0, 320.0, 1.0), "NTF_geTtoWGS84");
+        assertEquals(NTF.getPrimeMeridian(), PrimeMeridian.GREENWICH, "NTF_getPrimeMeridian");
+        assertEquals(NTF.getEllipsoid(), Ellipsoid.CLARKE1880IGN, "NTF_getEllipsoid");
+        assertEquals(NTF.getExtent(), GeographicExtent.WORLD, "NTF_getExtend");
     }
 
     @Test
-    public void testRGF93() {
-        assertTrue("RGF93_geTtoWGS84",
-                RGF93.getToWGS84().equals(Identity.IDENTITY));
-        assertTrue("RGF93_getPrimeMeridian",
-                RGF93.getPrimeMeridian().equals(PrimeMeridian.GREENWICH));
-        assertTrue("RGF93_getEllipsoid",
-                RGF93.getEllipsoid().equals(Ellipsoid.GRS80));
-        assertTrue("RGF93_getExtend",
-                RGF93.getExtent().equals(GeographicExtent.WORLD));
+    void testRGF93() {
+        assertEquals(RGF93.getToWGS84(), Identity.IDENTITY, "RGF93_geTtoWGS84");
+        assertEquals(RGF93.getPrimeMeridian(), PrimeMeridian.GREENWICH, "RGF93_getPrimeMeridian");
+        assertEquals(RGF93.getEllipsoid(), Ellipsoid.GRS80, "RGF93_getEllipsoid");
+        assertEquals(RGF93.getExtent(), GeographicExtent.WORLD, "RGF93_getExtend");
     }
 
     @Test
-    public void testED50() {
-        assertTrue("ED50_geTtoWGS84", ED50.getToWGS84().equals(
-                new GeocentricTranslation(-84.0, -97.0, -117.0, 1.0)));
-        assertTrue("ED50_getPrimeMeridian",
-                ED50.getPrimeMeridian().equals(PrimeMeridian.GREENWICH));
-        assertTrue("ED50_getEllipsoid",
-                ED50.getEllipsoid().equals(Ellipsoid.INTERNATIONAL1924));
-        assertTrue("ED50_getExtend",
-                ED50.getExtent().equals(GeographicExtent.WORLD));
+    void testED50() {
+        assertEquals(ED50.getToWGS84(), new GeocentricTranslation(-84.0, -97.0, -117.0, 1.0), "ED50_geTtoWGS84");
+        assertEquals(ED50.getPrimeMeridian(), PrimeMeridian.GREENWICH, "ED50_getPrimeMeridian");
+        assertEquals(ED50.getEllipsoid(), Ellipsoid.INTERNATIONAL1924, "ED50_getEllipsoid");
+        assertEquals(ED50.getExtent(), GeographicExtent.WORLD, "ED50_getExtend");
     }
 
     
     
     @Test
-    public void testCreateGeodeticDatum() {
+    void testCreateGeodeticDatum() {
         GeodeticDatum datum = GeodeticDatum.createGeodeticDatum(new Identifier(GeodeticDatum.class,"MyDatum"),
                 PrimeMeridian.PARIS, Ellipsoid.GRS80,
                 new GeocentricTranslation(10,10,10), new GeographicExtent("",0, 0, 0, 0), "","");
         //datum.addGeocentricTransformation(WGS84, new GeocentricTranslation(10,10,10));
-        assertTrue(datum.getPrimeMeridian().equals(PrimeMeridian.PARIS));
-        assertTrue(datum.getEllipsoid().equals(Ellipsoid.GRS80));
-        assertTrue(datum.getToWGS84().equals(new GeocentricTranslation(10,10,10)));
+        assertEquals(datum.getPrimeMeridian(), PrimeMeridian.PARIS);
+        assertEquals(datum.getEllipsoid(), Ellipsoid.GRS80);
+        assertEquals(datum.getToWGS84(), new GeocentricTranslation(10, 10, 10));
         assertTrue(datum.getGeocentricTransformations(WGS84).size()>0);
-        assertTrue(datum.getGeocentricTransformations(WGS84).iterator().next().equals(new GeocentricTranslation(10,10,10)));
+        assertEquals(datum.getGeocentricTransformations(WGS84).iterator().next(), new GeocentricTranslation(10, 10, 10));
         assertTrue(WGS84.getGeocentricTransformations(datum).size()>0);
-        assertTrue(WGS84.getGeocentricTransformations(datum).iterator().next().equals(new GeocentricTranslation(-10,-10,-10)));
+        assertEquals(WGS84.getGeocentricTransformations(datum).iterator().next(), new GeocentricTranslation(-10, -10, -10));
     }
 }

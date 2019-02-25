@@ -24,53 +24,53 @@
 
 package org.cts;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  *
  * @author ebocher
  */
-public class CRSIdentifierTest extends CTSTestCase {
+class CRSIdentifierTest extends CTSTestCase {
 
     @Test
-    public void testEPSG4326AuthorityName() throws Exception {
-        assertTrue(cRSFactory.getCRS("EPSG:4326").getAuthorityName().equals("EPSG"));
+    void testEPSG4326AuthorityName() throws Exception {
+        assertEquals("EPSG", cRSFactory.getCRS("EPSG:4326").getAuthorityName());
     }
 
     @Test
-    public void testEPSG4326AuthorityKey() throws Exception {
-        assertTrue(cRSFactory.getCRS("EPSG:4326").getAuthorityKey().equals("4326"));
+    void testEPSG4326AuthorityKey() throws Exception {
+        assertEquals("4326", cRSFactory.getCRS("EPSG:4326").getAuthorityKey());
     }
 
     @Test
-    public void testEPSG4326Code() throws Exception {
-        assertTrue(cRSFactory.getCRS("EPSG:4326").getCode().equals("EPSG:4326"));
+    void testEPSG4326Code() throws Exception {
+        assertEquals("EPSG:4326", cRSFactory.getCRS("EPSG:4326").getCode());
     }
     
     @Test
-    public void testEPSG4326Name() throws Exception {
-        assertTrue(cRSFactory.getCRS("EPSG:4326").getName().equals("WGS 84"));
+    void testEPSG4326Name() throws Exception {
+        assertEquals("WGS 84", cRSFactory.getCRS("EPSG:4326").getName());
     }
 
     @Test
-    public void testEPSG27572AuthorityName() throws Exception {
-        assertTrue(cRSFactory.getCRS("EPSG:27572").getAuthorityName().equals("EPSG"));
+    void testEPSG27572AuthorityName() throws Exception {
+        assertEquals("EPSG", cRSFactory.getCRS("EPSG:27572").getAuthorityName());
     }
 
     @Test
-    public void testEPSG27572AuthorityKey() throws Exception {
-        assertTrue(cRSFactory.getCRS("EPSG:27572").getAuthorityKey().equals("27572"));
+    void testEPSG27572AuthorityKey() throws Exception {
+        assertEquals("27572", cRSFactory.getCRS("EPSG:27572").getAuthorityKey());
     }
 
     @Test
-    public void testEPSG27572Code() throws Exception {
-        assertTrue(cRSFactory.getCRS("EPSG:27572").getCode().equals("EPSG:27572"));
+    void testEPSG27572Code() throws Exception {
+        assertEquals("EPSG:27572", cRSFactory.getCRS("EPSG:27572").getCode());
     }
 
     @Test
-    public void testEPSG27572Name() throws Exception {
-        assertTrue(cRSFactory.getCRS("EPSG:27572").getName().equals("NTF (Paris) / Lambert zone II"));
+    void testEPSG27572Name() throws Exception {
+        assertEquals("NTF (Paris) / Lambert zone II", cRSFactory.getCRS("EPSG:27572").getName());
     }
 }

@@ -24,48 +24,48 @@
 
 package org.cts.util;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Tests for AngleFormat class
  */
-public class AngleFormatTest {
+class AngleFormatTest {
 
     @Test
-    public void parseAngleInDMSTest() {
-        assertTrue("Parse angle", new Double(AngleFormat.parseAngle("23°")).equals(23.0));
-        assertTrue("Parse angle", new Double(AngleFormat.parseAngle("-23°")).equals(-23.0));
-        assertTrue("Parse angle", new Double(AngleFormat.parseAngle("23°1'")).equals(23.0 + 1.0/60));
-        assertTrue("Parse angle", new Double(AngleFormat.parseAngle("-23°1'")).equals(-23.0 - 1.0/60));
-        assertTrue("Parse angle", new Double(AngleFormat.parseAngle("23°01'")).equals(23.0 + 1.0/60));
-        assertTrue("Parse angle", new Double(AngleFormat.parseAngle("-23°01")).equals(-23.0 - 1.0/60));
-        assertTrue("Parse angle", new Double(AngleFormat.parseAngle("23°01'01")).equals(23.0 + 1.0/60 + 1.0/3600));
-        assertTrue("Parse angle", new Double(AngleFormat.parseAngle("-23°01'01")).equals(-23.0 - 1.0/60 - 1.0/3600));
+    void parseAngleInDMSTest() {
+        assertEquals(23.0, AngleFormat.parseAngle("23°"), 0.0, "Parse angle");
+        assertEquals(AngleFormat.parseAngle("-23°"), -23.0, 0.0, "Parse angle");
+        assertEquals(AngleFormat.parseAngle("23°1'"), 23.0 + 1.0 / 60, 0.0, "Parse angle");
+        assertEquals(AngleFormat.parseAngle("-23°1'"), -23.0 - 1.0 / 60, 0.0, "Parse angle");
+        assertEquals(AngleFormat.parseAngle("23°01'"), 23.0 + 1.0 / 60, 0.0, "Parse angle");
+        assertEquals(AngleFormat.parseAngle("-23°01"), -23.0 - 1.0 / 60, 0.0, "Parse angle");
+        assertEquals(AngleFormat.parseAngle("23°01'01"), 23.0 + 1.0 / 60 + 1.0 / 3600, 0.0, "Parse angle");
+        assertEquals(AngleFormat.parseAngle("-23°01'01"), -23.0 - 1.0 / 60 - 1.0 / 3600, 0.0, "Parse angle");
     }
 
     @Test
-     public void parseAngleInDMSHTest() {
-        assertTrue("Parse angle", new Double(AngleFormat.parseAngle("23°N")).equals(23.0));
-        assertTrue("Parse angle", new Double(AngleFormat.parseAngle("-23°N")).equals(-23.0));
-        assertTrue("Parse angle", new Double(AngleFormat.parseAngle("23°1'N")).equals(23.0 + 1.0/60));
-        assertTrue("Parse angle", new Double(AngleFormat.parseAngle("-23°1'N")).equals(-23.0 - 1.0/60));
-        assertTrue("Parse angle", new Double(AngleFormat.parseAngle("23°01'N")).equals(23.0 + 1.0/60));
-        assertTrue("Parse angle", new Double(AngleFormat.parseAngle("-23°01N")).equals(-23.0 - 1.0/60));
-        assertTrue("Parse angle", new Double(AngleFormat.parseAngle("23°01'01N")).equals(23.0 + 1.0/60 + 1.0/3600));
-        assertTrue("Parse angle", new Double(AngleFormat.parseAngle("-23°01'01N")).equals(-23.0 - 1.0/60 - 1.0/3600));
+    void parseAngleInDMSHTest() {
+        assertEquals(23.0, AngleFormat.parseAngle("23°N"), 0.0, "Parse angle");
+        assertEquals(AngleFormat.parseAngle("-23°N"), -23.0, 0.0, "Parse angle");
+        assertEquals(AngleFormat.parseAngle("23°1'N"), 23.0 + 1.0 / 60, 0.0, "Parse angle");
+        assertEquals(AngleFormat.parseAngle("-23°1'N"), -23.0 - 1.0 / 60, 0.0, "Parse angle");
+        assertEquals(AngleFormat.parseAngle("23°01'N"), 23.0 + 1.0 / 60, 0.0, "Parse angle");
+        assertEquals(AngleFormat.parseAngle("-23°01N"), -23.0 - 1.0 / 60, 0.0, "Parse angle");
+        assertEquals(AngleFormat.parseAngle("23°01'01N"), 23.0 + 1.0 / 60 + 1.0 / 3600, 0.0, "Parse angle");
+        assertEquals(AngleFormat.parseAngle("-23°01'01N"), -23.0 - 1.0 / 60 - 1.0 / 3600, 0.0, "Parse angle");
     }
 
     @Test
-    public void parseAngleInDMSHdoubleNegTest() {
-        assertTrue("Parse angle", new Double(AngleFormat.parseAngle("23°S")).equals(-23.0));
-        assertTrue("Parse angle", new Double(AngleFormat.parseAngle("-23°S")).equals(-23.0));
-        assertTrue("Parse angle", new Double(AngleFormat.parseAngle("23°1'S")).equals(-23.0 - 1.0/60));
-        assertTrue("Parse angle", new Double(AngleFormat.parseAngle("-23°1'S")).equals(-23.0 - 1.0/60));
-        assertTrue("Parse angle", new Double(AngleFormat.parseAngle("23°01'S")).equals(-23.0 - 1.0/60));
-        assertTrue("Parse angle", new Double(AngleFormat.parseAngle("-23°01S")).equals(-23.0 - 1.0/60));
-        assertTrue("Parse angle", new Double(AngleFormat.parseAngle("23°01'01S")).equals(-23.0 - 1.0/60 - 1.0/3600));
-        assertTrue("Parse angle", new Double(AngleFormat.parseAngle("-23°01'01S")).equals(-23.0 - 1.0/60 - 1.0/3600));
+    void parseAngleInDMSHdoubleNegTest() {
+        assertEquals(AngleFormat.parseAngle("23°S"), -23.0, 0.0, "Parse angle");
+        assertEquals(AngleFormat.parseAngle("-23°S"), -23.0, 0.0, "Parse angle");
+        assertEquals(AngleFormat.parseAngle("23°1'S"), -23.0 - 1.0 / 60, 0.0, "Parse angle");
+        assertEquals(AngleFormat.parseAngle("-23°1'S"), -23.0 - 1.0 / 60, 0.0, "Parse angle");
+        assertEquals(AngleFormat.parseAngle("23°01'S"), -23.0 - 1.0 / 60, 0.0, "Parse angle");
+        assertEquals(AngleFormat.parseAngle("-23°01S"), -23.0 - 1.0 / 60, 0.0, "Parse angle");
+        assertEquals(AngleFormat.parseAngle("23°01'01S"), -23.0 - 1.0 / 60 - 1.0 / 3600, 0.0, "Parse angle");
+        assertEquals(AngleFormat.parseAngle("-23°01'01S"), -23.0 - 1.0 / 60 - 1.0 / 3600, 0.0, "Parse angle");
     }
 }

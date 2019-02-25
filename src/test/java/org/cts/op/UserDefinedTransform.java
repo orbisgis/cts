@@ -26,7 +26,6 @@ package org.cts.op;
 import java.util.*;
 
 import org.cts.op.transformation.GeocentricTranslation;
-import org.junit.Test;
 
 import org.cts.Identifier;
 import org.cts.Parameter;
@@ -37,16 +36,16 @@ import org.cts.op.projection.LambertConicConformal1SP;
 import org.cts.op.projection.LambertConicConformal2SP;
 import org.cts.units.Measure;
 import org.cts.units.Unit;
+import org.junit.jupiter.api.Test;
 
 import static org.cts.op.UnitConversion.createUnitConverter;
-
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  *
  * @author Erwan Bocher
  */
-public class UserDefinedTransform extends BaseCoordinateTransformTest {
+class UserDefinedTransform extends BaseCoordinateTransformTest {
 
     private final LongitudeRotation PARIS2GREENWICH =
             LongitudeRotation.getLongitudeRotationFrom(PrimeMeridian.PARIS);
@@ -59,7 +58,7 @@ public class UserDefinedTransform extends BaseCoordinateTransformTest {
      * Transform a point from lambert2 etendu to WGS84
      */
     @Test
-    public void fromLambert2EtenduToWGS84() throws Exception {
+    void fromLambert2EtenduToWGS84() throws Exception {
         double[] pointSource = new double[]{584173.736, 2594514.828};
         double[] pointDest = new double[]{50.345609791, 2.114551393};
         CoordinateOperation LAMBERT2E = LambertConicConformal1SP.LAMBERT2E.inverse();
@@ -80,7 +79,7 @@ public class UserDefinedTransform extends BaseCoordinateTransformTest {
      * Short circuit to transform a point from lambert2 etendu to WGS84
      */
     @Test
-    public void fromSCLambert2EtenduToWGS84() throws Exception {
+    void fromSCLambert2EtenduToWGS84() throws Exception {
         double[] pointSource = new double[]{584173.736, 2594514.828};
         double[] pointDest = new double[]{50.345609791, 2.114551393};
         CoordinateOperation LAMBERT2E = LambertConicConformal1SP.LAMBERT2E.inverse();
@@ -95,7 +94,7 @@ public class UserDefinedTransform extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void fromWGS84TOLambert2Etendu() throws Exception {
+    void fromWGS84TOLambert2Etendu() throws Exception {
         double[] pointSource = new double[]{50.345609791, 2.114551393};
         double[] pointDest = new double[]{584173.736, 2594514.828};
         CoordinateOperationSequence WGS84_LAMB2E = new CoordinateOperationSequence(new Identifier("CTS",
@@ -116,7 +115,7 @@ public class UserDefinedTransform extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void fromLambert1ToGeographic() throws Exception {
+    void fromLambert1ToGeographic() throws Exception {
         double[] pointSource = new double[]{1029705.083, 272723.849};
         Map<String, Measure> params1 = new HashMap<String, Measure>();
         params1.put(Parameter.LATITUDE_OF_ORIGIN,
@@ -139,7 +138,7 @@ public class UserDefinedTransform extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void fromLambert1ToLambert2Etendu() throws Exception {
+    void fromLambert1ToLambert2Etendu() throws Exception {
         double[] pointSource = new double[]{750000.00, 300000.00};
         CoordinateOperation LAMBERT2E = LambertConicConformal1SP.LAMBERT2E;
         CoordinateOperation LAMBERT1 = LambertConicConformal1SP.LAMBERT1.inverse();
@@ -151,7 +150,7 @@ public class UserDefinedTransform extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void fromGeographicToLambert1() throws Exception {
+    void fromGeographicToLambert1() throws Exception {
         Map<String, Measure> params1 = new HashMap<String, Measure>();
         params1.put(Parameter.LATITUDE_OF_ORIGIN,
                 new Measure(55, Unit.GRAD));
@@ -173,7 +172,7 @@ public class UserDefinedTransform extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void fromWGS84TOLambert93() throws Exception {
+    void fromWGS84TOLambert93() throws Exception {
         double[] pointSource = new double[]{50.345609791, 2.114551393};
         //double[] pointDest = new double[]{584173.736, 2594514.828};
         double[] pointDest = new double[]{636890.740, 7027895.263}; // circe (last tab)
@@ -185,6 +184,6 @@ public class UserDefinedTransform extends BaseCoordinateTransformTest {
                 LambertConicConformal2SP.LAMBERT93,
                 CoordinateRounding.MILLIMETER);
         double[] result = WGS84_LAMB2E.transform(pointSource);
-        assertTrue(""+ Arrays.toString(result), checkEquals("WGS84 degrees to RGF93/Lambert 93", result, pointDest, 0.01));
+        assertTrue(checkEquals("WGS84 degrees to RGF93/Lambert 93", result, pointDest, 0.01), Arrays.toString(result));
     }
 }

@@ -24,6 +24,8 @@
 package org.cts.op;
 
 import static java.lang.Math.PI;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.cts.Identifier;
 import org.cts.IllegalCoordinateException;
@@ -31,24 +33,21 @@ import org.cts.crs.*;
 import org.cts.datum.Ellipsoid;
 import org.cts.datum.GeodeticDatum;
 import org.cts.datum.VerticalDatum;
-
-import static org.junit.Assert.assertTrue;
-
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * This class tests transformation using CoumpoundCRS and VerticalCRS.
  *
  * @author Jules Party
  */
-public class VerticalTransformTest extends BaseCoordinateTransformTest {
+class VerticalTransformTest extends BaseCoordinateTransformTest {
 
-    Geographic2DCRS RGF93crs = new Geographic2DCRS(new Identifier("EPSG", "4171", "RGF93"), GeodeticDatum.RGF93);
+    private Geographic2DCRS RGF93crs = new Geographic2DCRS(new Identifier("EPSG", "4171", "RGF93"), GeodeticDatum.RGF93);
     Geographic2DCRS WGS84crs = new Geographic2DCRS(new Identifier("EPSG", "4326", "WGS84"), GeodeticDatum.RGF93);
 
 
     @Test
-    public void testIGN69() throws Exception {
+    void testIGN69() throws Exception {
         CompoundCRS crs = new CompoundCRS(new Identifier(CompoundCRS.class, "RGF93 + IGN69"), RGF93crs,
                 new VerticalCRS(new Identifier("EPSG", "5720", "IGN69"), VerticalDatum.IGN69, VerticalCRS.ALTITUDE_CS));
         double[] inputPoint = new double[]{50, 0, 50};
@@ -60,7 +59,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void testIGN69WithProjection() throws Exception {
+    void testIGN69WithProjection() throws Exception {
         CompoundCRS crs = new CompoundCRS(new Identifier(CompoundCRS.class, "RGF93 Lambert93 + IGN69"),
                 (ProjectedCRS) cRSFactory.getCRS("IGNF:LAMB93"),
                 new VerticalCRS(new Identifier("EPSG", "5720", "IGN69"), VerticalDatum.IGN69, VerticalCRS.ALTITUDE_CS));
@@ -73,7 +72,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void testIGN69BetweenCRS() throws Exception {
+    void testIGN69BetweenCRS() throws Exception {
         CompoundCRS sourceCRS = new CompoundCRS(new Identifier(CompoundCRS.class, "RGF93 Lambert93 + IGN69"),
                 (ProjectedCRS) cRSFactory.getCRS("IGNF:LAMB93"),
                 new VerticalCRS(new Identifier("EPSG", "5720", "IGN69"), VerticalDatum.IGN69, VerticalCRS.ALTITUDE_CS));
@@ -87,7 +86,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void testIGN78() throws Exception {
+    void testIGN78() throws Exception {
         CompoundCRS crs = new CompoundCRS(new Identifier(CompoundCRS.class, "RGF93 + IGN78"), RGF93crs,
                 new VerticalCRS(new Identifier("EPSG", "5721", "IGN78"), VerticalDatum.IGN78, VerticalCRS.ALTITUDE_CS));
         double[] inputPoint = new double[]{42.2, 9, 100};
@@ -99,7 +98,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void testIGN69BetweenCRSPlus() throws Exception {
+    void testIGN69BetweenCRSPlus() throws Exception {
         CompoundCRS sourceCRS = new CompoundCRS(new Identifier(CompoundCRS.class, "RGF93 + IGN69"),
                 (ProjectedCRS) cRSFactory.getCRS("IGNF:LAMB93"),
                 new VerticalCRS(new Identifier("EPSG", "5720", "IGN69"), VerticalDatum.IGN69, VerticalCRS.ALTITUDE_CS));
@@ -115,7 +114,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void testIGN88GTBT() throws Exception {
+    void testIGN88GTBT() throws Exception {
         CompoundCRS crs = new CompoundCRS(new Identifier(CompoundCRS.class, "RGF93 + Guadeloupe 1988"), RGF93crs,
                 new VerticalCRS(new Identifier("EPSG", "5757", "Guadeloupe 1988"), VerticalDatum.IGN88GTBT, VerticalCRS.ALTITUDE_CS));
         double[] inputPoint = new double[]{16, -61.5, 100};
@@ -127,7 +126,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void testIGN92LD() throws Exception {
+    void testIGN92LD() throws Exception {
         CompoundCRS crs = new CompoundCRS(new Identifier(CompoundCRS.class, "RGF93 + IGN 1992 LD height"), RGF93crs,
                 new VerticalCRS(new Identifier("EPSG", "5618", "IGN 1992 LD height"), VerticalDatum.IGN92LD, VerticalCRS.ALTITUDE_CS));
         double[] inputPoint = new double[]{16.3, -61, 100};
@@ -139,7 +138,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void testIGN88LS() throws Exception {
+    void testIGN88LS() throws Exception {
         CompoundCRS crs = new CompoundCRS(new Identifier(CompoundCRS.class, "RGF93 + IGN 1988 LS height"), RGF93crs,
                 new VerticalCRS(new Identifier("EPSG", "5616", "IGN 1988 LS height"), VerticalDatum.IGN88LS, VerticalCRS.ALTITUDE_CS));
         double[] inputPoint = new double[]{15.9, -61.5, 100};
@@ -151,7 +150,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void testIGN87MART() throws Exception {
+    void testIGN87MART() throws Exception {
         CompoundCRS crs = new CompoundCRS(new Identifier(CompoundCRS.class, "RGF93 + Martinique 1987"), RGF93crs,
                 new VerticalCRS(new Identifier("EPSG", "5756", "Martinique 1987"), VerticalDatum.IGN87MART, VerticalCRS.ALTITUDE_CS));
         double[] inputPoint = new double[]{14.5, -61, 100};
@@ -163,7 +162,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void testIGN88MG() throws Exception {
+    void testIGN88MG() throws Exception {
         CompoundCRS crs = new CompoundCRS(new Identifier(CompoundCRS.class, "RGF93 + IGN 1988 MG height"), RGF93crs,
                 new VerticalCRS(new Identifier("EPSG", "5617", "IGN 1988 MG height"), VerticalDatum.IGN88MG, VerticalCRS.ALTITUDE_CS));
         double[] inputPoint = new double[]{16, -61.2, 100};
@@ -175,7 +174,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void testIGN88SB() throws Exception {
+    void testIGN88SB() throws Exception {
         CompoundCRS crs = new CompoundCRS(new Identifier(CompoundCRS.class, "RGF93 + IGN 1988 SB height"), RGF93crs,
                 new VerticalCRS(new Identifier("EPSG", "5619", "IGN 1988 SB height"), VerticalDatum.IGN88SB, VerticalCRS.ALTITUDE_CS));
         double[] inputPoint = new double[]{17.9, -62.8, 100};
@@ -187,7 +186,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void testIGN88SM() throws Exception {
+    void testIGN88SM() throws Exception {
         CompoundCRS crs = new CompoundCRS(new Identifier(CompoundCRS.class, "RGF93 + IGN 1988 SM height"), RGF93crs,
                 new VerticalCRS(new Identifier("EPSG", "5620", "IGN 1988 SM height"), VerticalDatum.IGN88SM, VerticalCRS.ALTITUDE_CS));
         double[] inputPoint = new double[]{18.1, -63, 100};
@@ -199,7 +198,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void testNGG77GUY() throws Exception {
+    void testNGG77GUY() throws Exception {
         CompoundCRS crs = new CompoundCRS(new Identifier(CompoundCRS.class, "RGF93 + NGG1977"), RGF93crs,
                 new VerticalCRS(new Identifier("EPSG", "5755", "NGG1977"), VerticalDatum.NGG77GUY, VerticalCRS.ALTITUDE_CS));
         double[] inputPoint = new double[]{4, -53, 100};
@@ -211,7 +210,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void testGuyanneTransfo() throws Exception {
+    void testGuyanneTransfo() throws Exception {
         CompoundCRS crs = new CompoundCRS(new Identifier(CompoundCRS.class, "RGF93 + NGG1977"), RGF93crs,
                 new VerticalCRS(new Identifier("EPSG", "5755", "NGG1977"), VerticalDatum.NGG77GUY, VerticalCRS.ALTITUDE_CS));
         CompoundCRS crs2 = new CompoundCRS(new Identifier(CompoundCRS.class, "CSG67UTM22 + NGG77GUY"),
@@ -226,7 +225,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void testSHOM53() throws Exception {
+    void testSHOM53() throws Exception {
         CompoundCRS crs = new CompoundCRS(new Identifier(CompoundCRS.class, "RGF93 + SHOM53"), RGF93crs,
                 new VerticalCRS(new Identifier(VerticalCRS.class, "SHOM53"), VerticalDatum.SHOM53, VerticalCRS.ALTITUDE_CS));
         double[] inputPoint = new double[]{-13, 45, 100};
@@ -238,7 +237,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void testMayotteTransformation() throws Exception {
+    void testMayotteTransformation() throws Exception {
         CompoundCRS crs = new CompoundCRS(new Identifier(CompoundCRS.class, "RGF93 + SHOM53"), RGF93crs,
                 new VerticalCRS(new Identifier(VerticalCRS.class, "SHOM53"), VerticalDatum.SHOM53, VerticalCRS.ALTITUDE_CS));
         GeodeticCRS crsTemp = (GeodeticCRS) cRSFactory.getCRS("IGNF:MAYO50UTM38S");
@@ -259,7 +258,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void testIGN62KER() throws Exception {
+    void testIGN62KER() throws Exception {
         CompoundCRS crs = new CompoundCRS(new Identifier(CompoundCRS.class, "RGF93 + IGN62KER"), RGF93crs,
                 new VerticalCRS(new Identifier(VerticalCRS.class, "IGN62KER"), VerticalDatum.IGN62KER, VerticalCRS.ALTITUDE_CS));
         double[] inputPoint = new double[]{-49, 69, 100};
@@ -271,7 +270,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void testKerguelenTransfo() throws Exception {
+    void testKerguelenTransfo() throws Exception {
         CompoundCRS crs = new CompoundCRS(new Identifier(CompoundCRS.class, "RGF93 + IGN62KER"), RGF93crs,
                 new VerticalCRS(new Identifier(VerticalCRS.class, "NGF IGN62KER"), VerticalDatum.IGN62KER, VerticalCRS.ALTITUDE_CS));
         CompoundCRS crs2 = new CompoundCRS(new Identifier(CompoundCRS.class, "KERG62UTM42S + IGN62KER"),
@@ -286,7 +285,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void testDANGER50() throws Exception {
+    void testDANGER50() throws Exception {
         CompoundCRS crs = new CompoundCRS(new Identifier(CompoundCRS.class, "RGF93 + Danger 1950"), RGF93crs,
                 new VerticalCRS(new Identifier("EPSG", "5792", "Danger 1950"), VerticalDatum.DANGER50, VerticalCRS.ALTITUDE_CS));
         double[] inputPoint = new double[]{46.7, -56.2, 100};
@@ -298,7 +297,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void testSaintPierreEtMiquelonTransfo() throws Exception {
+    void testSaintPierreEtMiquelonTransfo() throws Exception {
         CompoundCRS crs = new CompoundCRS(new Identifier(CompoundCRS.class, "RGF93 + Danger 1950"), RGF93crs,
                 new VerticalCRS(new Identifier("EPSG", "5792", "Danger 1950"), VerticalDatum.DANGER50, VerticalCRS.ALTITUDE_CS));
         CompoundCRS crs2 = new CompoundCRS(new Identifier(CompoundCRS.class, "STPM50UTM21 + Danger 1950"),
@@ -313,7 +312,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void testBORASAU01() throws Exception {
+    void testBORASAU01() throws Exception {
         CompoundCRS crs = new CompoundCRS(new Identifier(CompoundCRS.class, "RGF93 + Bora Bora SAU 2001"), RGF93crs,
                 new VerticalCRS(new Identifier("EPSG", "5607", "Bora Bora SAU 2001"), VerticalDatum.BORASAU01, VerticalCRS.ALTITUDE_CS));
         double[] inputPoint = new double[]{-16.5, -151.7, 100};
@@ -325,7 +324,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void testFAKARAVA() throws Exception {
+    void testFAKARAVA() throws Exception {
         CompoundCRS crs = new CompoundCRS(new Identifier(CompoundCRS.class, "RGF93 + FAKARAVA"), RGF93crs,
                 new VerticalCRS(new Identifier(VerticalCRS.class, "FAKARAVA"), VerticalDatum.FAKARAVA, VerticalCRS.ALTITUDE_CS));
         double[] inputPoint = new double[]{-16, -145.5, 100};
@@ -337,7 +336,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void testGAMBIER() throws Exception {
+    void testGAMBIER() throws Exception {
         CompoundCRS crs = new CompoundCRS(new Identifier(CompoundCRS.class, "RGF93 + GAMBIER"), RGF93crs,
                 new VerticalCRS(new Identifier(VerticalCRS.class, "GAMBIER"), VerticalDatum.GAMBIER, VerticalCRS.ALTITUDE_CS));
         double[] inputPoint = new double[]{-23, -135, 100};
@@ -349,7 +348,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void testHAO() throws Exception {
+    void testHAO() throws Exception {
         CompoundCRS crs = new CompoundCRS(new Identifier(CompoundCRS.class, "RGF93 + HAO"), RGF93crs,
                 new VerticalCRS(new Identifier(VerticalCRS.class, "HAO"), VerticalDatum.HAO, VerticalCRS.ALTITUDE_CS));
         double[] inputPoint = new double[]{-18, -141, 100};
@@ -361,7 +360,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void testHIVAOA() throws Exception {
+    void testHIVAOA() throws Exception {
         CompoundCRS crs = new CompoundCRS(new Identifier(CompoundCRS.class, "RGF93 + HIVAOA"), RGF93crs,
                 new VerticalCRS(new Identifier(VerticalCRS.class, "HIVAOA"), VerticalDatum.HIVAOA, VerticalCRS.ALTITUDE_CS));
         double[] inputPoint = new double[]{-9.8, -139, 100};
@@ -373,7 +372,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void testHUAHINESAU01() throws Exception {
+    void testHUAHINESAU01() throws Exception {
         CompoundCRS crs = new CompoundCRS(new Identifier(CompoundCRS.class, "RGF93 + Huahine SAU 2001"), RGF93crs,
                 new VerticalCRS(new Identifier("EPSG", "5605", "Huahine SAU 2001"), VerticalDatum.HUAHINESAU01, VerticalCRS.ALTITUDE_CS));
         double[] inputPoint = new double[]{-16.8, -151, 100};
@@ -385,7 +384,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void testIGNTAHITI66() throws Exception {
+    void testIGNTAHITI66() throws Exception {
         CompoundCRS crs = new CompoundCRS(new Identifier(CompoundCRS.class, "RGF93 + IGN 1966"), RGF93crs,
                 new VerticalCRS(new Identifier("EPSG", "5601", "IGN 1966"), VerticalDatum.IGNTAHITI66, VerticalCRS.ALTITUDE_CS));
         double[] inputPoint = new double[]{-17.5, -149.5, 100};
@@ -397,7 +396,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void testMAIAO01() throws Exception {
+    void testMAIAO01() throws Exception {
         CompoundCRS crs = new CompoundCRS(new Identifier(CompoundCRS.class, "RGF93 + MAIAO01"), RGF93crs,
                 new VerticalCRS(new Identifier(VerticalCRS.class, "MAIAO01"), VerticalDatum.MAIAO01, VerticalCRS.ALTITUDE_CS));
         double[] inputPoint = new double[]{-17.7, -150.6, 100};
@@ -409,7 +408,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void testMATAIVA() throws Exception {
+    void testMATAIVA() throws Exception {
         CompoundCRS crs = new CompoundCRS(new Identifier(CompoundCRS.class, "RGF93 + MATAIVA"), RGF93crs,
                 new VerticalCRS(new Identifier(VerticalCRS.class, "MATAIVA"), VerticalDatum.MATAIVA, VerticalCRS.ALTITUDE_CS));
         double[] inputPoint = new double[]{-14.9, -148.6, 100};
@@ -421,7 +420,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void testMAUPITISAU01() throws Exception {
+    void testMAUPITISAU01() throws Exception {
         CompoundCRS crs = new CompoundCRS(new Identifier(CompoundCRS.class, "RGF93 + Maupiti SAU 2001"), RGF93crs,
                 new VerticalCRS(new Identifier("EPSG", "5604", "Maupiti SAU 2001"), VerticalDatum.MAUPITISAU01, VerticalCRS.ALTITUDE_CS));
         double[] inputPoint = new double[]{-16.5, -152.3, 100};
@@ -433,7 +432,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void testMOOREASAU81() throws Exception {
+    void testMOOREASAU81() throws Exception {
         CompoundCRS crs = new CompoundCRS(new Identifier(CompoundCRS.class, "RGF93 + Moorea SAU 1981"), RGF93crs,
                 new VerticalCRS(new Identifier("EPSG", "5602", "Moorea SAU 1981"), VerticalDatum.MOOREASAU81, VerticalCRS.ALTITUDE_CS));
         double[] inputPoint = new double[]{-17.5, -149.9, 100};
@@ -445,7 +444,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void testNUKUHIVA() throws Exception {
+    void testNUKUHIVA() throws Exception {
         CompoundCRS crs = new CompoundCRS(new Identifier(CompoundCRS.class, "RGF93 + NUKUHIVA"), RGF93crs,
                 new VerticalCRS(new Identifier(VerticalCRS.class, "NUKUHIVA"), VerticalDatum.NUKUHIVA, VerticalCRS.ALTITUDE_CS));
         double[] inputPoint = new double[]{-8.8, -140, 100};
@@ -457,7 +456,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void testRAIATEASAU01() throws Exception {
+    void testRAIATEASAU01() throws Exception {
         CompoundCRS crs = new CompoundCRS(new Identifier(CompoundCRS.class, "RGF93 + Raiatea SAU 2001"), RGF93crs,
                 new VerticalCRS(new Identifier("EPSG", "5603", "Raiatea SAU 2001"), VerticalDatum.RAIATEASAU01, VerticalCRS.ALTITUDE_CS));
         double[] inputPoint = new double[]{-16.8, -151.5, 100};
@@ -469,7 +468,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void testRAIVAVAE() throws Exception {
+    void testRAIVAVAE() throws Exception {
         CompoundCRS crs = new CompoundCRS(new Identifier(CompoundCRS.class, "RGF93 + RAIVAVAE"), RGF93crs,
                 new VerticalCRS(new Identifier(VerticalCRS.class, "RAIVAVAE"), VerticalDatum.RAIVAVAE, VerticalCRS.ALTITUDE_CS));
         double[] inputPoint = new double[]{-23.9, -147.6, 100};
@@ -481,7 +480,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void testREAO() throws Exception {
+    void testREAO() throws Exception {
         CompoundCRS crs = new CompoundCRS(new Identifier(CompoundCRS.class, "RGF93 + REAO"), RGF93crs,
                 new VerticalCRS(new Identifier(VerticalCRS.class, "REAO"), VerticalDatum.REAO, VerticalCRS.ALTITUDE_CS));
         double[] inputPoint = new double[]{-18.5, -136.4, 100};
@@ -493,7 +492,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void testRURUTU() throws Exception {
+    void testRURUTU() throws Exception {
         CompoundCRS crs = new CompoundCRS(new Identifier(CompoundCRS.class, "RGF93 + RURUTU"), RGF93crs,
                 new VerticalCRS(new Identifier(VerticalCRS.class, "RURUTU"), VerticalDatum.RURUTU, VerticalCRS.ALTITUDE_CS));
         double[] inputPoint = new double[]{-22.5, -151.4, 100};
@@ -505,7 +504,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void testTAHAASAU01() throws Exception {
+    void testTAHAASAU01() throws Exception {
         CompoundCRS crs = new CompoundCRS(new Identifier(CompoundCRS.class, "RGF93 + Tahaa SAU 2001"), RGF93crs,
                 new VerticalCRS(new Identifier("EPSG", "5606", "Tahaa SAU 2001"), VerticalDatum.TAHAASAU01, VerticalCRS.ALTITUDE_CS));
         double[] inputPoint = new double[]{-16.6, -151.4, 100};
@@ -517,7 +516,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void testTIKEHAU() throws Exception {
+    void testTIKEHAU() throws Exception {
         CompoundCRS crs = new CompoundCRS(new Identifier(CompoundCRS.class, "RGF93 + TIKEHAU"), RGF93crs,
                 new VerticalCRS(new Identifier(VerticalCRS.class, "TIKEHAU"), VerticalDatum.TIKEHAU, VerticalCRS.ALTITUDE_CS));
         double[] inputPoint = new double[]{-15, -148, 100};
@@ -529,7 +528,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void testTUBUAI() throws Exception {
+    void testTUBUAI() throws Exception {
         CompoundCRS crs = new CompoundCRS(new Identifier(CompoundCRS.class, "RGF93 + TUBUAI"), RGF93crs,
                 new VerticalCRS(new Identifier(VerticalCRS.class, "TUBUAI"), VerticalDatum.TUBUAI, VerticalCRS.ALTITUDE_CS));
         double[] inputPoint = new double[]{-23.3, -149.5, 100};
@@ -541,7 +540,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void testTUPAI01() throws Exception {
+    void testTUPAI01() throws Exception {
         CompoundCRS crs = new CompoundCRS(new Identifier(CompoundCRS.class, "RGF93 + TUPAI01"), RGF93crs,
                 new VerticalCRS(new Identifier(VerticalCRS.class, "TUPAI01"), VerticalDatum.TUPAI01, VerticalCRS.ALTITUDE_CS));
         double[] inputPoint = new double[]{-16.3, -151.9, 100};
@@ -553,7 +552,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void testRAR07() throws Exception {
+    void testRAR07() throws Exception {
         CompoundCRS crs = new CompoundCRS(new Identifier(CompoundCRS.class, "RGF93 + RAR07"), RGF93crs,
                 new VerticalCRS(new Identifier(VerticalCRS.class, "RAR07"), VerticalDatum.RAR07, VerticalCRS.ALTITUDE_CS));
         double[] inputPoint = new double[]{-21.1, 55.5, 100};
@@ -567,7 +566,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void testIGN88GTBTold() throws Exception {
+    void testIGN88GTBTold() throws Exception {
         CompoundCRS crs = new CompoundCRS(new Identifier(CompoundCRS.class, "WGS84GUAD + IGN88GTBTold"),
                 new Geographic2DCRS(new Identifier(Geographic2DCRS.class), GeodeticDatum.WGS84GUAD),
                 new VerticalCRS(new Identifier(VerticalCRS.class, "IGN88GTBTold"), VerticalDatum.IGN88GTBTold, VerticalCRS.ALTITUDE_CS));
@@ -580,7 +579,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void testIGN92LDold() throws Exception {
+    void testIGN92LDold() throws Exception {
         CompoundCRS crs = new CompoundCRS(new Identifier(CompoundCRS.class, "WGS84GUAD + IGN92LDold"),
                 new Geographic2DCRS(new Identifier(Geographic2DCRS.class), GeodeticDatum.WGS84GUAD),
                 new VerticalCRS(new Identifier(VerticalCRS.class, "IGN92LDold"), VerticalDatum.IGN92LDold, VerticalCRS.ALTITUDE_CS));
@@ -593,7 +592,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void testIGN88LSold() throws Exception {
+    void testIGN88LSold() throws Exception {
         CompoundCRS crs = new CompoundCRS(new Identifier(CompoundCRS.class, "WGS84GUAD + IGN88LSold"),
                 new Geographic2DCRS(new Identifier(Geographic2DCRS.class), GeodeticDatum.WGS84GUAD),
                 new VerticalCRS(new Identifier(VerticalCRS.class, "IGN88LSold"), VerticalDatum.IGN88LSold, VerticalCRS.ALTITUDE_CS));
@@ -606,7 +605,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void testIGN87MARTold() throws Exception {
+    void testIGN87MARTold() throws Exception {
         CompoundCRS crs = new CompoundCRS(new Identifier(CompoundCRS.class, "WGS84MART + IGN87MARTold"),
                 new Geographic2DCRS(new Identifier(Geographic2DCRS.class), GeodeticDatum.WGS84MART),
                 new VerticalCRS(new Identifier(VerticalCRS.class, "IGN87MARTold"), VerticalDatum.IGN87MARTold, VerticalCRS.ALTITUDE_CS));
@@ -619,7 +618,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void testIGN88MGold() throws Exception {
+    void testIGN88MGold() throws Exception {
         CompoundCRS crs = new CompoundCRS(new Identifier(CompoundCRS.class, "WGS84GUAD + IGN88MGold"),
                 new Geographic2DCRS(new Identifier(Geographic2DCRS.class), GeodeticDatum.WGS84GUAD),
                 new VerticalCRS(new Identifier(VerticalCRS.class, "IGN88MGold"), VerticalDatum.IGN88MGold, VerticalCRS.ALTITUDE_CS));
@@ -632,7 +631,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void testIGN88SBold() throws Exception {
+    void testIGN88SBold() throws Exception {
         CompoundCRS crs = new CompoundCRS(new Identifier(CompoundCRS.class, "WGS84SBSM + IGN88SBold"),
                 new Geographic2DCRS(new Identifier(Geographic2DCRS.class), GeodeticDatum.WGS84SBSM),
                 new VerticalCRS(new Identifier(VerticalCRS.class, "IGN88SBold"), VerticalDatum.IGN88SBold, VerticalCRS.ALTITUDE_CS));
@@ -645,7 +644,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void testIGN88SMold() throws Exception {
+    void testIGN88SMold() throws Exception {
         CompoundCRS crs = new CompoundCRS(new Identifier(CompoundCRS.class, "WGS84SBSM + IGN88SMold"),
                 new Geographic2DCRS(new Identifier(Geographic2DCRS.class), GeodeticDatum.WGS84SBSM),
                 new VerticalCRS(new Identifier(VerticalCRS.class, "IGN88SMold"), VerticalDatum.IGN88SMold, VerticalCRS.ALTITUDE_CS));
@@ -658,7 +657,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void testIGN88GTBToldToNew() throws Exception {
+    void testIGN88GTBToldToNew() throws Exception {
         CompoundCRS crs1 = new CompoundCRS(new Identifier(CompoundCRS.class, "WGS84GUAD + IGN88GTBTold"),
                 new Geographic2DCRS(new Identifier(Geographic2DCRS.class), GeodeticDatum.WGS84GUAD),
                 new VerticalCRS(new Identifier(VerticalCRS.class, "IGN88GTBTold"), VerticalDatum.IGN88GTBTold, VerticalCRS.ALTITUDE_CS));
@@ -673,7 +672,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void testIGN92LDoldToNew() throws Exception {
+    void testIGN92LDoldToNew() throws Exception {
         CompoundCRS crs1 = new CompoundCRS(new Identifier(CompoundCRS.class, "WGS84GUAD + IGN92LDold"),
                 new Geographic2DCRS(new Identifier(Geographic2DCRS.class), GeodeticDatum.WGS84GUAD),
                 new VerticalCRS(new Identifier(VerticalCRS.class, "IGN92LDold"), VerticalDatum.IGN92LDold, VerticalCRS.ALTITUDE_CS));
@@ -688,7 +687,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void testIGN88LSoldToNew() throws Exception {
+    void testIGN88LSoldToNew() throws Exception {
         CompoundCRS crs1 = new CompoundCRS(new Identifier(CompoundCRS.class, "WGS84GUAD + IGN88LSold"),
                 new Geographic2DCRS(new Identifier(Geographic2DCRS.class), GeodeticDatum.WGS84GUAD),
                 new VerticalCRS(new Identifier(VerticalCRS.class, "IGN88LSold"), VerticalDatum.IGN88LSold, VerticalCRS.ALTITUDE_CS));
@@ -703,7 +702,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void testIGN87MARToldToNew() throws Exception {
+    void testIGN87MARToldToNew() throws Exception {
         CompoundCRS crs1 = new CompoundCRS(new Identifier(CompoundCRS.class, "WGS84MART + IGN87MARTold"),
                 new Geographic2DCRS(new Identifier(Geographic2DCRS.class), GeodeticDatum.WGS84MART),
                 new VerticalCRS(new Identifier(VerticalCRS.class, "IGN87MARTold"), VerticalDatum.IGN87MARTold, VerticalCRS.ALTITUDE_CS));
@@ -718,7 +717,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void testIGN88MGoldToNew() throws Exception {
+    void testIGN88MGoldToNew() throws Exception {
         CompoundCRS crs1 = new CompoundCRS(new Identifier(CompoundCRS.class, "WGS84GUAD + IGN88MGold"),
                 new Geographic2DCRS(new Identifier(Geographic2DCRS.class), GeodeticDatum.WGS84GUAD),
                 new VerticalCRS(new Identifier(VerticalCRS.class, "IGN88MGold"), VerticalDatum.IGN88MGold, VerticalCRS.ALTITUDE_CS));
@@ -733,7 +732,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void testIGN88SBoldToNew() throws Exception {
+    void testIGN88SBoldToNew() throws Exception {
         CompoundCRS crs1 = new CompoundCRS(new Identifier(CompoundCRS.class, "WGS84SBSM + IGN88SBold"),
                 new Geographic2DCRS(new Identifier(Geographic2DCRS.class), GeodeticDatum.WGS84SBSM),
                 new VerticalCRS(new Identifier(VerticalCRS.class, "IGN88SBold"), VerticalDatum.IGN88SBold, VerticalCRS.ALTITUDE_CS));
@@ -748,7 +747,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void testIGN88SMoldToNew() throws Exception {
+    void testIGN88SMoldToNew() throws Exception {
         CompoundCRS crs1 = new CompoundCRS(new Identifier(CompoundCRS.class, "WGS84SBSM + IGN88SMold"),
                 new Geographic2DCRS(new Identifier(Geographic2DCRS.class), GeodeticDatum.WGS84SBSM),
                 new VerticalCRS(new Identifier(VerticalCRS.class, "IGN88SMold"), VerticalDatum.IGN88SMold, VerticalCRS.ALTITUDE_CS));
@@ -763,7 +762,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void testCompdCRS() throws CRSException, IllegalCoordinateException, CoordinateOperationException {
+    void testCompdCRS() throws CRSException, IllegalCoordinateException, CoordinateOperationException {
         String prjString = "COMPD_CS[\"RGF93 / Lambert-93 + IGN69\",\n"
                 + "    PROJCS[\"RGF93 / Lambert-93\",\n"
                 + "        GEOGCS[\"RGF93\",\n"
@@ -826,7 +825,7 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void testVerticalCRS() throws CRSException {
+    void testVerticalCRS() throws CRSException {
         String prjString = "VERT_CS[\"GRS80VCS\",\n"
                 + "    VERT_DATUM[\"Hauteur ellipsoidale - GRS80\",2002,\n"
                 + "        AUTHORITY[\"EPSG\",\"5019\"]],\n"
@@ -835,11 +834,11 @@ public class VerticalTransformTest extends BaseCoordinateTransformTest {
         CoordinateReferenceSystem crs = cRSFactory.createFromPrj(prjString);
         assertTrue(crs instanceof VerticalCRS);
         VerticalCRS vcrs = (VerticalCRS) crs;
-        assertTrue(vcrs.getDatum().getEllipsoid().equals(Ellipsoid.GRS80));
+        assertEquals(vcrs.getDatum().getEllipsoid(), Ellipsoid.GRS80);
     }
 
     @Test
-    public void testGeocentricCRS() throws CRSException, IllegalCoordinateException, CoordinateOperationException {
+    void testGeocentricCRS() throws CRSException, IllegalCoordinateException, CoordinateOperationException {
         CompoundCRS sourceCRS = new CompoundCRS(new Identifier(CompoundCRS.class, "NTF LAMB2E + IGN69"),
                 (ProjectedCRS) cRSFactory.getCRS("IGNF:LAMBE"),
                 new VerticalCRS(new Identifier("EPSG", "5720", "IGN69"), VerticalDatum.IGN69, VerticalCRS.ALTITUDE_CS));
