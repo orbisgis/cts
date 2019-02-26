@@ -34,11 +34,10 @@ import org.cts.op.projection.CylindricalEqualArea;
 import org.cts.op.projection.MillerCylindrical;
 import org.cts.units.Measure;
 import org.cts.units.Unit;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Test;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * This class contains tests that uses CRS not present in registries and thus
@@ -49,7 +48,7 @@ import static org.junit.Assert.assertTrue;
 public class SpecialCoordinateTransformTest extends BaseCoordinateTransformTest {
 
     @Test
-    public void testPolyconic() throws Exception {
+    void testPolyconic() throws Exception {
         double csNameSrc_X = -45;
         double csNameSrc_Y = 6;
         double csNameDest_X = 5996378.71;
@@ -87,7 +86,7 @@ public class SpecialCoordinateTransformTest extends BaseCoordinateTransformTest 
     }
 
     @Test
-    public void testCylindricalEqualArea() throws Exception {
+    void testCylindricalEqualArea() throws Exception {
         Map<String, Measure> map = new HashMap<String, Measure>();
         map.put(Parameter.CENTRAL_MERIDIAN, new Measure(-75, Unit.DEGREE));
         map.put(Parameter.LATITUDE_OF_TRUE_SCALE, new Measure(5, Unit.DEGREE));
@@ -109,7 +108,7 @@ public class SpecialCoordinateTransformTest extends BaseCoordinateTransformTest 
     }
 
     @Test
-    public void testMillerCylindrical() throws Exception {
+    void testMillerCylindrical() throws Exception {
         Map<String, Measure> map = new HashMap<String, Measure>();
         map.put(Parameter.CENTRAL_MERIDIAN, new Measure(0, Unit.DEGREE));
         map.put(Parameter.LATITUDE_OF_ORIGIN, new Measure(0, Unit.DEGREE));

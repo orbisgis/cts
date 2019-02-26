@@ -25,19 +25,18 @@ package org.cts.op;
 
 import org.cts.crs.CoordinateReferenceSystem;
 import org.cts.crs.GeodeticCRS;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Test;
-
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  *
  * @author Erwan Bocher
  */
-public class EPSGTransformTest extends BaseCoordinateTransformTest {
+class EPSGTransformTest extends BaseCoordinateTransformTest {
 
     @Test
-    public void testFrenchEPSGCodeFrom4326To27582() throws Exception {
+    void testFrenchEPSGCodeFrom4326To27582() throws Exception {
         String csNameSrc = "EPSG:4326"; //Input EPSG
         double[] pointSource = new double[]{2.114551393, 50.345609791};
         String csNameDest = "EPSG:27582";  //Target EPSG lambert 2 etendu france
@@ -51,7 +50,7 @@ public class EPSGTransformTest extends BaseCoordinateTransformTest {
     }
 
     @Test
-    public void testFrenchEPSGCodeFrom27582To4326() throws Exception {
+    void testFrenchEPSGCodeFrom27582To4326() throws Exception {
         String csNameSrc = "EPSG:27582"; //Input EPSG
         double[] pointSource = new double[]{584173.736, 2594514.828};
         String csNameDest = "EPSG:4326";  //Target EPSG 
@@ -66,7 +65,7 @@ public class EPSGTransformTest extends BaseCoordinateTransformTest {
     
     
      @Test
-    public void testFrenchEPSGCodeFrom27572To3857() throws Exception {
+     void testFrenchEPSGCodeFrom27572To3857() throws Exception {
         String csNameSrc = "EPSG:27572"; //Input EPSG
         double[] pointSource = new double[]{282331, 2273699.7};
         String csNameDest = "EPSG:3857";  //Target EPSG 

@@ -28,13 +28,13 @@ import org.cts.crs.GeodeticCRS;
 
 import org.cts.op.transformation.FrenchGeocentricNTF2RGF;
 import org.cts.op.transformation.NTv2GridShiftTransformation;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.FileReader;
 import java.io.LineNumberReader;
 import java.util.Set;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * This class is used to test french grids transformations.
@@ -53,7 +53,7 @@ public class FrenchGridsTest extends BaseCoordinateTransformTest {
      * @throws Exception
      */
     @Test
-    public void testCoordinateTransformFromFile() throws Exception {
+    void testCoordinateTransformFromFile() throws Exception {
         String filePath = BatchCoordinateTransformTest.class.getResource("frenchgridstest.csv").toURI().getPath();
         FileReader reader = new FileReader(filePath);
         LineNumberReader lineReader = new LineNumberReader(reader);

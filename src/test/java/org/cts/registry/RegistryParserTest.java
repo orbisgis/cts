@@ -31,60 +31,58 @@ import org.cts.CTSTestCase;
 import org.cts.Identifier;
 import org.cts.crs.CoordinateReferenceSystem;
 import org.cts.parser.proj.ProjKeyParameters;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Test;
-
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *
  * @author Erwan Bocher
  */
-public class RegistryParserTest extends CTSTestCase {
+class RegistryParserTest extends CTSTestCase {
 
     @Test
-    public void testEPSG() throws Exception {
+    void testEPSG() throws Exception {
         Map<String, String> parameters = getParameters("epsg", "4326");
         //Expected 
         //# WGS 84
         //<4326> +proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs  <>                
-        assertTrue(parameters.get(ProjKeyParameters.proj).equals("longlat"));
-        assertTrue(parameters.get(ProjKeyParameters.ellps).equals("WGS84"));
-        assertTrue(parameters.get(ProjKeyParameters.datum).equals("WGS84"));
+        assertEquals("longlat", parameters.get(ProjKeyParameters.proj));
+        assertEquals("WGS84", parameters.get(ProjKeyParameters.ellps));
+        assertEquals("WGS84", parameters.get(ProjKeyParameters.datum));
     }
 
     @Test
-    public void testReadEPSGFile1() throws Exception {
+    void testReadEPSGFile1() throws Exception {
         CoordinateReferenceSystem crs = cRSFactory.getRegistryManager().getRegistry("EPSG")
                 .getCoordinateReferenceSystem(new Identifier("EPSG", "2154", null));
-        assertEquals("epsg:2154 complete code", "EPSG:2154", crs.getCode());
-        assertEquals("epsg:2154 authority name", "EPSG", crs.getAuthorityName());
-        assertEquals("epsg:2154 authority code", "2154", crs.getAuthorityKey());
-        assertEquals("epsg:2154 name", "RGF93 / Lambert-93", crs.getName());
-        assertEquals("epsg:2154 x_0", 700000, crs.getProjection().getFalseEasting(), 1E-9);
+        assertEquals("EPSG:2154", crs.getCode(), "epsg:2154 complete code");
+        assertEquals("EPSG", crs.getAuthorityName(), "epsg:2154 authority name");
+        assertEquals("2154", crs.getAuthorityKey(), "epsg:2154 authority code");
+        assertEquals("RGF93 / Lambert-93", crs.getName(), "epsg:2154 name");
+        assertEquals(700000, crs.getProjection().getFalseEasting(), 1E-9, "epsg:2154 x_0");
     }
 
     @Test
-    public void testReadEPSGFile2() throws Exception {
+    void testReadEPSGFile2() throws Exception {
         Map<String, String> parameters = getParameters("epsg", "2736");
         //Expected 
         //# Tete / UTM zone 36S
         //<2736> +proj=utm +zone=36 +south +ellps=clrk66 
         //+towgs84=-115.064,-87.39,-101.716,-0.058,4.001,-2.062,9.366 
         //+units=m +no_defs  <>             
-        assertTrue(parameters.get(ProjKeyParameters.proj).equals("utm"));
-        assertTrue(parameters.get(ProjKeyParameters.zone).equals("36"));
-        assertTrue(parameters.get(ProjKeyParameters.south) == null);
-        assertTrue(parameters.get(ProjKeyParameters.ellps).equals("clrk66"));
-        assertTrue(parameters.get(ProjKeyParameters.towgs84).equals("-115.064,-87.39,-101.716,-0.058,4.001,-2.062,9.366"));
-        assertTrue(parameters.get(ProjKeyParameters.units).equals("m"));
+        assertEquals("utm", parameters.get(ProjKeyParameters.proj));
+        assertEquals("36", parameters.get(ProjKeyParameters.zone));
+        assertNull(parameters.get(ProjKeyParameters.south));
+        assertEquals("clrk66", parameters.get(ProjKeyParameters.ellps));
+        assertEquals("-115.064,-87.39,-101.716,-0.058,4.001,-2.062,9.366", parameters.get(ProjKeyParameters.towgs84));
+        assertEquals("m", parameters.get(ProjKeyParameters.units));
     }
 
     @Test
-    public void testReadEPSGFileWrongCode() throws Exception {
+    void testReadEPSGFileWrongCode() throws Exception {
         Map<String, String> parameters = getParameters("EPSG", "300000");
-        assertTrue(parameters == null);
+        assertNull(parameters);
     }
 
     /**
@@ -95,7 +93,7 @@ public class RegistryParserTest extends CTSTestCase {
      * @return
      * @throws java.lang.Exception
      */
-    public Map<String, String> getParameters(String registry, String code) throws Exception {
+    private Map<String, String> getParameters(String registry, String code) throws Exception {
         //Map<String, String> parameters = cRSFactory.getRegistryManager().getRegistry(registry).getParameters(code);
         Registry reg  = cRSFactory.getRegistryManager().getRegistry(registry);
         if (reg instanceof AbstractProjRegistry) {
@@ -105,110 +103,110 @@ public class RegistryParserTest extends CTSTestCase {
     }
 
     @Test
-    public void testReadIGNFFile() throws Exception {
+    void testReadIGNFFile() throws Exception {
         Map<String, String> parameters = getParameters("IGNF", "RGF93");
         //Expected 
         //<RGF93> +title=Reseau geodesique francais 1993 
         //+proj=geocent +towgs84=0.0000,0.0000,0.0000 +a=6378137.0000 
         //+rf=298.2572221010000 +units=m +no_defs <> 
-        assertTrue(parameters.get(ProjKeyParameters.title).equals("Reseau geodesique francais 1993"));
-        assertTrue(parameters.get(ProjKeyParameters.proj).equals("geocent"));
-        assertTrue(parameters.get(ProjKeyParameters.towgs84).equals("0.0000,0.0000,0.0000"));
-        assertTrue(parameters.get(ProjKeyParameters.a).equals("6378137.0000"));
-        assertTrue(parameters.get(ProjKeyParameters.rf).equals("298.2572221010000"));
-        assertTrue(parameters.get(ProjKeyParameters.units).equals("m"));
-        assertTrue(parameters.get(ProjKeyParameters.no_defs) == null);
+        assertEquals("Reseau geodesique francais 1993", parameters.get(ProjKeyParameters.title));
+        assertEquals("geocent", parameters.get(ProjKeyParameters.proj));
+        assertEquals("0.0000,0.0000,0.0000", parameters.get(ProjKeyParameters.towgs84));
+        assertEquals("6378137.0000", parameters.get(ProjKeyParameters.a));
+        assertEquals("298.2572221010000", parameters.get(ProjKeyParameters.rf));
+        assertEquals("m", parameters.get(ProjKeyParameters.units));
+        assertNull(parameters.get(ProjKeyParameters.no_defs));
     }
 
     @Test
-    public void testReadIGNFNadGrids() throws Exception {
+    void testReadIGNFNadGrids() throws Exception {
         //Expected
         //<NTF> +title=Nouvelle Triangulation Francaise +proj=geocent +nadgrids=ntf_r93.gsb,null 
         //+towgs84=-168.0000,-60.0000,320.0000 +a=6378249.2000 +rf=293.4660210000000 
         //+units=m +no_defs <>
         Map<String, String> parameters = getParameters("IGNF", "NTF");
-        assertTrue(parameters.get(ProjKeyParameters.title).equals("Nouvelle Triangulation Francaise"));
-        assertTrue(parameters.get(ProjKeyParameters.proj).equals("geocent"));
-        assertTrue(parameters.get(ProjKeyParameters.nadgrids).equals("ntf_r93.gsb,null"));
-        assertTrue(parameters.get(ProjKeyParameters.towgs84).equals("-168.0000,-60.0000,320.0000"));
-        assertTrue(parameters.get(ProjKeyParameters.a).equals("6378249.2000"));
-        assertTrue(parameters.get(ProjKeyParameters.rf).equals("293.4660210000000"));
-        assertTrue(parameters.get(ProjKeyParameters.units).equals("m"));
+        assertEquals("Nouvelle Triangulation Francaise", parameters.get(ProjKeyParameters.title));
+        assertEquals("geocent", parameters.get(ProjKeyParameters.proj));
+        assertEquals("ntf_r93.gsb,null", parameters.get(ProjKeyParameters.nadgrids));
+        assertEquals("-168.0000,-60.0000,320.0000", parameters.get(ProjKeyParameters.towgs84));
+        assertEquals("6378249.2000", parameters.get(ProjKeyParameters.a));
+        assertEquals("293.4660210000000", parameters.get(ProjKeyParameters.rf));
+        assertEquals("m", parameters.get(ProjKeyParameters.units));
     }
 
     @Test
-    public void testReadESRIFile() throws Exception {
+    void testReadESRIFile() throws Exception {
         Map<String, String> parameters = getParameters("ESRI", "102632");
         //<102632> +proj=tmerc +lat_0=54 +lon_0=-142 +k=0.999900 +x_0=500000.0000000002 
         //+y_0=0 +ellps=GRS80 +datum=NAD83 +to_meter=0.3048006096012192  no_defs <>
-        assertTrue(parameters.get(ProjKeyParameters.proj).equals("tmerc"));
-        assertTrue(parameters.get(ProjKeyParameters.lat_0).equals("54"));
-        assertTrue(parameters.get(ProjKeyParameters.lon_0).equals("-142"));
-        assertTrue(parameters.get(ProjKeyParameters.k).equals("0.999900"));
-        assertTrue(parameters.get(ProjKeyParameters.x_0).equals("500000.0000000002"));
-        assertTrue(parameters.get(ProjKeyParameters.y_0).equals("0"));
-        assertTrue(parameters.get(ProjKeyParameters.ellps).equals("GRS80"));
-        assertTrue(parameters.get(ProjKeyParameters.datum).equals("NAD83"));
-        assertTrue(parameters.get(ProjKeyParameters.to_meter).equals("0.3048006096012192"));
+        assertEquals("tmerc", parameters.get(ProjKeyParameters.proj));
+        assertEquals("54", parameters.get(ProjKeyParameters.lat_0));
+        assertEquals("-142", parameters.get(ProjKeyParameters.lon_0));
+        assertEquals("0.999900", parameters.get(ProjKeyParameters.k));
+        assertEquals("500000.0000000002", parameters.get(ProjKeyParameters.x_0));
+        assertEquals("0", parameters.get(ProjKeyParameters.y_0));
+        assertEquals("GRS80", parameters.get(ProjKeyParameters.ellps));
+        assertEquals("NAD83", parameters.get(ProjKeyParameters.datum));
+        assertEquals("0.3048006096012192", parameters.get(ProjKeyParameters.to_meter));
     }
 
     @Test
-    public void testReadNAD27File() throws Exception {
+    void testReadNAD27File() throws Exception {
         Map<String, String> parameters = getParameters("NAD27", "2001");
         //# 2001: massachusetts mainland: nad27
         //<2001> proj=lcc  datum=NAD27
         //lon_0=-71d30 lat_1=42d41 lat_2=41d43 lat_0=41
         //x_0=182880.3657607315 y_0=0
         //no_defs <>
-        assertTrue(parameters.get(ProjKeyParameters.proj).equals("lcc"));
-        assertTrue(parameters.get(ProjKeyParameters.lat_0).equals("41"));
-        assertTrue(parameters.get(ProjKeyParameters.lon_0).equals("-71d30"));
-        assertTrue(parameters.get(ProjKeyParameters.lat_1).equals("42d41"));
-        assertTrue(parameters.get(ProjKeyParameters.lat_2).equals("41d43"));
-        assertTrue(parameters.get(ProjKeyParameters.x_0).equals("182880.3657607315"));
-        assertTrue(parameters.get(ProjKeyParameters.y_0).equals("0"));
-        assertTrue(parameters.get(ProjKeyParameters.datum).equals("NAD27"));
+        assertEquals("lcc", parameters.get(ProjKeyParameters.proj));
+        assertEquals("41", parameters.get(ProjKeyParameters.lat_0));
+        assertEquals("-71d30", parameters.get(ProjKeyParameters.lon_0));
+        assertEquals("42d41", parameters.get(ProjKeyParameters.lat_1));
+        assertEquals("41d43", parameters.get(ProjKeyParameters.lat_2));
+        assertEquals("182880.3657607315", parameters.get(ProjKeyParameters.x_0));
+        assertEquals("0", parameters.get(ProjKeyParameters.y_0));
+        assertEquals("NAD27", parameters.get(ProjKeyParameters.datum));
     }
 
     @Test
-    public void testReadNAD83File() throws Exception {
+    void testReadNAD83File() throws Exception {
         Map<String, String> parameters = getParameters("NAD83", "2112");
         //# 2112: michigan central/l: nad83
         //<2112> proj=lcc  datum=NAD83
         //lon_0=-84d22 lat_1=45d42 lat_2=44d11 lat_0=43d19
         //x_0=6000000 y_0=0
         //no_defs <>
-        assertTrue(parameters.get(ProjKeyParameters.proj).equals("lcc"));
-        assertTrue(parameters.get(ProjKeyParameters.lat_0).equals("43d19"));
-        assertTrue(parameters.get(ProjKeyParameters.lon_0).equals("-84d22"));
-        assertTrue(parameters.get(ProjKeyParameters.lat_1).equals("45d42"));
-        assertTrue(parameters.get(ProjKeyParameters.lat_2).equals("44d11"));
-        assertTrue(parameters.get(ProjKeyParameters.x_0).equals("6000000"));
-        assertTrue(parameters.get(ProjKeyParameters.y_0).equals("0"));
-        assertTrue(parameters.get(ProjKeyParameters.datum).equals("NAD83"));
+        assertEquals("lcc", parameters.get(ProjKeyParameters.proj));
+        assertEquals("43d19", parameters.get(ProjKeyParameters.lat_0));
+        assertEquals("-84d22", parameters.get(ProjKeyParameters.lon_0));
+        assertEquals("45d42", parameters.get(ProjKeyParameters.lat_1));
+        assertEquals("44d11", parameters.get(ProjKeyParameters.lat_2));
+        assertEquals("6000000", parameters.get(ProjKeyParameters.x_0));
+        assertEquals("0", parameters.get(ProjKeyParameters.y_0));
+        assertEquals("NAD83", parameters.get(ProjKeyParameters.datum));
     }
 
     @Test
-    public void testReadworldFile() throws Exception {
+    void testReadworldFile() throws Exception {
         Map<String, String> parameters = getParameters("world", "levant");
         //<levant> # Levant
         //proj=lcc ellps=clrk66 lat_1=34d39'N lon_0=37d21'E
         //x_0=500000 y_0=300000 k_0=0.9996256
         //no_defs <>
-        assertTrue(parameters.get(ProjKeyParameters.proj).equals("lcc"));
-        assertTrue(parameters.get(ProjKeyParameters.k_0).equals("0.9996256"));
-        assertTrue(parameters.get(ProjKeyParameters.lon_0).equals("37d21'E"));
-        assertTrue(parameters.get(ProjKeyParameters.lat_1).equals("34d39'N"));
-        assertTrue(parameters.get(ProjKeyParameters.x_0).equals("500000"));
-        assertTrue(parameters.get(ProjKeyParameters.y_0).equals("300000"));
-        assertTrue(parameters.get(ProjKeyParameters.ellps).equals("clrk66"));
+        assertEquals("lcc", parameters.get(ProjKeyParameters.proj));
+        assertEquals("0.9996256", parameters.get(ProjKeyParameters.k_0));
+        assertEquals("37d21'E", parameters.get(ProjKeyParameters.lon_0));
+        assertEquals("34d39'N", parameters.get(ProjKeyParameters.lat_1));
+        assertEquals("500000", parameters.get(ProjKeyParameters.x_0));
+        assertEquals("300000", parameters.get(ProjKeyParameters.y_0));
+        assertEquals("clrk66", parameters.get(ProjKeyParameters.ellps));
     }
 
     @Test
-    public void testRegisteryCaseInsensitive() throws Exception {
+    void testRegisteryCaseInsensitive() throws Exception {
         Map<String, String> parameters = getParameters("IGnF", "AmSt63");
-        assertTrue(parameters != null);
+        assertNotNull(parameters);
         parameters = getParameters("EPsg", "4326");
-        assertTrue(parameters != null);
+        assertNotNull(parameters);
     }
 }

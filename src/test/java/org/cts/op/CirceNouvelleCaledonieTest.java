@@ -35,7 +35,7 @@ import org.cts.op.projection.Projection;
 import org.cts.op.projection.UniversalTransverseMercator;
 import org.cts.op.transformation.SevenParameterTransformation;
 import org.cts.util.AngleFormat;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Cf CirceNC
@@ -45,19 +45,19 @@ import org.junit.Test;
  * better understanding of algorithm and parameters used in Circe NC
  * @author Michaël Michaud
  */
-public class CirceNouvelleCaledonieTest extends BaseCoordinateTransformTest {
+class CirceNouvelleCaledonieTest extends BaseCoordinateTransformTest {
 
     private static final double MM = 0.001;
     private static final double MM_IN_DEG = 0.00000001;
 
-    static final GeographicExtent LIFOU  = new GeographicExtent("LIFOU (ILE DE LA LOYAUTE", -21.22, -20.65, 166.96, 167.51);
-    static final GeographicExtent MARE   = new GeographicExtent("MARE (ILE DE LA LOYAUTE)", -21.69, -21.29, 167.69, 168.18);
-    static final GeographicExtent OUVEA  = new GeographicExtent("OUVEA (ILE DE LA LOYAUTE)", -20.78, -20.34, 166.11, 166.71);
-    static final GeographicExtent NOUVELLE_CALEDONIE = new GeographicExtent("Nouvelle Calédonie", -26.65, -14.60, 156.10, 174.50);
-    static final GeographicExtent GRANDE_TERRE = new GeographicExtent("Grande Terre", -22.75, -19.50, 163.50, 167.20);
-    static final GeographicExtent ILE_DES_PINS = new GeographicExtent("Ile des Pins", -22.80, -22.44, 167.29, 167.62);
-    static final GeographicExtent BELEP  = new GeographicExtent("BELEP", -19.74, -19.68, 163.62, 163.68);
-    static final GeographicExtent NOUMEA = new GeographicExtent("Nouméa", -22.36, -22.14, 166.36, 166.54);
+    private static final GeographicExtent LIFOU  = new GeographicExtent("LIFOU (ILE DE LA LOYAUTE", -21.22, -20.65, 166.96, 167.51);
+    private static final GeographicExtent MARE   = new GeographicExtent("MARE (ILE DE LA LOYAUTE)", -21.69, -21.29, 167.69, 168.18);
+    private static final GeographicExtent OUVEA  = new GeographicExtent("OUVEA (ILE DE LA LOYAUTE)", -20.78, -20.34, 166.11, 166.71);
+    private static final GeographicExtent NOUVELLE_CALEDONIE = new GeographicExtent("Nouvelle Calédonie", -26.65, -14.60, 156.10, 174.50);
+    private static final GeographicExtent GRANDE_TERRE = new GeographicExtent("Grande Terre", -22.75, -19.50, 163.50, 167.20);
+    private static final GeographicExtent ILE_DES_PINS = new GeographicExtent("Ile des Pins", -22.80, -22.44, 167.29, 167.62);
+    private static final GeographicExtent BELEP  = new GeographicExtent("BELEP", -19.74, -19.68, 163.62, 163.68);
+    private static final GeographicExtent NOUMEA = new GeographicExtent("Nouméa", -22.36, -22.14, 166.36, 166.54);
 
 
 
@@ -81,7 +81,7 @@ public class CirceNouvelleCaledonieTest extends BaseCoordinateTransformTest {
     // ------------------------------------------------------------------------
     // Systems based on IGN 72 GRANDE TERRE
     // ------------------------------------------------------------------------
-    static GeodeticDatum IGN72_GRANDE_TERRE = GeodeticDatum.createGeodeticDatum(
+    private static GeodeticDatum IGN72_GRANDE_TERRE = GeodeticDatum.createGeodeticDatum(
             new Identifier("IGNF","IGN72_GRANDE_TERRE","IGN 72 Grande Terre"), PrimeMeridian.GREENWICH, Ellipsoid.INTERNATIONAL1924,
             SevenParameterTransformation.createBursaWolfTransformation(
                     97.2970, -263.2430, 310.8790, -1.599879, 0.838730, 3.140947, 13.326,
@@ -94,27 +94,27 @@ public class CirceNouvelleCaledonieTest extends BaseCoordinateTransformTest {
 
             //new GeocentricTranslation(-11.6400, -348.6000, 291.6800), GRANDE_TERRE, null, null);
 
-    static GeodeticCRS IGN72_GRANDE_TERRE_GEO2D = new Geographic2DCRS(
+    private static GeodeticCRS IGN72_GRANDE_TERRE_GEO2D = new Geographic2DCRS(
             new Identifier("IGNF","IGN72_GEO","IGN 72 Grande Terre Géographique 2D"), IGN72_GRANDE_TERRE);
     static GeodeticCRS IGN72_GRANDE_TERRE_GEO3D = new Geographic3DCRS(
             new Identifier("IGNF","IGN72_GEO3D","IGN 72 Grande Terre Géographique 3D"), IGN72_GRANDE_TERRE);
-    static GeodeticCRS IGN72_GRANDE_TERRE_UTM = new ProjectedCRS(
+    private static GeodeticCRS IGN72_GRANDE_TERRE_UTM = new ProjectedCRS(
             new Identifier("IGNF","IGN72_UTM58S","IGN 72 Grande Terre UTM 58S"), IGN72_GRANDE_TERRE, UTM58S_1924);
 
     @Test
-    public void testIGN72_GRANDE_TERRE_GEO2D_To_UTM() throws IllegalCoordinateException, CoordinateOperationException {
+    void testIGN72_GRANDE_TERRE_GEO2D_To_UTM() throws IllegalCoordinateException, CoordinateOperationException {
         test(new double[]{-20, 165}, IGN72_GRANDE_TERRE_GEO2D, IGN72_GRANDE_TERRE_UTM, new double[]{500000.000, 7788490.928}, MM_IN_DEG, MM);
     }
 
     // Matches circe results with the seven parameters described in the help, not with those included in dataNC.txt
     @Test
-    public void testIGN72_GRANDE_TERRE_GEO2D_To_RGNC_XYZ() {
+    void testIGN72_GRANDE_TERRE_GEO2D_To_RGNC_XYZ() {
         //test(new double[]{-20, 165}, IGN72_GRANDE_TERRE_GEO2D, RGNC1991_GEOC, new double[]{-5791783.050, 1551552.713, -2167430.438}, MM_IN_DEG, MM);
     }
 
     //@TODO : investigate why we have 2 to 3 mm difference with circe (also geocentric and projected transformations are OK)
     @Test
-    public void testIGN72_GRANDE_TERRE_GEO2D_To_RGNC_GEO2D() throws IllegalCoordinateException, CoordinateOperationException {
+    void testIGN72_GRANDE_TERRE_GEO2D_To_RGNC_GEO2D() throws IllegalCoordinateException, CoordinateOperationException {
         test(new double[]{-20, 165}, IGN72_GRANDE_TERRE_GEO2D, RGNC1991_GEO2D, new double[]{-19.99722061, 165.00323863}, MM_IN_DEG*3, MM_IN_DEG*3);
     }
 
@@ -133,22 +133,22 @@ public class CirceNouvelleCaledonieTest extends BaseCoordinateTransformTest {
     // ------------------------------------------------------------------------
     // Systems based on IGN 56 LIFOU
     // ------------------------------------------------------------------------
-    static GeodeticDatum IGN56_LIFOU = GeodeticDatum.createGeodeticDatum(
+    private static GeodeticDatum IGN56_LIFOU = GeodeticDatum.createGeodeticDatum(
             new Identifier("IGNF","IGN56_LIFOU","IGN 56 Lifou"), PrimeMeridian.GREENWICH, Ellipsoid.INTERNATIONAL1924,
             SevenParameterTransformation.createBursaWolfTransformation(
                     137.092, 131.660, 91.475, -1.943600, -11.599324, -4.332090, -7.482352), LIFOU, null, null);
             //SevenParameterTransformation.createBursaWolfTransformation(
             //        -137.092, -131.660, -91.475, 1.943600, 11.599324, 4.332090, 7.482352).inverse0063(), LIFOU, null, null);
 
-    static GeodeticCRS IGN56_LIFOU_GEO2D = new Geographic2DCRS(
+    private static GeodeticCRS IGN56_LIFOU_GEO2D = new Geographic2DCRS(
             new Identifier("IGNF","IGN56_LIFOU_GEO2D","IGN56_LIFOU Géographique 2D"), IGN56_LIFOU);
     static GeodeticCRS IGN56_LIFOU_GEO3D = new Geographic3DCRS(
             new Identifier("IGNF","IGN56_LIFOU_GEO3D","IGN56_LIFOU Géographique 3D"), IGN56_LIFOU);
-    static GeodeticCRS IGN56_LIFOU_UTM = new ProjectedCRS(
+    private static GeodeticCRS IGN56_LIFOU_UTM = new ProjectedCRS(
             new Identifier("IGNF","IGN56_LIFOU_UTM58S","IGN56_LIFOU UTM 58S"), IGN56_LIFOU, UTM58S_1924);
 
     @Test
-    public void testIGN56_LIFOU_GEO2D_To_UTM() throws IllegalCoordinateException, CoordinateOperationException {
+    void testIGN56_LIFOU_GEO2D_To_UTM() throws IllegalCoordinateException, CoordinateOperationException {
         test(new double[]{-21, 167}, IGN56_LIFOU_GEO2D, IGN56_LIFOU_UTM, new double[]{707897.776, 7676522.112}, MM_IN_DEG, MM);
     }
 
@@ -162,7 +162,7 @@ public class CirceNouvelleCaledonieTest extends BaseCoordinateTransformTest {
 
     //@TODO : investigate why we have 2 to 3 mm difference with circe (also geocentric and projected transformations are OK)
     @Test
-    public void testIGN56_LIFOU_GEO2D_To_RGNC_GEO2D() throws IllegalCoordinateException, CoordinateOperationException {
+    void testIGN56_LIFOU_GEO2D_To_RGNC_GEO2D() throws IllegalCoordinateException, CoordinateOperationException {
         test(new double[]{-21, 167}, IGN56_LIFOU_GEO2D, RGNC1991_GEO2D, new double[]{-21.00229264, 166.99719031}, MM_IN_DEG*3, MM_IN_DEG*3);
     }
 
@@ -181,7 +181,7 @@ public class CirceNouvelleCaledonieTest extends BaseCoordinateTransformTest {
     // ------------------------------------------------------------------------
     // Systems based on IGN 53 Maré
     // ------------------------------------------------------------------------
-    static GeodeticDatum IGN53_MARE = GeodeticDatum.createGeodeticDatum(
+    private static GeodeticDatum IGN53_MARE = GeodeticDatum.createGeodeticDatum(
             new Identifier("IGNF","IGN53_MARE","IGN 53 Maré"), PrimeMeridian.GREENWICH, Ellipsoid.INTERNATIONAL1924,
             SevenParameterTransformation.createBursaWolfTransformation(
                     -408.809, 366.856, -412.987, 1.884178, -0.530793, 2.165473, -121.099322), MARE, null, null);
@@ -196,7 +196,7 @@ public class CirceNouvelleCaledonieTest extends BaseCoordinateTransformTest {
     // ------------------------------------------------------------------------
     // Systems based on ST87_OUVEA
     // ------------------------------------------------------------------------
-    static GeodeticDatum ST87_OUVEA = GeodeticDatum.createGeodeticDatum(
+    private static GeodeticDatum ST87_OUVEA = GeodeticDatum.createGeodeticDatum(
             new Identifier("IGNF","ST87_OUVEA","ST87 Ouvéa"), PrimeMeridian.GREENWICH, Ellipsoid.WGS84,
             SevenParameterTransformation.createBursaWolfTransformation(
                     -122.383, -188.696, 103.344, 3.510741, -4.966788, -5.704560, 4.479814), OUVEA, null, null);
@@ -211,7 +211,7 @@ public class CirceNouvelleCaledonieTest extends BaseCoordinateTransformTest {
     // ------------------------------------------------------------------------
     // Systems based on ST84_ILE_DES_PINS
     // ------------------------------------------------------------------------
-    static GeodeticDatum ST84_ILE_DES_PINS = GeodeticDatum.createGeodeticDatum(
+    private static GeodeticDatum ST84_ILE_DES_PINS = GeodeticDatum.createGeodeticDatum(
             new Identifier("IGNF","ST84_ILE_DES_PINS","ST84 Ile des Pins"), PrimeMeridian.GREENWICH, Ellipsoid.INTERNATIONAL1924,
             SevenParameterTransformation.createBursaWolfTransformation(
                     244.416, 85.339, 168.114, -8.935342, 7.752301, 12.595307, 14.267971), ILE_DES_PINS, null, null);
@@ -226,7 +226,7 @@ public class CirceNouvelleCaledonieTest extends BaseCoordinateTransformTest {
     // ------------------------------------------------------------------------
     // Systems based on ST71_BELEP
     // ------------------------------------------------------------------------
-    static GeodeticDatum ST71_BELEP = GeodeticDatum.createGeodeticDatum(
+    private static GeodeticDatum ST71_BELEP = GeodeticDatum.createGeodeticDatum(
             new Identifier("IGNF","ST71_BELEP","ST71_BELEP"), PrimeMeridian.GREENWICH, Ellipsoid.INTERNATIONAL1924,
             SevenParameterTransformation.createBursaWolfTransformation(
                     -480.260, -438.320, -643.429, 16.311867, 20.172100, -4.034890, -111.700181), BELEP, null, null);
@@ -241,7 +241,7 @@ public class CirceNouvelleCaledonieTest extends BaseCoordinateTransformTest {
     // ------------------------------------------------------------------------
     // Systems based on NEA74 NOUMEA
     // ------------------------------------------------------------------------
-    static GeodeticDatum NOUMEA74 = GeodeticDatum.createGeodeticDatum(
+    private static GeodeticDatum NOUMEA74 = GeodeticDatum.createGeodeticDatum(
             new Identifier("IGNF","NOUMEA74","Nouméa74"), PrimeMeridian.GREENWICH, Ellipsoid.INTERNATIONAL1924,
             SevenParameterTransformation.createBursaWolfTransformation(
                     -166.207, -154.777, 254.831, -37.544387, 7.701146, -10.202481, -30.859839), NOUMEA, null, null);
@@ -256,13 +256,13 @@ public class CirceNouvelleCaledonieTest extends BaseCoordinateTransformTest {
     // ------------------------------------------------------------------------
     // Systems based on RGNC1991
     // ------------------------------------------------------------------------
-    static GeodeticDatum RGNC1991 = GeodeticDatum.createGeodeticDatum(
+    private static GeodeticDatum RGNC1991 = GeodeticDatum.createGeodeticDatum(
             new Identifier("IGNF","RGNC1991","RGNC1991"), PrimeMeridian.GREENWICH, Ellipsoid.GRS80,
             Identity.IDENTITY, NOUVELLE_CALEDONIE, null, null);
 
     static GeodeticCRS RGNC1991_GEOC = new GeocentricCRS(
             new Identifier("IGNF","RGNC1991","RGNC1991 Geocentric"), RGNC1991);
-    static GeodeticCRS RGNC1991_GEO2D = new Geographic2DCRS(
+    private static GeodeticCRS RGNC1991_GEO2D = new Geographic2DCRS(
             new Identifier("IGNF","RGNC1991_GEO2D","RGNC1991 Géographique 2D"), RGNC1991);
     static GeodeticCRS RGNC1991_GEO3D = new Geographic3DCRS(
             new Identifier("IGNF","RGNC1991_GEO3D","RGNC1991 Géographique 3D"), RGNC1991);

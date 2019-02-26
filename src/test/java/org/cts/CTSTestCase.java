@@ -28,7 +28,7 @@ import java.util.Arrays;
 
 import org.cts.registry.*;
 
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.BeforeAll;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +46,7 @@ public class CTSTestCase {
      * This method is used to create the CRSFactory and load some default
      * registries.
      */
-    @BeforeClass
+    @BeforeAll
     public static void setup() {
         cRSFactory = new CRSFactory();
         RegistryManager registryManager = cRSFactory.getRegistryManager();

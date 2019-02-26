@@ -29,9 +29,9 @@ import java.io.File;
 import org.cts.CTSTestCase;
 import org.cts.crs.CoordinateReferenceSystem;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * This class is used to test the prj reader and writer.

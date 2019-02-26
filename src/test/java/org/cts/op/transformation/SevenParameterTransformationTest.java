@@ -26,39 +26,39 @@ package org.cts.op.transformation;
 import org.cts.CTSTestCase;
 import org.cts.IllegalCoordinateException;
 import org.cts.op.CoordinateOperationException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static java.lang.Math.PI;
 import static org.cts.op.transformation.SevenParameterTransformation.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 /**
  * @author Michaël Michaud
  */
-public class SevenParameterTransformationTest extends CTSTestCase {
+class SevenParameterTransformationTest extends CTSTestCase {
 
     // Test seven parameters transformation called Bursa-Wolf
     // Ref = EPSG:9606 or IGN ALG0013
     // Test using IGN test with a precision of 1e-4
     @Test
-    public void testBursaWolf() throws IllegalCoordinateException, CoordinateOperationException {
+    void testBursaWolf() throws IllegalCoordinateException, CoordinateOperationException {
         SevenParameterTransformation op = createBursaWolfTransformation(-69.400, 18.000, 452.2, 0.0, 0.0, 1.030, -3.21);
         double[] source = new double[]{4154088.1420, -80626.3310, 4822852.8130};
         double[] result = op.transform(source.clone());
         double[] ref = new double[]{4154005.8099, -80587.3284, 4823289.5316};
         assertTrue(checkEquals3D("BursaWolf", result, ref, 0.0001, 0.0001));
         result = op.inverse().transform(ref);
-         assertTrue(checkEquals3D("BursaWolf-inv", result, source, 0.0001, 0.0001));
+        assertTrue(checkEquals3D("BursaWolf-inv", result, source, 0.0001, 0.0001));
     }
 
     // Test seven parameters transformation using exact sinus
     // Ref = EPSG:9606 or IGN ALG0063
     // Test using IGN test with a precision of 1e-4
     @Test
-    public void testALG0063() throws IllegalCoordinateException {
+    void testALG0063() throws IllegalCoordinateException {
         SevenParameterTransformation op = createBursaWolfTransformation(
                 789.524, -626.486, -89.904,
                 0.6, 76.8, -10.6, -32.324, 0.1);
@@ -72,7 +72,7 @@ public class SevenParameterTransformationTest extends CTSTestCase {
     // Ref = EPSG:9606 or IGN ALG0063
     // Test using IGN test with a precision of 1e-4
     @Test
-    public void testALG0063b() throws IllegalCoordinateException {
+    void testALG0063b() throws IllegalCoordinateException {
         SevenParameterTransformation op = createBursaWolfTransformation(-80.283, -107.802, -136.031, 0.035, 0.0, 0.547, 0.185, 0.1);
         double[] source = new double[]{3353657.175, 1303862.662, 5249102.055};
         double[] result = op.inverse0063().transform(source.clone());
@@ -84,7 +84,7 @@ public class SevenParameterTransformationTest extends CTSTestCase {
     // Test reversibility of seven parameters transformations
     // with a 100" rotation
     @Test
-    public void testReversibilityALG0013() throws IllegalCoordinateException {
+    void testReversibilityALG0013() throws IllegalCoordinateException {
         SevenParameterTransformation op1 = createBursaWolfTransformation(-80.283, -107.802, -136.031, 0.035, 50.0, 0.547, 32.185, 0.1);
         SevenParameterTransformation op2 = createBursaWolfTransformation(80.283, 107.802, 136.031, -0.035, -50.0, -0.547, -32.185, 0.1);
 
@@ -116,7 +116,7 @@ public class SevenParameterTransformationTest extends CTSTestCase {
     // Test reversibility of seven parameters transformations
     // with a 100" rotation
     @Test
-    public void testReversibilityBursaWolfCTS() throws IllegalCoordinateException, CoordinateOperationException {
+    void testReversibilityBursaWolfCTS() throws IllegalCoordinateException, CoordinateOperationException {
         SevenParameterTransformation op1 = createSevenParameterTransformation(
                 -80.283, -107.802, -136.031, 0.035, 50.0, 0.547, 32.185, POSITION_VECTOR, LINEARIZED);
 
@@ -130,7 +130,7 @@ public class SevenParameterTransformationTest extends CTSTestCase {
 
 
     @Test
-    public void testStabilityInverseCTS() throws IllegalCoordinateException, CoordinateOperationException {
+    void testStabilityInverseCTS() throws IllegalCoordinateException, CoordinateOperationException {
         SevenParameterTransformation op1 = createBursaWolfTransformation(
                 789.524, -626.486, -89.904,
                 0.00000290888 * 180 * 3600 / PI,

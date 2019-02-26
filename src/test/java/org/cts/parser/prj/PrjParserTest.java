@@ -35,29 +35,28 @@ import org.cts.CTSTestCase;
 import org.cts.crs.CoordinateReferenceSystem;
 import org.cts.crs.GeocentricCRS;
 import org.cts.registry.EPSGRegistry;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Before;
-import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  *
  * @author Erwan Bocher, Michaël Michaud
  */
-public class PrjParserTest extends CTSTestCase {
+class PrjParserTest extends CTSTestCase {
 
     private PrjParser parser;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         parser = new PrjParser();
     }
 
     @Test
-    public void testParseNodeWithText() {
+    void testParseNodeWithText() {
         String prj = "TOTO[\"some text\"]";
         PrjElement elem = parser.parseNode(CharBuffer.wrap(prj));
 
@@ -74,7 +73,7 @@ public class PrjParserTest extends CTSTestCase {
     }
 
     @Test
-    public void testParseNodeMultipleChildren() {
+    void testParseNodeMultipleChildren() {
         String prj = "TOTO[\"some text\", \"some other text\"]";
         PrjElement elem = parser.parseNode(CharBuffer.wrap(prj));
 
@@ -89,7 +88,7 @@ public class PrjParserTest extends CTSTestCase {
     }
 
     @Test
-    public void testParseNodeWithDouble() {
+    void testParseNodeWithDouble() {
         String prj = "TOTO[\"some text\", 48.000178]";
         PrjElement elem = parser.parseNode(CharBuffer.wrap(prj));
 
@@ -104,7 +103,7 @@ public class PrjParserTest extends CTSTestCase {
     }
 
     @Test
-    public void testParseNestedNodes() {
+    void testParseNestedNodes() {
         String prj = "TOTO[\"some text\", TATA[\"some other text\"]]";
         PrjElement elem = parser.parseNode(CharBuffer.wrap(prj));
 
@@ -122,7 +121,7 @@ public class PrjParserTest extends CTSTestCase {
     }
 
     @Test
-    public void testLambert93() {
+    void testLambert93() {
         String prj = "PROJCS[\"RGF93_Lambert_93\", GEOGCS[\"GCS_RGF_1993\", DATUM[\"D_RGF_1993\", "
                 + "SPHEROID[\"GRS_1980\",6378137.0,298.257222101]], PRIMEM[\"Greenwich\",0.0],"
                 + "UNIT[\"Degree\",0.0174532925199433]], PROJECTION[\"Lambert_Conformal_Conic\"],"
@@ -148,7 +147,7 @@ public class PrjParserTest extends CTSTestCase {
     }
 
     @Test
-    public void testLambert2Etendu() {
+    void testLambert2Etendu() {
         String prj = "PROJCS[\"NTF_Lambert_II_étendu\",	GEOGCS[\"GCS_NTF\", DATUM[\"D_NTF\","
                 + "SPHEROID[\"Clarke_1880_IGN\",6378249.2,293.46602]], PRIMEM[\"Greenwich\",0.0],"
                 + "UNIT[\"Degree\",0.0174532925199433]], PROJECTION[\"Lambert_Conformal_Conic\"],"
@@ -173,7 +172,7 @@ public class PrjParserTest extends CTSTestCase {
     }
 
     @Test
-    public void testGoogleProjection() {
+    void testGoogleProjection() {
         String prj =
                 "PROJCS[\"WGS 84 / Pseudo - Mercator\", GEOGCS[\"WGS 84\", DATUM[\"World Geodetic System 1984\", SPHEROID[\"WGS 84\", 6378137.0, 298.257223563, AUTHORITY[\"EPSG\",\"7030\"]], AUTHORITY[\"EPSG\",\"6326\"]], "
                 + "PRIMEM[\"Greenwich\", 0.0, AUTHORITY[\"EPSG\",\"8901\"]], UNIT[\"degree\", 0.017453292519943295], "
@@ -192,7 +191,7 @@ public class PrjParserTest extends CTSTestCase {
     }
 
     @Test
-    public void testOGCWKT() {
+    void testOGCWKT() {
         String prj = "PROJCS[\"NTF (Paris) / Lambert zone II\""
                 + ",GEOGCS[\"NTF (Paris)\",DATUM[\"Nouvelle_Triangulation_Francaise_Paris\","
                 + "SPHEROID[\"Clarke 1880 (IGN)\",6378249.2,293.4660212936269,"
@@ -200,11 +199,11 @@ public class PrjParserTest extends CTSTestCase {
                 + "AUTHORITY[\"EPSG\",\"6807\"]],PRIMEM[\"Paris\",2.33722917,AUTHORITY[\"EPSG\",\"8903\"]],"
                 + "UNIT[\"grad\",0.01570796326794897,AUTHORITY[\"EPSG\",\"9105\"]],AUTHORITY[\"EPSG\",\"4807\"]],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],PROJECTION[\"Lambert_Conformal_Conic_1SP\"],PARAMETER[\"latitude_of_origin\",52],PARAMETER[\"central_meridian\",0],PARAMETER[\"scale_factor\",0.99987742],PARAMETER[\"false_easting\",600000],PARAMETER[\"false_northing\",2200000],AUTHORITY[\"EPSG\",\"27572\"],AXIS[\"X\",EAST],AXIS[\"Y\",NORTH]]";
         Map<String, String> p = parser.getParameters(prj);
-        assertTrue(p.get(PrjKeyParameters.REFNAME).equals("EPSG:27572"));
+        assertEquals("EPSG:27572", p.get(PrjKeyParameters.REFNAME));
     }
 
     @Test
-    public void testReadWriteOGC_PRJ() throws Exception {
+    void testReadWriteOGC_PRJ() throws Exception {
         CRSFactory cRSFactory = new CRSFactory();
         String prj = "PROJCS[\"NTF (Paris) / Lambert zone II\",GEOGCS[\"NTF (Paris)\","
                 + "DATUM[\"Nouvelle_Triangulation_Francaise_Paris\","
@@ -220,8 +219,8 @@ public class PrjParserTest extends CTSTestCase {
                 + "AUTHORITY[\"EPSG\",\"27572\"],AXIS[\"X\",EAST],AXIS[\"Y\",NORTH]]";
         CoordinateReferenceSystem crs = cRSFactory.createFromPrj(prj);
         assertNotNull(crs);
-        assertTrue(crs.getAuthorityName().equals("EPSG"));
-        assertTrue(crs.getAuthorityKey().equals("27572"));
+        assertEquals("EPSG", crs.getAuthorityName());
+        assertEquals("27572", crs.getAuthorityKey());
         //String crsWKT = crs.toWKT();
         // This test cannot work because the ProjectedCRS of CTS does not retain
         // the Geographic2DCRS equivalent to this CRS without the projection so
@@ -230,17 +229,17 @@ public class PrjParserTest extends CTSTestCase {
     }
 
     @Test
-    public void testWriteOGC_3857_PRJ() throws Exception {
+    void testWriteOGC_3857_PRJ() throws Exception {
         CRSFactory cRSFactory = new CRSFactory();
         cRSFactory.getRegistryManager().addRegistry(new EPSGRegistry());
         CoordinateReferenceSystem crs = cRSFactory.getCRS("EPSG:3857");
         assertNotNull(crs);
-        assertTrue(crs.getAuthorityName().equals("EPSG"));
-        assertTrue(crs.getAuthorityKey().equals("3857"));        
+        assertEquals("EPSG", crs.getAuthorityName());
+        assertEquals("3857", crs.getAuthorityKey());
     }
 
     @Test
-    public void testGeocentricCRS_PRJ() throws Exception {
+    void testGeocentricCRS_PRJ() throws Exception {
         CRSFactory cRSFactory = new CRSFactory();
         String prj = "GEOCCS[\"WGS 84 (geocentric)\",\n"
                 + "    DATUM[\"World Geodetic System 1984\",\n"
@@ -260,17 +259,17 @@ public class PrjParserTest extends CTSTestCase {
     }
 
     @Test
-    public void testCH1903_LV03_PRJ() {
+    void testCH1903_LV03_PRJ() {
         String prj = "PROJCS[\"CH1903_LV03\",GEOGCS[\"GCS_CH1903\",DATUM[\"D_CH1903\","
                 + "SPHEROID[\"Bessel_1841\",6377397.155,299.1528128]],PRIMEM[\"Greenwich\",0.0],"
                 + "UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Hotine_Oblique_Mercator_Azimuth_Center\"],PARAMETER[\"False_Easting\",600000.0],PARAMETER[\"False_Northing\",200000.0],PARAMETER[\"Scale_Factor\",1.0],PARAMETER[\"Azimuth\",90.0],"
                 + "PARAMETER[\"Longitude_Of_Center\",7.439583333333333],PARAMETER[\"Latitude_Of_Center\",46.95240555555556],UNIT[\"Meter\",1.0],AUTHORITY[\"EPSG\",21781]]";
         Map<String, String> p = parser.getParameters(prj);
-        assertTrue(p.get(PrjKeyParameters.REFNAME).equals("EPSG:21781"));
+        assertEquals("EPSG:21781", p.get(PrjKeyParameters.REFNAME));
     }
 
     @Test
-    public void testNAD_1983_StatePlane_Iowa_South_FIPS_1402_Feet_PRJ() throws Exception {
+    void testNAD_1983_StatePlane_Iowa_South_FIPS_1402_Feet_PRJ() throws Exception {
         URI uri = IOPrjTest.class.getResource("WaukeeStreets.prj").toURI();
         RandomAccessFile f = new RandomAccessFile(uri.getPath(), "r");
         byte[] bb = new byte[(int)f.length()];

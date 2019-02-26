@@ -27,19 +27,19 @@ import org.cts.crs.CoordinateReferenceSystem;
 import org.cts.crs.GeodeticCRS;
 
 import org.cts.datum.GeodeticDatum;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * This class contains tests that uses PRJ definition for the CRS
  *
  * @author Jules Party
  */
-public class PRJCoordinateTransformationTest extends BaseCoordinateTransformTest {
+class PRJCoordinateTransformationTest extends BaseCoordinateTransformTest {
 
     @Test
-    public void testLAMBEtoLAMB93PRJ() throws Exception {
+    void testLAMBEtoLAMB93PRJ() throws Exception {
         //IGN data : POINT (931813.94 1786923.891 2525.68) ID5863
         double[] srcPoint = new double[]{282331, 2273699.7};
         //IGN data : POINT (977362.95 6218045.569 0)	ID5863
@@ -73,7 +73,7 @@ public class PRJCoordinateTransformationTest extends BaseCoordinateTransformTest
     }
 
     @Test
-    public void testWGS84toLAMB93PRJ() throws Exception {
+    void testWGS84toLAMB93PRJ() throws Exception {
         //IGN data : POINT (931813.94 1786923.891 2525.68) ID5863
         double[] srcPoint = new double[]{2.114551393, 50.345609791};
         //IGN data : POINT (977362.95 6218045.569 0)	ID5863
@@ -103,7 +103,7 @@ public class PRJCoordinateTransformationTest extends BaseCoordinateTransformTest
     }
 
     @Test
-    public void testMercatorPRJ() throws Exception {
+    void testMercatorPRJ() throws Exception {
         double[] srcPoint = new double[]{120, -3};
         double[] expectedPoint = new double[]{5009726.58, 569150.82};
         String srcprj = "GEOGCS[\"Makassar\",DATUM[\"Makassar\","
@@ -132,7 +132,7 @@ public class PRJCoordinateTransformationTest extends BaseCoordinateTransformTest
     }
 
     @Test
-    public void testUnitsInPRJ() throws Exception {
+    void testUnitsInPRJ() throws Exception {
         double[] srcPoint = new double[]{-62, 10};
         double[] expectedPoint = new double[]{66644.94, 82536.22};
         String srcprj = "GEOGCS[\"Trinidad 1903\",\n"
@@ -175,7 +175,7 @@ public class PRJCoordinateTransformationTest extends BaseCoordinateTransformTest
     }
 
     @Test
-    public void testCH1903toLV95PRJ() throws Exception {
+    void testCH1903toLV95PRJ() throws Exception {
         double[] srcPoint = new double[]{8.486419798, 47.0580435};
         double[] expectedPoint = new double[]{2679520.05, 1212273.44};
         String srcprj = "GEOGCS[\"CH1903+\",\n"

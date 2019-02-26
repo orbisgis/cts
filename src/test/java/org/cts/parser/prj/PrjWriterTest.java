@@ -1,16 +1,16 @@
 package org.cts.parser.prj;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Created by UMichael on 26/05/2017.
  */
-public class PrjWriterTest {
+class PrjWriterTest {
 
     @Test
-    public void testPrettyRoundingIntegerValues() {
+    void testPrettyRoundingIntegerValues() {
         // Round values around 0
         assertEquals("0", PrjWriter.prettyRound(0.0, 1E-11));
         assertEquals("0", PrjWriter.prettyRound(0.000000000001, 1E-11));
@@ -32,7 +32,7 @@ public class PrjWriterTest {
     }
 
     @Test
-    public void testPrettyRoundingFractionalValues() {
+    void testPrettyRoundingFractionalValues() {
         assertEquals("0.3333333333333333", PrjWriter.prettyRound(1.0/3.0, 1E-11));
         assertEquals("-0.3333333333333333", PrjWriter.prettyRound(-1.0/3.0, 1E-11));
         assertEquals("0.3333333333333333", PrjWriter.prettyRound(0.3333333333333333, 1E-11));
@@ -50,7 +50,7 @@ public class PrjWriterTest {
     }
 
     @Test
-    public void testPrettyRoundingSpecialValues() {
+    void testPrettyRoundingSpecialValues() {
         assertEquals("3.141592653589793", PrjWriter.prettyRound(Math.PI, 1E-11));
         assertEquals("0.3183098861837907", PrjWriter.prettyRound(1.0/Math.PI, 1E-11));
         assertEquals("0.7853981633974483", PrjWriter.prettyRound(45.0*Math.PI/180.0, 1E-11));

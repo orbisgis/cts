@@ -36,7 +36,7 @@ import org.cts.op.transformation.NTv2GridShiftTransformation;
 import java.util.Arrays;
 import java.util.Set;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  *
