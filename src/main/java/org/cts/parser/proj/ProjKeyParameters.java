@@ -74,6 +74,9 @@ public class ProjKeyParameters {
     public static final String no_defs = "no_defs";
     public static final String wktext = "wktext";
     public static final String bsouth = "bsouth";
+    public static final String vunits ="vunits";
+    public static final String geoidgrids ="geoidgrids";
+    public static final String no_uoff ="no_uoff";
     private static Set<String> supportedParams = null;
 
     /**
@@ -114,6 +117,7 @@ public class ProjKeyParameters {
             supportedParams.add(wktext);
             supportedParams.add(nadgrids);
             supportedParams.add(pm);
+            supportedParams.add(no_uoff);
 
         }
         return supportedParams;

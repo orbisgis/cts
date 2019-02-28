@@ -195,7 +195,47 @@ public class GeodeticDatum extends AbstractDatum {
             PrimeMeridian.GREENWICH, Ellipsoid.GRS80, null,
             GeographicExtent.WORLD,
             "", "1983");
+    
+    public final static GeodeticDatum GGRS87 = new GeodeticDatum(
+            new Identifier("EPSG", "4121", "Greek Geodetic Reference System 1987", "GGRS87"),
+            PrimeMeridian.GREENWICH, Ellipsoid.GRS80,null, 
+            new GeographicExtent("Greece - onshore", 34.88, 41.75, 19.57,28.3), "","1987" );
+    
+    public final static GeodeticDatum HERMANNSKOGEL = new GeodeticDatum(
+            new Identifier("EPSG", "4312", "Militar-Geographische Institut", "MGI"),
+            PrimeMeridian.GREENWICH, Ellipsoid.BESSEL1841,null, 
+            new GeographicExtent("Austria", 46.4, 49.02, 9.53, 17.17), "","" );
+    
+    public final static GeodeticDatum POSTDAM = new GeodeticDatum(
+            new Identifier("EPSG", "4314", "Deutsches Hauptdreiecksnetz", "DHDN"),
+            PrimeMeridian.GREENWICH, Ellipsoid.BESSEL1841,null, 
+            new GeographicExtent("Germany - states of former West Germany onshore", 47.27, 55.09, 5.87 , 13.84 ), "","" );
+    
+    public final static GeodeticDatum CARTHAGE = new GeodeticDatum(
+            new Identifier("EPSG", "4223", "Carthage", "Carthage"),
+            PrimeMeridian.GREENWICH, Ellipsoid.CLARKE1880IGN, null,
+            new GeographicExtent("Tunisia - onshore and offshore", 30.23, 38.41, 7.49, 13.67), "", "");   
+    
 
+    public final static GeodeticDatum NZGD49 = new GeodeticDatum(
+            new Identifier("EPSG", "4272", "New Zealand Geodetic Datum 1949", "NZGD49"),
+            PrimeMeridian.GREENWICH, Ellipsoid.INTERNATIONAL1924, null,
+            new GeographicExtent("New Zealand - North Island, South Island, Stewart Island - onshore and nearshore", 
+                    165.87, 179.27, -47.65, -33.89), "", "");  
+
+   
+    public final static GeodeticDatum OSGB36 = new GeodeticDatum(
+            new Identifier("EPSG", "4277", "OSGB 1936", "OSGB36"),
+            PrimeMeridian.GREENWICH, Ellipsoid.AIRY, null,
+            new GeographicExtent("United Kingdom (UK) - Great Britain - England and Wales onshore, Scotland onshore and Western Isles nearshore; Isle of Man onshore", 
+                    49.79, 60.94, -8.82, 1.92), "", ""); 
+    
+    public final static GeodeticDatum IRE65 = new GeodeticDatum(
+            new Identifier("EPSG", "4299", "TM65", "TM65"),
+            PrimeMeridian.GREENWICH, Ellipsoid.AIRYMOD, null,
+            new GeographicExtent("Ireland - onshore. United Kingdom (UK) - Northern Ireland (Ulster) - onshore",
+                    51.39, 55.43, -10.56, -5.34), "", "");
+ 
     static {
         //@TODO this should be moved to the parser using these particular names
         knownDatumMap.put("wgs84", WGS84);
@@ -205,6 +245,13 @@ public class GeodeticDatum extends AbstractDatum {
         knownDatumMap.put("ed50", ED50);
         knownDatumMap.put("nad27", NAD27);
         knownDatumMap.put("nad83", NAD83);
+        knownDatumMap.put("ggrs87", GGRS87);
+        knownDatumMap.put("hermannskogel", HERMANNSKOGEL);
+        knownDatumMap.put("potsdam", POSTDAM);
+        knownDatumMap.put("carthage", CARTHAGE);
+        knownDatumMap.put("nzgd49", NZGD49);
+        knownDatumMap.put("osgb36",OSGB36);
+        knownDatumMap.put("ire65", IRE65);
     }
 
     /**

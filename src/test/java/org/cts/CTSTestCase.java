@@ -110,6 +110,7 @@ public class CTSTestCase {
      * @param c1 expected coordinates
      * @param c2 actual coordinates
      * @param tolerance
+     * @return 
      */
     protected boolean checkEquals2D(String test, double[] c1, double[] c2, double tolerance) {
         double dx = Math.abs(c1[0] - c2[0]);

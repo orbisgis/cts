@@ -75,9 +75,10 @@ public class BatchCoordinateTransformTest extends BaseCoordinateTransformTest {
             double[] result = transform((GeodeticCRS) inputCRS, (GeodeticCRS) outputCRS, pointSource);
             double[] pointDest = new double[]{csNameDest_X, csNameDest_Y};
             double[] check = transform((GeodeticCRS) outputCRS, (GeodeticCRS) inputCRS, pointDest);
-
+            
             assertTrue(checkEquals2D(id + " dir--> " + csNameSrc + " to " + csNameDest, result, pointDest, tolerance));
             assertTrue(checkEquals2D(id + " inv--> " + csNameDest + " to " + csNameSrc, check, pointSource, 0.01));
+           
         }
         lineReader.close();
     }
