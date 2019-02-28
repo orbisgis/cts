@@ -109,7 +109,7 @@ public final class PrjMatcher {
         String units = params.get(ProjKeyParameters.units);
         String unitval = params.get(ProjKeyParameters.to_meter);
         String unitAuth = params.get(PrjKeyParameters.UNITREFNAME);
-        Unit unit = Unit.getUnit(Quantity.LENGTH, units);https://www.lemonde.fr/
+        Unit unit = Unit.getUnit(Quantity.LENGTH, units);
         if (unitAuth != null) {
             String[] unitRefname = unitAuth.split(":");
             if (unit == null) {

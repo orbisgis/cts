@@ -579,6 +579,7 @@ public class GeodeticDatum extends AbstractDatum {
      * Transformations are ordered from the least precise to the most precise one.
      *
      * @param datum the datum that must be a target for returned transformation
+     * @return 
      */
     public Set<CoordinateOperation> getHeightTransformations(Datum datum) {
         return heightTransformations.get(datum);
@@ -586,7 +587,9 @@ public class GeodeticDatum extends AbstractDatum {
 
     /**
      * Returns the default transformation to WGS84 of this Datum.
+     * @return 
      */
+    @Override
     public GeocentricTransformation getToWGS84() {
         return toWGS84;
     }
