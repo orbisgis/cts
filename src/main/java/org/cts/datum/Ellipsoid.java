@@ -266,6 +266,7 @@ public class Ellipsoid extends IdentifiableComponent {
     //@TODO see GeodeticDatum to homogeneize how to get objects from id or names
     static {
         ellipsoidFromName.put("airy", AIRY);
+        ellipsoidFromName.put("airymod", AIRYMOD);
         ellipsoidFromName.put("austsa", AustSA);
         ellipsoidFromName.put("bessel", BESSEL1841);
         ellipsoidFromName.put("bessnam", BESSNAM);
@@ -278,8 +279,8 @@ public class Ellipsoid extends IdentifiableComponent {
         ellipsoidFromName.put("grs80", GRS80);
         ellipsoidFromName.put("helmert", HELMERT);
         ellipsoidFromName.put("intl", INTERNATIONAL1924);
-        ellipsoidFromName.put("airymod", AIRYMOD);
         ellipsoidFromName.put("krass", KRASSOWSKI);
+        ellipsoidFromName.put("mod_airy", AIRYMOD);
         ellipsoidFromName.put("wgs66", WGS66);
         ellipsoidFromName.put("wgs72", WGS72);
         ellipsoidFromName.put("wgs84", WGS84);
