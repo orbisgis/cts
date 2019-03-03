@@ -5261,6 +5261,9 @@
 <102134> +proj=utm +zone=34 +a=6377492.018 +b=6356173.508712696 +units=m  no_defs <>
 # NGO 1948 UTM Zone 35N
 <102135> +proj=utm +zone=35 +a=6377492.018 +b=6356173.508712696 +units=m  no_defs <>
+# area: (lat: 24.41, 49.38) - (lon: -124.79, -66.91) [USA - CONUS - onshore]
+# USA_Contiguous_Albers_Equal_Area_Conic_USGS_version [NAD 1983 USGS Contiguous USA Albers]
+<102039> +proj=aea +datum=NAD83 +x_0=0.0 +y_0=0.0 +lon_0=96dW +lat_0=23dN +lat_1=29d30'N +lat_2=45d30'N +towgs84=-0.9956000824677655,1.901299877314078,0.5215002840524426,0.02591500053005733,0.009425998542707753,0.01159900118427752,-0.00062000005129903 +no_defs  no_defs <>
 # Hong Kong 1980 Grid
 <102140> +proj=tmerc +lat_0=22.31213333333334 +lon_0=114.1785555555556 +k=1.000000 +x_0=836694.05 +y_0=819069.8 +ellps=intl +units=m  no_defs <>
 # Hong Kong 1980 UTM Zone 49N
