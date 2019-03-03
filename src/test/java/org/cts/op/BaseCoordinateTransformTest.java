@@ -48,7 +48,7 @@ public class BaseCoordinateTransformTest extends CTSTestCase {
     protected static final double MM = 0.001;
     protected static final double MM_IN_DEG = 0.00000001;
 
-    protected boolean verbose = true;
+    protected boolean verbose = false;
 
     /**
      * Transform a point from a CRS to another CRS
@@ -90,8 +90,7 @@ public class BaseCoordinateTransformTest extends CTSTestCase {
 
                 if (ops.size() > 1) {
                     for (CoordinateOperation oop : ops) {
-                        //System.out.println("   a transformation with precision (" + oop.getPrecision() + ") : " + oop);
-                        System.out.println("   other transformation : precision = " + oop.getPrecision());
+                        if (verbose) System.out.println("   other transformation : precision = " + oop.getPrecision());
                     }
                 }
             }
