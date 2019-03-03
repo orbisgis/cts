@@ -448,9 +448,13 @@ public class CRSHelper {
     private static GeodeticDatum getDatum(Map<String, String> param) {
         String datumName = param.remove(ProjKeyParameters.datum);
         String authCode = param.remove(PrjKeyParameters.DATUMREFNAME);
+        GeocentricTransformation toWGS84 = getToWGS84(param);
         GeodeticDatum gd = null;
         if (null != datumName) {
             gd = GeodeticDatum.getGeodeticDatum(datumName.toLowerCase());
+            if (gd != null && !toWGS84.isIdentity() && !toWGS84.equals(gd.getToWGS84())) {
+                gd = GeodeticDatum.createGeodeticDatum(gd.getPrimeMeridian(), gd.getEllipsoid(), toWGS84);
+            }
         }
         if (gd == null && authCode != null) {
             String[] authNameWithKey = authCode.split(":");
@@ -473,7 +477,6 @@ public class CRSHelper {
             Ellipsoid ell = getEllipsoid(param);
             PrimeMeridian pm = getPrimeMeridian(param);
             if (null != pm && null != ell) {
-                GeocentricTransformation toWGS84 = getToWGS84(param);
                 gd = GeodeticDatum.createGeodeticDatum(pm, ell, toWGS84);
             }
         }
@@ -484,6 +487,8 @@ public class CRSHelper {
         param.remove(PrjKeyParameters.SPHEROIDREFNAME);
         param.remove(ProjKeyParameters.pm);
         param.remove(ProjKeyParameters.towgs84);
+        System.out.println(param);
+        System.out.println("    -> " + gd);
         return gd;
     }
 

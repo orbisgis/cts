@@ -184,17 +184,66 @@ public class GeodeticDatum extends AbstractDatum {
             new GeographicExtent("St-Martin St-Barth", 17.8, 18.2, -63.2, -62.5),
             "", "");
 
+
+    // Old North American Datum
+    // Conversions to NAD83 or WGS84 require NADCON grid-based transformations
+    // NADCON grids are not yet implemented in CTS library.
+    // (https://www.ngs.noaa.gov/TOOLS/Nadcon/Nadcon.shtml)
     public final static GeodeticDatum NAD27 = new GeodeticDatum(
             new Identifier("EPSG", "6267", "North American Datum 1927", "NAD27"),
             PrimeMeridian.GREENWICH, Ellipsoid.CLARKE1866, null,
             GeographicExtent.WORLD,
             "", "1927");
 
+
+    // Original NAD83 datum. For topographic purposes.
+    // To get pecise transformation from NAD83(1986) to NAD83(HARN) and be
+    // consistent with WGS, one must use extended NADCON grids (5-6 cm accuracy)
+    // NADCON grids are not yet implemented in CTS library.
     public final static GeodeticDatum NAD83 = new GeodeticDatum(
             new Identifier("EPSG", "6269", "North American Datum 1983", "NAD83"),
             PrimeMeridian.GREENWICH, Ellipsoid.GRS80, null,
             GeographicExtent.WORLD,
             "", "1983");
+
+
+    // NAD83(HARN) is a precise geodetic network for USA.
+    // Grid-based transformations from NAD83 to NAD83(HARN) use different grids for
+    // different states (5-6 cm accuracy)
+    // The hereafter toWGS84 transformation from NAD83(HARN) to WGS84 ignores time-dependant
+    // parameters.
+    public final static GeodeticDatum NAD83_HARN = new GeodeticDatum(
+            new Identifier("EPSG", "6152", "North American Datum 1983 (HARN)", "NAD83(HARN)"),
+            PrimeMeridian.GREENWICH, Ellipsoid.GRS80,
+            SevenParameterTransformation.createBursaWolfTransformation(-0.991, 1.9072, 0.5129, 0.125033, 0.046785, 0.056529, -0.00062, 1.0),
+            GeographicExtent.WORLD,
+            "", null);
+
+
+    // NAD83(CORS96) is based on the Continuously Operating Reference Station (CORS) network.
+    // Discrepancies with NAD83(HARN) are about 6cm
+    // The hereafter toWGS84 transformation is for epoch 1997.0 and for WGS84 (G1150)
+    // To get timedependant transformations, see :
+    // https://support.geocue.com/wp-content/uploads/2015/01/CueTip-Transforming-WGS84-to-NAD83.pdf
+    public final static GeodeticDatum NAD83_CORS96 = new GeodeticDatum(
+            new Identifier("EPSG", "1133", "North American Datum 1983 (CORS96)", "NAD83(CORS96)"),
+            PrimeMeridian.GREENWICH, Ellipsoid.GRS80,
+            SevenParameterTransformation.createBursaWolfTransformation(-0.9956, 1.9013, 0.5215, 0.025915, 0.009426, 0.0011599, -0.00062, 1.0),
+            GeographicExtent.WORLD,
+            "", "1997");
+
+
+    // NAD83(2011) can be assimilated to WGS84 (G1674) for topographic topics
+    // For precise geodetic purposes, relation between NAD83(2011) and ITRF 2008 (G1674) is defined
+    // by a 14 parameters time dependant transformation and has 0.1 m accuracy.
+    // The hereafter toWGS84 transformation is for epoch 1997.0. To get more precise transformation
+    // one should use the time-dependant 14 parameters transformation
+    public final static GeodeticDatum NAD83_2011 = new GeodeticDatum(
+            new Identifier("EPSG", "1116", "North American Datum 1983 (NSRS2011)", "NAD83 (2011)"),
+            PrimeMeridian.GREENWICH, Ellipsoid.GRS80,
+            SevenParameterTransformation.createBursaWolfTransformation(-0.99343, 1.90331, 0.52655, 0.02591467, 0.00942645, 0.001159935, -0.00171504, 0.1),
+            GeographicExtent.WORLD,
+            "", "2012");
 
     static {
         //@TODO this should be moved to the parser using these particular names
@@ -218,7 +267,7 @@ public class GeodeticDatum extends AbstractDatum {
                 final Ellipsoid ellipsoid, final GeocentricTransformation toWGS84) {
         GeodeticDatum gd = createGeodeticDatum(new Identifier(GeodeticDatum.class),
                 primeMeridian, ellipsoid, toWGS84, GeographicExtent.WORLD, "","");
-        gd.setDefaultToWGS84Operation(toWGS84);
+        //gd.setDefaultToWGS84Operation(toWGS84);
         if (knownDatumMap.containsKey(gd)) {
             return knownDatumMap.get(gd);
         }
@@ -249,6 +298,7 @@ public class GeodeticDatum extends AbstractDatum {
         this.ellipsoid = ellipsoid;
         this.primeMeridian = primeMeridian;
         this.toWGS84 = toWGS84;
+        setDefaultToWGS84Operation(toWGS84);
         knownDatumMap.put(this.getIdentifier(), this);
         knownDatum.add(this);
     }
@@ -314,7 +364,7 @@ public class GeodeticDatum extends AbstractDatum {
      */
     public final void setDefaultToWGS84Operation(GeocentricTransformation toWGS84) {
         this.toWGS84 = toWGS84;
-        this.addGeocentricTransformation(WGS84, toWGS84, true);
+        if (toWGS84 != null && WGS84 != null) this.addGeocentricTransformation(WGS84, toWGS84, true);
     }
 
     public Set<GeodeticDatum> getTargetDatum() {
@@ -424,57 +474,56 @@ public class GeodeticDatum extends AbstractDatum {
      * @param targetDatum the datum that must be a target for returned transformation
      */
     public Set<GeocentricTransformation> getGeocentricTransformations(GeodeticDatum targetDatum) {
+
+        // Create a new empty set of operations towards targetDatum if it does not already exist
         if (geocentricTransformations.get(targetDatum) == null) {
             geocentricTransformations.put(targetDatum, new HashSet<GeocentricTransformation>());
         }
-        // If we don't already have a direct transformation from this to datum
-        // we try to build such a transformation
 
-        //if (geocentricTransformations.get(targetDatum).isEmpty()) {
-            // targetDatum is equivalent to WGS84
-            if (targetDatum.equals(GeodeticDatum.WGS84) && getToWGS84() != null) {
-                addGeocentricTransformation(targetDatum, getToWGS84(), true);
+        // If targetDatum is equivalent to WGS84, this.toWGS84 is a possible CoordinateOperation
+        if (targetDatum.equals(GeodeticDatum.WGS84) && getToWGS84() != null) {
+            addGeocentricTransformation(targetDatum, getToWGS84(), true);
+        }
+        // If this is equivalent to WGS84, we can use targetDatum.toWGS84.inverse CoordinateOperation
+        else if (this.equals(GeodeticDatum.WGS84) && targetDatum.getToWGS84() != null) {
+            try {
+                addGeocentricTransformation(targetDatum, targetDatum.getToWGS84().inverse(), true);
+            } catch(NonInvertibleOperationException e) {
+                // if datum.getToWGS84() is not invertible, just ignore it
             }
-            // this is equivalent to WGS84
-            else if (this.equals(GeodeticDatum.WGS84) && targetDatum.getToWGS84() != null) {
-                try {
-                    addGeocentricTransformation(targetDatum, targetDatum.getToWGS84().inverse(), true);
-                } catch(NonInvertibleOperationException e) {
-                    // if datum.getToWGS84() is not invertible, just ignore it
-                }
-            }
-            // neither this nor datum equals WGS84
-            else {
-                // We have transformations from each datum to WGS84. Use WGS84 as a pivot
-                if (!getGeocentricTransformations(GeodeticDatum.WGS84).isEmpty() &&
+        }
+        // Neither this nor targetDatum are equal to WGS84
+        else if (!targetDatum.equals(WGS84) && !this.equals(WGS84)) {
+            // We have transformations from each datum to WGS84. Use WGS84 as a pivot
+            if (!getGeocentricTransformations(GeodeticDatum.WGS84).isEmpty() &&
                     !targetDatum.getGeocentricTransformations(GeodeticDatum.WGS84).isEmpty()) {
-                    try {
-                        for (GeocentricTransformation op1 : getGeocentricTransformations(WGS84)) {
-                            for (GeocentricTransformation op2 : targetDatum.getGeocentricTransformations(WGS84)) {
-                                if (op1.equals(op2) || (op1.isIdentity() && op2.isIdentity())) {
-                                    addGeocentricTransformation(targetDatum, Identity.IDENTITY, true);
-                                } else {
-                                    if (op1.isIdentity()) {
-                                        addGeocentricTransformation(targetDatum, op2.inverse(), true);
-                                    }
-                                    else if (op2.isIdentity()) {
-                                        addGeocentricTransformation(targetDatum, op1, true);
-                                    }
-                                    else {
-                                        addGeocentricTransformation(targetDatum, new GeocentricTransformationSequence(
-                                                new Identifier(CoordinateOperation.class), op1, op2.inverse()), true);
-                                    }
+                try {
+                    for (GeocentricTransformation op1 : getGeocentricTransformations(WGS84)) {
+                        for (GeocentricTransformation op2 : targetDatum.getGeocentricTransformations(WGS84)) {
+                            if (op1.equals(op2) || (op1.isIdentity() && op2.isIdentity())) {
+                                addGeocentricTransformation(targetDatum, Identity.IDENTITY, true);
+                            } else {
+                                if (op1.isIdentity()) {
+                                    addGeocentricTransformation(targetDatum, op2.inverse(), true);
+                                }
+                                else if (op2.isIdentity()) {
+                                    addGeocentricTransformation(targetDatum, op1, true);
+                                }
+                                else {
+                                    addGeocentricTransformation(targetDatum, new GeocentricTransformationSequence(
+                                            new Identifier(CoordinateOperation.class), op1, op2.inverse()), true);
                                 }
                             }
                         }
-                    } catch (NonInvertibleOperationException e) {
-                        // The geocentric transformation should always be inversible.
-                        // Moreover, add the transformation to the target datum is useful
-                        // for further calulation but not essential, so if the inversion
-                        // fails it has no importance
                     }
+                } catch (NonInvertibleOperationException e) {
+                    // The geocentric transformation should always be inversible.
+                    // Moreover, add the transformation to the target datum is useful
+                    // for further calulation but not essential, so if the inversion
+                    // fails it has no importance
                 }
             }
+        }
         //}
         return geocentricTransformations.get(targetDatum);
     }
@@ -607,13 +656,11 @@ public class GeodeticDatum extends AbstractDatum {
                 toWGS84Equality = getToWGS84().equals(gd.getToWGS84()) ||
                         (getToWGS84().isIdentity() && gd.getToWGS84().isIdentity());
             }
-            if (getExtent() == null) extentEquality = gd.getExtent() == null;
-            else extentEquality = getExtent().equals(gd.getExtent());
             extentEquality = getExtent() == null ? gd.getExtent() == null : getExtent().equals(gd.getExtent());
             return ellipsoid.equals(gd.getEllipsoid())
                     && primeMeridian.equals(gd.getPrimeMeridian())
-                    && toWGS84Equality && extentEquality;
-            //return false;
+                    && toWGS84Equality
+                    && extentEquality;
         } else {
             return false;
         }
