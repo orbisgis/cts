@@ -252,7 +252,7 @@ public class GeodeticDatum extends AbstractDatum {
     
     public final static GeodeticDatum HERMANNSKOGEL = new GeodeticDatum(
             new Identifier("EPSG", "4312", "Militar-Geographische Institut", "MGI"),
-            PrimeMeridian.GREENWICH, Ellipsoid.BESSEL1841,null, 
+            PrimeMeridian.GREENWICH, Ellipsoid.BESSEL1841, null,
             new GeographicExtent("Austria", 46.4, 49.02, 9.53, 17.17), "","" );
     
     public final static GeodeticDatum POSTDAM = new GeodeticDatum(
@@ -281,7 +281,8 @@ public class GeodeticDatum extends AbstractDatum {
     
     public final static GeodeticDatum IRE65 = new GeodeticDatum(
             new Identifier("EPSG", "4299", "TM65", "TM65"),
-            PrimeMeridian.GREENWICH, Ellipsoid.AIRYMOD, null,
+            PrimeMeridian.GREENWICH, Ellipsoid.AIRYMOD,
+            SevenParameterTransformation.createBursaWolfTransformation(482.5, -130.6, 564.6, -1.042, -0.214, -0.631, 8.15, 1),
             new GeographicExtent("Ireland - onshore. United Kingdom (UK) - Northern Ireland (Ulster) - onshore",
                     51.39, 55.43, -10.56, -5.34), "", "");
  
