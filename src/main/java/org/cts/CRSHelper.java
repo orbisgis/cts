@@ -140,6 +140,7 @@ public class CRSHelper {
         parameters.remove(PrjKeyParameters.GEOGUNITREFNAME);
         parameters.remove(ProjKeyParameters.wktext);
         parameters.remove(ProjKeyParameters.no_defs);
+        parameters.remove(ProjKeyParameters.no_uoff);
         return crs;
     }
 

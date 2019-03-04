@@ -75,7 +75,7 @@ class RegistryParserTest extends CTSTestCase {
         assertEquals("36", parameters.get(ProjKeyParameters.zone));
         assertNull(parameters.get(ProjKeyParameters.south));
         assertEquals("clrk66", parameters.get(ProjKeyParameters.ellps));
-        assertEquals("-115.064,-87.39,-101.716,-0.058,4.001,-2.062,9.366", parameters.get(ProjKeyParameters.towgs84));
+        assertEquals("-80,-100,-228,0,0,0,0", parameters.get(ProjKeyParameters.towgs84));
         assertEquals("m", parameters.get(ProjKeyParameters.units));
     }
 

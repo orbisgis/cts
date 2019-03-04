@@ -284,6 +284,7 @@ public class Ellipsoid extends IdentifiableComponent {
         ellipsoidFromName.put("wgs66", WGS66);
         ellipsoidFromName.put("wgs72", WGS72);
         ellipsoidFromName.put("wgs84", WGS84);
+        ellipsoidFromName.put("modairy", AIRYMOD);
     }
 
     /**
