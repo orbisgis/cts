@@ -167,11 +167,11 @@ public final class CoordinateOperationFactory {
             // its PrimeMeridian is Greenwhich and its Ellipsoid is one of WGS84, GRS80
             // In this case, all transformation from/to WGS84 is considered as available to
             // sourceDatum (resp. targetDatum)
-            if (sourceDatum.getToWGS84().isIdentity() && sourceDatum.getPrimeMeridian().equals(PrimeMeridian.GREENWICH)
+            if (sourceDatum.getToWGS84() != null && sourceDatum.getToWGS84().isIdentity() && sourceDatum.getPrimeMeridian().equals(PrimeMeridian.GREENWICH)
                     && (sourceDatum.getEllipsoid().equals(Ellipsoid.GRS80) || sourceDatum.getEllipsoid().equals(Ellipsoid.WGS84))) {
                 datumTransformations.addAll(GeodeticDatum.WGS84.getGeocentricTransformations(targetDatum));
             }
-            if (targetDatum.getToWGS84().isIdentity() && targetDatum.getPrimeMeridian().equals(PrimeMeridian.GREENWICH)
+            if (targetDatum.getToWGS84() != null && targetDatum.getToWGS84().isIdentity() && targetDatum.getPrimeMeridian().equals(PrimeMeridian.GREENWICH)
                     && (targetDatum.getEllipsoid().equals(Ellipsoid.GRS80) || targetDatum.getEllipsoid().equals(Ellipsoid.WGS84))) {
                 datumTransformations.addAll(sourceDatum.getGeocentricTransformations(GeodeticDatum.WGS84));
             }
@@ -209,11 +209,11 @@ public final class CoordinateOperationFactory {
             sourceDatum.getGeocentricTransformations(targetDatum);
             datumTransformations.addAll(sourceDatum.getGeographicTransformations(targetDatum));
             // See the remark above
-            if (sourceDatum.getToWGS84().isIdentity() && sourceDatum.getPrimeMeridian().equals(PrimeMeridian.GREENWICH)
+            if (sourceDatum.getToWGS84() != null && sourceDatum.getToWGS84().isIdentity() && sourceDatum.getPrimeMeridian().equals(PrimeMeridian.GREENWICH)
                     && (sourceDatum.getEllipsoid().equals(Ellipsoid.GRS80) || sourceDatum.getEllipsoid().equals(Ellipsoid.WGS84))) {
                 datumTransformations.addAll(GeodeticDatum.WGS84.getGeographicTransformations(targetDatum));
             }
-            if (targetDatum.getToWGS84().isIdentity() && targetDatum.getPrimeMeridian().equals(PrimeMeridian.GREENWICH)
+            if (targetDatum.getToWGS84() != null && targetDatum.getToWGS84().isIdentity() && targetDatum.getPrimeMeridian().equals(PrimeMeridian.GREENWICH)
                     && (targetDatum.getEllipsoid().equals(Ellipsoid.GRS80) || targetDatum.getEllipsoid().equals(Ellipsoid.WGS84))) {
                 datumTransformations.addAll(sourceDatum.getGeographicTransformations(GeodeticDatum.WGS84));
             }
