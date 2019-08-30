@@ -28,7 +28,6 @@ import java.util.Map;
 import org.cts.CoordinateDimensionException;
 import org.cts.Identifier;
 import org.cts.datum.Ellipsoid;
-import org.cts.op.NonInvertibleOperationException;
 import org.cts.units.Measure;
 import org.cts.util.Complex;
 

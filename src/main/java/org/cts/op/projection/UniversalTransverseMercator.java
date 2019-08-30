@@ -30,7 +30,6 @@ import org.cts.CoordinateDimensionException;
 import org.cts.Identifier;
 import org.cts.Parameter;
 import org.cts.datum.Ellipsoid;
-import org.cts.op.NonInvertibleOperationException;
 import org.cts.units.Measure;
 import org.cts.units.Unit;
 import org.cts.util.Complex;
