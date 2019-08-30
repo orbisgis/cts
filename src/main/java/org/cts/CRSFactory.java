@@ -168,7 +168,9 @@ public class CRSFactory {
      *
      * @param stream the input stream of bytes defining the OGC WKT String
      * @param encoding the charset used to read the input stream
+     * @return a CoordinateReferenceSystem
      * @throws IOException
+     * @throws org.cts.crs.CRSException
      */
     public CoordinateReferenceSystem createFromPrj(InputStream stream, Charset encoding) throws IOException, CRSException {
         BufferedReader r = new BufferedReader(new InputStreamReader(stream, encoding));
@@ -184,7 +186,9 @@ public class CRSFactory {
      * (PRJ).
      *
      * @param stream the input stream of bytes defining the OGC WKT String
+     * @return a CoordinateReferenceSystem
      * @throws IOException
+     * @throws org.cts.crs.CRSException
      */
     public CoordinateReferenceSystem createFromPrj(InputStream stream) throws IOException, CRSException {
         return createFromPrj(stream, Charset.defaultCharset());
@@ -193,9 +197,11 @@ public class CRSFactory {
     /**
      * Creates a {@link CoordinateReferenceSystem} defined by an OGC WKT String
      * (PRJ).
-     *
+     * @return a CoordinateReferenceSystem
      * @param file containing the OGC WKT String that defined the desired CRS
+     * @return 
      * @throws IOException if there is a problem reading the file
+     * @throws org.cts.crs.CRSException
      */
     public CoordinateReferenceSystem createFromPrj(File file) throws IOException, CRSException {
         InputStream i = null;
