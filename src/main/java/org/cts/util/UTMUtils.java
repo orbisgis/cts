@@ -29,12 +29,16 @@ import java.util.Map;
 /**
  * Utility class to get UTM informations from latitude and longitude coordinates
  * 
- * @author Erwan Bocher
+ * @author Erwan Bocher CNRS
  */
 public class UTMUtils {
 
     private static Map<String, Integer> utmEpsg =null;
 
+    /**
+     * List of EPSG code corresponding to the UTM zone and hemisphere
+     * @return 
+     */
     private static Map<String, Integer> prepareMap() {
         utmEpsg = new HashMap<>();
         utmEpsg.put("1S", 32701);

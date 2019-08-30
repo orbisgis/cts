@@ -25,6 +25,7 @@ package org.cts;
 
 import java.io.*;
 import java.nio.charset.Charset;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -33,6 +34,7 @@ import org.cts.crs.CRSException;
 import org.cts.crs.CoordinateReferenceSystem;
 import org.cts.parser.prj.PrjKeyParameters;
 import org.cts.parser.prj.PrjParser;
+import org.cts.parser.proj4.Proj4Parser;
 import org.cts.registry.Registry;
 import org.cts.registry.RegistryException;
 import org.cts.registry.RegistryManager;
@@ -221,9 +223,33 @@ public class CRSFactory {
      * Return a list of supported codes according an registryName.
      *
      * @param registryName (ex : EPSG, IGNF, ESRI)
+     * @return List of supported codes
+     * @throws org.cts.registry.RegistryException
      */
     public Set<String> getSupportedCodes(String registryName) throws RegistryException {
         return getRegistryManager().getRegistry(registryName).getSupportedCodes();
+    }
+    
+    
+    /**
+     * Creates a {@link CoordinateReferenceSystem} defined by a proj4 string
+     * representation
+     *
+     * @param prj4String the proj4 string defining the CRS
+     * @return
+     * @throws org.cts.crs.CRSException
+     */
+    public CoordinateReferenceSystem createFromPrj4(String prj4String) throws CRSException {
+        Map<String, String> prjParameters = Proj4Parser.readParameters(prj4String);
+        String zone = prjParameters.get("zone");
+        String crsName;
+        if (zone != null) {
+            crsName = prjParameters.get("south") == null ? String.format("UTM %s %s", zone, "NORTH") : String.format("UTM %s %s", zone, "SOUTH");
+        }
+        else{
+            crsName = String.format("Unknown CRS %s",System.currentTimeMillis());
+        }
+        return CRSHelper.createCoordinateReferenceSystem(new Identifier(CoordinateReferenceSystem.class, crsName), prjParameters);
     }
 
     /**

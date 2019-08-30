@@ -101,4 +101,19 @@ class CRSFactoryTest extends CTSTestCase {
         assertEquals("EPSG", crs.getAuthorityName());
         assertEquals("27572", crs.getAuthorityKey());
     }
+    
+    
+    @Test
+    void testCRSFromProj4() throws Exception {
+        String prj = "+proj=tmerc +lat_0=0 +lon_0=106 +k=1 +x_0=500000 +y_0=0 +ellps=krass +towgs84=-17.51,-108.32,-62.39,0,0,0,0 +units=m +no_defs";
+        CoordinateReferenceSystem crs = cRSFactory.createFromPrj4(prj);
+        assertNotNull(crs);
+    }
+    
+    @Test
+    void testCRSFromProj4UTM() throws Exception {
+        String prj = "+proj=utm +zone=32 +south +datum=WGS84 +units=m +no_defs";
+        CoordinateReferenceSystem crs = cRSFactory.createFromPrj4(prj);
+        assertEquals("UTM 32 NORTH", crs.getName());
+    }
 }
