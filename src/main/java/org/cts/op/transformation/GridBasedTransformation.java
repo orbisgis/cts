@@ -23,10 +23,13 @@
  */
 package org.cts.op.transformation;
 
+import org.cts.op.CoordinateOperation;
+
 /**
  * Marker for transformation based on grids like NTv2 or
  * vertical transformations
  * @author Michaël Michaud
  */
-public interface GridBasedTransformation {
+public interface GridBasedTransformation extends CoordinateOperation {
+
 }

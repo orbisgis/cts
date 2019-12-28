@@ -25,11 +25,14 @@ package org.cts.crs;
 
 import org.cts.IdentifiableComponent;
 import org.cts.Identifier;
+import org.cts.IllegalCoordinateException;
 import org.cts.cs.CoordinateSystem;
+import org.cts.cs.Extent;
 import org.cts.datum.GeodeticDatum;
 import org.cts.op.CoordinateOperation;
 import org.cts.op.CoordinateOperationException;
 import org.cts.op.projection.Projection;
+import org.cts.units.Unit;
 
 /**
  * A {@link org.cts.crs.CoordinateReferenceSystem} based on a
@@ -61,6 +64,8 @@ public abstract class GeodeticCRS extends IdentifiableComponent
      */
     protected CoordinateSystem coordinateSystem;
 
+    private Extent extent;
+
     /**
      * Creates a new GeodeticCRS.
      *
@@ -89,34 +94,64 @@ public abstract class GeodeticCRS extends IdentifiableComponent
 
     /**
      * Returns the {@link org.cts.datum.Datum} to which this
-     * <code>CoordinateReferenceSystem</code> is refering.
+     * <code>CoordinateReferenceSystem</code> refers.
      */
     public GeodeticDatum getDatum() {
         return geodeticDatum;
     }
 
     /**
-     * Return whether this coord is a valid coord in this
-     * CoordinateReferenceSystem.
+     * Return whether the coord is within this CRS's extent or not.
      *
-     * @param coord standard coordinate for this CoordinateReferenceSystem
-     * datums (ex. decimal degrees for geographic datums and meters for vertical
-     * datums).
+     * @param coord coordinates to test
      */
-    //@TODO Clarify : geodeticDatum.getExtent().isInside does not use coordinates
-    // expressed with this CoordinateReferenceSystem
-    // Do we have to convert coord to a decimal degree or radian Geographic CRS first ?
-    //public boolean isValid(double[] coord) {
-    //    return geodeticDatum.getExtent().isInside(coord);
-    //}
+    public boolean isInside(double[] coord) {
+        return extent == null || extent.isInside(coord);
+    }
+
+    /**
+     * Set this <code>CoordinateReferenceSystem</code>'s extent from min and max coordinates
+     * expressed in this CoordinateReferenceSystem.
+     * @param min min ordinates along each axis
+     * @param max max ordinates along each axis
+     */
+    public void setExtent(double[] min, double[] max) {
+        this.extent = new Extent() {
+            public String getName() { return ""; }
+            public boolean isInside(double[] coord) {
+                for (int i = 0 ; i < Math.min(coord.length, min.length) ; i++) {
+                    if (coord[i] < min[i] || coord[i] > max[i]) return false;
+                }
+                return true;
+            }
+        };
+    }
+
+    /**
+     * Set this <code>CoordinateReferenceSystem</code>'s extent from min and max
+     * longitude and latitude in degrees
+     * @param minLon minimum longitude
+     * @param minLat minimum latitude
+     * @param maxLon maximum longitude
+     * @param maxLat maximum latitude
+     */
+    public void setExtent(double minLon, double minLat, double maxLon, double maxLat)
+            throws CoordinateOperationException, IllegalCoordinateException {
+        CoordinateOperation op = fromGeographicCoordinateConverter();
+        double[] minLocal = op.transform(new double[]{Unit.DEGREE.toBaseUnit(minLat), Unit.DEGREE.toBaseUnit(minLon)});
+        double[] maxLocal = op.transform(new double[]{Unit.DEGREE.toBaseUnit(maxLat), Unit.DEGREE.toBaseUnit(maxLon)});
+        setExtent(minLocal, maxLocal);
+    }
 
     /**
      * Creates a CoordinateOperation object to convert coordinates from this
      * CoordinateReferenceSystem to a {@link org.cts.crs.Geographic3DCRS} based on
      * the same {@link org.cts.datum.GeodeticDatum}, and using normal SI units in the
      * following order : latitude (rad), longitude (rad) height (m).
-     * @return 
-     * @throws org.cts.op.CoordinateOperationException 
+     *
+     * @throws org.cts.op.CoordinateOperationException if an exception occurs
+     * during the computation of the <code>CoordinateOperation</code> to be used
+     * to convert coordinates to the associated <code>Geographic3DCRS</code>
      */
     abstract public CoordinateOperation toGeographicCoordinateConverter()
             throws CoordinateOperationException;
@@ -126,20 +161,21 @@ public abstract class GeodeticCRS extends IdentifiableComponent
      * {@link org.cts.crs.Geographic3DCRS} based on the same {@link org.cts.datum.GeodeticDatum},
      * and using normal SI units in the following order : latitude (rad),
      * longitude (rad) height (m) to this CoordinateReferenceSystem.
-     * @return 
-     * @throws org.cts.op.CoordinateOperationException 
+     *
+     * @throws org.cts.op.CoordinateOperationException if an exception occurs
+     * during the computation of the <code>CoordinateOperation</code> to be used
+     * to convert coordinates from the associated <code>Geographic3DCRS</code>
      */
     abstract public CoordinateOperation fromGeographicCoordinateConverter()
             throws CoordinateOperationException;
 
     /**
-     * Returns a WKT representation of the geodetic CRS.
+     * @see CoordinateReferenceSystem#toWKT()
      */
     public abstract String toWKT();
 
     /**
-     * Return a String representation of this Datum.
-     * @return 
+     * Returns a String representation of this Datum.
      */
     @Override
     public String toString() {
@@ -153,7 +189,6 @@ public abstract class GeodeticCRS extends IdentifiableComponent
      * the {@link GeodeticDatum}, the {@link CoordinateSystem}.
      *
      * @param o The object to compare this GeodeticCRS against
-     * @return 
      */
     @Override
     public boolean equals(Object o) {
@@ -177,7 +212,6 @@ public abstract class GeodeticCRS extends IdentifiableComponent
 
     /**
      * Returns the hash code for this GeodeticCRS.
-     * @return 
      */
     @Override
     public int hashCode() {

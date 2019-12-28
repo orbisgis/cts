@@ -56,11 +56,11 @@ public class GeocentricCRS extends GeodeticCRS {
     /**
      * A 3D cartesian {@link CoordinateSystem}.
      */
-    public static final CoordinateSystem XYZ = new CoordinateSystem(new Axis[]{X, Y, Z}, new Unit[]{METER, METER, METER});
+    public static final CoordinateSystem XYZ =
+            new CoordinateSystem(new Axis[]{X, Y, Z}, new Unit[]{METER, METER, METER});
 
     /**
-     * Returns this CoordinateReferenceSystem Type.
-     * @return 
+     * @see CoordinateReferenceSystem#getType().
      */
     @Override
     public Type getType() {
@@ -92,12 +92,14 @@ public class GeocentricCRS extends GeodeticCRS {
     }
 
     /**
-     * @return 
+     * Creates a CoordinateOperation to transform coordinates from this
+     * <code>GeocentricCRS</code> to the associated <code>Geographic3DCRS</code>.
+     *
      * @see GeodeticCRS#toGeographicCoordinateConverter()
      */
     @Override
     public CoordinateOperation toGeographicCoordinateConverter() {
-        List<CoordinateOperation> ops = new ArrayList<CoordinateOperation>();
+        List<CoordinateOperation> ops = new ArrayList<>();
         ops.add(new Geocentric2Geographic(getDatum().getEllipsoid()));
         if (!getDatum().getPrimeMeridian().equals(PrimeMeridian.GREENWICH)) {
             ops.add(LongitudeRotation.getLongitudeRotationTo(getDatum().getPrimeMeridian()));
@@ -107,12 +109,14 @@ public class GeocentricCRS extends GeodeticCRS {
     }
 
     /**
-     * @return 
+     * Creates a CoordinateOperation to transform coordinates from the associated
+     * <code>Geographic3DCRS</code> to this <code>GeocentricCRS</code>.
+     *
      * @see GeodeticCRS#fromGeographicCoordinateConverter()
      */
     @Override
     public CoordinateOperation fromGeographicCoordinateConverter() {
-        List<CoordinateOperation> ops = new ArrayList<CoordinateOperation>();
+        List<CoordinateOperation> ops = new ArrayList<>();
         if (!getDatum().getPrimeMeridian().equals(PrimeMeridian.GREENWICH)) {
             ops.add(LongitudeRotation.getLongitudeRotationFrom(getDatum().getPrimeMeridian()));
         }
@@ -122,9 +126,7 @@ public class GeocentricCRS extends GeodeticCRS {
     }
 
     /**
-     * Returns a WKT representation of the geocentric CRS.
-     *
-     * @return 
+     * @see CoordinateReferenceSystem#toWKT()
      */
     public String toWKT() {
         StringBuilder w = new StringBuilder();

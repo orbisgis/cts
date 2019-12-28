@@ -25,6 +25,7 @@ package org.cts.crs;
 
 import org.cts.Identifiable;
 import org.cts.cs.CoordinateSystem;
+import org.cts.cs.Extent;
 import org.cts.datum.Datum;
 import org.cts.op.projection.Projection;
 
@@ -47,50 +48,54 @@ import org.cts.op.projection.Projection;
  *
  * @author Michaël Michaud
  */
-public interface CoordinateReferenceSystem extends Identifiable {
+public interface CoordinateReferenceSystem extends Identifiable, Extent {
 
     /**
      * Coordinate Reference System Type.
      */
-    public enum Type {
+    enum Type {
 
         GEOCENTRIC, GEOGRAPHIC3D, GEOGRAPHIC2D, PROJECTED, VERTICAL, COMPOUND, ENGINEERING
     }
 
     /**
-     * Returns this CoordinateReferenceSystem Type.
-     * @return 
+     * Returns this <code>CoordinateReferenceSystem.Type</code>.
      */
-    public Type getType();
+    Type getType();
 
     /**
      * Returns the {@link CoordinateSystem} used by this
      * <code>CoordinateReferenceSystem</code>.
-     * @return 
      */
-    public CoordinateSystem getCoordinateSystem();
+    CoordinateSystem getCoordinateSystem();
 
     /**
      * Returns the {@link Datum} to which this
-     * <code>CoordinateReferenceSystem</code> is refering. For compound
-     * <code>CoordinateReferenceSystem</code>, getDatum returns the the main
-     * datum, ie the {@link org.cts.datum.GeodeticDatum} (or horizontal Datum).
-     * @return 
+     * <code>CoordinateReferenceSystem</code> refers.
+     * For compound <code>CoordinateReferenceSystem</code>, getDatum returns the
+     * main datum, ie the {@link org.cts.datum.GeodeticDatum} (or horizontal Datum).
      */
-    public Datum getDatum();
+    Datum getDatum();
 
     /**
      * Returns the {@link Projection} to which this
-     * <code>CoordinateReferenceSystem</code> is refering. It returns null if no
+     * <code>CoordinateReferenceSystem</code> refers. It returns null if no
      * projection is defined for this CRS.
-     * @return 
+     * @return the {@link Projection} used by this
+     * <code>CoordinateReferenceSystem</code> or null.
      */
-    public Projection getProjection();
+    Projection getProjection();
 
     /**
-     * Returns a WKT representation of the CoordinateReferenceSystem.
-     *
-     * @return 
+     * Returns a WKT representation of this <code>CoordinateReferenceSystem</code>.
      */
-    public String toWKT();
+    String toWKT();
+
+    /**
+     * Returns whether coord is inside this Extent or not. It's up to the user to
+     * check consistency between coord and extent type.
+     */
+    default boolean isInside(double[] coord) {
+        return true;
+    }
 }
