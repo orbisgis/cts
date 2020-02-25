@@ -3,5 +3,13 @@ language: java
 jdk:
     - oraclejdk8
     - openjdk8
-script: "./travis-build.sh"
-
+    - oraclejdk11
+    - openjdk11
+env:
+    global:
+        - CODECOV_TOKEN="abcfb936-7aea-4190-b83f-1e342f843ba4"
+script:
+    - "./travis-build.sh"
+    - mvn clean install
+after_success:
+    - bash <(curl -s https://codecov.io/bash)
