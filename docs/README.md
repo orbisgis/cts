@@ -1,4 +1,9 @@
-# CTS [![Build Status](https://travis-ci.org/orbisgis/cts.png?branch=master)](https://travis-ci.org/orbisgis/cts)
+# CTS 
+[![GitHub](https://img.shields.io/github/license/orbisgis/cts.svg)](https://github.com/orbisgis/cts/blob/master/docs/LICENSE.md) 
+[![Build Stat](https://img.shields.io/jenkins/s/http/jenkins-ng.orbisgis.org/job/cts.svg)](http://jenkins-ng.orbisgis.org/job/cts) 
+[![Build Test](https://img.shields.io/jenkins/t/http/jenkins-ng.orbisgis.org/job/cts.svg)](https://jenkins-ng.orbisgis.org/job/cts/test_results_analyzer/) 
+[![codecov](https://img.shields.io/codecov/c/github/orbisgis/cts.svg)](https://codecov.io/gh/orbisgis/cts) 
+[![Codacy Badge](https://img.shields.io/codacy/grade/d9b34e00264d4702b8340f8544cec21f.svg)](https://www.codacy.com/app/orbisgis/cts?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=orbisgis/orbisdata&amp;utm_campaign=Badge_Grade) 
 
 Coordinate Transformation Suite (abridged CTS)  is a library developed to
 perform coordinate transformations using well known geodetic algorithms and
@@ -38,13 +43,11 @@ CTS.  If not, see <http://www.gnu.org/licenses/>.
 <dependency>
     <groupId>org.orbisgis</groupId>
     <artifactId>cts</artifactId>
-    <version>1.X.X</version>
+    <version>1.5.3</version>
 </dependency>
 ```
 
 ##### Pre-built jar
 
-You can find latest jar release on maven central:
-
-http://search.maven.org/#search|ga|1|g%3A%22org.orbisgis%22%20AND%20a%3A%22cts%22
+You can find latest jar release on [maven central](http://search.maven.org/#search|ga|1|g%3A%22org.orbisgis%22%20AND%20a%3A%22cts%22).
 

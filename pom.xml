@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.orbisgis</groupId>
         <artifactId>orbisparent</artifactId>
-        <version>1.0.3-SNAPSHOT</version>
+        <version>1.0.3-RC1</version>
     </parent>
 
     <artifactId>cts</artifactId>
@@ -97,6 +97,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </build>
