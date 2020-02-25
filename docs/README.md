@@ -43,7 +43,7 @@ CTS.  If not, see <http://www.gnu.org/licenses/>.
 <dependency>
     <groupId>org.orbisgis</groupId>
     <artifactId>cts</artifactId>
-    <version>1.X.X</version>
+    <version>1.5.3</version>
 </dependency>
 ```
 
