@@ -1,11 +1,11 @@
 /*
- * Coordinate Transformations Suite (abridged CTS)  is a library developped to 
- * perform Coordinate Transformations using well known geodetic algorithms 
- * and parameter sets. 
+ * Coordinate Transformations Suite (abridged CTS)  is a library developped to
+ * perform Coordinate Transformations using well known geodetic algorithms
+ * and parameter sets.
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
- * name. It has been renamed CTS in 2009 and shared to the community from 
+ * name. It has been renamed CTS in 2009 and shared to the community from
  * the OrbisGIS code repository.
  *
  * CTS is free software: you can redistribute it and/or modify it under the
@@ -23,12 +23,11 @@
  */
 package org.cts.op;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import org.cts.Identifier;
 import org.cts.IllegalCoordinateException;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -52,11 +51,11 @@ public class CoordinateOperationSequence extends AbstractCoordinateOperation {
      * {@link org.cts.op.CoordinateOperation}.
      *
      * @param identifier this operation sequence identifier
-     * @param sequence an array containing ordered operations to apply to
-     * coordinates
+     * @param sequence   an array containing ordered operations to apply to
+     *                   coordinates
      */
     public CoordinateOperationSequence(Identifier identifier,
-            CoordinateOperation... sequence) {
+                                       CoordinateOperation... sequence) {
         super(identifier);
         this.sequence = sequence;
         this.sequence = cleanSequence(sequence);
@@ -72,10 +71,10 @@ public class CoordinateOperationSequence extends AbstractCoordinateOperation {
      * {@link org.cts.op.CoordinateOperation}.
      *
      * @param identifier this operation sequence identifier
-     * @param list a list containing ordered operations to apply to coordinates
+     * @param list       a list containing ordered operations to apply to coordinates
      */
     public CoordinateOperationSequence(Identifier identifier,
-            List<CoordinateOperation> list) {
+                                       List<CoordinateOperation> list) {
         super(identifier);
         this.sequence = list.toArray(new CoordinateOperation[0]);
         this.sequence = cleanSequence(sequence);
@@ -90,12 +89,12 @@ public class CoordinateOperationSequence extends AbstractCoordinateOperation {
      * precision.
      *
      * @param identifier this operation sequence identifier
-     * @param sequence a list containing ordered operations to apply to
-     * coordinates
-     * @param precision precision of this CoordinateOperation as a whole.
+     * @param sequence   a list containing ordered operations to apply to
+     *                   coordinates
+     * @param precision  precision of this CoordinateOperation as a whole.
      */
     public CoordinateOperationSequence(Identifier identifier,
-            CoordinateOperation[] sequence, double precision) {
+                                       CoordinateOperation[] sequence, double precision) {
         super(identifier);
         this.sequence = sequence;
         this.sequence = cleanSequence(sequence);
@@ -108,11 +107,11 @@ public class CoordinateOperationSequence extends AbstractCoordinateOperation {
      * precision.
      *
      * @param identifier this operation sequence identifier
-     * @param list a list containing ordered operations to apply to coordinates
-     * @param precision precision of this CoordinateOperation as a whole.
+     * @param list       a list containing ordered operations to apply to coordinates
+     * @param precision  precision of this CoordinateOperation as a whole.
      */
     public CoordinateOperationSequence(Identifier identifier,
-            List<CoordinateOperation> list, double precision) {
+                                       List<CoordinateOperation> list, double precision) {
         super(identifier);
         this.sequence = list.toArray(new CoordinateOperation[0]);
         this.sequence = cleanSequence(sequence);
@@ -126,9 +125,9 @@ public class CoordinateOperationSequence extends AbstractCoordinateOperation {
      * {@link org.cts.op.CoordinateOperation}s.
      *
      * @param coord the 3D coord to transform
-     * @return 
-     * @throws IllegalCoordinateException if <code>coord</code> is not
-     * compatible with this <code>CoordinateOperation</code>.
+     * @return
+     * @throws IllegalCoordinateException              if <code>coord</code> is not
+     *                                                 compatible with this <code>CoordinateOperation</code>.
      * @throws org.cts.op.CoordinateOperationException
      */
     @Override
@@ -142,7 +141,8 @@ public class CoordinateOperationSequence extends AbstractCoordinateOperation {
 
     /**
      * Creates the inverse CoordinateOperation.
-     * @return 
+     *
+     * @return
      * @throws org.cts.op.NonInvertibleOperationException
      */
     @Override
@@ -162,6 +162,7 @@ public class CoordinateOperationSequence extends AbstractCoordinateOperation {
     /**
      * Return a pessimistic estimation of the precision where precision
      * of every sub-operation is simply added to the previous.
+     *
      * @return
      */
     public double getPrecision() {
@@ -185,9 +186,9 @@ public class CoordinateOperationSequence extends AbstractCoordinateOperation {
      * list when one of these is the inverse of the other.
      *
      * @param list1 one of the list to merge (it will be the beginning of the
-     * returned list)
+     *              returned list)
      * @param list2 the other list to merge (it will be the end of the returned
-     * list)
+     *              list)
      */
     private static List<CoordinateOperation> fusionSequences(List<CoordinateOperation> list1, List<CoordinateOperation> list2) {
         List<CoordinateOperation> lst1 = new ArrayList<CoordinateOperation>(list1);
@@ -242,12 +243,12 @@ public class CoordinateOperationSequence extends AbstractCoordinateOperation {
             }
         }
         // Remove 2 successive opposite operations
-        for (int i = result.size()-1 ; i > 0 ; i--) {
+        for (int i = result.size() - 1; i > 0; i--) {
             CoordinateOperation op = result.get(i);
             try {
-                if (op.inverse().equals(result.get(i-1))) {
+                if (op.inverse().equals(result.get(i - 1))) {
                     result.remove(i);
-                    result.remove(i-1);
+                    result.remove(i - 1);
                     i -= 2;
                 }
             } catch (NonInvertibleOperationException e) {
@@ -272,7 +273,7 @@ public class CoordinateOperationSequence extends AbstractCoordinateOperation {
      * <code>op</code>.
      *
      * @param ops the list in which the CoordinateOperation should be added
-     * @param op the CoordinateOperation to add list)
+     * @param op  the CoordinateOperation to add list)
      */
     public static List<CoordinateOperation> cleverAdd(List<CoordinateOperation> ops, CoordinateOperation op) {
         List<CoordinateOperation> result = new ArrayList<CoordinateOperation>(ops);
@@ -305,7 +306,7 @@ public class CoordinateOperationSequence extends AbstractCoordinateOperation {
      * then the equality of each CoordinateOperation.
      *
      * @param o The object to compare this CoordinateOperationSequence
-     * against
+     *          against
      */
     @Override
     public boolean equals(Object o) {
@@ -340,6 +341,7 @@ public class CoordinateOperationSequence extends AbstractCoordinateOperation {
      * This method can identify sequences with no operations as equivalent to
      * Identity, but it does not try to nullify sequences of two opposite
      * operations.
+     *
      * @return true if this operation does not change coordinates.
      */
     public boolean isIdentity() {

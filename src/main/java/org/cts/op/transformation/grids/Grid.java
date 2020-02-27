@@ -1,11 +1,11 @@
 /*
- * Coordinate Transformations Suite (abridged CTS)  is a library developped to 
- * perform Coordinate Transformations using well known geodetic algorithms 
- * and parameter sets. 
+ * Coordinate Transformations Suite (abridged CTS)  is a library developped to
+ * perform Coordinate Transformations using well known geodetic algorithms
+ * and parameter sets.
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
- * name. It has been renamed CTS in 2009 and shared to the community from 
+ * name. It has been renamed CTS in 2009 and shared to the community from
  * the OrbisGIS code repository.
  *
  * CTS is free software: you can redistribute it and/or modify it under the
@@ -60,6 +60,7 @@ public interface Grid {
 
         NEAREST, BILINEAR, BICUBIC
     }
+
     /**
      * Nearest interpolation method.
      */
@@ -75,25 +76,29 @@ public interface Grid {
 
     /**
      * Get the number of columns of this grid.
-     * @return 
+     *
+     * @return
      */
     public int getColumnNumber();
 
     /**
      * Get the number of rows of this grid.
-     * @return 
+     *
+     * @return
      */
     public int getRowNumber();
 
     /**
      * Get the real world abscisse (x) of the first column.
-     * @return 
+     *
+     * @return
      */
     public double getX0();
 
     /**
      * Get the real world ordinate (y) of the first row.
-     * @return 
+     *
+     * @return
      */
     public double getY0();
 
@@ -110,26 +115,29 @@ public interface Grid {
     /**
      * Real world interval between two consecutive columns. The method returns a
      * negative value if x values decreases when column indices increases.
-     * @return 
+     *
+     * @return
      */
     public double getDX();
 
     /**
      * Real world interval between two consecutive row. The method returns a
      * negative value if y values decreases when column indices increases.
-     * @return 
+     *
+     * @return
      */
     public double getDY();
 
     /**
      * Get the value corrsponding to the x,y position. WARNING : x, y represent
      * the real world coordinates and not the matrix coordinate.
+     *
      * @param x
      * @param y
      * @param method
-     * @return 
-     * @throws org.cts.cs.OutOfExtentException 
-     * @throws org.cts.op.transformation.grids.InterpolationMethodException 
+     * @return
+     * @throws org.cts.cs.OutOfExtentException
+     * @throws org.cts.op.transformation.grids.InterpolationMethodException
      */
     public double[] getValue(double x, double y, InterpolationMethod method)
             throws OutOfExtentException, InterpolationMethodException;

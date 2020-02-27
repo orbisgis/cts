@@ -1,11 +1,11 @@
 /*
- * Coordinate Transformations Suite (abridged CTS)  is a library developped to 
- * perform Coordinate Transformations using well known geodetic algorithms 
- * and parameter sets. 
+ * Coordinate Transformations Suite (abridged CTS)  is a library developped to
+ * perform Coordinate Transformations using well known geodetic algorithms
+ * and parameter sets.
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
- * name. It has been renamed CTS in 2009 and shared to the community from 
+ * name. It has been renamed CTS in 2009 and shared to the community from
  * the OrbisGIS code repository.
  *
  * CTS is free software: you can redistribute it and/or modify it under the
@@ -48,15 +48,15 @@ public class IterativeTransformation extends AbstractCoordinateOperation impleme
     /**
      * Build a new IterativeTransformation.
      *
-     * @param op the transformation to iterate
-     * @param realValueIndex a list of indexes referring to the reference values
-     * the iteration should reach
+     * @param op                   the transformation to iterate
+     * @param realValueIndex       a list of indexes referring to the reference values
+     *                             the iteration should reach
      * @param calculatedValueIndex the list of indexes referring to the calculated
-     * values that must reach the reference values defined above
-     * @param tol the maximal difference accepted between the real value and the
-     * target value
+     *                             values that must reach the reference values defined above
+     * @param tol                  the maximal difference accepted between the real value and the
+     *                             target value
      * @throws Exception when the arrays in parameter does not have the same
-     * length
+     *                   length
      */
     public IterativeTransformation(CoordinateOperation op, int[] realValueIndex, int[] calculatedValueIndex,
                                    double[] tol, int maxIterations) throws Exception {
@@ -84,7 +84,7 @@ public class IterativeTransformation extends AbstractCoordinateOperation impleme
             for (int i = 0; i < realValueIndex.length; i++) {
                 iter = iter || Math.abs(coord[realValueIndex[i]] - coord[calculatedValueIndex[i]]) > tolerance[i];
             }
-            if (++count > maxIterations ) throw new TooManyIterationsException(this, count);
+            if (++count > maxIterations) throw new TooManyIterationsException(this, count);
         }
         return coord;
     }
@@ -94,10 +94,10 @@ public class IterativeTransformation extends AbstractCoordinateOperation impleme
         // Precision of this iterative operation is difficult to guess
         // because we don't know it uses radians, degrees or meters
         // We just suppose it is less than the base transformation
-        return op.getPrecision()/2.0;
+        return op.getPrecision() / 2.0;
     }
 
     public String toString() {
-        return "Iterative transformation based on [\n" + op.toString().replaceAll("\n","\n\t") + "\n]";
+        return "Iterative transformation based on [\n" + op.toString().replaceAll("\n", "\n\t") + "\n]";
     }
 }

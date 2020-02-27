@@ -1,11 +1,11 @@
 /*
- * Coordinate Transformations Suite (abridged CTS)  is a library developped to 
- * perform Coordinate Transformations using well known geodetic algorithms 
- * and parameter sets. 
+ * Coordinate Transformations Suite (abridged CTS)  is a library developped to
+ * perform Coordinate Transformations using well known geodetic algorithms
+ * and parameter sets.
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
- * name. It has been renamed CTS in 2009 and shared to the community from 
+ * name. It has been renamed CTS in 2009 and shared to the community from
  * the OrbisGIS code repository.
  *
  * CTS is free software: you can redistribute it and/or modify it under the
@@ -77,11 +77,11 @@ public class VerticalCRS extends IdentifiableComponent implements
      * Create a new VerticalCRS.
      *
      * @param identifier the identifier of the VerticalCRS
-     * @param datum the datum associated with the VerticalCRS
-     * @param cs the coordinate system associated with the VerticalCRS
+     * @param datum      the datum associated with the VerticalCRS
+     * @param cs         the coordinate system associated with the VerticalCRS
      */
     public VerticalCRS(Identifier identifier, VerticalDatum datum,
-            CoordinateSystem cs) {
+                       CoordinateSystem cs) {
         super(identifier);
         this.verticalDatum = datum;
         this.coordinateSystem = cs;
@@ -91,7 +91,7 @@ public class VerticalCRS extends IdentifiableComponent implements
      * Create a new VerticalCRS.
      *
      * @param identifier the identifier of the VerticalCRS
-     * @param datum the datum associated with the VerticalCRS
+     * @param datum      the datum associated with the VerticalCRS
      */
     public VerticalCRS(Identifier identifier, VerticalDatum datum) {
         super(identifier);
@@ -136,9 +136,9 @@ public class VerticalCRS extends IdentifiableComponent implements
      * CoordinateReferenceSystem.
      *
      * @param coord standard coordinate for this CoordinateReferenceSystem
-     * datums (ex. decimal degrees for geographic datums and meters for vertical
-     * datums).
-     * @return 
+     *              datums (ex. decimal degrees for geographic datums and meters for vertical
+     *              datums).
+     * @return
      */
     public boolean isValid(double[] coord) {
         return verticalDatum.getExtent().isInside(coord);
@@ -147,7 +147,6 @@ public class VerticalCRS extends IdentifiableComponent implements
 
     /**
      * Returns a WKT representation of the vertical CRS.
-     *
      */
     public String toWKT() {
         StringBuilder w = new StringBuilder();
@@ -171,7 +170,8 @@ public class VerticalCRS extends IdentifiableComponent implements
 
     /**
      * Return a String representation of this Datum.
-     * @return 
+     *
+     * @return
      */
     @Override
     public String toString() {

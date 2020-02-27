@@ -1,11 +1,11 @@
 /*
- * Coordinate Transformations Suite (abridged CTS)  is a library developped to 
- * perform Coordinate Transformations using well known geodetic algorithms 
- * and parameter sets. 
+ * Coordinate Transformations Suite (abridged CTS)  is a library developped to
+ * perform Coordinate Transformations using well known geodetic algorithms
+ * and parameter sets.
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
- * name. It has been renamed CTS in 2009 and shared to the community from 
+ * name. It has been renamed CTS in 2009 and shared to the community from
  * the OrbisGIS code repository.
  *
  * CTS is free software: you can redistribute it and/or modify it under the
@@ -23,13 +23,13 @@
  */
 package org.cts.op.projection;
 
-import java.util.Map;
-
 import org.cts.CoordinateDimensionException;
 import org.cts.Identifier;
 import org.cts.datum.Ellipsoid;
 import org.cts.units.Measure;
 import org.cts.util.Complex;
+
+import java.util.Map;
 
 /**
  * A map projection is any method used in cartography (mapmaking) to represent
@@ -50,8 +50,8 @@ public class TransverseMercator extends Projection {
             lat0, // the reference latitude
             lon0, // the reference longitude (from the datum prime meridian)
             n,    // projection exponent
-            //C,  // projection constant
-            xs,   // x coordinate of the pole
+    //C,  // projection constant
+    xs,   // x coordinate of the pole
             ys;   // y coordinate of the pole
     protected final double[] dircoeff, invcoeff;
 
@@ -61,11 +61,11 @@ public class TransverseMercator extends Projection {
      * initialize common parameters lon0, lat0 and other parameters useful for
      * the projection.
      *
-     * @param ellipsoid ellipsoid used to define the projection.
+     * @param ellipsoid  ellipsoid used to define the projection.
      * @param parameters a map of useful parameters to define the projection.
      */
     public TransverseMercator(final Ellipsoid ellipsoid,
-            final Map<String, Measure> parameters) {
+                              final Map<String, Measure> parameters) {
         super(TMERC, ellipsoid, parameters);
         double k0 = getScaleFactor();
         double x0 = getFalseEasting();
@@ -86,7 +86,7 @@ public class TransverseMercator extends Projection {
      *
      * @param coord coordinate to transform
      * @throws CoordinateDimensionException if <code>coord</code> length is not
-     * compatible with this <code>CoordinateOperation</code>.
+     *                                      compatible with this <code>CoordinateOperation</code>.
      */
     @Override
     public double[] transform(double[] coord) {
@@ -131,6 +131,7 @@ public class TransverseMercator extends Projection {
             public Projection inverse() {
                 return TransverseMercator.this;
             }
+
             @Override
             public boolean isDirect() {
                 return false;

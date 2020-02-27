@@ -1,11 +1,11 @@
 /*
- * Coordinate Transformations Suite (abridged CTS)  is a library developped to 
- * perform Coordinate Transformations using well known geodetic algorithms 
- * and parameter sets. 
+ * Coordinate Transformations Suite (abridged CTS)  is a library developped to
+ * perform Coordinate Transformations using well known geodetic algorithms
+ * and parameter sets.
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
- * name. It has been renamed CTS in 2009 and shared to the community from 
+ * name. It has been renamed CTS in 2009 and shared to the community from
  * the OrbisGIS code repository.
  *
  * CTS is free software: you can redistribute it and/or modify it under the
@@ -23,16 +23,13 @@
  */
 package org.cts.util;
 
-import static java.lang.Math.PI;
-import static java.lang.Math.abs;
-import static java.lang.Math.floor;
-import static java.lang.Math.signum;
-
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static java.lang.Math.*;
 
 /**
  * <p>Formatter to print angles as a degrees/minutes/seconds (DMS) and to parse
@@ -50,11 +47,11 @@ public final class AngleFormat {
      */
     private static final Pattern DMSHFormatPattern = Pattern.compile(
             "([^#DMS]*)" + // prefix part (group 1)
-            "(?:(#?D+(?:\\.D+)?)([^#\\.MSH]*))" + // degrees part (groups 2, 3)
-            "(?:(#?M+(?:\\.M+)?)([^#\\.DSH]*))?" + // minutes part (groups 4, 5)
-            "(?:(#?S+(?:\\.S+)?)([^#\\.DMH]*))?" + // seconds part (groups 6, 7)
-            "(H\\((\\w+)\\|(\\w+)\\))?" // hemisphere part (groups 8,9,10)
-            );
+                    "(?:(#?D+(?:\\.D+)?)([^#\\.MSH]*))" + // degrees part (groups 2, 3)
+                    "(?:(#?M+(?:\\.M+)?)([^#\\.DSH]*))?" + // minutes part (groups 4, 5)
+                    "(?:(#?S+(?:\\.S+)?)([^#\\.DMH]*))?" + // seconds part (groups 6, 7)
+                    "(H\\((\\w+)\\|(\\w+)\\))?" // hemisphere part (groups 8,9,10)
+    );
     /**
      * <p>This is the pattern used to parse a string representing a DMSH
      * angle.</p>
@@ -62,25 +59,25 @@ public final class AngleFormat {
     private static final Pattern DMSHFormat = Pattern.compile(
             // prefix, non capturing, any character sequence but signum, dot or digit
             "[^\\d\\+\\-\\.]*"
-            + // signum, capturing (eventually followed by some spaces)
-            "([\\+\\-])?[\\s]*"
-            + // degrees, capturing, MANDATORY ('0', '0.0' or '.0'),
-            "([\\d]+(?:[\\.,]\\d*)?|[\\.,]\\d+)"
-            + // units, capturing optional initial (d[egree]d[egré]g[rado]...)
-            "[\\s]*(?:\u00B0|([dDgG])[a-zA-Z]*\\.?)?[\\s]*"
-            + // minutes, capturing, optional
-            "([\\d]+(?:[\\.,]\\d*)?)?"
-            + // units, capturing optional initial (m[in.])
-            "[\\s]*(?:'|([mM])[a-zA-Z]*\\.?)?[\\s]*"
-            + // minutes, capturing, optional
-            "([\\d]+(?:[\\.,]\\d*)?)?"
-            + // units, capturing optional initial (m[in.])
-            "[\\s]*(?:\"|([sS])[a-zA-Z]*\\.?)?[\\s]*"
-            + // hemisphere, capturing, optional (caution, the s for south may have
-            // been captured by the second units group
-            "([NSEWOnsewo])?"
-            + // any other character, non capturing
-            ".*");
+                    + // signum, capturing (eventually followed by some spaces)
+                    "([\\+\\-])?[\\s]*"
+                    + // degrees, capturing, MANDATORY ('0', '0.0' or '.0'),
+                    "([\\d]+(?:[\\.,]\\d*)?|[\\.,]\\d+)"
+                    + // units, capturing optional initial (d[egree]d[egré]g[rado]...)
+                    "[\\s]*(?:\u00B0|([dDgG])[a-zA-Z]*\\.?)?[\\s]*"
+                    + // minutes, capturing, optional
+                    "([\\d]+(?:[\\.,]\\d*)?)?"
+                    + // units, capturing optional initial (m[in.])
+                    "[\\s]*(?:'|([mM])[a-zA-Z]*\\.?)?[\\s]*"
+                    + // minutes, capturing, optional
+                    "([\\d]+(?:[\\.,]\\d*)?)?"
+                    + // units, capturing optional initial (m[in.])
+                    "[\\s]*(?:\"|([sS])[a-zA-Z]*\\.?)?[\\s]*"
+                    + // hemisphere, capturing, optional (caution, the s for south may have
+                    // been captured by the second units group
+                    "([NSEWOnsewo])?"
+                    + // any other character, non capturing
+                    ".*");
     public static final AngleFormat LONGITUDE_FORMATTER = new AngleFormat("#D° MM' SS.SSSSS\" H(E|W)");
     public static final AngleFormat LATITUDE_FORMATTER = new AngleFormat("#D° MM' SS.SSSSS\" H(N|S)");
     private String prefix = "";
@@ -161,24 +158,24 @@ public final class AngleFormat {
      * following a specific pattern.
      *
      * @param pattern the Pattern to format angles
-     * <ul>
-     * <li>#D means degrees</li>
-     * <li>DD means degrees (two digits mandatory)</li>
-     * <li>#D.DD means degrees (two fractional digits)</li>
-     * <li>idem for minutes (M) and seconds (S)</li>
-     * <li>H(N|S) means use suffix 'N' for positive angles and 'S' for negative
-     * angles instead of +/- sign</li>
-     * <li>no H(XXX|YYY) means that +/- sign will be used</li>
-     * <li>a prefix may be used before the first # or D</li>
-     * <li>any character different from DMSH may be used to separate D, M and
-     * H</li>
-     * </ul>
-     * <p>Exemples :</p>
-     * <ul>
-     * <li>latitude = #D\u00B0 MM' SS.SSS\" H(N|S) --> latitude = 45\u00B0 09'
-     * 56.897" S</li>
-     * <li>#D deg #M min --> -4 deg 6 min</li>
-     * </ul>
+     *                <ul>
+     *                <li>#D means degrees</li>
+     *                <li>DD means degrees (two digits mandatory)</li>
+     *                <li>#D.DD means degrees (two fractional digits)</li>
+     *                <li>idem for minutes (M) and seconds (S)</li>
+     *                <li>H(N|S) means use suffix 'N' for positive angles and 'S' for negative
+     *                angles instead of +/- sign</li>
+     *                <li>no H(XXX|YYY) means that +/- sign will be used</li>
+     *                <li>a prefix may be used before the first # or D</li>
+     *                <li>any character different from DMSH may be used to separate D, M and
+     *                H</li>
+     *                </ul>
+     *                <p>Exemples :</p>
+     *                <ul>
+     *                <li>latitude = #D\u00B0 MM' SS.SSS\" H(N|S) --> latitude = 45\u00B0 09'
+     *                56.897" S</li>
+     *                <li>#D deg #M min --> -4 deg 6 min</li>
+     *                </ul>
      */
     public AngleFormat(String pattern) throws IllegalArgumentException {
         Matcher matcher = DMSHFormatPattern.matcher(pattern);

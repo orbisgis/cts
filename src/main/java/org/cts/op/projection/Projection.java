@@ -1,11 +1,11 @@
 /*
- * Coordinate Transformations Suite (abridged CTS)  is a library developped to 
- * perform Coordinate Transformations using well known geodetic algorithms 
- * and parameter sets. 
+ * Coordinate Transformations Suite (abridged CTS)  is a library developped to
+ * perform Coordinate Transformations using well known geodetic algorithms
+ * and parameter sets.
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
- * name. It has been renamed CTS in 2009 and shared to the community from 
+ * name. It has been renamed CTS in 2009 and shared to the community from
  * the OrbisGIS code repository.
  *
  * CTS is free software: you can redistribute it and/or modify it under the
@@ -23,11 +23,6 @@
  */
 package org.cts.op.projection;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.cts.Identifier;
 import org.cts.Parameter;
 import org.cts.datum.Ellipsoid;
@@ -37,6 +32,11 @@ import org.cts.parser.prj.PrjWriter;
 import org.cts.units.Measure;
 import org.cts.units.Unit;
 import org.cts.util.AngleFormat;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A map projection is any method used in cartography (mapmaking) to represent
@@ -49,16 +49,16 @@ import org.cts.util.AngleFormat;
 public abstract class Projection extends AbstractCoordinateOperation {
 
     public static final Parameter[] DEFAULT_PARAMETERS = new Parameter[]{
-        new Parameter(Parameter.FALSE_EASTING, new Measure(0, Unit.METER)),
-        new Parameter(Parameter.FALSE_NORTHING, new Measure(0, Unit.METER)),
-        new Parameter(Parameter.CENTRAL_MERIDIAN, new Measure(0, Unit.DEGREE)),
-        new Parameter(Parameter.STANDARD_PARALLEL_1, new Measure(0, Unit.DEGREE)),
-        new Parameter(Parameter.STANDARD_PARALLEL_2, new Measure(0, Unit.DEGREE)),
-        new Parameter(Parameter.LATITUDE_OF_TRUE_SCALE, new Measure(0, Unit.DEGREE)),
-        new Parameter(Parameter.AZIMUTH, new Measure(0, Unit.DEGREE)),
-        new Parameter(Parameter.RECTIFIED_GRID_ANGLE, new Measure(0, Unit.DEGREE)),
-        new Parameter(Parameter.SCALE_FACTOR, new Measure(1, Unit.UNIT)),
-        new Parameter(Parameter.LATITUDE_OF_ORIGIN, new Measure(0, Unit.DEGREE))};
+            new Parameter(Parameter.FALSE_EASTING, new Measure(0, Unit.METER)),
+            new Parameter(Parameter.FALSE_NORTHING, new Measure(0, Unit.METER)),
+            new Parameter(Parameter.CENTRAL_MERIDIAN, new Measure(0, Unit.DEGREE)),
+            new Parameter(Parameter.STANDARD_PARALLEL_1, new Measure(0, Unit.DEGREE)),
+            new Parameter(Parameter.STANDARD_PARALLEL_2, new Measure(0, Unit.DEGREE)),
+            new Parameter(Parameter.LATITUDE_OF_TRUE_SCALE, new Measure(0, Unit.DEGREE)),
+            new Parameter(Parameter.AZIMUTH, new Measure(0, Unit.DEGREE)),
+            new Parameter(Parameter.RECTIFIED_GRID_ANGLE, new Measure(0, Unit.DEGREE)),
+            new Parameter(Parameter.SCALE_FACTOR, new Measure(1, Unit.UNIT)),
+            new Parameter(Parameter.LATITUDE_OF_ORIGIN, new Measure(0, Unit.DEGREE))};
 
     public static ConcurrentHashMap<String, Measure> getDefaultParameters() {
         ConcurrentHashMap<String, Measure> parameters = new ConcurrentHashMap<String, Measure>();
@@ -108,6 +108,7 @@ public abstract class Projection extends AbstractCoordinateOperation {
         TANGENT,
         TRANSVERSE
     }
+
     /**
      * Ellispoid used for this projection.
      */
@@ -121,11 +122,11 @@ public abstract class Projection extends AbstractCoordinateOperation {
      * Creates a new Projection
      *
      * @param identifier identifier of the projection
-     * @param ellipsoid ellipsoid used for this projection
+     * @param ellipsoid  ellipsoid used for this projection
      * @param parameters other projection parameters
      */
     protected Projection(final Identifier identifier, final Ellipsoid ellipsoid,
-            final Map<String, Measure> parameters) {
+                         final Map<String, Measure> parameters) {
         super(identifier);
         this.ellipsoid = ellipsoid;
         // store parameters in a new Map, because this Projection parameters
@@ -146,7 +147,8 @@ public abstract class Projection extends AbstractCoordinateOperation {
     /**
      * Return the semi-major axis of the ellipsoid used for this projection (fr
      * : demi grand axe).
-     * @return 
+     *
+     * @return
      */
     public double getSemiMajorAxis() {
         return ellipsoid.getSemiMajorAxis();
@@ -155,7 +157,8 @@ public abstract class Projection extends AbstractCoordinateOperation {
     /**
      * Return the semi-minor axis of the ellipsoid used for this projection (fr
      * : demi petit axe).
-     * @return 
+     *
+     * @return
      */
     public double getSemiMinorAxis() {
         return ellipsoid.getSemiMinorAxis();
@@ -163,7 +166,8 @@ public abstract class Projection extends AbstractCoordinateOperation {
 
     /**
      * Return the central meridian used for this projection.
-     * @return 
+     *
+     * @return
      */
     public double getCentralMeridian() {
         return parameters.get(Parameter.CENTRAL_MERIDIAN).getSValue();
@@ -171,7 +175,8 @@ public abstract class Projection extends AbstractCoordinateOperation {
 
     /**
      * Return the reference latitude used for this projection.
-     * @return 
+     *
+     * @return
      */
     public double getLatitudeOfOrigin() {
         return parameters.get(Parameter.LATITUDE_OF_ORIGIN).getSValue();
@@ -180,7 +185,8 @@ public abstract class Projection extends AbstractCoordinateOperation {
     /**
      * Return the the first standard parallel of secant conformal conic
      * projections.
-     * @return 
+     *
+     * @return
      */
     public double getStandardParallel1() {
         return parameters.get(Parameter.STANDARD_PARALLEL_1).getSValue();
@@ -189,7 +195,8 @@ public abstract class Projection extends AbstractCoordinateOperation {
     /**
      * Return the the second standard parallel of secant conformal conic
      * projections.
-     * @return 
+     *
+     * @return
      */
     public double getStandardParallel2() {
         return parameters.get(Parameter.STANDARD_PARALLEL_2).getSValue();
@@ -197,7 +204,8 @@ public abstract class Projection extends AbstractCoordinateOperation {
 
     /**
      * Return the latitude of true scale of secant projections.
-     * @return 
+     *
+     * @return
      */
     public double getLatitudeOfTrueScale() {
         return parameters.get(Parameter.LATITUDE_OF_TRUE_SCALE).getSValue();
@@ -205,7 +213,8 @@ public abstract class Projection extends AbstractCoordinateOperation {
 
     /**
      * Return the azimuth of the initial line of oblique projections.
-     * @return 
+     *
+     * @return
      */
     public double getAzimuth() {
         return parameters.get(Parameter.AZIMUTH).getSValue();
@@ -214,7 +223,8 @@ public abstract class Projection extends AbstractCoordinateOperation {
     /**
      * Return the angle from the rectified grid to the skew (oblique) grid of
      * oblique projections.
-     * @return 
+     *
+     * @return
      */
     public double getRectifiedGridAngle() {
         return parameters.get(Parameter.RECTIFIED_GRID_ANGLE).getSValue();
@@ -222,7 +232,8 @@ public abstract class Projection extends AbstractCoordinateOperation {
 
     /**
      * Return the scale factor of this projection.
-     * @return 
+     *
+     * @return
      */
     public double getScaleFactor() {
         Measure m = parameters.get(Parameter.SCALE_FACTOR);
@@ -231,7 +242,8 @@ public abstract class Projection extends AbstractCoordinateOperation {
 
     /**
      * Return the false easting of this projection.
-     * @return 
+     *
+     * @return
      */
     public double getFalseEasting() {
         return parameters.get(Parameter.FALSE_EASTING).getSValue();
@@ -239,7 +251,8 @@ public abstract class Projection extends AbstractCoordinateOperation {
 
     /**
      * Return the false northing of this projection.
-     * @return 
+     *
+     * @return
      */
     public double getFalseNorthing() {
         return parameters.get(Parameter.FALSE_NORTHING).getSValue();
@@ -249,7 +262,8 @@ public abstract class Projection extends AbstractCoordinateOperation {
      * Return the
      * <code>Surface</code> type of this
      * <code>Projection</code>.
-     * @return 
+     *
+     * @return
      */
     public abstract Surface getSurface();
 
@@ -257,7 +271,8 @@ public abstract class Projection extends AbstractCoordinateOperation {
      * Return the
      * <code>Property</code> of this
      * <code>Projection</code>.
-     * @return 
+     *
+     * @return
      */
     public abstract Property getProperty();
 
@@ -265,7 +280,8 @@ public abstract class Projection extends AbstractCoordinateOperation {
      * Return the
      * <code>Orientation</code> of this
      * <code>Projection</code>.
-     * @return 
+     *
+     * @return
      */
     public abstract Orientation getOrientation();
 
@@ -279,7 +295,8 @@ public abstract class Projection extends AbstractCoordinateOperation {
     /**
      * Return true for direct operation (projection) and false for the
      * inverse operation.
-     * @return 
+     *
+     * @return
      */
     public boolean isDirect() {
         return true;
@@ -288,7 +305,7 @@ public abstract class Projection extends AbstractCoordinateOperation {
     /**
      * Returns a WKT representation of the projection.
      *
-     * @return 
+     * @return
      */
     public String toWKT(Unit unit) {
         StringBuilder w = new StringBuilder();
@@ -330,7 +347,7 @@ public abstract class Projection extends AbstractCoordinateOperation {
      * then tests if the string representation of these objects are equals.
      *
      * @param o The object to compare this ProjectedCRS against
-     * @return 
+     * @return
      */
     @Override
     public boolean equals(Object o) {
@@ -360,7 +377,8 @@ public abstract class Projection extends AbstractCoordinateOperation {
 
     /**
      * Returns the hash code for this Projection.
-     * @return 
+     *
+     * @return
      */
     @Override
     public int hashCode() {

@@ -1,11 +1,11 @@
 /*
- * Coordinate Transformations Suite (abridged CTS)  is a library developped to 
- * perform Coordinate Transformations using well known geodetic algorithms 
- * and parameter sets. 
+ * Coordinate Transformations Suite (abridged CTS)  is a library developped to
+ * perform Coordinate Transformations using well known geodetic algorithms
+ * and parameter sets.
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
- * name. It has been renamed CTS in 2009 and shared to the community from 
+ * name. It has been renamed CTS in 2009 and shared to the community from
  * the OrbisGIS code repository.
  *
  * CTS is free software: you can redistribute it and/or modify it under the
@@ -23,6 +23,8 @@
  */
 package org.cts.op.transformation.grids;
 
+import org.cts.cs.GeographicExtent;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.InputStream;
@@ -30,8 +32,6 @@ import java.io.OutputStream;
 import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.BitSet;
-
-import org.cts.cs.GeographicExtent;
 
 /**
  * <p>Class containing codec functions to compress or uncompress a
@@ -167,18 +167,18 @@ public class BleggGeographicGrid extends GeographicGrid {
     /**
      * <p>Compress and write a grid of double at the bit level</p>
      *
-     * @param values grid of double values. The array of array is supposed to be
-     * rectangle.
-     * @param scale scale factor used to transform doubles values to int : each
-     * value will be considered equal to Math.rint(value*scale)
+     * @param values    grid of double values. The array of array is supposed to be
+     *                  rectangle.
+     * @param scale     scale factor used to transform doubles values to int : each
+     *                  value will be considered equal to Math.rint(value*scale)
      * @param groupSize is the number of consecutive values coded with the same
-     * bit number (default is 16).
-     * @param os outputStream
+     *                  bit number (default is 16).
+     * @param os        outputStream
      */
     public static void compress(double[][][] values,
-            int scale,
-            int groupSize,
-            OutputStream os) throws Exception {
+                                int scale,
+                                int groupSize,
+                                OutputStream os) throws Exception {
 
         compress(values, scale, groupSize, 0.0, 0.0,
                 (double) values.length, (double) values[0].length, os);
@@ -187,26 +187,26 @@ public class BleggGeographicGrid extends GeographicGrid {
     /**
      * <p>Compress and write a grid of double at the bit level</p>
      *
-     * @param values grid of double values. The array of array is supposed to be
-     * rectangle.
-     * @param scale scale factor used to transform doubles values to int : each
-     * value will be considered equal to Math.rint(value*scale)
-     * @param groupSize is the number of consecutive values coded with the same
-     * bit number (default is 16).
-     * @param x0 longitude origine (may be negative)
-     * @param y0 latitude maximum
-     * @param gridWidth in degrees
+     * @param values     grid of double values. The array of array is supposed to be
+     *                   rectangle.
+     * @param scale      scale factor used to transform doubles values to int : each
+     *                   value will be considered equal to Math.rint(value*scale)
+     * @param groupSize  is the number of consecutive values coded with the same
+     *                   bit number (default is 16).
+     * @param x0         longitude origine (may be negative)
+     * @param y0         latitude maximum
+     * @param gridWidth  in degrees
      * @param gridHeight in degrees
-     * @param os output stream
+     * @param os         output stream
      */
     public static void compress(double[][][] values,
-            int scale,
-            int groupSize,
-            double x0,
-            double y0,
-            double gridWidth,
-            double gridHeight,
-            OutputStream os) throws Exception {
+                                int scale,
+                                int groupSize,
+                                double x0,
+                                double y0,
+                                double gridWidth,
+                                double gridHeight,
+                                OutputStream os) throws Exception {
         int nbl = values.length;
         int nbc = values[0].length;
         DataOutputStream dos = new DataOutputStream(os);
@@ -288,7 +288,7 @@ public class BleggGeographicGrid extends GeographicGrid {
      * @param os OutputStream
      */
     public static void write(GeographicGrid gg,
-            OutputStream os) throws Exception {
+                             OutputStream os) throws Exception {
 
         compress(gg.getValues(), gg.getScale(), 16, gg.getX0(), gg.getY0(),
                 gg.getGridWidth(), gg.getGridHeight(), os);

@@ -1,11 +1,11 @@
 /*
- * Coordinate Transformations Suite (abridged CTS)  is a library developped to 
- * perform Coordinate Transformations using well known geodetic algorithms 
- * and parameter sets. 
+ * Coordinate Transformations Suite (abridged CTS)  is a library developped to
+ * perform Coordinate Transformations using well known geodetic algorithms
+ * and parameter sets.
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
- * name. It has been renamed CTS in 2009 and shared to the community from 
+ * name. It has been renamed CTS in 2009 and shared to the community from
  * the OrbisGIS code repository.
  *
  * CTS is free software: you can redistribute it and/or modify it under the
@@ -23,11 +23,6 @@
  */
 package org.cts.op;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-
-
 import org.cts.Identifier;
 import org.cts.crs.GeodeticCRS;
 import org.cts.datum.Ellipsoid;
@@ -37,6 +32,10 @@ import org.cts.op.transformation.GeocentricTransformation;
 import org.cts.op.transformation.GeocentricTransformationSequence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * CoordinateOperationFactory is a factory used to create
@@ -60,8 +59,8 @@ public final class CoordinateOperationFactory {
      *
      * @param source the (non null) source geodetic coordinate reference system
      * @param target the (non null) target geodetic coordinate reference system
-     * @return 
-     * @throws org.cts.op.CoordinateOperationException 
+     * @return
+     * @throws org.cts.op.CoordinateOperationException
      */
     public static Set<CoordinateOperation> createCoordinateOperations(
             GeodeticCRS source, GeodeticCRS target) throws CoordinateOperationException {
@@ -137,10 +136,10 @@ public final class CoordinateOperationFactory {
      * {@link org.cts.crs.ProjectedCRS}s.
      *
      * @param sourceDatum the (non null) datum used by source CRS
-     * @param source the source geodetic coordinate reference system
+     * @param source      the source geodetic coordinate reference system
      * @param targetDatum the (non null) datum used by target CRS
-     * @param target the target geodetic coordinate reference system
-     * @param opList the list in which the CoordinateOperation must be added
+     * @param target      the target geodetic coordinate reference system
+     * @param opList      the list in which the CoordinateOperation must be added
      */
     private static void addCoordinateOperations(
             GeodeticDatum sourceDatum, GeodeticCRS source,
@@ -191,7 +190,7 @@ public final class CoordinateOperationFactory {
                                 new Geocentric2Geographic(target.getDatum().getEllipsoid()),
                                 new LongitudeRotation(target.getDatum().getPrimeMeridian().getLongitudeFromGreenwichInRadians()).inverse(),
                                 target.fromGeographicCoordinateConverter());
-                         opList.add(newSequence);
+                        opList.add(newSequence);
                     } catch (NonInvertibleOperationException e) {
                         LOG.warn("Operation from " + source.getCode() + " to " + target.getCode()
                                 + " through " + datumTransformation.getName() + " could not be created");
@@ -223,7 +222,7 @@ public final class CoordinateOperationFactory {
                     try {
                         opList.add(new CoordinateOperationSequence(
                                 new Identifier(CoordinateOperationSequence.class,
-                                source.getCode() + " to " + target.getCode() + " through " + datumTf.getName()),
+                                        source.getCode() + " to " + target.getCode() + " through " + datumTf.getName()),
                                 source.toGeographicCoordinateConverter(),
                                 datumTf,
                                 target.fromGeographicCoordinateConverter()));
@@ -248,7 +247,7 @@ public final class CoordinateOperationFactory {
             if (clazz.isAssignableFrom(op.getClass())) list.add(op);
             else if (op instanceof CoordinateOperationSequence) {
                 boolean includeOp = false;
-                for (CoordinateOperation subOp : ((CoordinateOperationSequence)op).getSequence()) {
+                for (CoordinateOperation subOp : ((CoordinateOperationSequence) op).getSequence()) {
                     if (clazz.isAssignableFrom(subOp.getClass())) {
                         includeOp = true;
                         break;
@@ -262,9 +261,10 @@ public final class CoordinateOperationFactory {
 
     /**
      * Returns {@link org.cts.op.CoordinateOperation}s excluding sequence containing a particular operation type.
+     *
      * @param ops
      * @param clazz
-     * @return 
+     * @return
      */
     public static Set<CoordinateOperation> excludeFilter(Collection<? extends CoordinateOperation> ops, Class clazz) {
         Set<CoordinateOperation> list = new HashSet<CoordinateOperation>();
@@ -272,7 +272,7 @@ public final class CoordinateOperationFactory {
             if (clazz.isAssignableFrom(op.getClass())) continue;
             if (op instanceof CoordinateOperationSequence) {
                 boolean excludedOp = false;
-                for (CoordinateOperation subOp : ((CoordinateOperationSequence)op).getSequence()) {
+                for (CoordinateOperation subOp : ((CoordinateOperationSequence) op).getSequence()) {
                     if (clazz.isAssignableFrom(subOp.getClass())) {
                         excludedOp = true;
                         break;
@@ -286,8 +286,9 @@ public final class CoordinateOperationFactory {
 
     /**
      * Returns the most precise among the list of {@link org.cts.op.CoordinateOperation}s.
+     *
      * @param ops
-     * @return 
+     * @return
      */
     public static CoordinateOperation getMostPrecise(Collection<? extends CoordinateOperation> ops) {
         CoordinateOperation preciseOp = null;
@@ -303,8 +304,9 @@ public final class CoordinateOperationFactory {
 
     /**
      * Returns the most precise among the list of {@link org.cts.op.CoordinateOperation}s.
+     *
      * @param ops
-     * @return 
+     * @return
      */
     public static CoordinateOperation getMostPrecise3DTransformation(Collection<? extends CoordinateOperation> ops) {
         CoordinateOperation preciseOp = null;

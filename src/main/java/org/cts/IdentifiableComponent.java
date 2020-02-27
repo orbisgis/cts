@@ -1,11 +1,11 @@
 /*
- * Coordinate Transformations Suite (abridged CTS)  is a library developped to 
- * perform Coordinate Transformations using well known geodetic algorithms 
- * and parameter sets. 
+ * Coordinate Transformations Suite (abridged CTS)  is a library developped to
+ * perform Coordinate Transformations using well known geodetic algorithms
+ * and parameter sets.
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
- * name. It has been renamed CTS in 2009 and shared to the community from 
+ * name. It has been renamed CTS in 2009 and shared to the community from
  * the OrbisGIS code repository.
  *
  * CTS is free software: you can redistribute it and/or modify it under the
@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.Map;
 
 
-
 /**
  * IdentifiableComponent is a helper class used as a parent class for components
  * having to implement the Identifiable interface. Instead of implementing
@@ -48,7 +47,8 @@ public class IdentifiableComponent implements Identifiable {
 
     /**
      * Return this component's Identifier
-     * @return 
+     *
+     * @return
      */
     public Identifier getIdentifier() {
         return identifier;
@@ -66,7 +66,8 @@ public class IdentifiableComponent implements Identifiable {
     /**
      * Return the namespace of this identifier (ex. EPSG, IGNF) The namespace
      * may represent a database name, a URL, a URN...
-     * @return 
+     *
+     * @return
      */
     @Override
     public String getAuthorityName() {
@@ -75,7 +76,8 @@ public class IdentifiableComponent implements Identifiable {
 
     /**
      * Returns the id of this identifier (id must be unique inside a namespace).
-     * @return 
+     *
+     * @return
      */
     @Override
     public String getAuthorityKey() {
@@ -95,7 +97,8 @@ public class IdentifiableComponent implements Identifiable {
 
     /**
      * Returns a string used to identify clearly the object.
-     * @return 
+     *
+     * @return
      */
     @Override
     public String getName() {
@@ -105,7 +108,8 @@ public class IdentifiableComponent implements Identifiable {
     /**
      * Returns a short string used to identify unambiguously the object. The
      * string must have a maximum of 16 characters to fit menus with ease.
-     * @return 
+     *
+     * @return
      */
     @Override
     public String getShortName() {
@@ -125,7 +129,8 @@ public class IdentifiableComponent implements Identifiable {
 
     /**
      * Returns the name of this extent.
-     * @return 
+     *
+     * @return
      */
     @Override
     public String getRemarks() {
@@ -154,7 +159,8 @@ public class IdentifiableComponent implements Identifiable {
 
     /**
      * Get aliases
-     * @return 
+     *
+     * @return
      */
     @Override
     public List<Identifiable> getAliases() {
@@ -165,7 +171,7 @@ public class IdentifiableComponent implements Identifiable {
      * Add an alias
      *
      * @param alias an alias for this object
-     * @return 
+     * @return
      */
     @Override
     public boolean addAlias(Identifiable alias) {
@@ -198,14 +204,14 @@ public class IdentifiableComponent implements Identifiable {
      * Returns true if object is an Identifier equals to this one.
      *
      * @param object The object to compare this IdentifiableComponent against
-     * @return 
+     * @return
      */
     @Override
     public boolean equals(Object object) {
         if (object instanceof Identifiable) {
             Identifiable other = (Identifiable) object;
             return ((getAuthorityName() != null && other.getAuthorityName() != null
-                   && getAuthorityName().toUpperCase().equals(other.getAuthorityName().toUpperCase())
+                    && getAuthorityName().toUpperCase().equals(other.getAuthorityName().toUpperCase())
                     && getAuthorityKey() != null && other.getAuthorityKey() != null
                     && getAuthorityKey().equals(other.getAuthorityKey()))
                     || getName().equals(other.getName()));
@@ -216,7 +222,8 @@ public class IdentifiableComponent implements Identifiable {
 
     /**
      * Returns a hash code for this IdentifiableComponent.
-     * @return 
+     *
+     * @return
      */
     @Override
     public int hashCode() {
@@ -227,7 +234,8 @@ public class IdentifiableComponent implements Identifiable {
 
     /**
      * Returns a String representation of this identifier.
-     * @return 
+     *
+     * @return
      */
     @Override
     public String toString() {

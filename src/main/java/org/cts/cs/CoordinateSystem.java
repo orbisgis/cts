@@ -1,11 +1,11 @@
 /*
- * Coordinate Transformations Suite (abridged CTS)  is a library developped to 
- * perform Coordinate Transformations using well known geodetic algorithms 
- * and parameter sets. 
+ * Coordinate Transformations Suite (abridged CTS)  is a library developped to
+ * perform Coordinate Transformations using well known geodetic algorithms
+ * and parameter sets.
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
- * name. It has been renamed CTS in 2009 and shared to the community from 
+ * name. It has been renamed CTS in 2009 and shared to the community from
  * the OrbisGIS code repository.
  *
  * CTS is free software: you can redistribute it and/or modify it under the
@@ -23,9 +23,10 @@
  */
 package org.cts.cs;
 
-import java.util.Arrays;
 import org.cts.CoordinateDimensionException;
 import org.cts.units.Unit;
+
+import java.util.Arrays;
 
 /**
  * A CoordinateSystem is a set of ordered {@link Axis} defining how coordinates
@@ -49,9 +50,9 @@ public class CoordinateSystem {
     /**
      * Create a new Coordinate System from an array of {@link Axis}
      *
-     * @param axes the array of axes defining this CoordinateSystem
+     * @param axes  the array of axes defining this CoordinateSystem
      * @param units the units used by coordinates, defined in the same order as
-     * axes.
+     *              axes.
      */
     public CoordinateSystem(Axis[] axes, Unit[] units) {
         this.axes = axes;
@@ -62,7 +63,7 @@ public class CoordinateSystem {
      * Return the {@link Axis} with index i of this CoordinateSystem.
      *
      * @param i index of the {@link Axis} to return
-     * @return 
+     * @return
      */
     public Axis getAxis(int i) throws ArrayIndexOutOfBoundsException {
         try {
@@ -77,7 +78,7 @@ public class CoordinateSystem {
      * Return the {@link Unit} for Axis with index i of this CoordinateSystem.
      *
      * @param i index of the {@link Axis} for which Unit is returned
-     * @return 
+     * @return
      */
     public Unit getUnit(int i) throws ArrayIndexOutOfBoundsException {
         try {
@@ -85,13 +86,14 @@ public class CoordinateSystem {
         } catch (ArrayIndexOutOfBoundsException e) {
             throw new ArrayIndexOutOfBoundsException(
                     "Try to access unit of Axis " + (i + 1) + " in a "
-                    + (axes.length) + "-d CoordinateSystem");
+                            + (axes.length) + "-d CoordinateSystem");
         }
     }
 
     /**
      * Return the axes number of this CoordinateSystem.
-     * @return 
+     *
+     * @return
      */
     public int getDimension() {
         return axes.length;
@@ -103,7 +105,7 @@ public class CoordinateSystem {
      * the axis in argument, the minimum index of these axes is returned.
      *
      * @param axis the axis whose index is looked for
-     * @return 
+     * @return
      */
     public int getIndex(Axis axis) {
         for (int i = 0; i < axes.length; i++) {
@@ -119,7 +121,7 @@ public class CoordinateSystem {
      * <code>CoordinateSystem</code>.
      *
      * @param coord the coordinate to format
-     * @return 
+     * @return
      * @throws org.cts.CoordinateDimensionException
      */
     public String format(double[] coord) throws CoordinateDimensionException {
@@ -138,7 +140,8 @@ public class CoordinateSystem {
 
     /**
      * Return a String representation of this CoordinateSystem.
-     * @return 
+     *
+     * @return
      */
     @Override
     public String toString() {
@@ -148,7 +151,7 @@ public class CoordinateSystem {
         }
         return sb.toString();
     }
-    
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

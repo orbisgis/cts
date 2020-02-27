@@ -1,11 +1,11 @@
 /*
- * Coordinate Transformations Suite (abridged CTS)  is a library developped to 
- * perform Coordinate Transformations using well known geodetic algorithms 
- * and parameter sets. 
+ * Coordinate Transformations Suite (abridged CTS)  is a library developped to
+ * perform Coordinate Transformations using well known geodetic algorithms
+ * and parameter sets.
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
- * name. It has been renamed CTS in 2009 and shared to the community from 
+ * name. It has been renamed CTS in 2009 and shared to the community from
  * the OrbisGIS code repository.
  *
  * CTS is free software: you can redistribute it and/or modify it under the
@@ -222,61 +222,61 @@ public class SubGrid implements Cloneable, Serializable {
                 gs.setLatAccuracySeconds(interpolate(this.latAccuracy[indexA], this.latAccuracy[indexB], this.latAccuracy[indexC], this.latAccuracy[indexD], X, Y));
             }
         } else {
-                byte[] b4 = new byte[4];
-                long nodeOffset = this.subGridOffset + 176L + indexA * 16;
-                this.raf.seek(nodeOffset);
-                this.raf.read(b4);
-                float latShiftA = Util.getFloat(b4, this.bigEndian);
-                this.raf.read(b4);
-                float lonShiftA = Util.getFloat(b4, this.bigEndian);
-                this.raf.read(b4);
-                float latAccuracyA = Util.getFloat(b4, this.bigEndian);
-                this.raf.read(b4);
-                float lonAccuracyA = Util.getFloat(b4, this.bigEndian);
+            byte[] b4 = new byte[4];
+            long nodeOffset = this.subGridOffset + 176L + indexA * 16;
+            this.raf.seek(nodeOffset);
+            this.raf.read(b4);
+            float latShiftA = Util.getFloat(b4, this.bigEndian);
+            this.raf.read(b4);
+            float lonShiftA = Util.getFloat(b4, this.bigEndian);
+            this.raf.read(b4);
+            float latAccuracyA = Util.getFloat(b4, this.bigEndian);
+            this.raf.read(b4);
+            float lonAccuracyA = Util.getFloat(b4, this.bigEndian);
 
-                nodeOffset = this.subGridOffset + 176L + indexB * 16;
-                this.raf.seek(nodeOffset);
-                this.raf.read(b4);
-                float latShiftB = Util.getFloat(b4, this.bigEndian);
-                this.raf.read(b4);
-                float lonShiftB = Util.getFloat(b4, this.bigEndian);
-                this.raf.read(b4);
-                float latAccuracyB = Util.getFloat(b4, this.bigEndian);
-                this.raf.read(b4);
-                float lonAccuracyB = Util.getFloat(b4, this.bigEndian);
+            nodeOffset = this.subGridOffset + 176L + indexB * 16;
+            this.raf.seek(nodeOffset);
+            this.raf.read(b4);
+            float latShiftB = Util.getFloat(b4, this.bigEndian);
+            this.raf.read(b4);
+            float lonShiftB = Util.getFloat(b4, this.bigEndian);
+            this.raf.read(b4);
+            float latAccuracyB = Util.getFloat(b4, this.bigEndian);
+            this.raf.read(b4);
+            float lonAccuracyB = Util.getFloat(b4, this.bigEndian);
 
-                nodeOffset = this.subGridOffset + 176L + indexC * 16;
-                this.raf.seek(nodeOffset);
-                this.raf.read(b4);
-                float latShiftC = Util.getFloat(b4, this.bigEndian);
-                this.raf.read(b4);
-                float lonShiftC = Util.getFloat(b4, this.bigEndian);
-                this.raf.read(b4);
-                float latAccuracyC = Util.getFloat(b4, this.bigEndian);
-                this.raf.read(b4);
-                float lonAccuracyC = Util.getFloat(b4, this.bigEndian);
+            nodeOffset = this.subGridOffset + 176L + indexC * 16;
+            this.raf.seek(nodeOffset);
+            this.raf.read(b4);
+            float latShiftC = Util.getFloat(b4, this.bigEndian);
+            this.raf.read(b4);
+            float lonShiftC = Util.getFloat(b4, this.bigEndian);
+            this.raf.read(b4);
+            float latAccuracyC = Util.getFloat(b4, this.bigEndian);
+            this.raf.read(b4);
+            float lonAccuracyC = Util.getFloat(b4, this.bigEndian);
 
-                nodeOffset = this.subGridOffset + 176L + indexD * 16;
-                this.raf.seek(nodeOffset);
-                this.raf.read(b4);
-                float latShiftD = Util.getFloat(b4, this.bigEndian);
-                this.raf.read(b4);
-                float lonShiftD = Util.getFloat(b4, this.bigEndian);
-                this.raf.read(b4);
-                float latAccuracyD = Util.getFloat(b4, this.bigEndian);
-                this.raf.read(b4);
-                float lonAccuracyD = Util.getFloat(b4, this.bigEndian);
+            nodeOffset = this.subGridOffset + 176L + indexD * 16;
+            this.raf.seek(nodeOffset);
+            this.raf.read(b4);
+            float latShiftD = Util.getFloat(b4, this.bigEndian);
+            this.raf.read(b4);
+            float lonShiftD = Util.getFloat(b4, this.bigEndian);
+            this.raf.read(b4);
+            float latAccuracyD = Util.getFloat(b4, this.bigEndian);
+            this.raf.read(b4);
+            float lonAccuracyD = Util.getFloat(b4, this.bigEndian);
 
-                gs.setLonShiftPositiveWestSeconds(interpolate(lonShiftA, lonShiftB, lonShiftC, lonShiftD, X, Y));
+            gs.setLonShiftPositiveWestSeconds(interpolate(lonShiftA, lonShiftB, lonShiftC, lonShiftD, X, Y));
 
-                gs.setLatShiftSeconds(interpolate(latShiftA, latShiftB, latShiftC, latShiftD, X, Y));
+            gs.setLatShiftSeconds(interpolate(latShiftA, latShiftB, latShiftC, latShiftD, X, Y));
 
-                gs.setLonAccuracyAvailable(true);
-                gs.setLonAccuracySeconds(interpolate(lonAccuracyA, lonAccuracyB, lonAccuracyC, lonAccuracyD, X, Y));
+            gs.setLonAccuracyAvailable(true);
+            gs.setLonAccuracySeconds(interpolate(lonAccuracyA, lonAccuracyB, lonAccuracyC, lonAccuracyD, X, Y));
 
-                gs.setLatAccuracyAvailable(true);
-                gs.setLatAccuracySeconds(interpolate(latAccuracyA, latAccuracyB, latAccuracyC, latAccuracyD, X, Y));
-            
+            gs.setLatAccuracyAvailable(true);
+            gs.setLatAccuracySeconds(interpolate(latAccuracyA, latAccuracyB, latAccuracyC, latAccuracyD, X, Y));
+
         }
 
         return gs;

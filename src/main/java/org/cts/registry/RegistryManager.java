@@ -1,11 +1,11 @@
 /*
- * Coordinate Transformations Suite (abridged CTS)  is a library developped to 
- * perform Coordinate Transformations using well known geodetic algorithms 
- * and parameter sets. 
+ * Coordinate Transformations Suite (abridged CTS)  is a library developped to
+ * perform Coordinate Transformations using well known geodetic algorithms
+ * and parameter sets.
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
- * name. It has been renamed CTS in 2009 and shared to the community from 
+ * name. It has been renamed CTS in 2009 and shared to the community from
  * the OrbisGIS code repository.
  *
  * CTS is free software: you can redistribute it and/or modify it under the
@@ -23,10 +23,13 @@
  */
 package org.cts.registry;
 
-import java.util.*;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This class manages all supported registry. It permits to declare a custom
@@ -50,6 +53,7 @@ public final class RegistryManager {
 
     /**
      * Adds a listener able to process add/remove registry events.
+     *
      * @param listener
      */
     public void addRegistryManagerListener(RegistryManagerListener listener) {
@@ -69,6 +73,7 @@ public final class RegistryManager {
 
     /**
      * Register a {@link Registry} in this {@code RegistryManager}.
+     *
      * @param registryClass
      */
     public void addRegistry(Registry registryClass) {
@@ -79,10 +84,10 @@ public final class RegistryManager {
      * Register a {@link Registry} in this {@code RegistryManager}.
      * An existing registry can be replaced by a new one.
      * Registries are stored in a case-insensitive map (keys are uppercase)
-     * 
+     *
      * @param registry the Registry to add
-     * @param replace whether an existing Registry with the same name should be
-     *                replaced  or not.
+     * @param replace  whether an existing Registry with the same name should be
+     *                 replaced  or not.
      */
     public void addRegistry(Registry registry, boolean replace) {
         LOGGER.trace("Adding a new registry " + registry.getRegistryName());
@@ -135,8 +140,9 @@ public final class RegistryManager {
     /**
      * Gets the {@link Registry} registered with this name or
      * null if no Registry has been registered with this name.
+     *
      * @param registryName
-     * @return 
+     * @return
      */
     public Registry getRegistry(String registryName) {
         LOGGER.trace("Getting the registry " + registryName);

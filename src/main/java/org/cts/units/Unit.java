@@ -1,11 +1,11 @@
 /*
- * Coordinate Transformations Suite (abridged CTS)  is a library developped to 
- * perform Coordinate Transformations using well known geodetic algorithms 
- * and parameter sets. 
+ * Coordinate Transformations Suite (abridged CTS)  is a library developped to
+ * perform Coordinate Transformations using well known geodetic algorithms
+ * and parameter sets.
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
- * name. It has been renamed CTS in 2009 and shared to the community from 
+ * name. It has been renamed CTS in 2009 and shared to the community from
  * the OrbisGIS code repository.
  *
  * CTS is free software: you can redistribute it and/or modify it under the
@@ -23,14 +23,14 @@
  */
 package org.cts.units;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.cts.Identifiable;
 import org.cts.IdentifiableComponent;
 import org.cts.Identifier;
 import org.cts.parser.prj.PrjWriter;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.cts.units.Quantity.*;
 
@@ -55,7 +55,7 @@ public class Unit extends IdentifiableComponent implements java.io.Serializable 
      * Static method returning a Unit from its symbol and quantity Class.
      *
      * @param quantity the Quantity measured by the Unit to be found
-     * @param symbol the symbol of the Unit to be found
+     * @param symbol   the symbol of the Unit to be found
      * @return the Unit measuring this quantity and having this symbol or null
      * if no Unit has been instanciated with this symbol for this quantity until
      * now.
@@ -90,6 +90,7 @@ public class Unit extends IdentifiableComponent implements java.io.Serializable 
         }
         return names;
     }
+
     public static final Unit RADIAN = new Unit(ANGLE, new Identifier("EPSG", "9101", "radian", "rad"));
     public static final Unit DEGREE = new Unit(ANGLE, Math.PI / 180d, new Identifier("EPSG", "9122", "degree", "\u00B0"));
     public static final Unit ARC_MINUTE = new Unit(ANGLE, Math.PI / 10800d, new Identifier("EPSG", "9103", "minute", "'"));
@@ -128,6 +129,7 @@ public class Unit extends IdentifiableComponent implements java.io.Serializable 
         aliases.add(id);
         KILOMETER = new Unit(LENGTH, 1000d, new Identifier("EPSG", "9036", "kilometer", "km", "", aliases));
     }
+
     private Quantity quantity;
     private double scale;
     private double offset = 0d;  // used for temperature units
@@ -138,7 +140,7 @@ public class Unit extends IdentifiableComponent implements java.io.Serializable 
      * of this unit.
      *
      * @param quantity the quantity measured by this unit
-     * @param id the identifier of this unit
+     * @param id       the identifier of this unit
      */
     public Unit(Quantity quantity, Identifier id) {
         this(quantity, 1d, 0d, id);
@@ -150,8 +152,8 @@ public class Unit extends IdentifiableComponent implements java.io.Serializable 
      * of this unit.
      *
      * @param quantity the quantity measured by this unit
-     * @param scale the scale factor of this unit compared to the base unit
-     * @param id the identifier of this unit
+     * @param scale    the scale factor of this unit compared to the base unit
+     * @param id       the identifier of this unit
      */
     public Unit(Quantity quantity, double scale, Identifier id) {
         this(quantity, scale, 0d, id);
@@ -163,12 +165,12 @@ public class Unit extends IdentifiableComponent implements java.io.Serializable 
      * of this unit.
      *
      * @param quantity the quantity measured by this unit
-     * @param scale the scale factor of this unit compared to the base unit
-     * @param offset the shift factor of this unit compared to the base unit
-     * @param id the identifier of this unit
+     * @param scale    the scale factor of this unit compared to the base unit
+     * @param offset   the shift factor of this unit compared to the base unit
+     * @param id       the identifier of this unit
      */
     public Unit(Quantity quantity, double scale, double offset,
-            Identifier id) {
+                Identifier id) {
         super(id);
         this.quantity = quantity;
         this.scale = scale;
@@ -271,7 +273,6 @@ public class Unit extends IdentifiableComponent implements java.io.Serializable 
 
     /**
      * Returns a WKT representation of the unit.
-     *
      */
     public String toWKT() {
         StringBuilder w = new StringBuilder();

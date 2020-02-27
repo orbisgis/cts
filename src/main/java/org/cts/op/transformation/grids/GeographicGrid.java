@@ -1,11 +1,11 @@
 /*
- * Coordinate Transformations Suite (abridged CTS)  is a library developped to 
- * perform Coordinate Transformations using well known geodetic algorithms 
- * and parameter sets. 
+ * Coordinate Transformations Suite (abridged CTS)  is a library developped to
+ * perform Coordinate Transformations using well known geodetic algorithms
+ * and parameter sets.
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
- * name. It has been renamed CTS in 2009 and shared to the community from 
+ * name. It has been renamed CTS in 2009 and shared to the community from
  * the OrbisGIS code repository.
  *
  * CTS is free software: you can redistribute it and/or modify it under the
@@ -78,18 +78,18 @@ public class GeographicGrid implements Grid {
      * @param northernLatitude
      * @param easternLongitude
      * @param southernLatitude
-     * @param colNumber number of column
-     * @param rowNumber number of rows
-     * @param dim dimension of the stored value(s)
-     * @param modulo a tour (360.0 for longitude in degrees, PI*2 for radians
-     * and 400 for grades)
+     * @param colNumber        number of column
+     * @param rowNumber        number of rows
+     * @param dim              dimension of the stored value(s)
+     * @param modulo           a tour (360.0 for longitude in degrees, PI*2 for radians
+     *                         and 400 for grades)
      * @param scale
-     * @param context optional context object
+     * @param context          optional context object
      */
     public GeographicGrid(double westernLongitude, double northernLatitude,
-            double easternLongitude, double southernLatitude,
-            int colNumber, int rowNumber, int dim, double modulo,
-            int scale, Object context) {
+                          double easternLongitude, double southernLatitude,
+                          int colNumber, int rowNumber, int dim, double modulo,
+                          int scale, Object context) {
         this.x0 = westernLongitude;
         this.y0 = northernLatitude;
         this.xL = easternLongitude < westernLongitude ? easternLongitude + modulo : easternLongitude;
@@ -140,7 +140,8 @@ public class GeographicGrid implements Grid {
 
     /**
      * Get the first ordinate of the last grid column.
-     * @return 
+     *
+     * @return
      */
     @Override
     public double getXL() {
@@ -149,7 +150,8 @@ public class GeographicGrid implements Grid {
 
     /**
      * Get the second ordinate of the last grid row.
-     * @return 
+     *
+     * @return
      */
     @Override
     public double getYL() {
@@ -176,7 +178,8 @@ public class GeographicGrid implements Grid {
 
     /**
      * Get the total grid width as a positive number.
-     * @return 
+     *
+     * @return
      */
     public double getGridWidth() {
         return Math.abs(xL - x0);
@@ -184,7 +187,8 @@ public class GeographicGrid implements Grid {
 
     /**
      * Get the total grid height as a positive number.
-     * @return 
+     *
+     * @return
      */
     public double getGridHeight() {
         return Math.abs(yL - y0);
@@ -193,7 +197,8 @@ public class GeographicGrid implements Grid {
     /**
      * Get the scale which determine the number of decimal to read/write or to
      * 'scale' factor to use to obtain an integer parameter.
-     * @return 
+     *
+     * @return
      */
     public int getScale() {
         return scale;
@@ -202,6 +207,7 @@ public class GeographicGrid implements Grid {
     /**
      * Set the scale which determine the number of decimal to read/write or the
      * 'scale' factor to use to obtain an integer parameter.
+     *
      * @param scale
      */
     public void setScale(int scale) {
@@ -210,7 +216,8 @@ public class GeographicGrid implements Grid {
 
     /**
      * Get the context Object.
-     * @return 
+     *
+     * @return
      */
     public Object getContext() {
         return context;
@@ -221,7 +228,7 @@ public class GeographicGrid implements Grid {
      *
      * @param r row index
      * @param c column index
-     * @return 
+     * @return
      */
     public double[] getValues(int r, int c) {
         return values[r][c];
@@ -230,8 +237,8 @@ public class GeographicGrid implements Grid {
     /**
      * set the value in row r and column c
      *
-     * @param r row index
-     * @param c column index
+     * @param r      row index
+     * @param c      column index
      * @param values new value for row r column c
      */
     public void setValue(int r, int c, double[] values) {
@@ -256,7 +263,8 @@ public class GeographicGrid implements Grid {
 
     /**
      * Return the array of values.
-     * @return 
+     *
+     * @return
      */
     public double[][][] getValues() {
         return values;
@@ -276,7 +284,7 @@ public class GeographicGrid implements Grid {
      * fy = ddy/dy
      * </pre>
      *
-     * @param latitude the latitude
+     * @param latitude  the latitude
      * @param longitude the longitude
      * @return the interpolated value as a double
      * @throws org.cts.cs.OutOfExtentException
@@ -314,7 +322,8 @@ public class GeographicGrid implements Grid {
 
     /**
      * Return a short string representation of the grid.
-     * @return 
+     *
+     * @return
      */
     @Override
     public String toString() {
@@ -324,7 +333,8 @@ public class GeographicGrid implements Grid {
 
     /**
      * Return a complete string representation of the grid.
-     * @return 
+     *
+     * @return
      */
     public String toStringAll() {
         StringBuilder sb = new StringBuilder("Geographic grid (westLon=" + x0 + " northLat=" + y0
@@ -366,11 +376,11 @@ public class GeographicGrid implements Grid {
         if (thisArray3.length != thatArray3.length) return false;
         // Check a small sample of grid values in the grid
         // (ok: equality check is more restrictive than hashcode)
-        for (int i = 0 ; i < thisArray3.length ; i += thisArray3.length/3) {
+        for (int i = 0; i < thisArray3.length; i += thisArray3.length / 3) {
             double[][] thisArray2 = thisArray3[i];
             double[][] thatArray2 = thisArray3[i];
             if (thisArray2.length != thatArray2.length) return false;
-            for (int j = 0 ; j < thisArray2.length ; j += thisArray2.length/3) {
+            for (int j = 0; j < thisArray2.length; j += thisArray2.length / 3) {
                 double[] thisArray1 = thisArray2[j];
                 double[] thatArray1 = thisArray2[j];
                 if (thisArray1.length != thatArray1.length) return false;

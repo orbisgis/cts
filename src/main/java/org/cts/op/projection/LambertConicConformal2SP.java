@@ -1,11 +1,11 @@
 /*
- * Coordinate Transformations Suite (abridged CTS)  is a library developped to 
- * perform Coordinate Transformations using well known geodetic algorithms 
- * and parameter sets. 
+ * Coordinate Transformations Suite (abridged CTS)  is a library developped to
+ * perform Coordinate Transformations using well known geodetic algorithms
+ * and parameter sets.
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
- * name. It has been renamed CTS in 2009 and shared to the community from 
+ * name. It has been renamed CTS in 2009 and shared to the community from
  * the OrbisGIS code repository.
  *
  * CTS is free software: you can redistribute it and/or modify it under the
@@ -23,24 +23,17 @@
  */
 package org.cts.op.projection;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.cts.Identifier;
 import org.cts.IllegalCoordinateException;
 import org.cts.Parameter;
 import org.cts.datum.Ellipsoid;
-import org.cts.op.NonInvertibleOperationException;
 import org.cts.units.Measure;
 import org.cts.units.Unit;
 
-import static java.lang.Math.abs;
-import static java.lang.Math.atan;
-import static java.lang.Math.cos;
-import static java.lang.Math.exp;
-import static java.lang.Math.log;
-import static java.lang.Math.sin;
-import static java.lang.Math.sqrt;
+import java.util.HashMap;
+import java.util.Map;
+
+import static java.lang.Math.*;
 
 /**
  * A map projection is any method used in cartography (mapmaking) to represent
@@ -75,11 +68,11 @@ public class LambertConicConformal2SP extends Projection {
      * initialize common parameter lon0 and other parameters useful for the
      * projection.
      *
-     * @param ellipsoid ellipsoid used to define the projection.
+     * @param ellipsoid  ellipsoid used to define the projection.
      * @param parameters a map of useful parameters to define the projection.
      */
     public LambertConicConformal2SP(final Ellipsoid ellipsoid,
-            final Map<String, Measure> parameters) {
+                                    final Map<String, Measure> parameters) {
         super(LCC2SP, ellipsoid, parameters);
         double lat0 = getLatitudeOfOrigin();
         double lat1 = parameters.get(Parameter.STANDARD_PARALLEL_1).getSValue();
@@ -105,18 +98,18 @@ public class LambertConicConformal2SP extends Projection {
      * projection from a latitude of origin and a central meridian in degrees, a
      * scale factor and false coordinates in meters.
      *
-     * @param ellipsoid reference ellipsoid for this projection instance
-     * @param latitude_of_origin latitude of origin of the projection in degrees
+     * @param ellipsoid           reference ellipsoid for this projection instance
+     * @param latitude_of_origin  latitude of origin of the projection in degrees
      * @param standard_parallel_1 first standard parallel in degrees
      * @param standard_parallel_2 second standard parallel in degrees
-     * @param central_meridian central meridian of the projection in degrees
-     * @param false_easting false easting in meters
-     * @param false_northing false northing in meters
+     * @param central_meridian    central meridian of the projection in degrees
+     * @param false_easting       false easting in meters
+     * @param false_northing      false northing in meters
      */
     public static LambertConicConformal2SP createLCC2SP(final Ellipsoid ellipsoid,
-            double latitude_of_origin,
-            double standard_parallel_1, double standard_parallel_2,
-            double central_meridian, double false_easting, double false_northing) {
+                                                        double latitude_of_origin,
+                                                        double standard_parallel_1, double standard_parallel_2,
+                                                        double central_meridian, double false_easting, double false_northing) {
         return createLCC2SP(ellipsoid, latitude_of_origin, standard_parallel_1,
                 standard_parallel_2, central_meridian, Unit.DEGREE,
                 false_easting, false_northing, Unit.METER);
@@ -127,14 +120,14 @@ public class LambertConicConformal2SP extends Projection {
      * projection from a latitude of origin, a central meridian and false
      * coordinates in any unit.
      *
-     * @param latitude_of_origin latitude of origin of the projection in degrees
+     * @param latitude_of_origin  latitude of origin of the projection in degrees
      * @param standard_parallel_1 first standard parallel
      * @param standard_parallel_2 second standard parallel
-     * @param central_meridian central meridian of the projection en degrees
-     * @param angleUnit unit used for central meridian and latitude of origin
-     * @param false_easting false easting in meters
-     * @param false_northing false northing in meters
-     * @param planimetricUnit unit used for false easting and false northing
+     * @param central_meridian    central meridian of the projection en degrees
+     * @param angleUnit           unit used for central meridian and latitude of origin
+     * @param false_easting       false easting in meters
+     * @param false_northing      false northing in meters
+     * @param planimetricUnit     unit used for false easting and false northing
      */
     public static LambertConicConformal2SP createLCC2SP(
             final Ellipsoid ellipsoid, double latitude_of_origin,
@@ -158,7 +151,7 @@ public class LambertConicConformal2SP extends Projection {
      *
      * @param coord coordinate to transform
      * @throws IllegalCoordinateException if <code>coord</code> is not
-     * compatible with this <code>CoordinateOperation</code>..
+     *                                    compatible with this <code>CoordinateOperation</code>..
      */
     @Override
     public double[] transform(double[] coord) {
@@ -194,6 +187,7 @@ public class LambertConicConformal2SP extends Projection {
             public Projection inverse() {
                 return LambertConicConformal2SP.this;
             }
+
             @Override
             public boolean isDirect() {
                 return false;

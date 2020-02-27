@@ -1,11 +1,11 @@
 /*
- * Coordinate Transformations Suite (abridged CTS)  is a library developped to 
- * perform Coordinate Transformations using well known geodetic algorithms 
- * and parameter sets. 
+ * Coordinate Transformations Suite (abridged CTS)  is a library developped to
+ * perform Coordinate Transformations using well known geodetic algorithms
+ * and parameter sets.
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
- * name. It has been renamed CTS in 2009 and shared to the community from 
+ * name. It has been renamed CTS in 2009 and shared to the community from
  * the OrbisGIS code repository.
  *
  * CTS is free software: you can redistribute it and/or modify it under the
@@ -23,19 +23,16 @@
  */
 package org.cts.datum;
 
-import java.util.*;
-
 import org.cts.Identifiable;
 import org.cts.Identifier;
 import org.cts.cs.GeographicExtent;
-import org.cts.op.CoordinateOperation;
-import org.cts.op.CoordinateOperationSequence;
-import org.cts.op.Geocentric2Geographic;
-import org.cts.op.Geographic2Geocentric;
-import org.cts.op.Identity;
-import org.cts.op.LongitudeRotation;
-import org.cts.op.NonInvertibleOperationException;
+import org.cts.op.*;
 import org.cts.op.transformation.*;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Geodetic {@link org.cts.datum.Datum} used to determine positions relative
@@ -122,7 +119,7 @@ public class GeodeticDatum extends AbstractDatum {
      */
     public final static GeodeticDatum NTF_PARIS = new GeodeticDatum(
             new Identifier("EPSG", "6807",
-            "Nouvelle Triangulation Française (Paris)", "NTF (Paris)"),
+                    "Nouvelle Triangulation Française (Paris)", "NTF (Paris)"),
             PrimeMeridian.PARIS, Ellipsoid.CLARKE1880IGN,
             new GeocentricTranslation(-168.0, -60.0, 320.0, 1.0),
             GeographicExtent.WORLD,
@@ -134,7 +131,7 @@ public class GeodeticDatum extends AbstractDatum {
      */
     public final static GeodeticDatum NTF = new GeodeticDatum(
             new Identifier("EPSG", "6275", "Nouvelle Triangulation Française",
-            "NTF"),
+                    "NTF"),
             PrimeMeridian.GREENWICH, Ellipsoid.CLARKE1880IGN,
             new GeocentricTranslation(-168.0, -60.0, 320.0, 1.0),
             GeographicExtent.WORLD,
@@ -146,7 +143,7 @@ public class GeodeticDatum extends AbstractDatum {
      */
     public final static GeodeticDatum RGF93 = new GeodeticDatum(new Identifier(
             "EPSG", "6171", "Réseau géodésique français 1993", "RGF93"),
-            PrimeMeridian.GREENWICH, Ellipsoid.GRS80,  Identity.IDENTITY,
+            PrimeMeridian.GREENWICH, Ellipsoid.GRS80, Identity.IDENTITY,
             GeographicExtent.WORLD, "Coincident with ETRS89 at epoch 1993.0", "1993");
 
     /**
@@ -244,48 +241,48 @@ public class GeodeticDatum extends AbstractDatum {
             GeographicExtent.WORLD,
             "", "2012");
 
-    
+
     public final static GeodeticDatum GGRS87 = new GeodeticDatum(
             new Identifier("EPSG", "4121", "Greek Geodetic Reference System 1987", "GGRS87"),
-            PrimeMeridian.GREENWICH, Ellipsoid.GRS80,null, 
-            new GeographicExtent("Greece - onshore", 34.88, 41.75, 19.57,28.3), "","1987" );
-    
+            PrimeMeridian.GREENWICH, Ellipsoid.GRS80, null,
+            new GeographicExtent("Greece - onshore", 34.88, 41.75, 19.57, 28.3), "", "1987");
+
     public final static GeodeticDatum HERMANNSKOGEL = new GeodeticDatum(
             new Identifier("EPSG", "4312", "Militar-Geographische Institut", "MGI"),
             PrimeMeridian.GREENWICH, Ellipsoid.BESSEL1841, null,
-            new GeographicExtent("Austria", 46.4, 49.02, 9.53, 17.17), "","" );
-    
+            new GeographicExtent("Austria", 46.4, 49.02, 9.53, 17.17), "", "");
+
     public final static GeodeticDatum POSTDAM = new GeodeticDatum(
             new Identifier("EPSG", "4314", "Deutsches Hauptdreiecksnetz", "DHDN"),
-            PrimeMeridian.GREENWICH, Ellipsoid.BESSEL1841,null, 
-            new GeographicExtent("Germany - states of former West Germany onshore", 47.27, 55.09, 5.87 , 13.84 ), "","" );
-    
+            PrimeMeridian.GREENWICH, Ellipsoid.BESSEL1841, null,
+            new GeographicExtent("Germany - states of former West Germany onshore", 47.27, 55.09, 5.87, 13.84), "", "");
+
     public final static GeodeticDatum CARTHAGE = new GeodeticDatum(
             new Identifier("EPSG", "4223", "Carthage", "Carthage"),
             PrimeMeridian.GREENWICH, Ellipsoid.CLARKE1880IGN, null,
-            new GeographicExtent("Tunisia - onshore and offshore", 30.23, 38.41, 7.49, 13.67), "", "");   
-    
+            new GeographicExtent("Tunisia - onshore and offshore", 30.23, 38.41, 7.49, 13.67), "", "");
+
 
     public final static GeodeticDatum NZGD49 = new GeodeticDatum(
             new Identifier("EPSG", "4272", "New Zealand Geodetic Datum 1949", "NZGD49"),
             PrimeMeridian.GREENWICH, Ellipsoid.INTERNATIONAL1924, null,
-            new GeographicExtent("New Zealand - North Island, South Island, Stewart Island - onshore and nearshore", 
-                    165.87, 179.27, -47.65, -33.89), "", "");  
+            new GeographicExtent("New Zealand - North Island, South Island, Stewart Island - onshore and nearshore",
+                    165.87, 179.27, -47.65, -33.89), "", "");
 
-   
+
     public final static GeodeticDatum OSGB36 = new GeodeticDatum(
             new Identifier("EPSG", "4277", "OSGB 1936", "OSGB36"),
             PrimeMeridian.GREENWICH, Ellipsoid.AIRY, null,
-            new GeographicExtent("United Kingdom (UK) - Great Britain - England and Wales onshore, Scotland onshore and Western Isles nearshore; Isle of Man onshore", 
-                    49.79, 60.94, -8.82, 1.92), "", ""); 
-    
+            new GeographicExtent("United Kingdom (UK) - Great Britain - England and Wales onshore, Scotland onshore and Western Isles nearshore; Isle of Man onshore",
+                    49.79, 60.94, -8.82, 1.92), "", "");
+
     public final static GeodeticDatum IRE65 = new GeodeticDatum(
             new Identifier("EPSG", "4299", "TM65", "TM65"),
             PrimeMeridian.GREENWICH, Ellipsoid.AIRYMOD,
             SevenParameterTransformation.createBursaWolfTransformation(482.5, -130.6, 564.6, -1.042, -0.214, -0.631, 8.15, 1),
             new GeographicExtent("Ireland - onshore. United Kingdom (UK) - Northern Ireland (Ulster) - onshore",
                     51.39, 55.43, -10.56, -5.34), "", "");
- 
+
     static {
         //@TODO this should be moved to the parser using these particular names
         knownDatumMap.put("wgs84", WGS84);
@@ -300,7 +297,7 @@ public class GeodeticDatum extends AbstractDatum {
         knownDatumMap.put("potsdam", POSTDAM);
         knownDatumMap.put("carthage", CARTHAGE);
         knownDatumMap.put("nzgd49", NZGD49);
-        knownDatumMap.put("osgb36",OSGB36);
+        knownDatumMap.put("osgb36", OSGB36);
         knownDatumMap.put("ire65", IRE65);
     }
 
@@ -308,18 +305,17 @@ public class GeodeticDatum extends AbstractDatum {
      * Creates a new Datum.
      *
      * @param primeMeridian the prime meridian to use with this datum
-     * @param ellipsoid the ellipsoid to use with this datum
-     * @param toWGS84 the toWGS84 <code>CoordinateOperation</code>
+     * @param ellipsoid     the ellipsoid to use with this datum
+     * @param toWGS84       the toWGS84 <code>CoordinateOperation</code>
      */
     public static GeodeticDatum createGeodeticDatum(final PrimeMeridian primeMeridian,
-                final Ellipsoid ellipsoid, final GeocentricTransformation toWGS84) {
+                                                    final Ellipsoid ellipsoid, final GeocentricTransformation toWGS84) {
         GeodeticDatum gd = createGeodeticDatum(new Identifier(GeodeticDatum.class),
-                primeMeridian, ellipsoid, toWGS84, GeographicExtent.WORLD, "","");
+                primeMeridian, ellipsoid, toWGS84, GeographicExtent.WORLD, "", "");
         //gd.setDefaultToWGS84Operation(toWGS84);
         if (knownDatumMap.containsKey(gd)) {
             return knownDatumMap.get(gd);
-        }
-        else {
+        } else {
             knownDatumMap.put(gd.getIdentifier(), gd);
             knownDatum.add(gd);
             return gd;
@@ -329,12 +325,12 @@ public class GeodeticDatum extends AbstractDatum {
     /**
      * Creates a new Datum.
      *
-     * @param identifier identifier.
+     * @param identifier    identifier.
      * @param primeMeridian the prime meridian to use with this datum
-     * @param ellipsoid the ellipsoid to use with this datum
-     * @param extent this datum extension
-     * @param origin origin decription this datum
-     * @param epoch realization epoch of this datum
+     * @param ellipsoid     the ellipsoid to use with this datum
+     * @param extent        this datum extension
+     * @param origin        origin decription this datum
+     * @param epoch         realization epoch of this datum
      */
     private GeodeticDatum(
             final Identifier identifier,
@@ -354,12 +350,12 @@ public class GeodeticDatum extends AbstractDatum {
     /**
      * Creates a new Datum or return a known datum if it already exists.
      *
-     * @param identifier identifier.
+     * @param identifier    identifier.
      * @param primeMeridian the prime meridian to use with this datum
-     * @param ellipsoid the ellipsoid to use with this datum
-     * @param extent this datum extension
-     * @param origin origin decription this datum
-     * @param epoch realization epoch of this datum
+     * @param ellipsoid     the ellipsoid to use with this datum
+     * @param extent        this datum extension
+     * @param origin        origin decription this datum
+     * @param epoch         realization epoch of this datum
      */
     public static GeodeticDatum createGeodeticDatum(
             final Identifier identifier,
@@ -427,15 +423,15 @@ public class GeodeticDatum extends AbstractDatum {
      * to geographicTransformation map.
      *
      * @param targetDatum the target datum of the transformation to add
-     * @param coordOp the transformation linking this Datum and the target
-     * <code>datum</code>
+     * @param coordOp     the transformation linking this Datum and the target
+     *                    <code>datum</code>
      */
     public void addGeocentricTransformation(GeodeticDatum targetDatum, GeocentricTransformation coordOp) {
         addGeocentricTransformation(targetDatum, coordOp, true);
     }
 
     private void addGeocentricTransformation(GeodeticDatum targetDatum,
-                GeocentricTransformation coordOp, boolean addInverseOp) {
+                                             GeocentricTransformation coordOp, boolean addInverseOp) {
         // Add a transformation operation from this to datum
         boolean added = false;
         if (geocentricTransformations.get(targetDatum) == null) {
@@ -472,8 +468,7 @@ public class GeodeticDatum extends AbstractDatum {
                             "Geographic Transformation from " + this.getShortName() + " to " + targetDatum.getShortName()),
                     new LongitudeRotation(this.primeMeridian.getLongitudeFromGreenwichInRadians()),
                     new LongitudeRotation(targetDatum.getPrimeMeridian().getLongitudeFromGreenwichInRadians()).inverse());
-        }
-        else {
+        } else {
             cos = new CoordinateOperationSequence(
                     new Identifier(CoordinateOperationSequence.class,
                             "Geographic Transformation from " + this.getShortName() + " to " + targetDatum.getShortName()),
@@ -494,8 +489,8 @@ public class GeodeticDatum extends AbstractDatum {
      * (in radian and based on the target prime meridian)
      *
      * @param targetDatum the target geodetic datum of the transformation to add
-     * @param coordOp the geographic to geographic coordinate transformation linking this Datum
-     *                and the target <code>datum</code>
+     * @param coordOp     the geographic to geographic coordinate transformation linking this Datum
+     *                    and the target <code>datum</code>
      */
     public void addGeographicTransformation(GeodeticDatum targetDatum, CoordinateOperation coordOp) {
         addGeographicTransformation(targetDatum, coordOp, true);
@@ -520,7 +515,7 @@ public class GeodeticDatum extends AbstractDatum {
      * Get available geocentric transformations to another datum.
      *
      * @param targetDatum the datum that must be a target for returned transformation
-     * @return 
+     * @return
      */
     public Set<GeocentricTransformation> getGeocentricTransformations(GeodeticDatum targetDatum) {
 
@@ -537,7 +532,7 @@ public class GeodeticDatum extends AbstractDatum {
         else if (this.equals(GeodeticDatum.WGS84) && targetDatum.getToWGS84() != null) {
             try {
                 addGeocentricTransformation(targetDatum, targetDatum.getToWGS84().inverse(), true);
-            } catch(NonInvertibleOperationException e) {
+            } catch (NonInvertibleOperationException e) {
                 // if datum.getToWGS84() is not invertible, just ignore it
             }
         }
@@ -554,11 +549,9 @@ public class GeodeticDatum extends AbstractDatum {
                             } else {
                                 if (op1.isIdentity()) {
                                     addGeocentricTransformation(targetDatum, op2.inverse(), true);
-                                }
-                                else if (op2.isIdentity()) {
+                                } else if (op2.isIdentity()) {
                                     addGeocentricTransformation(targetDatum, op1, true);
-                                }
-                                else {
+                                } else {
                                     addGeocentricTransformation(targetDatum, new GeocentricTransformationSequence(
                                             new Identifier(CoordinateOperation.class), op1, op2.inverse()), true);
                                 }
@@ -600,7 +593,7 @@ public class GeodeticDatum extends AbstractDatum {
         }
 
         // We have transformations from each datum to WGS84. Use WGS84 as a pivot
-        if (!this.equals(WGS84) && ! targetDatum.equals(WGS84) &&
+        if (!this.equals(WGS84) && !targetDatum.equals(WGS84) &&
                 !getGeographicTransformations(GeodeticDatum.WGS84).isEmpty() &&
                 !targetDatum.getGeographicTransformations(GeodeticDatum.WGS84).isEmpty()) {
             try {
@@ -629,7 +622,7 @@ public class GeodeticDatum extends AbstractDatum {
      * Transformations are ordered from the least precise to the most precise one.
      *
      * @param datum the datum that must be a target for returned transformation
-     * @return 
+     * @return
      */
     public Set<CoordinateOperation> getHeightTransformations(Datum datum) {
         return heightTransformations.get(datum);
@@ -637,7 +630,8 @@ public class GeodeticDatum extends AbstractDatum {
 
     /**
      * Returns the default transformation to WGS84 of this Datum.
-     * @return 
+     *
+     * @return
      */
     @Override
     public GeocentricTransformation getToWGS84() {
@@ -651,7 +645,6 @@ public class GeodeticDatum extends AbstractDatum {
 
     /**
      * Returns a WKT representation of the geodetic datum.
-     *
      */
     public String toWKT() {
         StringBuilder w = new StringBuilder();

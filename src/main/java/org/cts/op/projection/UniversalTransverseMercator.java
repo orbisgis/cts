@@ -1,11 +1,11 @@
 /*
- * Coordinate Transformations Suite (abridged CTS)  is a library developped to 
- * perform Coordinate Transformations using well known geodetic algorithms 
- * and parameter sets. 
+ * Coordinate Transformations Suite (abridged CTS)  is a library developped to
+ * perform Coordinate Transformations using well known geodetic algorithms
+ * and parameter sets.
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
- * name. It has been renamed CTS in 2009 and shared to the community from 
+ * name. It has been renamed CTS in 2009 and shared to the community from
  * the OrbisGIS code repository.
  *
  * CTS is free software: you can redistribute it and/or modify it under the
@@ -23,9 +23,6 @@
  */
 package org.cts.op.projection;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.cts.CoordinateDimensionException;
 import org.cts.Identifier;
 import org.cts.Parameter;
@@ -33,6 +30,9 @@ import org.cts.datum.Ellipsoid;
 import org.cts.units.Measure;
 import org.cts.units.Unit;
 import org.cts.util.Complex;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The Universal Transverse Mercator Projection (UTM).<p>
@@ -63,12 +63,12 @@ public class UniversalTransverseMercator extends Projection {
      * <code>Ellipsoid</code> and parameters (must contain Central Meridian and
      * False Northing)
      *
-     * @param ellipsoid ellipsoid used to define the projection.
+     * @param ellipsoid  ellipsoid used to define the projection.
      * @param parameters a map of parameters to define the projection.
      *                   Must include Central Meridian and False Northing
      */
     public UniversalTransverseMercator(final Ellipsoid ellipsoid,
-            final Map<String, Measure> parameters) {
+                                       final Map<String, Measure> parameters) {
         super(UTM, ellipsoid, parameters);
         FE = 500000;
         double y0 = getFalseNorthing();
@@ -88,15 +88,14 @@ public class UniversalTransverseMercator extends Projection {
      * <code>Ellipsoid</code>, for the given zone and the given hemisphere.
      *
      * @param ellipsoid ellipsoid used to define the projection.
-     * @param zone the UTM zone
+     * @param zone      the UTM zone
      */
     public static UniversalTransverseMercator createUTM(final Ellipsoid ellipsoid, final int zone, final String hemisphere) {
         Map parameters = new HashMap();
-        parameters.put(Parameter.CENTRAL_MERIDIAN, new Measure(6.0*((double)zone-31.0)+3.0, Unit.DEGREE));
+        parameters.put(Parameter.CENTRAL_MERIDIAN, new Measure(6.0 * ((double) zone - 31.0) + 3.0, Unit.DEGREE));
         if (hemisphere.equalsIgnoreCase("SOUTH")) {
-            parameters.put(Parameter.FALSE_NORTHING, new Measure(10000000,Unit.METER));
-        }
-        else {
+            parameters.put(Parameter.FALSE_NORTHING, new Measure(10000000, Unit.METER));
+        } else {
             parameters.put(Parameter.FALSE_NORTHING, new Measure(0, Unit.METER));
         }
         return new UniversalTransverseMercator(ellipsoid, parameters);
@@ -149,7 +148,7 @@ public class UniversalTransverseMercator extends Projection {
      *
      * @param coord coordinate to transform
      * @throws CoordinateDimensionException if <code>coord</code> length is not
-     * compatible with this <code>CoordinateOperation</code>.
+     *                                      compatible with this <code>CoordinateOperation</code>.
      */
     @Override
     public double[] transform(double[] coord) {
@@ -194,6 +193,7 @@ public class UniversalTransverseMercator extends Projection {
             public Projection inverse() {
                 return UniversalTransverseMercator.this;
             }
+
             @Override
             public boolean isDirect() {
                 return false;

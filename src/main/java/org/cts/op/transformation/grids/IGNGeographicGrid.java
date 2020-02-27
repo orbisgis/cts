@@ -1,11 +1,11 @@
 /*
- * Coordinate Transformations Suite (abridged CTS)  is a library developped to 
- * perform Coordinate Transformations using well known geodetic algorithms 
- * and parameter sets. 
+ * Coordinate Transformations Suite (abridged CTS)  is a library developped to
+ * perform Coordinate Transformations using well known geodetic algorithms
+ * and parameter sets.
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
- * name. It has been renamed CTS in 2009 and shared to the community from 
+ * name. It has been renamed CTS in 2009 and shared to the community from
  * the OrbisGIS code repository.
  *
  * CTS is free software: you can redistribute it and/or modify it under the
@@ -23,17 +23,17 @@
  */
 package org.cts.op.transformation.grids;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.StringTokenizer;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-
 import org.cts.cs.GeographicExtent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.StringTokenizer;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 /**
  * <p>Classe representing a Geographic grid as defined by IGN (France).</p>
@@ -77,8 +77,7 @@ public class IGNGeographicGrid extends GeographicGrid {
     int primeMeridian;
     String interpolationMode;
     String precisionUnit;
-    
-  
+
 
     /**
      * <p>Construct a GeographicGrid from an InputStream representing an IGN
@@ -95,7 +94,7 @@ public class IGNGeographicGrid extends GeographicGrid {
      * <p>Construct a GeographicGrid from an InputStream representing an IGN
      * GeographicGrid</p>
      *
-     * @param is input stream
+     * @param is  input stream
      * @param zip flag indicating if input data is zipped or not
      */
     public IGNGeographicGrid(InputStream is, boolean zip) throws Exception {
@@ -264,7 +263,7 @@ public class IGNGeographicGrid extends GeographicGrid {
                 nbdec = Math.max(nbdec, gg[3].split("\\.")[1].length());
                 System.arraycopy(t, 0, values[(int) Math.rint((lat - y0) / dy)][(int) Math.rint((lon - x0) / dx)], 0, dim);
             } catch (NumberFormatException nfe) {
-                 LOGGER.warn("Cannot parse the number long : " + gg[0] + " lat : " + gg[1] + " dim :" + gg[2]);
+                LOGGER.warn("Cannot parse the number long : " + gg[0] + " lat : " + gg[1] + " dim :" + gg[2]);
             }
         }
         // decimal part size --> scale

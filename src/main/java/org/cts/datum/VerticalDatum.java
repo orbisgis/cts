@@ -1,11 +1,11 @@
 /*
- * Coordinate Transformations Suite (abridged CTS)  is a library developped to 
- * perform Coordinate Transformations using well known geodetic algorithms 
- * and parameter sets. 
+ * Coordinate Transformations Suite (abridged CTS)  is a library developped to
+ * perform Coordinate Transformations using well known geodetic algorithms
+ * and parameter sets.
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
- * name. It has been renamed CTS in 2009 and shared to the community from 
+ * name. It has been renamed CTS in 2009 and shared to the community from
  * the OrbisGIS code repository.
  *
  * CTS is free software: you can redistribute it and/or modify it under the
@@ -23,10 +23,6 @@
  */
 package org.cts.datum;
 
-import java.util.HashMap;
-import java.util.Map;
-
-
 import org.cts.Identifiable;
 import org.cts.Identifier;
 import org.cts.cs.GeographicExtent;
@@ -34,6 +30,9 @@ import org.cts.op.CoordinateOperation;
 import org.cts.op.Identity;
 import org.cts.op.transformation.Altitude2EllipsoidalHeight;
 import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * <p>Vertical datum are used to determine elevation.</p>
@@ -458,17 +457,17 @@ public class VerticalDatum extends AbstractDatum {
     /**
      * Creates a new VerticalDatum.
      *
-     * @param identifier identifier.
-     * @param extent this datum extension
-     * @param origin origin decription this datum
-     * @param epoch realization epoch of this datum
-     * @param type the type of coordinate stored in this VerticalDatum
+     * @param identifier   identifier.
+     * @param extent       this datum extension
+     * @param origin       origin decription this datum
+     * @param epoch        realization epoch of this datum
+     * @param type         the type of coordinate stored in this VerticalDatum
      * @param altitudeGrid the name of the grid file used to convert altitude in
-     * ellipsoidal height
-     * @param gd the GeodeticDatum associated to the grid
+     *                     ellipsoidal height
+     * @param gd           the GeodeticDatum associated to the grid
      */
     public VerticalDatum(Identifier identifier, GeographicExtent extent,
-            String origin, String epoch, Type type, String altitudeGrid, GeodeticDatum gd) {
+                         String origin, String epoch, Type type, String altitudeGrid, GeodeticDatum gd) {
         super(identifier, extent, origin, epoch);
         this.type = type;
         if (gd != null && altitudeGrid != null) {
@@ -491,9 +490,9 @@ public class VerticalDatum extends AbstractDatum {
      * Creates a new VerticalDatum of type ellipsoidal.
      *
      * @param identifier identifier.
-     * @param origin origin decription this datum
-     * @param epoch realization epoch of this datum
-     * @param ellps the Ellipsoid from which the height is calculated
+     * @param origin     origin decription this datum
+     * @param epoch      realization epoch of this datum
+     * @param ellps      the Ellipsoid from which the height is calculated
      */
     public VerticalDatum(Identifier identifier, String origin, String epoch, Ellipsoid ellps) {
         super(identifier, GeographicExtent.WORLD, origin, epoch);
@@ -596,7 +595,6 @@ public class VerticalDatum extends AbstractDatum {
 
     /**
      * Returns a WKT representation of the vertical datum.
-     *
      */
     public String toWKT() {
         StringBuilder w = new StringBuilder();

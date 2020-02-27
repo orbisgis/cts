@@ -1,11 +1,11 @@
 /*
- * Coordinate Transformations Suite (abridged CTS)  is a library developped to 
- * perform Coordinate Transformations using well known geodetic algorithms 
- * and parameter sets. 
+ * Coordinate Transformations Suite (abridged CTS)  is a library developped to
+ * perform Coordinate Transformations using well known geodetic algorithms
+ * and parameter sets.
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
- * name. It has been renamed CTS in 2009 and shared to the community from 
+ * name. It has been renamed CTS in 2009 and shared to the community from
  * the OrbisGIS code repository.
  *
  * CTS is free software: you can redistribute it and/or modify it under the
@@ -55,10 +55,10 @@ public abstract class AbstractDatum extends IdentifiableComponent
      * Creates a new Datum.
      *
      * @param identifier the identifier of this Datum
-     * @param extent valid domain extent (extent definition depends on the kind
-     * of Datum)
-     * @param origin description of the origin or anchor point of this Datum.
-     * @param epoch epoch of this Datum realization
+     * @param extent     valid domain extent (extent definition depends on the kind
+     *                   of Datum)
+     * @param origin     description of the origin or anchor point of this Datum.
+     * @param epoch      epoch of this Datum realization
      */
     protected AbstractDatum(Identifier identifier, Extent extent, String origin, String epoch) {
         super(identifier);

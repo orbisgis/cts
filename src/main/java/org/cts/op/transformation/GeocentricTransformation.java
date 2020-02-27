@@ -1,11 +1,11 @@
 /*
- * Coordinate Transformations Suite (abridged CTS)  is a library developped to 
- * perform Coordinate Transformations using well known geodetic algorithms 
- * and parameter sets. 
+ * Coordinate Transformations Suite (abridged CTS)  is a library developped to
+ * perform Coordinate Transformations using well known geodetic algorithms
+ * and parameter sets.
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
- * name. It has been renamed CTS in 2009 and shared to the community from 
+ * name. It has been renamed CTS in 2009 and shared to the community from
  * the OrbisGIS code repository.
  *
  * CTS is free software: you can redistribute it and/or modify it under the
@@ -31,6 +31,7 @@ import org.cts.op.NonInvertibleOperationException;
  * For transformation from or to a {@link org.cts.crs.CompoundCRS},
  * it is important to use a <code>GeocentricTransformation</code>
  * rather than a 2D transformation like NTv2GridShiftTransformation.
+ *
  * @author Michaël Michaud
  */
 public interface GeocentricTransformation extends CoordinateOperation {

@@ -1,11 +1,11 @@
 /*
- * Coordinate Transformations Suite (abridged CTS)  is a library developped to 
- * perform Coordinate Transformations using well known geodetic algorithms 
- * and parameter sets. 
+ * Coordinate Transformations Suite (abridged CTS)  is a library developped to
+ * perform Coordinate Transformations using well known geodetic algorithms
+ * and parameter sets.
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
- * name. It has been renamed CTS in 2009 and shared to the community from 
+ * name. It has been renamed CTS in 2009 and shared to the community from
  * the OrbisGIS code repository.
  *
  * CTS is free software: you can redistribute it and/or modify it under the
@@ -23,33 +23,21 @@
  */
 package org.cts.crs;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.cts.Identifiable;
 import org.cts.Identifier;
 import org.cts.cs.Axis;
 import org.cts.cs.CoordinateSystem;
 import org.cts.datum.GeodeticDatum;
-import org.cts.op.CoordinateOperation;
-import org.cts.op.CoordinateOperationSequence;
-import org.cts.op.CoordinateSwitch;
-import org.cts.op.OppositeCoordinate;
-import org.cts.op.UnitConversion;
+import org.cts.op.*;
 import org.cts.op.projection.Projection;
 import org.cts.units.Unit;
 
-import static org.cts.cs.Axis.HEIGHT;
-import static org.cts.cs.Axis.LATITUDE;
-import static org.cts.cs.Axis.LONGITUDE;
-import static org.cts.cs.Axis.Direction.DOWN;
-import static org.cts.cs.Axis.Direction.EAST;
-import static org.cts.cs.Axis.Direction.SOUTH;
-import static org.cts.cs.Axis.Direction.WEST;
-import static org.cts.units.Unit.DEGREE;
-import static org.cts.units.Unit.GRAD;
-import static org.cts.units.Unit.METER;
-import static org.cts.units.Unit.RADIAN;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.cts.cs.Axis.Direction.*;
+import static org.cts.cs.Axis.*;
+import static org.cts.units.Unit.*;
 
 /**
  * <p>A {@link org.cts.crs.CoordinateReferenceSystem} based on a
@@ -67,7 +55,7 @@ public class Geographic3DCRS extends GeodeticCRS {
      */
     public static final CoordinateSystem LATLONH_RRM_CS = new CoordinateSystem(
             new Axis[]{LATITUDE, LONGITUDE, HEIGHT}, new Unit[]{RADIAN,
-        RADIAN, METER});
+            RADIAN, METER});
 
     /**
      * A 3D {@link CoordinateSystem} whose first {@link Axis} contains
@@ -76,7 +64,7 @@ public class Geographic3DCRS extends GeodeticCRS {
      */
     public static final CoordinateSystem LONLATH_RRM_CS = new CoordinateSystem(
             new Axis[]{LONGITUDE, LATITUDE, HEIGHT}, new Unit[]{RADIAN,
-        RADIAN, METER});
+            RADIAN, METER});
 
     /**
      * A 3D {@link CoordinateSystem} whose first {@link Axis} contains latitude,
@@ -86,7 +74,7 @@ public class Geographic3DCRS extends GeodeticCRS {
      */
     public static final CoordinateSystem LATLONH_DDM_CS = new CoordinateSystem(
             new Axis[]{LATITUDE, LONGITUDE, HEIGHT}, new Unit[]{DEGREE,
-        DEGREE, METER});
+            DEGREE, METER});
 
     /**
      * A 3D {@link CoordinateSystem} whose first {@link Axis} contains
@@ -96,7 +84,7 @@ public class Geographic3DCRS extends GeodeticCRS {
      */
     public static final CoordinateSystem LONLATH_DDM_CS = new CoordinateSystem(
             new Axis[]{LONGITUDE, LATITUDE, HEIGHT}, new Unit[]{DEGREE,
-        DEGREE, METER});
+            DEGREE, METER});
 
     /**
      * A 3D {@link CoordinateSystem} whose first {@link Axis} contains latitude,
@@ -105,7 +93,7 @@ public class Geographic3DCRS extends GeodeticCRS {
      */
     public static final CoordinateSystem LATLONH_GGM_CS = new CoordinateSystem(
             new Axis[]{LATITUDE, LONGITUDE, HEIGHT}, new Unit[]{GRAD,
-        GRAD, METER});
+            GRAD, METER});
 
     /**
      * A 3D {@link CoordinateSystem} whose first {@link Axis} contains
@@ -114,17 +102,17 @@ public class Geographic3DCRS extends GeodeticCRS {
      */
     public static final CoordinateSystem LONLATH_GGM_CS = new CoordinateSystem(
             new Axis[]{LONGITUDE, LATITUDE, HEIGHT}, new Unit[]{GRAD,
-        GRAD, METER});
+            GRAD, METER});
 
     /**
      * Creates a new Geographic3DCRS.
      *
      * @param identifier the identifier of the Geographic3DCRS
-     * @param datum the datum associated with the Geographic3DCRS
-     * @param coordSys the coordinate system associated with the Geographic3DCRS
+     * @param datum      the datum associated with the Geographic3DCRS
+     * @param coordSys   the coordinate system associated with the Geographic3DCRS
      */
     public Geographic3DCRS(Identifier identifier, GeodeticDatum datum,
-            CoordinateSystem coordSys) {
+                           CoordinateSystem coordSys) {
         super(identifier, datum, coordSys);
     }
 
@@ -135,9 +123,9 @@ public class Geographic3DCRS extends GeodeticCRS {
      * meters.
      *
      * @param identifier the identifier of the Geographic3DCRS
-     * @param datum the datum associated with the Geographic3DCRS
-     * @param unit the angular unit to use for the two first axis of the
-     * coordinate system associated with the Geographic3DCRS
+     * @param datum      the datum associated with the Geographic3DCRS
+     * @param unit       the angular unit to use for the two first axis of the
+     *                   coordinate system associated with the Geographic3DCRS
      */
     public Geographic3DCRS(Identifier identifier, GeodeticDatum datum, Unit unit) {
         super(identifier, datum, LATLONH_DDM_CS);
@@ -160,14 +148,14 @@ public class Geographic3DCRS extends GeodeticCRS {
      * Latitude and longitude are in decimal degrees while height is in meters.
      *
      * @param identifier the identifier of the Geographic2DCRS
-     * @param datum the datum associated with the Geographic2DCRS
+     * @param datum      the datum associated with the Geographic2DCRS
      */
     public Geographic3DCRS(Identifier identifier, GeodeticDatum datum) {
         super(identifier, datum, LATLONH_DDM_CS);
     }
 
     /**
-     * @return 
+     * @return
      * @see GeodeticCRS#getType()
      */
     @Override
@@ -176,14 +164,16 @@ public class Geographic3DCRS extends GeodeticCRS {
     }
 
     /**
-     * @return 
+     * @return
      * @see GeodeticCRS#getProjection()
      */
     @Override
-    public Projection getProjection() { return null; }
+    public Projection getProjection() {
+        return null;
+    }
 
     /**
-     * @return 
+     * @return
      * @see GeodeticCRS#toGeographicCoordinateConverter()
      */
     @Override
@@ -209,7 +199,7 @@ public class Geographic3DCRS extends GeodeticCRS {
     }
 
     /**
-     * @return 
+     * @return
      * @see GeodeticCRS#fromGeographicCoordinateConverter()
      */
     @Override
@@ -236,7 +226,8 @@ public class Geographic3DCRS extends GeodeticCRS {
 
     /**
      * Returns a WKT representation of the geographic 3D CRS.
-     * @return 
+     *
+     * @return
      */
     @Override
     public String toWKT() {

@@ -1,11 +1,11 @@
 /*
- * Coordinate Transformations Suite (abridged CTS)  is a library developped to 
- * perform Coordinate Transformations using well known geodetic algorithms 
- * and parameter sets. 
+ * Coordinate Transformations Suite (abridged CTS)  is a library developped to
+ * perform Coordinate Transformations using well known geodetic algorithms
+ * and parameter sets.
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
- * name. It has been renamed CTS in 2009 and shared to the community from 
+ * name. It has been renamed CTS in 2009 and shared to the community from
  * the OrbisGIS code repository.
  *
  * CTS is free software: you can redistribute it and/or modify it under the
@@ -23,13 +23,6 @@
  */
 package org.cts;
 
-import java.io.*;
-import java.nio.charset.Charset;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
-
 import org.cts.crs.CRSException;
 import org.cts.crs.CoordinateReferenceSystem;
 import org.cts.parser.prj.PrjKeyParameters;
@@ -38,6 +31,12 @@ import org.cts.parser.proj4.Proj4Parser;
 import org.cts.registry.Registry;
 import org.cts.registry.RegistryException;
 import org.cts.registry.RegistryManager;
+
+import java.io.*;
+import java.nio.charset.Charset;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * This factory is in charge of creating new
@@ -59,9 +58,8 @@ import org.cts.registry.RegistryManager;
  * {@link org.cts.crs.CoordinateReferenceSystem}s which have already been
  * parsed.</p>
  *
- * @TODO authorityAndSrid is the same as Identifier.getCode()
- *
  * @author Erwan Bocher
+ * @TODO authorityAndSrid is the same as Identifier.getCode()
  */
 public class CRSFactory {
 
@@ -79,8 +77,8 @@ public class CRSFactory {
      * an authority and a srid.
      *
      * @param authorityAndSrid the code of the desired CRS (for instance
-     * EPSG:4326 or IGNF:LAMBE)
-     * @return 
+     *                         EPSG:4326 or IGNF:LAMBE)
+     * @return
      * @throws CRSException
      */
     public CoordinateReferenceSystem getCRS(String authorityAndSrid) throws CRSException {
@@ -123,7 +121,6 @@ public class CRSFactory {
 
     /**
      * Return the {@link org.cts.registry.RegistryManager} used in CTS.
-     *
      */
     public RegistryManager getRegistryManager() {
         return registryManager;
@@ -148,7 +145,7 @@ public class CRSFactory {
      * (PRJ).
      *
      * @param prjString the OGC WKT String defining the CRS
-     * @return 
+     * @return
      * @throws org.cts.crs.CRSException
      */
     public CoordinateReferenceSystem createFromPrj(String prjString) throws CRSException {
@@ -168,7 +165,7 @@ public class CRSFactory {
      * Creates a {@link CoordinateReferenceSystem} defined by an OGC WKT String
      * (PRJ).
      *
-     * @param stream the input stream of bytes defining the OGC WKT String
+     * @param stream   the input stream of bytes defining the OGC WKT String
      * @param encoding the charset used to read the input stream
      * @return a CoordinateReferenceSystem
      * @throws IOException
@@ -199,10 +196,10 @@ public class CRSFactory {
     /**
      * Creates a {@link CoordinateReferenceSystem} defined by an OGC WKT String
      * (PRJ).
-     * @return a CoordinateReferenceSystem
+     *
      * @param file containing the OGC WKT String that defined the desired CRS
-     * @return 
-     * @throws IOException if there is a problem reading the file
+     * @return
+     * @throws IOException              if there is a problem reading the file
      * @throws org.cts.crs.CRSException
      */
     public CoordinateReferenceSystem createFromPrj(File file) throws IOException, CRSException {
@@ -229,8 +226,8 @@ public class CRSFactory {
     public Set<String> getSupportedCodes(String registryName) throws RegistryException {
         return getRegistryManager().getRegistry(registryName).getSupportedCodes();
     }
-    
-    
+
+
     /**
      * Creates a {@link CoordinateReferenceSystem} defined by a proj4 string
      * representation
@@ -245,9 +242,8 @@ public class CRSFactory {
         String crsName;
         if (zone != null) {
             crsName = prjParameters.get("south") == null ? String.format("UTM %s %s", zone, "NORTH") : String.format("UTM %s %s", zone, "SOUTH");
-        }
-        else{
-            crsName = String.format("Unknown CRS %s",System.currentTimeMillis());
+        } else {
+            crsName = String.format("Unknown CRS %s", System.currentTimeMillis());
         }
         return CRSHelper.createCoordinateReferenceSystem(new Identifier(CoordinateReferenceSystem.class, crsName), prjParameters);
     }

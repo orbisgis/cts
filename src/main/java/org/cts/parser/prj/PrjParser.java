@@ -1,11 +1,11 @@
 /*
- * Coordinate Transformations Suite (abridged CTS)  is a library developped to 
- * perform Coordinate Transformations using well known geodetic algorithms 
- * and parameter sets. 
+ * Coordinate Transformations Suite (abridged CTS)  is a library developped to
+ * perform Coordinate Transformations using well known geodetic algorithms
+ * and parameter sets.
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
- * name. It has been renamed CTS in 2009 and shared to the community from 
+ * name. It has been renamed CTS in 2009 and shared to the community from
  * the OrbisGIS code repository.
  *
  * CTS is free software: you can redistribute it and/or modify it under the
@@ -31,7 +31,7 @@ import java.util.Map;
 
 /**
  * Parser for PRJ / WKT (OGC & ESRI) String.
- *
+ * <p>
  * This very simple parser works in tree steps: 1. it parses the PRJ String and
  * produces an abstract tree, without any assumptions on it being a valid OGC
  * WKT String. 2. it walks the tree looking for the values needed for
@@ -45,20 +45,19 @@ public class PrjParser {
 
     /**
      * Creates a new parser.
-     *
      */
     public PrjParser() {
     }
 
     /**
      * Parses a WKT PRJ String into a set of parameters.
-     *
+     * <p>
      * This is the main entry point of the parser.
      *
      * @param prjString a WKT string
      * @return a list of parameters
      * @throws PrjParserException if the PRJ cannot be parsed into a CRS for any
-     * reason
+     *                            reason
      */
     public Map<String, String> getParameters(String prjString) {
         CharBuffer s = CharBuffer.wrap(prjString);

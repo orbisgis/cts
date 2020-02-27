@@ -1,11 +1,11 @@
 /*
- * Coordinate Transformations Suite (abridged CTS)  is a library developped to 
- * perform Coordinate Transformations using well known geodetic algorithms 
- * and parameter sets. 
+ * Coordinate Transformations Suite (abridged CTS)  is a library developped to
+ * perform Coordinate Transformations using well known geodetic algorithms
+ * and parameter sets.
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
- * name. It has been renamed CTS in 2009 and shared to the community from 
+ * name. It has been renamed CTS in 2009 and shared to the community from
  * the OrbisGIS code repository.
  *
  * CTS is free software: you can redistribute it and/or modify it under the
@@ -95,13 +95,14 @@ public final class Complex extends Number {
      * Returns a complex number from radius/magnitude and argument.
      *
      * @param radius radius
-     * @param phi argument
+     * @param phi    argument
      */
     public static Complex createComplexFromRA(double radius, double phi) {
         return new Complex(radius * Math.cos(phi), radius * Math.sin(phi));
     }
 
     // added by mmichaud on 2009-01-12
+
     /**
      * Returns true if the object in parameter is equals to
      * <code>this</code>.

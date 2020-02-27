@@ -1,11 +1,11 @@
 /*
- * Coordinate Transformations Suite (abridged CTS)  is a library developped to 
- * perform Coordinate Transformations using well known geodetic algorithms 
- * and parameter sets. 
+ * Coordinate Transformations Suite (abridged CTS)  is a library developped to
+ * perform Coordinate Transformations using well known geodetic algorithms
+ * and parameter sets.
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
- * name. It has been renamed CTS in 2009 and shared to the community from 
+ * name. It has been renamed CTS in 2009 and shared to the community from
  * the OrbisGIS code repository.
  *
  * CTS is free software: you can redistribute it and/or modify it under the
@@ -23,31 +23,22 @@
  */
 package org.cts.crs;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.cts.Identifiable;
 import org.cts.Identifier;
 import org.cts.cs.Axis;
 import org.cts.cs.CoordinateSystem;
 import org.cts.datum.GeodeticDatum;
-import org.cts.op.ChangeCoordinateDimension;
-import org.cts.op.CoordinateOperation;
-import org.cts.op.CoordinateOperationSequence;
-import org.cts.op.CoordinateSwitch;
-import org.cts.op.OppositeCoordinate;
-import org.cts.op.UnitConversion;
+import org.cts.op.*;
 import org.cts.op.projection.Projection;
 import org.cts.units.Unit;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.cts.cs.Axis.Direction.*;
 import static org.cts.cs.Axis.LATITUDE;
 import static org.cts.cs.Axis.LONGITUDE;
-import static org.cts.cs.Axis.Direction.EAST;
-import static org.cts.cs.Axis.Direction.SOUTH;
-import static org.cts.cs.Axis.Direction.WEST;
-import static org.cts.units.Unit.RADIAN;
-import static org.cts.units.Unit.DEGREE;
-import static org.cts.units.Unit.GRAD;
+import static org.cts.units.Unit.*;
 
 /**
  * <p>A {@link org.cts.crs.CoordinateReferenceSystem} based on a
@@ -110,11 +101,11 @@ public class Geographic2DCRS extends GeodeticCRS {
      * Creates a new Geographic2DCRS.
      *
      * @param identifier the identifier of the Geographic2DCRS
-     * @param datum the datum associated with the Geographic2DCRS
-     * @param coordSys the coordinate system associated with the Geographic2DCRS
+     * @param datum      the datum associated with the Geographic2DCRS
+     * @param coordSys   the coordinate system associated with the Geographic2DCRS
      */
     public Geographic2DCRS(Identifier identifier, GeodeticDatum datum,
-            CoordinateSystem coordSys) {
+                           CoordinateSystem coordSys) {
         super(identifier, datum, coordSys);
     }
 
@@ -124,9 +115,9 @@ public class Geographic2DCRS extends GeodeticCRS {
      * contains longitude.
      *
      * @param identifier the identifier of the Geographic2DCRS
-     * @param datum the datum associated with the Geographic2DCRS
-     * @param unit the unit to use for the coordinate system associated with the
-     * Geographic2DCRS
+     * @param datum      the datum associated with the Geographic2DCRS
+     * @param unit       the unit to use for the coordinate system associated with the
+     *                   Geographic2DCRS
      */
     public Geographic2DCRS(Identifier identifier, GeodeticDatum datum, Unit unit) {
         super(identifier, datum, LATLON_DD_CS);
@@ -148,14 +139,14 @@ public class Geographic2DCRS extends GeodeticCRS {
      * contains longitude. Coordinates are in decimal degrees.
      *
      * @param identifier the identifier of the Geographic2DCRS
-     * @param datum the datum associated with the Geographic2DCRS
+     * @param datum      the datum associated with the Geographic2DCRS
      */
     public Geographic2DCRS(Identifier identifier, GeodeticDatum datum) {
         super(identifier, datum, LATLON_DD_CS);
     }
 
     /**
-     * @return 
+     * @return
      * @see GeodeticCRS#toGeographicCoordinateConverter()
      */
     @Override
@@ -182,7 +173,7 @@ public class Geographic2DCRS extends GeodeticCRS {
     }
 
     /**
-     * @return 
+     * @return
      * @see GeodeticCRS#fromGeographicCoordinateConverter()
      */
     @Override
@@ -209,7 +200,7 @@ public class Geographic2DCRS extends GeodeticCRS {
     }
 
     /**
-     * @return 
+     * @return
      * @see GeodeticCRS#getProjection()
      */
     @Override
@@ -218,7 +209,7 @@ public class Geographic2DCRS extends GeodeticCRS {
     }
 
     /**
-     * @return 
+     * @return
      * @see GeodeticCRS#getType()
      */
     @Override
@@ -228,7 +219,8 @@ public class Geographic2DCRS extends GeodeticCRS {
 
     /**
      * Returns a WKT representation of the geographic 2D CRS.
-     * @return 
+     *
+     * @return
      */
     @Override
     public String toWKT() {
