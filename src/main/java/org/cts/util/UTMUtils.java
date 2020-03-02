@@ -1,11 +1,11 @@
 /*
- * Coordinate Transformations Suite (abridged CTS)  is a library developped to 
- * perform Coordinate Transformations using well known geodetic algorithms 
- * and parameter sets. 
+ * Coordinate Transformations Suite (abridged CTS)  is a library developped to
+ * perform Coordinate Transformations using well known geodetic algorithms
+ * and parameter sets.
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
- * name. It has been renamed CTS in 2009 and shared to the community from 
+ * name. It has been renamed CTS in 2009 and shared to the community from
  * the OrbisGIS code repository.
  *
  * CTS is free software: you can redistribute it and/or modify it under the
@@ -28,16 +28,17 @@ import java.util.Map;
 
 /**
  * Utility class to get UTM informations from latitude and longitude coordinates
- * 
+ *
  * @author Erwan Bocher CNRS
  */
 public class UTMUtils {
 
-    private static Map<String, Integer> utmEpsg =null;
+    private static Map<String, Integer> utmEpsg = null;
 
     /**
      * List of EPSG code corresponding to the UTM zone and hemisphere
-     * @return 
+     *
+     * @return
      */
     private static Map<String, Integer> prepareMap() {
         utmEpsg = new HashMap<>();
@@ -165,56 +166,55 @@ public class UTMUtils {
     }
 
     /*
-    *Minimum value for latitude
+     *Minimum value for latitude
      */
     public static final int MIN_LATITUDE = -90;
 
     /*
-    *Maximum value for latitude
+     *Maximum value for latitude
      */
     public static final int MAX_LATITUDE = +90;
 
     /*
-    *Minimum value for longitude
+     *Minimum value for longitude
      */
     public static final int MIN_LONGITUDE = -180;
 
     /*
-    *Maximum usual value for longitude
+     *Maximum usual value for longitude
      */
     public static final int MAX_LONGITUDE = +180;
 
     /**
      * The diameter of the Earth used in calculations
      */
-    public static float EARTH_DIAMETER = Float.valueOf("12756.274");    
-    
+    public static float EARTH_DIAMETER = Float.valueOf("12756.274");
+
     /*
-    *UTM north border
+     *UTM north border
      */
     public static final int UTM_NORTH_MAX = 84;
-    
+
     /*
-    *UTM min latitude for Norway grid exception
-     */    
-    public static final int  NORWAY_MIN_LATITUDE =56;
-    
+     *UTM min latitude for Norway grid exception
+     */
+    public static final int NORWAY_MIN_LATITUDE = 56;
+
     /*
-    *UTM max latitude for Norway grid exception
-     */    
-    public static final int  NORWAY_MAX_LATITUDE =64;
-    
+     *UTM max latitude for Norway grid exception
+     */
+    public static final int NORWAY_MAX_LATITUDE = 64;
+
     /*
-    *UTM min latitude for Svalbard grid exception
-     */  
-    public static final int SVALBARD_MIN_LATITUDE=72;
+     *UTM min latitude for Svalbard grid exception
+     */
+    public static final int SVALBARD_MIN_LATITUDE = 72;
 
 
     /**
      * Check if the latitude is valid
      *
      * @param latitude the latitude to check is valid
-     *
      * @return true if the latitude is within the MIN and MAX latitude
      */
     public static boolean isValidLatitude(float latitude) {
@@ -229,7 +229,6 @@ public class UTMUtils {
      * Check if the longitude is valid
      *
      * @param longitude the longitude to check
-     *
      * @return true if the longitude is between the MIN and MAX longitude
      */
     public static boolean isValidLongitude(float longitude) {
@@ -243,40 +242,42 @@ public class UTMUtils {
     /**
      * Return the EPSG UTM code from the tuple latitude and longitude
      *
-     * @param latitude a latitude in the desired UTM
+     * @param latitude  a latitude in the desired UTM
      * @param longitude a longitude in the desired UTM
      * @return
      */
-    public static int getEPSGCode(float latitude, float longitude) {            
-            String[] utmInfo = getZoneHemisphere(latitude, longitude);
-            if(utmEpsg==null){
-                utmEpsg = prepareMap();
-            }
-            return utmEpsg.get(utmInfo[0]+utmInfo[1]);        
+    public static int getEPSGCode(float latitude, float longitude) {
+        String[] utmInfo = getZoneHemisphere(latitude, longitude);
+        if (utmEpsg == null) {
+            utmEpsg = prepareMap();
+        }
+        return utmEpsg.get(utmInfo[0] + utmInfo[1]);
     }
-    
+
     /**
      * Check if the  float value is between min and max
+     *
      * @param value
      * @param minValue
      * @param maxValue
      * @return true if the value is in the range
      */
-    private static boolean isBetween(float value, int minValue, int maxValue){
+    private static boolean isBetween(float value, int minValue, int maxValue) {
         return value >= minValue && value < maxValue;
     }
-    
-    
+
+
     /**
-     * Return the zone number of grid plus its hemisphere (N for North, 
-     * S for South) 
+     * Return the zone number of grid plus its hemisphere (N for North,
+     * S for South)
+     *
      * @param latitude
      * @param longitude
-     * @return a String array with two values, the zone number 
+     * @return a String array with two values, the zone number
      * and the hemisphere
      */
-    public static String[] getZoneHemisphere(float latitude, float longitude){
-         if (isValidLatitude(latitude) && isValidLongitude(longitude)) {
+    public static String[] getZoneHemisphere(float latitude, float longitude) {
+        if (isValidLatitude(latitude) && isValidLongitude(longitude)) {
             int zone = (int) Math.floor(longitude / 6 + 31);
             String hemisphere;
             if (latitude < 0) {
@@ -284,8 +285,8 @@ public class UTMUtils {
             } else {
                 hemisphere = "N";
             }
-            /*Workarround  for southwest coast of Norway 
-            *and region around Svalbard 
+            /*Workarround  for southwest coast of Norway
+             *and region around Svalbard
              */
             switch (zone) {
                 //Norway case
@@ -298,7 +299,7 @@ public class UTMUtils {
                     break;
                 //Svalbard case    
                 case 32:
-                    if (isBetween(latitude,SVALBARD_MIN_LATITUDE,UTM_NORTH_MAX)) {
+                    if (isBetween(latitude, SVALBARD_MIN_LATITUDE, UTM_NORTH_MAX)) {
                         if (longitude >= 9) {
                             zone++;
                         } else {
@@ -318,7 +319,7 @@ public class UTMUtils {
                     break;
                 //Svalbard case    
                 case 36:
-                    if (isBetween(latitude,SVALBARD_MIN_LATITUDE,UTM_NORTH_MAX)) {
+                    if (isBetween(latitude, SVALBARD_MIN_LATITUDE, UTM_NORTH_MAX)) {
                         if (longitude >= 33) {
                             zone++;
                         } else {
@@ -329,27 +330,27 @@ public class UTMUtils {
                 default:
                     break;
             }
-            return new String[]{String.valueOf(zone),hemisphere};
+            return new String[]{String.valueOf(zone), hemisphere};
         } else {
             throw new IllegalArgumentException("Please set valid latitude and longitude values");
         }
     }
-    
+
     /**
      * Return the UTM proj representation from the tuple latitude and longitude
-     * e.g. : 
+     * e.g. :
      * +proj=utm +zone=31 +datum=WGS84 +units=m +no_defs
-     * @param latitude a latitude in the desired UTM
+     *
+     * @param latitude  a latitude in the desired UTM
      * @param longitude a longitude in the desired UTM
      * @return
      */
     public static String getProj(float latitude, float longitude) {
-          String[] utmInfo = getZoneHemisphere(latitude, longitude);
-          if(utmInfo[1].equals("S")){
-              return  String.format("+proj=utm +zone=%s +south +datum=WGS84 +units=m +no_defs", utmInfo[0]);
-          }
-          else{
-               return String.format("+proj=utm +zone=%s +datum=WGS84 +units=m +no_defs", utmInfo[0]);
-          }
+        String[] utmInfo = getZoneHemisphere(latitude, longitude);
+        if (utmInfo[1].equals("S")) {
+            return String.format("+proj=utm +zone=%s +south +datum=WGS84 +units=m +no_defs", utmInfo[0]);
+        } else {
+            return String.format("+proj=utm +zone=%s +datum=WGS84 +units=m +no_defs", utmInfo[0]);
+        }
     }
 }

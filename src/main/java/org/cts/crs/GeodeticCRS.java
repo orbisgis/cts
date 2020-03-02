@@ -1,11 +1,11 @@
 /*
- * Coordinate Transformations Suite (abridged CTS)  is a library developped to 
- * perform Coordinate Transformations using well known geodetic algorithms 
- * and parameter sets. 
+ * Coordinate Transformations Suite (abridged CTS)  is a library developped to
+ * perform Coordinate Transformations using well known geodetic algorithms
+ * and parameter sets.
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
- * name. It has been renamed CTS in 2009 and shared to the community from 
+ * name. It has been renamed CTS in 2009 and shared to the community from
  * the OrbisGIS code repository.
  *
  * CTS is free software: you can redistribute it and/or modify it under the
@@ -64,12 +64,12 @@ public abstract class GeodeticCRS extends IdentifiableComponent
     /**
      * Creates a new GeodeticCRS.
      *
-     * @param identifier the identifier of the GeodeticCRS
-     * @param datum the datum associated with the GeodeticCRS
+     * @param identifier       the identifier of the GeodeticCRS
+     * @param datum            the datum associated with the GeodeticCRS
      * @param coordinateSystem the coordinate system associated with the GeodeticCRS
      */
     protected GeodeticCRS(Identifier identifier, GeodeticDatum datum,
-            CoordinateSystem coordinateSystem) {
+                          CoordinateSystem coordinateSystem) {
         super(identifier);
         this.geodeticDatum = datum;
         this.coordinateSystem = coordinateSystem;
@@ -115,8 +115,9 @@ public abstract class GeodeticCRS extends IdentifiableComponent
      * CoordinateReferenceSystem to a {@link org.cts.crs.Geographic3DCRS} based on
      * the same {@link org.cts.datum.GeodeticDatum}, and using normal SI units in the
      * following order : latitude (rad), longitude (rad) height (m).
-     * @return 
-     * @throws org.cts.op.CoordinateOperationException 
+     *
+     * @return
+     * @throws org.cts.op.CoordinateOperationException
      */
     abstract public CoordinateOperation toGeographicCoordinateConverter()
             throws CoordinateOperationException;
@@ -126,8 +127,9 @@ public abstract class GeodeticCRS extends IdentifiableComponent
      * {@link org.cts.crs.Geographic3DCRS} based on the same {@link org.cts.datum.GeodeticDatum},
      * and using normal SI units in the following order : latitude (rad),
      * longitude (rad) height (m) to this CoordinateReferenceSystem.
-     * @return 
-     * @throws org.cts.op.CoordinateOperationException 
+     *
+     * @return
+     * @throws org.cts.op.CoordinateOperationException
      */
     abstract public CoordinateOperation fromGeographicCoordinateConverter()
             throws CoordinateOperationException;
@@ -139,7 +141,8 @@ public abstract class GeodeticCRS extends IdentifiableComponent
 
     /**
      * Return a String representation of this Datum.
-     * @return 
+     *
+     * @return
      */
     @Override
     public String toString() {
@@ -153,7 +156,7 @@ public abstract class GeodeticCRS extends IdentifiableComponent
      * the {@link GeodeticDatum}, the {@link CoordinateSystem}.
      *
      * @param o The object to compare this GeodeticCRS against
-     * @return 
+     * @return
      */
     @Override
     public boolean equals(Object o) {
@@ -177,7 +180,8 @@ public abstract class GeodeticCRS extends IdentifiableComponent
 
     /**
      * Returns the hash code for this GeodeticCRS.
-     * @return 
+     *
+     * @return
      */
     @Override
     public int hashCode() {

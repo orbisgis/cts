@@ -1,11 +1,11 @@
 /*
- * Coordinate Transformations Suite (abridged CTS)  is a library developped to 
- * perform Coordinate Transformations using well known geodetic algorithms 
- * and parameter sets. 
+ * Coordinate Transformations Suite (abridged CTS)  is a library developped to
+ * perform Coordinate Transformations using well known geodetic algorithms
+ * and parameter sets.
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
- * name. It has been renamed CTS in 2009 and shared to the community from 
+ * name. It has been renamed CTS in 2009 and shared to the community from
  * the OrbisGIS code repository.
  *
  * CTS is free software: you can redistribute it and/or modify it under the
@@ -23,9 +23,6 @@
  */
 package org.cts.op.transformation;
 
-import java.io.FileInputStream;
-import java.io.InputStream;
-
 import org.cts.CoordinateDimensionException;
 import org.cts.Identifier;
 import org.cts.IllegalCoordinateException;
@@ -37,6 +34,9 @@ import org.cts.op.NonInvertibleOperationException;
 import org.cts.op.transformation.grids.GeographicGrid;
 import org.cts.op.transformation.grids.GridUtils;
 import org.cts.op.transformation.grids.IGNVerticalGrid;
+
+import java.io.FileInputStream;
+import java.io.InputStream;
 
 /**
  * Altitude2EllipsoidalHeight is a coordinate operation used to transform 3D
@@ -79,8 +79,8 @@ public class Altitude2EllipsoidalHeight extends AbstractCoordinateOperation impl
      * the geographic coordinates of the point to convert.
      *
      * @param nameGrid the name of the grid file to use
-     * @param gd the geodetic datum in which the geographic coordinates used in
-     * the interpolation must be expressed
+     * @param gd       the geodetic datum in which the geographic coordinates used in
+     *                 the interpolation must be expressed
      * @throws java.lang.Exception
      */
     public Altitude2EllipsoidalHeight(String nameGrid, GeodeticDatum gd) throws Exception {
@@ -94,7 +94,7 @@ public class Altitude2EllipsoidalHeight extends AbstractCoordinateOperation impl
                 GRID = new IGNVerticalGrid(is, false);
             } else {
                 GRID = new IGNVerticalGrid(new FileInputStream(GridUtils.findGrid(nameGrid)), false);
-            }                
+            }
         } catch (Exception e) {
             throw new Exception(e.getMessage() + "\nThis problem occured when loading the " + nameGrid + " grid file.");
         }
@@ -104,7 +104,8 @@ public class Altitude2EllipsoidalHeight extends AbstractCoordinateOperation impl
      * Return the geodetic datum associated to this transformation. The latitude
      * and longitude of the coordinate must be expressed in this datum to obtain
      * good results.
-     * @return 
+     *
+     * @return
      */
     public GeodeticDatum getAssociatedDatum() {
         return associatedDatum;

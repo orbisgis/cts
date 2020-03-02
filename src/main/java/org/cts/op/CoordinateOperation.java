@@ -1,11 +1,11 @@
 /*
- * Coordinate Transformations Suite (abridged CTS)  is a library developped to 
- * perform Coordinate Transformations using well known geodetic algorithms 
- * and parameter sets. 
+ * Coordinate Transformations Suite (abridged CTS)  is a library developped to
+ * perform Coordinate Transformations using well known geodetic algorithms
+ * and parameter sets.
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
- * name. It has been renamed CTS in 2009 and shared to the community from 
+ * name. It has been renamed CTS in 2009 and shared to the community from
  * the OrbisGIS code repository.
  *
  * CTS is free software: you can redistribute it and/or modify it under the
@@ -44,10 +44,10 @@ public interface CoordinateOperation extends Identifiable {
      *
      * @param coord coordinate to be transformed
      * @return the same object with new values or a new double array
-     * @throws IllegalCoordinateException if <code>coord</code> is not
-     * compatible with this <code>CoordinateOperation</code>.
+     * @throws IllegalCoordinateException              if <code>coord</code> is not
+     *                                                 compatible with this <code>CoordinateOperation</code>.
      * @throws org.cts.op.CoordinateOperationException if this operation
-     * failed during the transformation process.
+     *                                                 failed during the transformation process.
      */
     public double[] transform(double[] coord) throws IllegalCoordinateException, CoordinateOperationException;
 

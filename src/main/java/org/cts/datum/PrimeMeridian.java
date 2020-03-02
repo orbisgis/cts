@@ -1,11 +1,11 @@
 /*
- * Coordinate Transformations Suite (abridged CTS)  is a library developped to 
- * perform Coordinate Transformations using well known geodetic algorithms 
- * and parameter sets. 
+ * Coordinate Transformations Suite (abridged CTS)  is a library developped to
+ * perform Coordinate Transformations using well known geodetic algorithms
+ * and parameter sets.
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
- * name. It has been renamed CTS in 2009 and shared to the community from 
+ * name. It has been renamed CTS in 2009 and shared to the community from
  * the OrbisGIS code repository.
  *
  * CTS is free software: you can redistribute it and/or modify it under the
@@ -23,13 +23,13 @@
  */
 package org.cts.datum;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.cts.Identifiable;
 import org.cts.IdentifiableComponent;
 import org.cts.Identifier;
 import org.cts.util.AngleFormat;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * PrimeMeridian.<p> fr : Actuellement, le méridien d'origine de la plupart des
@@ -65,7 +65,7 @@ public class PrimeMeridian extends IdentifiableComponent {
      */
     public static final PrimeMeridian PARIS =
             createPrimeMeridianFromDDLongitude(new Identifier("EPSG", "8903", "Paris", "Paris",
-                    "Value adopted by IGN (Paris) in 1936. Equivalent to 2°20'14.025\". Preferred by EPSG to earlier value of 2° 12' 5.022\" used by RGS London", null),
+                            "Value adopted by IGN (Paris) in 1936. Equivalent to 2°20'14.025\". Preferred by EPSG to earlier value of 2° 12' 5.022\" used by RGS London", null),
                     AngleFormat.parseAngle("2°20'14.025\""));
 
     /**
@@ -177,9 +177,9 @@ public class PrimeMeridian extends IdentifiableComponent {
      * Creates a new
      * <code>PrimeMeridian</code>.
      *
-     * @param name name ofthe PrimeMeridian
+     * @param name        name ofthe PrimeMeridian
      * @param ddLongitude the longitude of the Prime Meridian from Greenwich in
-     * decimal degrees.
+     *                    decimal degrees.
      */
     private PrimeMeridian(String name, double ddLongitude) {
         this(new Identifier(PrimeMeridian.class, name), ddLongitude);
@@ -189,9 +189,9 @@ public class PrimeMeridian extends IdentifiableComponent {
      * Creates a new
      * <code>PrimeMeridian</code>.
      *
-     * @param identifier identifier if the PrimeMeridian
+     * @param identifier  identifier if the PrimeMeridian
      * @param ddLongitude the longitude of the Prime Meridian from Greenwich in
-     * decimal degrees.
+     *                    decimal degrees.
      */
     private PrimeMeridian(Identifier identifier, double ddLongitude) {
         super(identifier);
@@ -226,7 +226,7 @@ public class PrimeMeridian extends IdentifiableComponent {
      * Create a new
      * <code>PrimeMeridian</code> from a double longitude in decimal degrees.
      *
-     * @param identifier identifier of the <code>PrimeMeridian</code>
+     * @param identifier  identifier of the <code>PrimeMeridian</code>
      * @param ddLongitude the longitude from Greenwich in decimal degrees
      */
     public static PrimeMeridian createPrimeMeridianFromDDLongitude(
@@ -239,7 +239,7 @@ public class PrimeMeridian extends IdentifiableComponent {
      * Create a new
      * <code>PrimeMeridian</code> from a double longitude in decimal degrees.
      *
-     * @param identifier identifier of the PrimeMeridian
+     * @param identifier   identifier of the PrimeMeridian
      * @param dmsLongitude the longitude from Greenwich in DMS
      */
     public static PrimeMeridian createPrimeMeridianFromDMSLongitude(
@@ -252,7 +252,7 @@ public class PrimeMeridian extends IdentifiableComponent {
      * Create a new
      * <code>PrimeMeridian</code> from DMS longitude.
      *
-     * @param identifier identifier of the <code>PrimeMeridian</code>
+     * @param identifier   identifier of the <code>PrimeMeridian</code>
      * @param dmsLongitude the longitude from Greenwich in degree/minute/second
      */
     public static PrimeMeridian createPrimeMeridianFromDMSLongitude(
@@ -268,7 +268,7 @@ public class PrimeMeridian extends IdentifiableComponent {
      * <code>PrimeMeridian</code> from a longitude in radians.
      *
      * @param identifier identifier of the PrimeMeridian
-     * @param longitude the longitude from Greenwich in radians
+     * @param longitude  the longitude from Greenwich in radians
      */
     public static PrimeMeridian createPrimeMeridianFromLongitudeInRadians(
             Identifier identifier, double longitude) {
@@ -281,7 +281,7 @@ public class PrimeMeridian extends IdentifiableComponent {
      * <code>PrimeMeridian</code> from a double longitude in grades.
      *
      * @param identifier identifier of the <code>PrimeMeridian</code>
-     * @param longitude the longitude from Greenwich in grades
+     * @param longitude  the longitude from Greenwich in grades
      */
     public static PrimeMeridian createPrimeMeridianFromLongitudeInGrades(
             Identifier identifier, double longitude) {
@@ -332,7 +332,6 @@ public class PrimeMeridian extends IdentifiableComponent {
 
     /**
      * Returns a WKT representation of the prime meridian.
-     *
      */
     public String toWKT() {
         StringBuilder w = new StringBuilder();

@@ -1,11 +1,11 @@
 /*
- * Coordinate Transformations Suite (abridged CTS)  is a library developped to 
- * perform Coordinate Transformations using well known geodetic algorithms 
- * and parameter sets. 
+ * Coordinate Transformations Suite (abridged CTS)  is a library developped to
+ * perform Coordinate Transformations using well known geodetic algorithms
+ * and parameter sets.
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
- * name. It has been renamed CTS in 2009 and shared to the community from 
+ * name. It has been renamed CTS in 2009 and shared to the community from
  * the OrbisGIS code repository.
  *
  * CTS is free software: you can redistribute it and/or modify it under the
@@ -26,20 +26,19 @@ package org.cts.parser.prj;
 import java.util.Locale;
 
 /**
- *
  * @author Antoine Gourlay, Erwan Bocher, Jules Party
  */
 public final class PrjWriter {
 
     private static final double[] currentRatios = new double[]{
             1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0,
-            Math.PI/180.0, 180.0/Math.PI,     // ratio used during conversions between radians and degrees
-            2*Math.PI/180.0, 2*180.0/Math.PI, // ratio used during conversions between radians and degrees
-            3*Math.PI/180.0, 3*180.0/Math.PI, // ratio used during conversions between radians and degrees
-            4*Math.PI/180.0, 4*180.0/Math.PI, // ratio used during conversions between radians and degrees
-            0.9, 1.0/0.9,            // ratio used during conversions between degrees and grades
-            0.3048, 1.0/0.3048,      // ratio used during conversions between meters and feet
-            1200d/3937d, 3937d/1200d // ratio used during conversions between meters and feet
+            Math.PI / 180.0, 180.0 / Math.PI,     // ratio used during conversions between radians and degrees
+            2 * Math.PI / 180.0, 2 * 180.0 / Math.PI, // ratio used during conversions between radians and degrees
+            3 * Math.PI / 180.0, 3 * 180.0 / Math.PI, // ratio used during conversions between radians and degrees
+            4 * Math.PI / 180.0, 4 * 180.0 / Math.PI, // ratio used during conversions between radians and degrees
+            0.9, 1.0 / 0.9,            // ratio used during conversions between degrees and grades
+            0.3048, 1.0 / 0.3048,      // ratio used during conversions between meters and feet
+            1200d / 3937d, 3937d / 1200d // ratio used during conversions between meters and feet
     };
 
     /**
@@ -48,7 +47,7 @@ public final class PrjWriter {
      * method return a number without the ".0".
      *
      * @param number the double to transform
-     * @param tol the tolerance
+     * @param tol    the tolerance
      * @return
      * @deprecated this method is replaced by prettyRound, more precise
      */
@@ -75,23 +74,23 @@ public final class PrjWriter {
      */
     public static String prettyRound(double number, double tol) {
         for (double f : currentRatios) {
-            if (Math.abs(number*f-Math.round(number*f)) < tol) {
-                if (f == 1.0 || f == 10.0) return Integer.toString((int)(Math.round(number*f)/f));
+            if (Math.abs(number * f - Math.round(number * f)) < tol) {
+                if (f == 1.0 || f == 10.0) return Integer.toString((int) (Math.round(number * f) / f));
                 else return String
-                        .format(Locale.ENGLISH, "%.32f", Math.round(number*f)/f)
-                        .replaceAll("(.)0*$","$1");
+                        .format(Locale.ENGLISH, "%.32f", Math.round(number * f) / f)
+                        .replaceAll("(.)0*$", "$1");
             }
         }
         return String
-                .format(Locale.ENGLISH,"%.32f", number)
-                .replaceAll("0*$","");
+                .format(Locale.ENGLISH, "%.32f", number)
+                .replaceAll("0*$", "");
     }
 
     /**
      * Returns whether the double is equals to its nearest integer using the
      * tolerance given in parameter.
      *
-     * @param a the double to test
+     * @param a   the double to test
      * @param tol the tolerance of the equality
      */
     private static boolean isInteger(double a, double tol) {
@@ -102,7 +101,7 @@ public final class PrjWriter {
      * Returns the WKT in parameter into a Human-Readable OGC WKT form.
      *
      * @param wkt the OGC WKT String to transform.
-     * @return 
+     * @return
      */
     public static String formatWKT(String wkt) {
         StringBuilder w = new StringBuilder();
@@ -162,7 +161,7 @@ public final class PrjWriter {
      * closed at the end of line.
      *
      * @param end the end of a node
-     * @param n the current number of indent
+     * @param n   the current number of indent
      */
     private static int checkIndent(String end, int n) {
         int k = end.length() - 1;

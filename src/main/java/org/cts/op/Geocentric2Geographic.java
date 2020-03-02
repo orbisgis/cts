@@ -1,11 +1,11 @@
 /*
- * Coordinate Transformations Suite (abridged CTS)  is a library developped to 
- * perform Coordinate Transformations using well known geodetic algorithms 
- * and parameter sets. 
+ * Coordinate Transformations Suite (abridged CTS)  is a library developped to
+ * perform Coordinate Transformations using well known geodetic algorithms
+ * and parameter sets.
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
- * name. It has been renamed CTS in 2009 and shared to the community from 
+ * name. It has been renamed CTS in 2009 and shared to the community from
  * the OrbisGIS code repository.
  *
  * CTS is free software: you can redistribute it and/or modify it under the
@@ -23,17 +23,12 @@
  */
 package org.cts.op;
 
-import static java.lang.Math.abs;
-import static java.lang.Math.atan;
-import static java.lang.Math.atan2;
-import static java.lang.Math.cos;
-import static java.lang.Math.sin;
-import static java.lang.Math.sqrt;
-
 import org.cts.CoordinateDimensionException;
 import org.cts.Identifier;
 import org.cts.IllegalCoordinateException;
 import org.cts.datum.Ellipsoid;
+
+import static java.lang.Math.*;
 
 /**
  * <p>Transform geographic coordinates (latitude, longitude, ellipsoidal height
@@ -62,7 +57,7 @@ public class Geocentric2Geographic extends AbstractCoordinateOperation {
      */
     private static final Identifier opId =
             new Identifier("EPSG", "9602",
-            "Geocentric to geographic conversion", "Geocentric to geographic");
+                    "Geocentric to geographic conversion", "Geocentric to geographic");
     /**
      * The ellipsoid used to define geographic coordinates.
      */
@@ -94,9 +89,9 @@ public class Geocentric2Geographic extends AbstractCoordinateOperation {
      * coordinates is the same.</p>
      *
      * @param ellipsoid the ellipsoid used to define geographic coordinates
-     * @param epsilon stop condition for the Geocentric to Geographic
-     * transformation algorithm (epsilon is a value in radian, 1E-11 is the
-     * default epsilon and it means that error is less than 1E-4 m)
+     * @param epsilon   stop condition for the Geocentric to Geographic
+     *                  transformation algorithm (epsilon is a value in radian, 1E-11 is the
+     *                  default epsilon and it means that error is less than 1E-4 m)
      */
     public Geocentric2Geographic(Ellipsoid ellipsoid, double epsilon) {
         super(opId);
@@ -110,11 +105,11 @@ public class Geocentric2Geographic extends AbstractCoordinateOperation {
      * geocentric coordinate system.</p>
      *
      * @param coord is an array containing 2 or 3 double representing geographic
-     * coordinates in the following order : latitude (radians), longitude
-     * (radians from Greenwich) and optionnaly ellipsoidal height (if coord
-     * contains only 2 double's, height is set to 0).
+     *              coordinates in the following order : latitude (radians), longitude
+     *              (radians from Greenwich) and optionnaly ellipsoidal height (if coord
+     *              contains only 2 double's, height is set to 0).
      * @throws IllegalCoordinateException if <code>coord</code> is not
-     * compatible with this <code>CoordinateOperation</code>.
+     *                                    compatible with this <code>CoordinateOperation</code>.
      */
     @Override
     public double[] transform(double[] coord)

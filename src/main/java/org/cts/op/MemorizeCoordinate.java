@@ -1,11 +1,11 @@
 /*
- * Coordinate Transformations Suite (abridged CTS)  is a library developped to 
- * perform Coordinate Transformations using well known geodetic algorithms 
- * and parameter sets. 
+ * Coordinate Transformations Suite (abridged CTS)  is a library developped to
+ * perform Coordinate Transformations using well known geodetic algorithms
+ * and parameter sets.
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
- * name. It has been renamed CTS in 2009 and shared to the community from 
+ * name. It has been renamed CTS in 2009 and shared to the community from
  * the OrbisGIS code repository.
  *
  * CTS is free software: you can redistribute it and/or modify it under the
@@ -40,8 +40,8 @@ public class MemorizeCoordinate extends AbstractCoordinateOperation {
     public static CoordinateOperation memoX = new MemorizeCoordinate(0);
     public static CoordinateOperation memoY = new MemorizeCoordinate(1);
     public static CoordinateOperation memoZ = new MemorizeCoordinate(2);
-    public static CoordinateOperation memoXY = new MemorizeCoordinate(0,1);
-    public static CoordinateOperation memoXYZ = new MemorizeCoordinate(0,1,2);
+    public static CoordinateOperation memoXY = new MemorizeCoordinate(0, 1);
+    public static CoordinateOperation memoXYZ = new MemorizeCoordinate(0, 1, 2);
 
     /**
      * Creates a new CoordinateOperation increasing (resp decreasing) the coord
@@ -59,14 +59,14 @@ public class MemorizeCoordinate extends AbstractCoordinateOperation {
      *
      * @param coord is an array containing one, two or three ordinates
      * @throws IllegalCoordinateException if <code>coord</code> is not
-     * compatible with this <code>CoordinateOperation</code>.
+     *                                    compatible with this <code>CoordinateOperation</code>.
      */
     @Override
     public double[] transform(double[] coord) {
         double[] cc = new double[Math.max(coord.length + indexesSaved.length, 4)];
         System.arraycopy(coord, 0, cc, 0, Math.min(coord.length, cc.length));
-        for (int i = 0 ; i < indexesSaved.length ; i++) {
-            cc[Math.max(coord.length+i, 3+i)] = coord[indexesSaved[i]];
+        for (int i = 0; i < indexesSaved.length; i++) {
+            cc[Math.max(coord.length + i, 3 + i)] = coord[indexesSaved[i]];
         }
         return cc;
     }

@@ -1,11 +1,11 @@
 /*
- * Coordinate Transformations Suite (abridged CTS)  is a library developped to 
- * perform Coordinate Transformations using well known geodetic algorithms 
- * and parameter sets. 
+ * Coordinate Transformations Suite (abridged CTS)  is a library developped to
+ * perform Coordinate Transformations using well known geodetic algorithms
+ * and parameter sets.
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
- * name. It has been renamed CTS in 2009 and shared to the community from 
+ * name. It has been renamed CTS in 2009 and shared to the community from
  * the OrbisGIS code repository.
  *
  * CTS is free software: you can redistribute it and/or modify it under the
@@ -23,21 +23,14 @@
  */
 package org.cts.datum;
 
-import static java.lang.Math.abs;
-import static java.lang.Math.atan;
-import static java.lang.Math.exp;
-import static java.lang.Math.log;
-import static java.lang.Math.pow;
-import static java.lang.Math.sin;
-import static java.lang.Math.sqrt;
-import static java.lang.Math.tan;
+import org.cts.Identifiable;
+import org.cts.IdentifiableComponent;
+import org.cts.Identifier;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.cts.Identifiable;
-import org.cts.IdentifiableComponent;
-import org.cts.Identifier;
+import static java.lang.Math.*;
 
 /**
  * An ellipsoid is a mathematical surface used to describe the Earth surface.<p>
@@ -291,16 +284,16 @@ public class Ellipsoid extends IdentifiableComponent {
      * Create a new Ellipsoid and initialize common parameters : a, b, e, e2, f,
      * 1/f, e'2 and coefficients for the meridian arc.
      *
-     * @param identifier Ellipsoid identifier in the EPSG database
-     * @param semiMajorAxis length of the semi major axis in meters
-     * @param secondParameter second parameter type (inverse flattening,
-     * semi-minor axis or eccentricity).
+     * @param identifier           Ellipsoid identifier in the EPSG database
+     * @param semiMajorAxis        length of the semi major axis in meters
+     * @param secondParameter      second parameter type (inverse flattening,
+     *                             semi-minor axis or eccentricity).
      * @param secondParameterValue value of the second parameter.
      */
     private Ellipsoid(Identifier identifier,
-            double semiMajorAxis,
-            SecondParameter secondParameter,
-            double secondParameterValue) throws IllegalArgumentException {
+                      double semiMajorAxis,
+                      SecondParameter secondParameter,
+                      double secondParameterValue) throws IllegalArgumentException {
         super(identifier);
         this.a = semiMajorAxis;
         this.secondParameter = secondParameter;
@@ -432,7 +425,7 @@ public class Ellipsoid extends IdentifiableComponent {
      * inverse flattening and initializes common parameters such as a, b, e, e2,
      * f, 1/f, e'2 and coefficients for the meridian arc.
      *
-     * @param identifier ellipsoid identifier
+     * @param identifier    ellipsoid identifier
      * @param semiMajorAxis length of the semi-major axis in meters
      * @param invFlattening inverse flattening of the ellipsoid
      */
@@ -469,7 +462,7 @@ public class Ellipsoid extends IdentifiableComponent {
      * semi-minor axis and initializes common parameters such as a, b, e, e2, f,
      * 1/f, e'2 and coefficients for the meridian arc.
      *
-     * @param identifier ellipsoid identifier
+     * @param identifier    ellipsoid identifier
      * @param semiMajorAxis length of the semi-major axis in meters
      * @param semiMinorAxis semi-minor-axis of the ellipsoid
      */
@@ -489,7 +482,7 @@ public class Ellipsoid extends IdentifiableComponent {
      * 1/f, e'2 and coefficients for the meridian arc.
      *
      * @param semiMajorAxis length of the semi-major axis in meters
-     * @param eccentricity semi-minor-axis of the ellipsoid
+     * @param eccentricity  semi-minor-axis of the ellipsoid
      */
     public static Ellipsoid createEllipsoidFromEccentricity(
             double semiMajorAxis,
@@ -506,9 +499,9 @@ public class Ellipsoid extends IdentifiableComponent {
      * eccentricity and initializes common parameters such as a, b, e, e2, f,
      * 1/f, e'2 and coefficients for the meridian arc.
      *
-     * @param identifier ellipsoid identifier
+     * @param identifier    ellipsoid identifier
      * @param semiMajorAxis length of the semi-major axis in meters
-     * @param eccentricity semi-minor-axis of the ellipsoid
+     * @param eccentricity  semi-minor-axis of the ellipsoid
      */
     public static Ellipsoid createEllipsoidFromEccentricity(
             Identifier identifier, double semiMajorAxis, double eccentricity)
@@ -735,9 +728,9 @@ public class Ellipsoid extends IdentifiableComponent {
      * IGN</a> ALG0002
      *
      * @param isoLatitude latitude isometrique
-     * @param epsilon value controlling the stop condition of this convergent
-     * sequence. Use 1E-10 for a precision of about 0.6 mm, 1E-11 for a
-     * precision of about 0.06 mm and 1E-12 for a preciison of about 0.006 mm
+     * @param epsilon     value controlling the stop condition of this convergent
+     *                    sequence. Use 1E-10 for a precision of about 0.6 mm, 1E-11 for a
+     *                    precision of about 0.06 mm and 1E-12 for a preciison of about 0.006 mm
      * @return the geographic latitude as a double
      */
     public final double latitude(double isoLatitude, double epsilon) {
@@ -791,7 +784,6 @@ public class Ellipsoid extends IdentifiableComponent {
 
     /**
      * Returns a WKT representation of the ellipsoid.
-     *
      */
     public String toWKT() {
         StringBuilder w = new StringBuilder();
@@ -850,7 +842,7 @@ public class Ellipsoid extends IdentifiableComponent {
             return true;
         }
         if (o instanceof Ellipsoid) {
-            Ellipsoid ell = (Ellipsoid)o;
+            Ellipsoid ell = (Ellipsoid) o;
             // if ellipsoid codes are equals, ellipsoids are equals
             if (getCode().equals(ell.getCode())) {
                 return true;
@@ -863,7 +855,7 @@ public class Ellipsoid extends IdentifiableComponent {
             // GRS80
             double a2 = Math.rint(ell.getSemiMajorAxis() * 10000);
             double b2 = Math.rint(ell.getSemiMinorAxis() * 10000);
-            return (Math.rint(a*10000) == a2 && Math.rint(b*10000) == b2);
+            return (Math.rint(a * 10000) == a2 && Math.rint(b * 10000) == b2);
         }
         return false;
     }
@@ -875,8 +867,8 @@ public class Ellipsoid extends IdentifiableComponent {
     public int hashCode() {
         int hash = 5;
         // Round to 0.0001 to be consistent with equals definition
-        long la = Double.doubleToLongBits((long)Math.rint(this.a*10000));
-        long lb = Double.doubleToLongBits((long)Math.rint(this.b*10000));
+        long la = Double.doubleToLongBits((long) Math.rint(this.a * 10000));
+        long lb = Double.doubleToLongBits((long) Math.rint(this.b * 10000));
         hash = 97 * hash + (int) (la ^ (la >>> 32));
         hash = 97 * hash + (int) (lb ^ (lb >>> 32));
         return hash;

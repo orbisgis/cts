@@ -1,11 +1,11 @@
 /*
- * Coordinate Transformations Suite (abridged CTS)  is a library developped to 
- * perform Coordinate Transformations using well known geodetic algorithms 
- * and parameter sets. 
+ * Coordinate Transformations Suite (abridged CTS)  is a library developped to
+ * perform Coordinate Transformations using well known geodetic algorithms
+ * and parameter sets.
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
- * name. It has been renamed CTS in 2009 and shared to the community from 
+ * name. It has been renamed CTS in 2009 and shared to the community from
  * the OrbisGIS code repository.
  *
  * CTS is free software: you can redistribute it and/or modify it under the
@@ -59,14 +59,16 @@ public interface CoordinateReferenceSystem extends Identifiable {
 
     /**
      * Returns this CoordinateReferenceSystem Type.
-     * @return 
+     *
+     * @return
      */
     public Type getType();
 
     /**
      * Returns the {@link CoordinateSystem} used by this
      * <code>CoordinateReferenceSystem</code>.
-     * @return 
+     *
+     * @return
      */
     public CoordinateSystem getCoordinateSystem();
 
@@ -75,7 +77,8 @@ public interface CoordinateReferenceSystem extends Identifiable {
      * <code>CoordinateReferenceSystem</code> is refering. For compound
      * <code>CoordinateReferenceSystem</code>, getDatum returns the the main
      * datum, ie the {@link org.cts.datum.GeodeticDatum} (or horizontal Datum).
-     * @return 
+     *
+     * @return
      */
     public Datum getDatum();
 
@@ -83,14 +86,15 @@ public interface CoordinateReferenceSystem extends Identifiable {
      * Returns the {@link Projection} to which this
      * <code>CoordinateReferenceSystem</code> is refering. It returns null if no
      * projection is defined for this CRS.
-     * @return 
+     *
+     * @return
      */
     public Projection getProjection();
 
     /**
      * Returns a WKT representation of the CoordinateReferenceSystem.
      *
-     * @return 
+     * @return
      */
     public String toWKT();
 }

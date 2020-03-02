@@ -1,11 +1,11 @@
 /*
- * Coordinate Transformations Suite (abridged CTS)  is a library developped to 
- * perform Coordinate Transformations using well known geodetic algorithms 
- * and parameter sets. 
+ * Coordinate Transformations Suite (abridged CTS)  is a library developped to
+ * perform Coordinate Transformations using well known geodetic algorithms
+ * and parameter sets.
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
- * name. It has been renamed CTS in 2009 and shared to the community from 
+ * name. It has been renamed CTS in 2009 and shared to the community from
  * the OrbisGIS code repository.
  *
  * CTS is free software: you can redistribute it and/or modify it under the
@@ -26,6 +26,8 @@ package org.cts.op.transformation;
 /**
  * Marker for transformations including 7 parameters transformation (Bursa-Wolf),
  * Translation and Identity.
+ *
  * @author Michaël Michaud
  */
-public interface ParamBasedTransformation extends GeocentricTransformation {}
+public interface ParamBasedTransformation extends GeocentricTransformation {
+}

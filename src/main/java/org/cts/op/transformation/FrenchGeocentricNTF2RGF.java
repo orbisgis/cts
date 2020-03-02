@@ -1,11 +1,11 @@
 /*
- * Coordinate Transformations Suite (abridged CTS)  is a library developped to 
- * perform Coordinate Transformations using well known geodetic algorithms 
- * and parameter sets. 
+ * Coordinate Transformations Suite (abridged CTS)  is a library developped to
+ * perform Coordinate Transformations using well known geodetic algorithms
+ * and parameter sets.
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
- * name. It has been renamed CTS in 2009 and shared to the community from 
+ * name. It has been renamed CTS in 2009 and shared to the community from
  * the OrbisGIS code repository.
  *
  * CTS is free software: you can redistribute it and/or modify it under the
@@ -23,9 +23,6 @@
  */
 package org.cts.op.transformation;
 
-import java.io.FileInputStream;
-import java.io.InputStream;
-
 import org.cts.CoordinateDimensionException;
 import org.cts.Identifier;
 import org.cts.IllegalCoordinateException;
@@ -41,6 +38,8 @@ import org.cts.units.Unit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.FileInputStream;
+
 /**
  * French Geocentric interpolation is a transformation used at IGN-France to
  * transform coordinates from the old local NTF system to the new ETRS-89
@@ -53,14 +52,13 @@ public class FrenchGeocentricNTF2RGF extends AbstractCoordinateOperation
         implements GeocentricTransformation, GridBasedTransformation {
 
     static final Logger LOGGER = LoggerFactory.getLogger(FrenchGeocentricNTF2RGF.class);
-    
-    private  final GeocentricTranslation NTF2WGS84 =
+
+    private final GeocentricTranslation NTF2WGS84 =
             new GeocentricTranslation(-168.0, -60.0, 320.0);
-    private  final Geocentric2Geographic GEOC2GEOG =
+    private final Geocentric2Geographic GEOC2GEOG =
             new Geocentric2Geographic(Ellipsoid.GRS80);
     private final UnitConversion RAD2DD = UnitConversion.createUnitConverter(Unit.RADIAN, Unit.DEGREE);
-  
-    
+
 
     /**
      * The GeographicGrid that define this transformation.
@@ -92,7 +90,7 @@ public class FrenchGeocentricNTF2RGF extends AbstractCoordinateOperation
      *
      * @param coord coordinate to transform
      * @throws IllegalCoordinateException if <code>coord</code> is not
-     * compatible with this <code>CoordinateOperation</code>.
+     *                                    compatible with this <code>CoordinateOperation</code>.
      */
     @Override
     public double[] transform(double[] coord) throws IllegalCoordinateException {
@@ -151,58 +149,59 @@ public class FrenchGeocentricNTF2RGF extends AbstractCoordinateOperation
 
     /**
      * Creates the inverse CoordinateOperation.
-     * @return 
+     *
+     * @return
      * @throws org.cts.op.NonInvertibleOperationException
      */
     @Override
     public GeocentricTransformation inverse() throws NonInvertibleOperationException {
         if (inverse == null) {
-                try {
-                    inverse = new FrenchGeocentricNTF2RGF() {
-                        @Override
-                        public double[] transform(double[] coord)
-                                throws IllegalCoordinateException {
-                            // Creates a temp coord to find the final translation parameters
-                            double[] coordi = coord.clone();
-                            // Find a rough position on GRS 80
-                            coordi = GEOC2GEOG.transform(coordi);
-                            // Get decimal degree coordinates for grid interpolation
-                            coordi = RAD2DD.transform(coordi);
-                            // Definitive translation parameters are initialized with mean
-                            // translation parameters
-                            double tx = -168.0;
-                            double ty = -60.0;
-                            double tz = 320.0;
-                            // Get the definitive translation parameters from the grids
-                            try {
-                                double[] t = GRID3D.bilinearInterpolation(coordi[0], coordi[1]);
-                                tx = t[0];
-                                ty = t[1];
-                                tz = t[2];
-                            } catch (OutOfExtentException e) {
-                                throw new IllegalCoordinateException(e.getMessage());
-                            }
-                            // Apply definitive translation
-                            coord[0] = -tx + coord[0];
-                            coord[1] = -ty + coord[1];
-                            coord[2] = -tz + coord[2];
-                            return coord;
+            try {
+                inverse = new FrenchGeocentricNTF2RGF() {
+                    @Override
+                    public double[] transform(double[] coord)
+                            throws IllegalCoordinateException {
+                        // Creates a temp coord to find the final translation parameters
+                        double[] coordi = coord.clone();
+                        // Find a rough position on GRS 80
+                        coordi = GEOC2GEOG.transform(coordi);
+                        // Get decimal degree coordinates for grid interpolation
+                        coordi = RAD2DD.transform(coordi);
+                        // Definitive translation parameters are initialized with mean
+                        // translation parameters
+                        double tx = -168.0;
+                        double ty = -60.0;
+                        double tz = 320.0;
+                        // Get the definitive translation parameters from the grids
+                        try {
+                            double[] t = GRID3D.bilinearInterpolation(coordi[0], coordi[1]);
+                            tx = t[0];
+                            ty = t[1];
+                            tz = t[2];
+                        } catch (OutOfExtentException e) {
+                            throw new IllegalCoordinateException(e.getMessage());
                         }
+                        // Apply definitive translation
+                        coord[0] = -tx + coord[0];
+                        coord[1] = -ty + coord[1];
+                        coord[2] = -tz + coord[2];
+                        return coord;
+                    }
 
-                        @Override
-                        public GeocentricTransformation inverse() {
-                            return FrenchGeocentricNTF2RGF.this;
-                        }
+                    @Override
+                    public GeocentricTransformation inverse() {
+                        return FrenchGeocentricNTF2RGF.this;
+                    }
 
-                        @Override
-                        public double getPrecision() {
-                            return 0.001;
-                        }
-                    };
-                    return inverse;
-                } catch (Exception e) {
-                    throw new NonInvertibleOperationException(e.getMessage());
-                }
+                    @Override
+                    public double getPrecision() {
+                        return 0.001;
+                    }
+                };
+                return inverse;
+            } catch (Exception e) {
+                throw new NonInvertibleOperationException(e.getMessage());
+            }
         }
         return inverse;
     }
@@ -212,7 +211,7 @@ public class FrenchGeocentricNTF2RGF extends AbstractCoordinateOperation
      * <code>this</code>.
      *
      * @param o The object to compare this transformation to
-     * @return 
+     * @return
      */
     @Override
     public boolean equals(Object o) {
@@ -222,7 +221,8 @@ public class FrenchGeocentricNTF2RGF extends AbstractCoordinateOperation
 
     /**
      * Returns the hash code for this GeocentricTranslation.
-     * @return 
+     *
+     * @return
      */
     @Override
     public int hashCode() {
@@ -232,7 +232,8 @@ public class FrenchGeocentricNTF2RGF extends AbstractCoordinateOperation
 
     /**
      * Return a string representation of this transformation.
-     * @return 
+     *
+     * @return
      */
     @Override
     public String toString() {

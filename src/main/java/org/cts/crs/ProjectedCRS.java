@@ -1,11 +1,11 @@
 /*
- * Coordinate Transformations Suite (abridged CTS)  is a library developped to 
- * perform Coordinate Transformations using well known geodetic algorithms 
- * and parameter sets. 
+ * Coordinate Transformations Suite (abridged CTS)  is a library developped to
+ * perform Coordinate Transformations using well known geodetic algorithms
+ * and parameter sets.
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
- * name. It has been renamed CTS in 2009 and shared to the community from 
+ * name. It has been renamed CTS in 2009 and shared to the community from
  * the OrbisGIS code repository.
  *
  * CTS is free software: you can redistribute it and/or modify it under the
@@ -23,29 +23,21 @@
  */
 package org.cts.crs;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.cts.Identifiable;
 import org.cts.Identifier;
 import org.cts.cs.Axis;
 import org.cts.cs.CoordinateSystem;
 import org.cts.datum.GeodeticDatum;
-import org.cts.op.ChangeCoordinateDimension;
-import org.cts.op.CoordinateOperation;
-import org.cts.op.CoordinateOperationSequence;
-import org.cts.op.CoordinateSwitch;
-import org.cts.op.NonInvertibleOperationException;
-import org.cts.op.OppositeCoordinate;
-import org.cts.op.UnitConversion;
+import org.cts.op.*;
 import org.cts.op.projection.Projection;
 import org.cts.units.Unit;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.cts.cs.Axis.Direction.*;
 import static org.cts.cs.Axis.EASTING;
 import static org.cts.cs.Axis.NORTHING;
-import static org.cts.cs.Axis.Direction.NORTH;
-import static org.cts.cs.Axis.Direction.SOUTH;
-import static org.cts.cs.Axis.Direction.WEST;
 import static org.cts.units.Unit.METER;
 
 /**
@@ -62,7 +54,7 @@ public class ProjectedCRS extends GeodeticCRS {
      * meter.
      */
     public static final CoordinateSystem EN_CS = new CoordinateSystem(new Axis[]{
-        EASTING, NORTHING}, new Unit[]{METER, METER});
+            EASTING, NORTHING}, new Unit[]{METER, METER});
 
     /**
      * A 2D {@link CoordinateSystem} whose first {@link Axis} contains northing
@@ -70,7 +62,7 @@ public class ProjectedCRS extends GeodeticCRS {
      * meter.
      */
     public static final CoordinateSystem NE_CS = new CoordinateSystem(new Axis[]{
-        NORTHING, EASTING}, new Unit[]{METER, METER});
+            NORTHING, EASTING}, new Unit[]{METER, METER});
 
     /**
      * The projection used by this ProjectedCRS.
@@ -81,12 +73,12 @@ public class ProjectedCRS extends GeodeticCRS {
      * Create a new ProjectedCRS.
      *
      * @param identifier the identifier of the ProjectedCRS
-     * @param datum the datum associated with the ProjectedCRS
-     * @param coordSys the coordinate system associated with the ProjectedCRS
+     * @param datum      the datum associated with the ProjectedCRS
+     * @param coordSys   the coordinate system associated with the ProjectedCRS
      * @param projection the projection used in the ProjectedCRS
      */
     public ProjectedCRS(Identifier identifier, GeodeticDatum datum,
-            CoordinateSystem coordSys, Projection projection) {
+                        CoordinateSystem coordSys, Projection projection) {
         super(identifier, datum, coordSys);
         this.projection = projection;
     }
@@ -97,15 +89,15 @@ public class ProjectedCRS extends GeodeticCRS {
      * contains northing.
      *
      * @param identifier the identifier of the ProjectedCRS
-     * @param datum the datum associated with the ProjectedCRS
+     * @param datum      the datum associated with the ProjectedCRS
      * @param projection the projection used in the ProjectedCRS
-     * @param unit the length unit to use for the coordinate system associated
-     * with the ProjectedCRS
+     * @param unit       the length unit to use for the coordinate system associated
+     *                   with the ProjectedCRS
      */
     public ProjectedCRS(Identifier identifier, GeodeticDatum datum,
-            Projection projection, Unit unit) {
+                        Projection projection, Unit unit) {
         super(identifier, datum, new CoordinateSystem(new Axis[]{EASTING,
-            NORTHING}, new Unit[]{unit, unit}));
+                NORTHING}, new Unit[]{unit, unit}));
         this.projection = projection;
     }
 
@@ -115,17 +107,17 @@ public class ProjectedCRS extends GeodeticCRS {
      * contains northing.
      *
      * @param identifier the identifier of the ProjectedCRS
-     * @param datum the datum associated with the ProjectedCRS
+     * @param datum      the datum associated with the ProjectedCRS
      * @param projection the projection used in the ProjectedCRS
      */
     public ProjectedCRS(Identifier identifier, GeodeticDatum datum,
-            Projection projection) {
+                        Projection projection) {
         super(identifier, datum, EN_CS);
         this.projection = projection;
     }
 
     /**
-     * @return 
+     * @return
      * @see GeodeticCRS#getProjection()
      */
     @Override
@@ -134,7 +126,7 @@ public class ProjectedCRS extends GeodeticCRS {
     }
 
     /**
-     * @return 
+     * @return
      * @see GeodeticCRS#getType()
      */
     @Override
@@ -143,8 +135,8 @@ public class ProjectedCRS extends GeodeticCRS {
     }
 
     /**
-     * @return 
-     * @throws org.cts.op.NonInvertibleOperationException 
+     * @return
+     * @throws org.cts.op.NonInvertibleOperationException
      * @see GeodeticCRS#toGeographicCoordinateConverter()
      */
     @Override
@@ -177,7 +169,7 @@ public class ProjectedCRS extends GeodeticCRS {
     }
 
     /**
-     * @return 
+     * @return
      * @see GeodeticCRS#fromGeographicCoordinateConverter()
      */
     @Override
@@ -210,7 +202,7 @@ public class ProjectedCRS extends GeodeticCRS {
     /**
      * Returns a WKT representation of the projected CRS.
      *
-     * @return 
+     * @return
      */
     public String toWKT() {
         StringBuilder w = new StringBuilder();
@@ -243,7 +235,7 @@ public class ProjectedCRS extends GeodeticCRS {
      * Returns true if o is equals to this ProjectedCRS.
      *
      * @param o The object to compare this ProjectedCRS to.
-     * @return 
+     * @return
      */
     @Override
     public boolean equals(Object o) {
@@ -267,7 +259,8 @@ public class ProjectedCRS extends GeodeticCRS {
 
     /**
      * Returns the hash code for this ProjectedCRS.
-     * @return 
+     *
+     * @return
      */
     @Override
     public int hashCode() {

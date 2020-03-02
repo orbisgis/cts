@@ -1,11 +1,11 @@
 /*
- * Coordinate Transformations Suite (abridged CTS)  is a library developped to 
- * perform Coordinate Transformations using well known geodetic algorithms 
- * and parameter sets. 
+ * Coordinate Transformations Suite (abridged CTS)  is a library developped to
+ * perform Coordinate Transformations using well known geodetic algorithms
+ * and parameter sets.
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
- * name. It has been renamed CTS in 2009 and shared to the community from 
+ * name. It has been renamed CTS in 2009 and shared to the community from
  * the OrbisGIS code repository.
  *
  * CTS is free software: you can redistribute it and/or modify it under the
@@ -28,7 +28,6 @@ import org.cts.Identifier;
 import org.cts.IllegalCoordinateException;
 import org.cts.op.AbstractCoordinateOperation;
 import org.cts.op.CoordinateOperation;
-import org.cts.op.NonInvertibleOperationException;
 
 /**
  * <p>GeocentricTranslation is a coordinate operation used to transform
@@ -60,9 +59,9 @@ public class GeocentricTranslation extends AbstractCoordinateOperation implement
     /**
      * <p>Geocentric translation.</p>
      *
-     * @param tx translation parameter along x axis (meters)
-     * @param ty translation parameter along y axis (meters)
-     * @param tz translation parameter along z axis (meters)
+     * @param tx        translation parameter along x axis (meters)
+     * @param ty        translation parameter along y axis (meters)
+     * @param tz        translation parameter along z axis (meters)
      * @param precision mean precision of the geodetic transformation
      */
     public GeocentricTranslation(double tx, double ty, double tz, double precision) {
@@ -92,7 +91,7 @@ public class GeocentricTranslation extends AbstractCoordinateOperation implement
      *
      * @param coord coordinate to transform
      * @throws IllegalCoordinateException if <code>coord</code> is not
-     * compatible with this <code>CoordinateOperation</code>.
+     *                                    compatible with this <code>CoordinateOperation</code>.
      */
     @Override
     public double[] transform(double[] coord) throws IllegalCoordinateException {
@@ -168,7 +167,7 @@ public class GeocentricTranslation extends AbstractCoordinateOperation implement
             return true;
         }
         if (o instanceof CoordinateOperation) {
-            if (this.isIdentity() && ((CoordinateOperation)o).isIdentity()) {
+            if (this.isIdentity() && ((CoordinateOperation) o).isIdentity()) {
                 return true;
             }
             if (o instanceof GeocentricTranslation) {

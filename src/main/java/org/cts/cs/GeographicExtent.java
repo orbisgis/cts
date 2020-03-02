@@ -1,11 +1,11 @@
 /*
- * Coordinate Transformations Suite (abridged CTS)  is a library developped to 
- * perform Coordinate Transformations using well known geodetic algorithms 
- * and parameter sets. 
+ * Coordinate Transformations Suite (abridged CTS)  is a library developped to
+ * perform Coordinate Transformations using well known geodetic algorithms
+ * and parameter sets.
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
- * name. It has been renamed CTS in 2009 and shared to the community from 
+ * name. It has been renamed CTS in 2009 and shared to the community from
  * the OrbisGIS code repository.
  *
  * CTS is free software: you can redistribute it and/or modify it under the
@@ -76,19 +76,19 @@ public class GeographicExtent implements Extent {
      * westernBound, CTS consider that the GeographicExtent crosses the 180
      * meridian.
      *
-     * @param name the name of the GeographicExtent
+     * @param name          the name of the GeographicExtent
      * @param southernBound the southern bound of the GeographicExtent, in
-     * decimal degree
+     *                      decimal degree
      * @param northernBound the northern bound of the GeographicExtent, in
-     * decimal degree
-     * @param westernBound the western bound of the GeographicExtent, in decimal
-     * degree
-     * @param easternBound the eastern bound of the GeographicExtent, in decimal
-     * degree
+     *                      decimal degree
+     * @param westernBound  the western bound of the GeographicExtent, in decimal
+     *                      degree
+     * @param easternBound  the eastern bound of the GeographicExtent, in decimal
+     *                      degree
      */
     public GeographicExtent(String name,
-            double southernBound, double northernBound,
-            double westernBound, double easternBound) {
+                            double southernBound, double northernBound,
+                            double westernBound, double easternBound) {
         this(name, southernBound, northernBound, westernBound, easternBound, 360.0);
     }
 
@@ -97,20 +97,20 @@ public class GeographicExtent implements Extent {
      * westernBound, CTS consider that the GeographicExtent crosses the 180
      * meridian.
      *
-     * @param name the name of the GeographicExtent
+     * @param name          the name of the GeographicExtent
      * @param southernBound the southern bound of the GeographicExtent, in
-     * decimal degree
+     *                      decimal degree
      * @param northernBound the northern bound of the GeographicExtent, in
-     * decimal degree
-     * @param westernBound the western bound of the GeographicExtent, in decimal
-     * degree
-     * @param easternBound the eastern bound of the GeographicExtent, in decimal
-     * degree
-     * @param modulo the modulo value for the GeographicExtent
+     *                      decimal degree
+     * @param westernBound  the western bound of the GeographicExtent, in decimal
+     *                      degree
+     * @param easternBound  the eastern bound of the GeographicExtent, in decimal
+     *                      degree
+     * @param modulo        the modulo value for the GeographicExtent
      */
     public GeographicExtent(String name,
-            double southernBound, double northernBound,
-            double westernBound, double easternBound, double modulo) {
+                            double southernBound, double northernBound,
+                            double westernBound, double easternBound, double modulo) {
         this.name = name;
         this.southernBound = southernBound;
         this.northernBound = northernBound;
@@ -169,7 +169,7 @@ public class GeographicExtent implements Extent {
      *
      * @param lat the latitude of the point to test, expressed in decimal degree
      * @param lon the longitude of the point to test, expressed in decimal
-     * degree
+     *            degree
      */
     public boolean isInside(double lat, double lon) {
         double lon_ = lon < westernBound ? lon + modulo : lon;

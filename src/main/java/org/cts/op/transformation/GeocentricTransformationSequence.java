@@ -1,11 +1,11 @@
 /*
- * Coordinate Transformations Suite (abridged CTS)  is a library developped to 
- * perform Coordinate Transformations using well known geodetic algorithms 
- * and parameter sets. 
+ * Coordinate Transformations Suite (abridged CTS)  is a library developped to
+ * perform Coordinate Transformations using well known geodetic algorithms
+ * and parameter sets.
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
- * name. It has been renamed CTS in 2009 and shared to the community from 
+ * name. It has been renamed CTS in 2009 and shared to the community from
  * the OrbisGIS code repository.
  *
  * CTS is free software: you can redistribute it and/or modify it under the
@@ -34,6 +34,7 @@ import java.util.List;
 /**
  * A GeocentricTransformationSequence is a CoordinateOperationSequence which
  * result is a {@link GeocentricTransformation}.
+ *
  * @author Michaël Michaud
  */
 public class GeocentricTransformationSequence
@@ -45,7 +46,7 @@ public class GeocentricTransformationSequence
      * @param sequence
      */
     public GeocentricTransformationSequence(Identifier identifier,
-            CoordinateOperation... sequence) {
+                                            CoordinateOperation... sequence) {
         super(identifier, sequence);
     }
 
@@ -54,7 +55,7 @@ public class GeocentricTransformationSequence
      * @param sequence
      */
     public GeocentricTransformationSequence(Identifier identifier,
-            List<CoordinateOperation> sequence) {
+                                            List<CoordinateOperation> sequence) {
         super(identifier, sequence);
     }
 
@@ -64,7 +65,7 @@ public class GeocentricTransformationSequence
      * @param precision
      */
     public GeocentricTransformationSequence(Identifier identifier,
-            CoordinateOperation[] sequence, double precision) {
+                                            CoordinateOperation[] sequence, double precision) {
         super(identifier, sequence, precision);
     }
 

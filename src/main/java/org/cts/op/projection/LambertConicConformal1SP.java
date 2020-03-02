@@ -1,11 +1,11 @@
 /*
- * Coordinate Transformations Suite (abridged CTS)  is a library developped to 
- * perform Coordinate Transformations using well known geodetic algorithms 
- * and parameter sets. 
+ * Coordinate Transformations Suite (abridged CTS)  is a library developped to
+ * perform Coordinate Transformations using well known geodetic algorithms
+ * and parameter sets.
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
- * name. It has been renamed CTS in 2009 and shared to the community from 
+ * name. It has been renamed CTS in 2009 and shared to the community from
  * the OrbisGIS code repository.
  *
  * CTS is free software: you can redistribute it and/or modify it under the
@@ -23,26 +23,18 @@
  */
 package org.cts.op.projection;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.cts.CoordinateDimensionException;
 import org.cts.Identifier;
 import org.cts.IllegalCoordinateException;
 import org.cts.Parameter;
 import org.cts.datum.Ellipsoid;
-import org.cts.op.NonInvertibleOperationException;
 import org.cts.units.Measure;
 import org.cts.units.Unit;
 
-import static java.lang.Math.abs;
-import static java.lang.Math.atan;
-import static java.lang.Math.cos;
-import static java.lang.Math.exp;
-import static java.lang.Math.log;
-import static java.lang.Math.sin;
-import static java.lang.Math.sqrt;
-import static java.lang.Math.tan;
+import java.util.HashMap;
+import java.util.Map;
+
+import static java.lang.Math.*;
 
 /**
  * A map projection is any method used in cartography (mapmaking) to represent
@@ -110,11 +102,11 @@ public class LambertConicConformal1SP extends Projection {
      * initialize common parameters lon0 and other parameters useful for the
      * projection.
      *
-     * @param ellipsoid ellipsoid used to define the projection.
+     * @param ellipsoid  ellipsoid used to define the projection.
      * @param parameters a map of useful parameters to define the projection.
      */
     public LambertConicConformal1SP(final Ellipsoid ellipsoid,
-            final Map<String, Measure> parameters) {
+                                    final Map<String, Measure> parameters) {
         super(LCC1SP, ellipsoid, parameters);
         double lat0 = getLatitudeOfOrigin();
         lon0 = getCentralMeridian();
@@ -135,14 +127,14 @@ public class LambertConicConformal1SP extends Projection {
      * scale factor and false coordinates in meters.
      *
      * @param latitude_of_origin latitude of origin of the projection in degrees
-     * @param scale_factor scale factor of the projection
-     * @param central_meridian central meridian of the projection in degrees
-     * @param false_easting false easting in meters
-     * @param false_northing false northing in meters
+     * @param scale_factor       scale factor of the projection
+     * @param central_meridian   central meridian of the projection in degrees
+     * @param false_easting      false easting in meters
+     * @param false_northing     false northing in meters
      */
     public static LambertConicConformal1SP createLCC1SP(final Ellipsoid ellipsoid,
-            double latitude_of_origin, double scale_factor, double central_meridian,
-            double false_easting, double false_northing) {
+                                                        double latitude_of_origin, double scale_factor, double central_meridian,
+                                                        double false_easting, double false_northing) {
         return createLCC1SP(ellipsoid, latitude_of_origin, scale_factor,
                 central_meridian, Unit.DEGREE,
                 false_easting, false_northing, Unit.METER);
@@ -154,12 +146,12 @@ public class LambertConicConformal1SP extends Projection {
      * coordinates in any unit.
      *
      * @param latitude_of_origin latitude of origin of the projection in degrees
-     * @param scale_factor scale factor of the projection
-     * @param central_meridian central meridian of the projection en degrees
-     * @param angleUnit unit used for central meridian and latitude of origin
-     * @param false_easting false easting in meters
-     * @param false_northing false northing in meters
-     * @param planimetricUnit unit used for false easting and false northing
+     * @param scale_factor       scale factor of the projection
+     * @param central_meridian   central meridian of the projection en degrees
+     * @param angleUnit          unit used for central meridian and latitude of origin
+     * @param false_easting      false easting in meters
+     * @param false_northing     false northing in meters
+     * @param planimetricUnit    unit used for false easting and false northing
      */
     public static LambertConicConformal1SP createLCC1SP(
             final Ellipsoid ellipsoid,
@@ -182,7 +174,7 @@ public class LambertConicConformal1SP extends Projection {
      *
      * @param coord coordinate to transform (in radians)
      * @throws IllegalCoordinateException if <code>coord</code> is not
-     * compatible with this <code>CoordinateOperation</code>.
+     *                                    compatible with this <code>CoordinateOperation</code>.
      */
     @Override
     public double[] transform(double[] coord) throws IllegalCoordinateException {

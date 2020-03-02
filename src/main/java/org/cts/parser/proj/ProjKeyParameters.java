@@ -1,11 +1,11 @@
 /*
- * Coordinate Transformations Suite (abridged CTS)  is a library developped to 
- * perform Coordinate Transformations using well known geodetic algorithms 
- * and parameter sets. 
+ * Coordinate Transformations Suite (abridged CTS)  is a library developped to
+ * perform Coordinate Transformations using well known geodetic algorithms
+ * and parameter sets.
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
- * name. It has been renamed CTS in 2009 and shared to the community from 
+ * name. It has been renamed CTS in 2009 and shared to the community from
  * the OrbisGIS code repository.
  *
  * CTS is free software: you can redistribute it and/or modify it under the
@@ -27,7 +27,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 /**
- *
  * @author Martin Davis
  */
 public class ProjKeyParameters {
@@ -74,9 +73,9 @@ public class ProjKeyParameters {
     public static final String no_defs = "no_defs";
     public static final String wktext = "wktext";
     public static final String bsouth = "bsouth";
-    public static final String vunits ="vunits";
-    public static final String geoidgrids ="geoidgrids";
-    public static final String no_uoff ="no_uoff";
+    public static final String vunits = "vunits";
+    public static final String geoidgrids = "geoidgrids";
+    public static final String no_uoff = "no_uoff";
     private static Set<String> supportedParams = null;
 
     /**
@@ -127,7 +126,7 @@ public class ProjKeyParameters {
      * Return true if the parameter is supported.
      *
      * @param paramKey
-     * @return 
+     * @return
      */
     public static boolean isSupported(String paramKey) {
         return supportedParameters().contains(paramKey);

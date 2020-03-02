@@ -1,11 +1,11 @@
 /*
- * Coordinate Transformations Suite (abridged CTS)  is a library developped to 
- * perform Coordinate Transformations using well known geodetic algorithms 
- * and parameter sets. 
+ * Coordinate Transformations Suite (abridged CTS)  is a library developped to
+ * perform Coordinate Transformations using well known geodetic algorithms
+ * and parameter sets.
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
- * name. It has been renamed CTS in 2009 and shared to the community from 
+ * name. It has been renamed CTS in 2009 and shared to the community from
  * the OrbisGIS code repository.
  *
  * CTS is free software: you can redistribute it and/or modify it under the
@@ -29,7 +29,9 @@ import org.cts.IllegalCoordinateException;
 import org.cts.units.Quantity;
 import org.cts.units.Unit;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Convert coordinates from a source unit to a target unit.
@@ -47,7 +49,7 @@ public class UnitConversion extends AbstractCoordinateOperation {
      */
     private Unit[] targetUnits;
 
-    private final static Map<String,UnitConversion> unitConverters = new HashMap<String,UnitConversion>();
+    private final static Map<String, UnitConversion> unitConverters = new HashMap<String, UnitConversion>();
 
     /**
      * Creates a new unit converter.
@@ -72,7 +74,7 @@ public class UnitConversion extends AbstractCoordinateOperation {
         super(identifier);
         this.sourceUnits = sourceUnits;
         this.targetUnits = targetUnits;
-        unitConverters.put(Arrays.toString(sourceUnits)+Arrays.toString(targetUnits),this);
+        unitConverters.put(Arrays.toString(sourceUnits) + Arrays.toString(targetUnits), this);
     }
 
     /**
@@ -81,7 +83,7 @@ public class UnitConversion extends AbstractCoordinateOperation {
      *
      * @param coord is an array containing one, two or three ordinates.
      * @throws IllegalCoordinateException if <code>coord</code> is not
-     * compatible with this <code>CoordinateOperation</code>.
+     *                                    compatible with this <code>CoordinateOperation</code>.
      */
     @Override
     public double[] transform(double[] coord) throws IllegalCoordinateException {
@@ -113,6 +115,7 @@ public class UnitConversion extends AbstractCoordinateOperation {
      * coord[i] = coord[i] * targetUnit[i].getScale() /
      * sourceUnit[i].getScale(); } }
      */
+
     /**
      * Creates the inverse CoordinateOperation.
      */
@@ -125,17 +128,17 @@ public class UnitConversion extends AbstractCoordinateOperation {
      * Creates a unit converter for homogeneous units (ex. XYZ or LAT-LON).
      *
      * @param sourceUnit unique source units used for 1-D, 2-D or 3-D source
-     * coordinates
+     *                   coordinates
      * @param targetUnit unique target units expected in the resulting 1-D, 2-D
-     * or 3-D coordinates
+     *                   or 3-D coordinates
      */
     public static UnitConversion createUnitConverter(Unit sourceUnit, Unit targetUnit) {
-        Identifier identifier;        
+        Identifier identifier;
         if (sourceUnit.getQuantity().equals(Quantity.LENGTH)) {
             identifier = new Identifier(CoordinateOperation.class,
                     sourceUnit.getName() + " to " + targetUnit.getName());
             String key = Arrays.toString(new Unit[]{sourceUnit, sourceUnit, sourceUnit})
-                    +Arrays.toString(new Unit[]{targetUnit, targetUnit, targetUnit});
+                    + Arrays.toString(new Unit[]{targetUnit, targetUnit, targetUnit});
             if (unitConverters.containsKey(key)) return unitConverters.get(key);
             UnitConversion converter = new UnitConversion(identifier,
                     new Unit[]{sourceUnit, sourceUnit, sourceUnit},
@@ -146,7 +149,7 @@ public class UnitConversion extends AbstractCoordinateOperation {
             identifier = new Identifier(CoordinateOperation.class,
                     sourceUnit.getName() + " to " + targetUnit.getName());
             String key = Arrays.toString(new Unit[]{sourceUnit, sourceUnit, Unit.METER})
-                    +Arrays.toString(new Unit[]{targetUnit, targetUnit, Unit.METER});
+                    + Arrays.toString(new Unit[]{targetUnit, targetUnit, Unit.METER});
             if (unitConverters.containsKey(key)) return unitConverters.get(key);
             UnitConversion converter = new UnitConversion(identifier,
                     new Unit[]{sourceUnit, sourceUnit, Unit.METER},
@@ -156,7 +159,7 @@ public class UnitConversion extends AbstractCoordinateOperation {
         } else {
             throw new IllegalArgumentException(
                     "Source or target unit represents an unknown quantity : "
-                    + sourceUnit.getQuantity());
+                            + sourceUnit.getQuantity());
         }
     }
 
@@ -165,14 +168,14 @@ public class UnitConversion extends AbstractCoordinateOperation {
      * planimetry and altimetry.
      *
      * @param planiSourceUnit source unit for latitude/longitude or
-     * northing/easting coordinates.
+     *                        northing/easting coordinates.
      * @param planiTargetUnit target unit for latitude/longitude or
-     * northing/easting coordinates.
-     * @param altiSourceUnit source unit for height or altitude coordinate.
-     * @param altiTargetUnit target unit for height or altitude coordinate.
+     *                        northing/easting coordinates.
+     * @param altiSourceUnit  source unit for height or altitude coordinate.
+     * @param altiTargetUnit  target unit for height or altitude coordinate.
      */
     public static UnitConversion createUnitConverter(Unit planiSourceUnit,
-            Unit planiTargetUnit, Unit altiSourceUnit, Unit altiTargetUnit) {
+                                                     Unit planiTargetUnit, Unit altiSourceUnit, Unit altiTargetUnit) {
         Identifier identifier;
         if (planiSourceUnit.getQuantity().equals(Quantity.LENGTH)) {
             identifier = new Identifier(CoordinateOperation.class,
@@ -185,7 +188,7 @@ public class UnitConversion extends AbstractCoordinateOperation {
                     "Source or target unit represents an unknown quantity : " + planiSourceUnit.getQuantity());
         }
         String key = Arrays.toString(new Unit[]{planiSourceUnit, planiSourceUnit, altiSourceUnit})
-                +Arrays.toString(new Unit[]{planiTargetUnit, planiTargetUnit, altiTargetUnit});
+                + Arrays.toString(new Unit[]{planiTargetUnit, planiTargetUnit, altiTargetUnit});
         if (unitConverters.containsKey(key)) return unitConverters.get(key);
         UnitConversion converter = new UnitConversion(identifier,
                 new Unit[]{planiSourceUnit, planiSourceUnit, altiSourceUnit},
@@ -199,10 +202,10 @@ public class UnitConversion extends AbstractCoordinateOperation {
             return true;
         }
         if (o instanceof UnitConversion) {
-            UnitConversion converter = (UnitConversion)o;
+            UnitConversion converter = (UnitConversion) o;
             if (this.sourceUnits.length != converter.sourceUnits.length) return false;
             if (this.targetUnits.length != converter.targetUnits.length) return false;
-            for (int i = 0 ; i < sourceUnits.length ; i++) {
+            for (int i = 0; i < sourceUnits.length; i++) {
                 if (!sourceUnits[i].equals(converter.sourceUnits[i])) return false;
                 if (!targetUnits[i].equals(converter.targetUnits[i])) return false;
             }

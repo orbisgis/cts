@@ -1,11 +1,11 @@
 /*
- * Coordinate Transformations Suite (abridged CTS)  is a library developped to 
- * perform Coordinate Transformations using well known geodetic algorithms 
- * and parameter sets. 
+ * Coordinate Transformations Suite (abridged CTS)  is a library developped to
+ * perform Coordinate Transformations using well known geodetic algorithms
+ * and parameter sets.
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
- * name. It has been renamed CTS in 2009 and shared to the community from 
+ * name. It has been renamed CTS in 2009 and shared to the community from
  * the OrbisGIS code repository.
  *
  * CTS is free software: you can redistribute it and/or modify it under the
@@ -23,6 +23,8 @@
  */
 package org.cts.parser.proj;
 
+import org.cts.registry.Registry;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,8 +34,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
-
-import org.cts.registry.Registry;
 
 /**
  * Parser used to read a proj file as the one used in proj4 library.
@@ -61,11 +61,11 @@ public class ProjParser {
     /**
      * Read all parameters from the registry
      *
-     * @param crsCode the code corresponding to the information that must be
-     * extracted from the registry
+     * @param crsCode      the code corresponding to the information that must be
+     *                     extracted from the registry
      * @param regexPattern the pattern used to split the line that describes the
-     * coordinate system
-     * @return 
+     *                     coordinate system
+     * @return
      * @throws IOException
      */
     public Map<String, String> readParameters(String crsCode, Pattern regexPattern)
@@ -90,9 +90,9 @@ public class ProjParser {
      *
      * @param br
      * @param nameOfCRS the code corresponding to the information that must be
-     * extracted from the registry
-     * @param regex the pattern used to split the line that describes the
-     * coordinate system
+     *                  extracted from the registry
+     * @param regex     the pattern used to split the line that describes the
+     *                  coordinate system
      * @throws IOException
      */
     private Map<String, String> readRegistry(BufferedReader br, String nameOfCRS, Pattern regex) throws IOException {
@@ -176,7 +176,7 @@ public class ProjParser {
      * Return the list of all codes defined by this registry
      *
      * @param regex pattern
-     * @return 
+     * @return
      * @throws java.io.IOException
      */
     public Set<String> getSupportedCodes(Pattern regex) throws IOException {

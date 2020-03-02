@@ -20,12 +20,8 @@
  * CTS. If not, see <http://www.gnu.org/licenses/>.
  *
  * For more information, please consult: <https://github.com/orbisgis/cts/>
-*/
+ */
 package org.cts;
-
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 import org.cts.crs.*;
 import org.cts.cs.Axis;
@@ -34,16 +30,25 @@ import org.cts.datum.Ellipsoid;
 import org.cts.datum.GeodeticDatum;
 import org.cts.datum.PrimeMeridian;
 import org.cts.datum.VerticalDatum;
-import org.cts.op.*;
+import org.cts.op.AbstractCoordinateOperation;
+import org.cts.op.CoordinateOperationSequence;
+import org.cts.op.Identity;
+import org.cts.op.LongitudeRotation;
 import org.cts.op.projection.*;
 import org.cts.op.transformation.*;
 import org.cts.parser.prj.PrjKeyParameters;
 import org.cts.parser.proj.ProjKeyParameters;
 import org.cts.parser.proj.ProjValueParameters;
-import org.cts.units.*;
+import org.cts.units.Measure;
+import org.cts.units.Quantity;
+import org.cts.units.Unit;
 import org.cts.util.AngleFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * This class is used to build a new
@@ -51,16 +56,16 @@ import org.slf4j.LoggerFactory;
  * generally obtained from the parser of a {@link org.cts.registry.Registry}
  * or from an OGC WKT String.
  *
+ * @author Michaël Michaud, Erwan Bocher, Jules Party
  * @TODO Not sure this class is useful here. I would prefer a clear separation
  * between the model (CRS/Datum/Ellipsoid/Projection...) and the parsers which
  * create CRS from a file or from a stream. CRSHelper is in-between, no more a
  * file, but not yet a model.
- * @author Michaël Michaud, Erwan Bocher, Jules Party
  */
 public class CRSHelper {
 
     static final Logger LOGGER = LoggerFactory.getLogger(CRSHelper.class);
-    
+
     private static CRSGridCache<String, AbstractCoordinateOperation> CRSGRIDPOOL = new CRSGridCache<String, AbstractCoordinateOperation>(5);
 
     /**
@@ -68,10 +73,10 @@ public class CRSHelper {
      * given {@link org.cts.Identifier} and parameters.
      *
      * @param identifier the identifier we want to associate with the desired
-     * CRS
+     *                   CRS
      * @param parameters the map of parameters defining the properties of the
-     * desired CRS
-     * @return 
+     *                   desired CRS
+     * @return
      * @throws org.cts.crs.CRSException
      */
     public static CoordinateReferenceSystem createCoordinateReferenceSystem(Identifier identifier, Map<String, String> parameters) throws CRSException {
@@ -177,9 +182,9 @@ public class CRSHelper {
     /**
      * Returns a {@link org.cts.cs.CoordinateSystem} from parameters.
      *
-     * @param param the map of parameters defining the properties of a CRS
+     * @param param   the map of parameters defining the properties of a CRS
      * @param crsType 1 = VerticalCRS, 2 = GeocentricCRS, 3 = GeographicCRS, 4
-     * = ProjectedCRS
+     *                = ProjectedCRS
      */
     private static CoordinateSystem getCoordinateSystem(Map<String, String> param, int crsType) throws CRSException {
         Unit[] units;
@@ -218,10 +223,10 @@ public class CRSHelper {
      * parameters. By default, it returns an {@link org.cts.cs.Axis} that
      * corresponds to the given CRS type and index.
      *
-     * @param param the map of parameters defining the properties of a CRS
+     * @param param   the map of parameters defining the properties of a CRS
      * @param crsType 1 = VerticalCRS, 2 = GeocentricCRS, 3 = Geographic2DCRS, 4
-     * = ProjectedCRS
-     * @param index the index of the axis to defined (start with 0)
+     *                = ProjectedCRS
+     * @param index   the index of the axis to defined (start with 0)
      */
     private static Axis getAxis(Map<String, String> param, int crsType, int index) throws CRSException {
         // crsType = 1 pour vertCRS ; 2 pour GEOCCRS ; 3 pour GEOGCRS ; 4 pour PROJ CRS.
@@ -310,11 +315,11 @@ public class CRSHelper {
      * parameters. By default, it returns the base unit of the {@link Quantity}
      * in parameter or DEGREE, if the {@link Quantity} is ANGLE..
      *
-     * @param quant the quantity of the desired unit (ANGLE for a geographic CRS,
-     * else LENGTH)
-     * @param param the map of parameters defining the properties of a CRS
+     * @param quant      the quantity of the desired unit (ANGLE for a geographic CRS,
+     *                   else LENGTH)
+     * @param param      the map of parameters defining the properties of a CRS
      * @param isVertical true if the returned unit shall be used for a
-     * VerticalCRS
+     *                   VerticalCRS
      */
     private static Unit getUnit(Quantity quant, Map<String, String> param, boolean isVertical) {
         String sunit;
@@ -528,8 +533,8 @@ public class CRSHelper {
      * Set nadgrids operation used by the
      * {@link org.cts.crs.CoordinateReferenceSystem}.
      *
-     * @param crs the CRS defined by {@code param} we want to associate nadgrids
-     * operation with
+     * @param crs   the CRS defined by {@code param} we want to associate nadgrids
+     *              operation with
      * @param param the map of parameters defining the properties of a CRS
      */
     private static void setNadgrids(GeodeticCRS crs, Map<String, String> param) {
@@ -547,23 +552,23 @@ public class CRSHelper {
                                 // If this CRS uses the ntf_r93.gsb, we know it is based on NTF, and we can
                                 // use FrenchGeocentricNTF2RGF to transform coordinates to WGS or RGF93
                                 AbstractCoordinateOperation aco = CRSGRIDPOOL.get("NTF2RGF93");
-                                if(aco==null){
+                                if (aco == null) {
                                     aco = new FrenchGeocentricNTF2RGF();
-                                    CRSGRIDPOOL.put("NTF2RGF93",aco);
+                                    CRSGRIDPOOL.put("NTF2RGF93", aco);
                                 }
-                                if(aco instanceof FrenchGeocentricNTF2RGF) {
+                                if (aco instanceof FrenchGeocentricNTF2RGF) {
                                     FrenchGeocentricNTF2RGF ntf2rgf = (FrenchGeocentricNTF2RGF) aco;
                                     crs.getDatum().addGeocentricTransformation(GeodeticDatum.RGF93, ntf2rgf);
                                     crs.getDatum().addGeocentricTransformation(GeodeticDatum.WGS84, ntf2rgf);
-                                    LOGGER.info("Add French Geocentric Grid transformation from " + crs.getDatum() + " to RGF93 and WGS84");                                    
-                                    
-                                    AbstractCoordinateOperation gridNTF =  CRSGRIDPOOL.get("NTv2");
-                                    if(gridNTF==null){
+                                    LOGGER.info("Add French Geocentric Grid transformation from " + crs.getDatum() + " to RGF93 and WGS84");
+
+                                    AbstractCoordinateOperation gridNTF = CRSGRIDPOOL.get("NTv2");
+                                    if (gridNTF == null) {
                                         NTv2GridShiftTransformation gridNTFNew = NTv2GridShiftTransformation.createNTv2GridShiftTransformation(grid);
                                         gridNTFNew.loadGridShiftFile();
                                         CRSGRIDPOOL.put("NTv2", gridNTFNew);
-                                        gridNTF=gridNTFNew;
-                                    }                                    
+                                        gridNTF = gridNTFNew;
+                                    }
                                     if (gridNTF instanceof NTv2GridShiftTransformation) {
                                         NTv2GridShiftTransformation ntf_r93 = (NTv2GridShiftTransformation) gridNTF;
                                         crs.getDatum().addGeographicTransformation(GeodeticDatum.WGS84,
@@ -574,7 +579,7 @@ public class CRSHelper {
                                                         LongitudeRotation.getLongitudeRotationFrom(crs.getDatum().getPrimeMeridian()), ntf_r93));
                                         LOGGER.info("Add NTv2 transformation from " + crs.getDatum() + " to RGF93 and WGS84");
                                     }
-                                }else{
+                                } else {
                                     LOGGER.info("Cannot find the  French Geocentric Grid transformation from " + crs.getDatum() + " to RGF93 and WGS84");
                                 }
                             } else {
@@ -654,11 +659,11 @@ public class CRSHelper {
      * (ie lcc, tmerc), an ellipsoid and a map of parameters.
      *
      * @param projectionName name of the projection type
-     * @param ell ellipsoid used in the projection
-     * @param param the map of parameters defining the properties of a CRS
+     * @param ell            ellipsoid used in the projection
+     * @param param          the map of parameters defining the properties of a CRS
      */
     private static Projection getProjection(String projectionName, Ellipsoid ell,
-            Map<String, String> param) throws CRSException {
+                                            Map<String, String> param) throws CRSException {
         String slat_0 = param.remove("lat_0");
         String slat_1 = param.remove("lat_1");
         String slat_2 = param.remove("lat_2");
@@ -766,11 +771,9 @@ public class CRSHelper {
             throw new CRSException("Cannot create the projection " + projectionName);
         }
     }
-    
-    
-    
-    
-     /**
+
+
+    /**
      * A simple cache to manage {@link AbstractCoordinateOperation}
      */
     public static class CRSGridCache<K, V> extends LinkedHashMap<K, V> {

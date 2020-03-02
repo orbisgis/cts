@@ -1,11 +1,11 @@
 /*
- * Coordinate Transformations Suite (abridged CTS)  is a library developped to 
- * perform Coordinate Transformations using well known geodetic algorithms 
- * and parameter sets. 
+ * Coordinate Transformations Suite (abridged CTS)  is a library developped to
+ * perform Coordinate Transformations using well known geodetic algorithms
+ * and parameter sets.
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
- * name. It has been renamed CTS in 2009 and shared to the community from 
+ * name. It has been renamed CTS in 2009 and shared to the community from
  * the OrbisGIS code repository.
  *
  * CTS is free software: you can redistribute it and/or modify it under the
@@ -23,22 +23,21 @@
  */
 package org.cts.op.transformation;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-
 import org.cts.CoordinateDimensionException;
 import org.cts.Identifier;
 import org.cts.IllegalCoordinateException;
 import org.cts.op.AbstractCoordinateOperation;
 import org.cts.op.CoordinateOperation;
-import org.cts.op.NonInvertibleOperationException;
 import org.cts.op.transformation.grid.GridShift;
 import org.cts.op.transformation.grid.GridShiftFile;
 import org.cts.op.transformation.grids.GridUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 
 /**
  * Geographic Offset by Interpolation of Gridded Data.<p>
@@ -79,7 +78,7 @@ public class NTv2GridShiftTransformation extends AbstractCoordinateOperation imp
      * defined it.
      *
      * @param ntv2_gridName the name of the file that defined the wanted grid
-     * transformation (for instance : ntf_r93.gsb).
+     *                      transformation (for instance : ntf_r93.gsb).
      * @return
      */
     public static NTv2GridShiftTransformation createNTv2GridShiftTransformation(String ntv2_gridName) throws NullPointerException, IOException {
@@ -89,14 +88,13 @@ public class NTv2GridShiftTransformation extends AbstractCoordinateOperation imp
         }
         return new NTv2GridShiftTransformation(urlGRID);
     }
-    
-   
+
 
     /**
      * NTv2GridShiftTransformation constructor.
      *
      * @param ntv2_gridFile file containing the description of the NTv2 grid
-     * @param precision mean precision of the geodetic transformation
+     * @param precision     mean precision of the geodetic transformation
      */
     public NTv2GridShiftTransformation(URL ntv2_gridFile, double precision) {
         super(opId);
@@ -125,9 +123,9 @@ public class NTv2GridShiftTransformation extends AbstractCoordinateOperation imp
      * interpolated in a grid.
      *
      * @param coord coordinate to shift
-     * @return 
+     * @return
      * @throws IllegalCoordinateException if <code>coord</code> is not
-     * compatible with this <code>CoordinateOperation</code>.
+     *                                    compatible with this <code>CoordinateOperation</code>.
      */
     @Override
     public double[] transform(double[] coord) throws IllegalCoordinateException {
@@ -154,7 +152,8 @@ public class NTv2GridShiftTransformation extends AbstractCoordinateOperation imp
 
     /**
      * Creates the inverse CoordinateOperation.
-     * @return 
+     *
+     * @return
      * @throws org.cts.op.NonInvertibleOperationException
      */
     @Override
@@ -198,6 +197,7 @@ public class NTv2GridShiftTransformation extends AbstractCoordinateOperation imp
 
     /**
      * Load the grid file that will be used to transform the coordinates.
+     *
      * @throws java.io.IOException
      */
     public void loadGridShiftFile() throws IOException {
@@ -209,8 +209,7 @@ public class NTv2GridShiftTransformation extends AbstractCoordinateOperation imp
                         is = grid_file.openConnection().getInputStream();
                         if (is == null) {
                             LOGGER.warn("This grid doesn't exist or cannot be read.");
-                        }
-                        else {
+                        } else {
                             gsf.loadGridShiftFile(is, false);
                         }
                     } catch (IOException e) {
@@ -228,8 +227,7 @@ public class NTv2GridShiftTransformation extends AbstractCoordinateOperation imp
                         is = grid_file.openConnection().getInputStream();
                         if (is == null) {
                             LOGGER.warn("This grid doesn't exist or cannot be read.");
-                        }
-                        else {
+                        } else {
                             gsf.loadGridShiftFile(is, false);
                         }
                     } catch (IOException e) {
@@ -249,7 +247,8 @@ public class NTv2GridShiftTransformation extends AbstractCoordinateOperation imp
     /**
      * Return whether the grid shift file used by this transformation is loaded
      * or not.
-     * @return 
+     *
+     * @return
      */
     public boolean isLoaded() {
         return gsf.isLoaded();
@@ -272,7 +271,7 @@ public class NTv2GridShiftTransformation extends AbstractCoordinateOperation imp
      * false.
      *
      * @param mode an integer representing a mode to access to grid shift file
-     * (see description above)
+     *             (see description above)
      * @return true if a new mode has been set, false if not.
      * @throws IOException
      */
@@ -289,7 +288,8 @@ public class NTv2GridShiftTransformation extends AbstractCoordinateOperation imp
 
     /**
      * Returns this Geocentric translation as a String.
-     * @return 
+     *
+     * @return
      */
     @Override
     public String toString() {
@@ -299,7 +299,8 @@ public class NTv2GridShiftTransformation extends AbstractCoordinateOperation imp
     /**
      * Return the short name of the datum from which the nadgrids transformation
      * must be used.
-     * @return 
+     *
+     * @return
      */
     public String getFromDatum() {
         return gsf.getFromEllipsoid().trim().toLowerCase();
@@ -308,7 +309,8 @@ public class NTv2GridShiftTransformation extends AbstractCoordinateOperation imp
     /**
      * Return the short name of the datum toward which the nadgrids
      * transformation must be used.
-     * @return 
+     *
+     * @return
      */
     public String getToDatum() {
         return gsf.getToEllipsoid().trim().toLowerCase();

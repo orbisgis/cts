@@ -1,11 +1,11 @@
 /*
- * Coordinate Transformations Suite (abridged CTS)  is a library developped to 
- * perform Coordinate Transformations using well known geodetic algorithms 
- * and parameter sets. 
+ * Coordinate Transformations Suite (abridged CTS)  is a library developped to
+ * perform Coordinate Transformations using well known geodetic algorithms
+ * and parameter sets.
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
- * name. It has been renamed CTS in 2009 and shared to the community from 
+ * name. It has been renamed CTS in 2009 and shared to the community from
  * the OrbisGIS code repository.
  *
  * CTS is free software: you can redistribute it and/or modify it under the
@@ -40,11 +40,17 @@ public class ChangeCoordinateDimension extends AbstractCoordinateOperation {
             new Identifier("EPSG", "9659i", "Geographic 2D to 3D conversion", "Geo2D->3D");
 
     public final static ChangeCoordinateDimension TO3D = new ChangeCoordinateDimension(G2DG3D, 2, 3) {
-        @Override public CoordinateOperation inverse() {return TO2D;}
+        @Override
+        public CoordinateOperation inverse() {
+            return TO2D;
+        }
     };
 
     public final static ChangeCoordinateDimension TO2D = new ChangeCoordinateDimension(G3DG2D, 3, 2) {
-        @Override public CoordinateOperation inverse() {return TO3D;}
+        @Override
+        public CoordinateOperation inverse() {
+            return TO3D;
+        }
     };
 
     private int inputDim, outputDim;
@@ -53,7 +59,7 @@ public class ChangeCoordinateDimension extends AbstractCoordinateOperation {
      * Creates a new CoordinateOperation increasing (resp decreasing) the coord
      * size by length.
      *
-     * @param inputDim dimension of the input coordinate
+     * @param inputDim  dimension of the input coordinate
      * @param outputDim dimension of the output coordinate
      */
     private ChangeCoordinateDimension(Identifier identifier, int inputDim, int outputDim) {
@@ -66,9 +72,9 @@ public class ChangeCoordinateDimension extends AbstractCoordinateOperation {
      * Add a vertical coordinate.
      *
      * @param coord is an array containing one, two or three ordinates
-     * @return 
+     * @return
      * @throws IllegalCoordinateException if <code>coord</code> is not
-     * compatible with this <code>CoordinateOperation</code>.
+     *                                    compatible with this <code>CoordinateOperation</code>.
      */
     @Override
     public double[] transform(double[] coord) {

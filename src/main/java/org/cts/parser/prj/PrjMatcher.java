@@ -1,11 +1,11 @@
 /*
- * Coordinate Transformations Suite (abridged CTS)  is a library developped to 
- * perform Coordinate Transformations using well known geodetic algorithms 
- * and parameter sets. 
+ * Coordinate Transformations Suite (abridged CTS)  is a library developped to
+ * perform Coordinate Transformations using well known geodetic algorithms
+ * and parameter sets.
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
- * name. It has been renamed CTS in 2009 and shared to the community from 
+ * name. It has been renamed CTS in 2009 and shared to the community from
  * the OrbisGIS code repository.
  *
  * CTS is free software: you can redistribute it and/or modify it under the
@@ -23,17 +23,17 @@
  */
 package org.cts.parser.prj;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.cts.IdentifiableComponent;
 import org.cts.Identifier;
 import org.cts.parser.proj.ProjKeyParameters;
 import org.cts.parser.proj.ProjValueParameters;
 import org.cts.units.Quantity;
 import org.cts.units.Unit;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This class is used to get values from parameter in the prj file.
@@ -47,6 +47,7 @@ public final class PrjMatcher {
      */
     private PrjMatcher() {
     }
+
     /**
      * The map that contained all the parsed informations.
      */
@@ -242,7 +243,7 @@ public final class PrjMatcher {
      * Read the informations contains in the PROJCS node and put it into the set
      * of parameters.
      *
-     * @param ll the children of the PROJCS node
+     * @param ll          the children of the PROJCS node
      * @param rootElement true if PROJCS is the root element given in match
      */
     private void parseProjcs(List<PrjElement> ll, boolean rootElement) {
@@ -366,6 +367,7 @@ public final class PrjMatcher {
             matchAnyNode(ll.get(i), matchers);
         }
     }
+
     private boolean isHorizontalCRS = false;
     private boolean isVerticalCRS = false;
 
@@ -551,7 +553,7 @@ public final class PrjMatcher {
      * Read the informations contains in the GEOGCS node and put it into the set
      * of parameters.
      *
-     * @param ll the children of the GEOGCS node
+     * @param ll          the children of the GEOGCS node
      * @param rootElement true if GEOGCS is the root element given in match
      */
     private void parseGeogcs(List<PrjElement> ll, boolean rootElement) {
@@ -679,7 +681,7 @@ public final class PrjMatcher {
      * Read the informations contains in the VERT_CS node and put it into the
      * set of parameters.
      *
-     * @param ll the children of the VERT_CS node
+     * @param ll          the children of the VERT_CS node
      * @param rootElement true if VERT_CS is the root element given in match
      */
     private void parseVertcs(List<PrjElement> ll, boolean rootElement) {
@@ -780,11 +782,10 @@ public final class PrjMatcher {
     private String getAuthority(List<PrjElement> ll) {
         String auth = getString(ll.get(0));
         PrjElement authorityCode = ll.get(1);
-        String code ;
-        if(authorityCode instanceof PrjNumberElement){
-            code =  String.valueOf(Math.round(getNumber(authorityCode)));            
-        }
-        else{
+        String code;
+        if (authorityCode instanceof PrjNumberElement) {
+            code = String.valueOf(Math.round(getNumber(authorityCode)));
+        } else {
             code = getString(authorityCode);
         }
         return auth + ':' + code;
@@ -799,9 +800,9 @@ public final class PrjMatcher {
     private void parseDatum(List<PrjElement> ll) {
         String datum = getString(ll.get(0));
         String datm = PrjValueParameters.DATUMNAMES.get(datum.toLowerCase()
-                .replaceAll("^d_","")
+                .replaceAll("^d_", "")
                 .replaceAll("[^a-zA-Z0-9]", "")
-                .replaceAll("datum",""));
+                .replaceAll("datum", ""));
         datum = datm != null ? datm : datum;
         params.put(ProjKeyParameters.datum, datum);
 
@@ -989,7 +990,7 @@ public final class PrjMatcher {
      * Read the informations contains in the PrjElement in parameter using one
      * of the PrjNodeMatcher in parameter and put it into the set of parameters.
      *
-     * @param e the PrjElement to parse
+     * @param e  the PrjElement to parse
      * @param nn the PrjNodeMatcher to use to parse the given PrjElement
      */
     private void matchAnyNode(PrjElement e, PrjNodeMatcher[] nn) {
@@ -1000,10 +1001,10 @@ public final class PrjMatcher {
      * Read the informations contains in the PrjElement in parameter using one
      * of the PrjNodeMatcher in parameter and put it into the set of parameters.
      *
-     * @param e the PrjElement to parse
-     * @param nn the PrjNodeMatcher to use to parse the given PrjElement
+     * @param e      the PrjElement to parse
+     * @param nn     the PrjNodeMatcher to use to parse the given PrjElement
      * @param strict if true, the method throw a PrjParserException if it does
-     * not manage to parse the PrjElement in parameter
+     *               not manage to parse the PrjElement in parameter
      */
     private void matchAnyNode(PrjElement e, PrjNodeMatcher[] nn, boolean strict) {
         if (e instanceof PrjNodeElement) {
@@ -1026,7 +1027,7 @@ public final class PrjMatcher {
      * of PrjNodeElement and if its name is the same as the name given in
      * parameter,else it throws a PrjParserException.
      *
-     * @param e the PrjElement to match
+     * @param e    the PrjElement to match
      * @param name the name of the desired PrjElement
      */
     private List<PrjElement> matchNode(PrjElement e, String name) {
@@ -1039,10 +1040,10 @@ public final class PrjMatcher {
      * parameter,else it throws a PrjParserException unless strict is false, it
      * then returns null.
      *
-     * @param e the PrjElement to match
-     * @param name the name of the desired PrjElement
+     * @param e      the PrjElement to match
+     * @param name   the name of the desired PrjElement
      * @param strict true if the method must throw an exception instead of
-     * return null
+     *               return null
      */
     private List<PrjElement> matchNode(PrjElement e, String name, boolean strict) {
         if (e instanceof PrjNodeElement) {
@@ -1062,7 +1063,7 @@ public final class PrjMatcher {
      * Read the informations contains in the PrjElement in parameter if it is a
      * PrjStringParameter and put it into the set of parameters.
      *
-     * @param e the PrjElement to parse
+     * @param e    the PrjElement to parse
      * @param name the key to use to put the string in the Map of parameters
      */
     private void parseString(PrjElement e, String name) {
@@ -1092,7 +1093,7 @@ public final class PrjMatcher {
      * Read the informations contains in the PrjElement in parameter if it is a
      * PrjNumberParameter and put it into the set of parameters.
      *
-     * @param e the PrjElement to parse
+     * @param e    the PrjElement to parse
      * @param name the key to use to put the string in the Map of parameters
      */
     private void parseNumber(PrjElement e, String name) {

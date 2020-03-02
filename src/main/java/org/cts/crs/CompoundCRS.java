@@ -1,11 +1,11 @@
 /*
- * Coordinate Transformations Suite (abridged CTS)  is a library developped to 
- * perform Coordinate Transformations using well known geodetic algorithms 
- * and parameter sets. 
+ * Coordinate Transformations Suite (abridged CTS)  is a library developped to
+ * perform Coordinate Transformations using well known geodetic algorithms
+ * and parameter sets.
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
- * name. It has been renamed CTS in 2009 and shared to the community from 
+ * name. It has been renamed CTS in 2009 and shared to the community from
  * the OrbisGIS code repository.
  *
  * CTS is free software: you can redistribute it and/or modify it under the
@@ -23,10 +23,6 @@
  */
 package org.cts.crs;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import org.cts.Identifiable;
 import org.cts.Identifier;
 import org.cts.cs.Axis;
@@ -35,6 +31,10 @@ import org.cts.datum.VerticalDatum;
 import org.cts.op.*;
 import org.cts.op.transformation.Altitude2EllipsoidalHeight;
 import org.cts.units.Unit;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import static org.cts.op.CoordinateOperationSequence.cleverAdd;
 
@@ -54,20 +54,23 @@ public class CompoundCRS extends GeodeticCRS {
     /**
      * Creates a new CompoundCRS from a 2D horizontal CRS and a 1D vertical CRS.
      *
-     * @param identifier the identifier of the CompoundCRS
+     * @param identifier    the identifier of the CompoundCRS
      * @param horizontalCRS the horizontal part of the CompoundCRS
-     * @param verticalCRS the vertical part of the CompoundCRS
+     * @param verticalCRS   the vertical part of the CompoundCRS
      * @throws org.cts.crs.CRSException
      */
-    public CompoundCRS(Identifier identifier, GeodeticCRS horizontalCRS,
-            VerticalCRS verticalCRS) throws CRSException {
-        super(identifier, horizontalCRS.getDatum(), new CoordinateSystem(
-                new Axis[]{horizontalCRS.getCoordinateSystem().getAxis(0),
-            horizontalCRS.getCoordinateSystem().getAxis(1),
-            verticalCRS.getCoordinateSystem().getAxis(0)},
-                new Unit[]{horizontalCRS.getCoordinateSystem().getUnit(0),
-            horizontalCRS.getCoordinateSystem().getUnit(1),
-            verticalCRS.getCoordinateSystem().getUnit(0)}));
+    public CompoundCRS(Identifier identifier, GeodeticCRS horizontalCRS, VerticalCRS verticalCRS) throws CRSException {
+        super(identifier,
+                horizontalCRS.getDatum(),
+                new CoordinateSystem(
+                        new Axis[]{
+                                horizontalCRS.getCoordinateSystem().getAxis(0),
+                                horizontalCRS.getCoordinateSystem().getAxis(1),
+                                verticalCRS.getCoordinateSystem().getAxis(0)},
+                        new Unit[]{
+                                horizontalCRS.getCoordinateSystem().getUnit(0),
+                                horizontalCRS.getCoordinateSystem().getUnit(1),
+                                verticalCRS.getCoordinateSystem().getUnit(0)}));
         if (!(horizontalCRS instanceof ProjectedCRS || horizontalCRS instanceof Geographic2DCRS)) {
             throw new CRSException("The horizontalCRS must be a ProjectedCRS or a Geographic2DCRS. The "
                     + horizontalCRS.getClass() + " cannot be used as horizontalCRS.");
@@ -78,7 +81,8 @@ public class CompoundCRS extends GeodeticCRS {
 
     /**
      * Returns this CoordinateReferenceSystem Type.
-     * @return 
+     *
+     * @return
      */
     @Override
     public Type getType() {
@@ -87,7 +91,8 @@ public class CompoundCRS extends GeodeticCRS {
 
     /**
      * Returns the horizonal part of this CoordinateReferenceSystem.
-     * @return 
+     *
+     * @return
      */
     public GeodeticCRS getHorizontalCRS() {
         return horizontalCRS;
@@ -105,9 +110,10 @@ public class CompoundCRS extends GeodeticCRS {
      * to the Geographic3DCRS based on the same {@link org.cts.datum.GeodeticDatum},
      * and using normal SI units in the following order : latitude (rad), longitude
      * (rad) height (m).
-     * @return 
-     * @throws org.cts.op.NonInvertibleOperationException 
-     * @throws org.cts.op.CoordinateOperationNotFoundException 
+     *
+     * @return
+     * @throws org.cts.op.NonInvertibleOperationException
+     * @throws org.cts.op.CoordinateOperationNotFoundException
      */
     @Override
     public CoordinateOperation toGeographicCoordinateConverter()
@@ -246,7 +252,7 @@ public class CompoundCRS extends GeodeticCRS {
                         UnitConversion.createUnitConverter(Unit.DEGREE, Unit.RADIAN, Unit.METER, Unit.METER),
                         //h_op_inv
                         h_op.inverse()
-                        );
+                );
                 try {
                     // apply the sequence until calculated coordinates at index 0,1
                     // reach reference values at index 3, 4 with a precision of 1e-11
@@ -263,8 +269,7 @@ public class CompoundCRS extends GeodeticCRS {
                 ops.add(LoadMemorizeCoordinate.loadX); // We use the original value for a greater precision
 
             }
-        }
-        else {
+        } else {
             throw new CoordinateOperationNotFoundException("Unknown vertical datum type for this CRS : " + this);
         }
         return new CoordinateOperationSequence(new Identifier(
@@ -276,9 +281,10 @@ public class CompoundCRS extends GeodeticCRS {
      * Geographic3DCRS based on the same {@link org.cts.datum.GeodeticDatum},
      * and using normal SI units in the following order : latitude (rad),
      * longitude (rad) height/altitude (m) to this CoordinateReferenceSystem.
-     * @return 
-     * @throws org.cts.op.NonInvertibleOperationException 
-     * @throws org.cts.op.CoordinateOperationNotFoundException 
+     *
+     * @return
+     * @throws org.cts.op.NonInvertibleOperationException
+     * @throws org.cts.op.CoordinateOperationNotFoundException
      */
     @Override
     public CoordinateOperation fromGeographicCoordinateConverter()
@@ -383,7 +389,7 @@ public class CompoundCRS extends GeodeticCRS {
     /**
      * Returns a WKT representation of the compound CRS.
      *
-     * @return 
+     * @return
      */
     public String toWKT() {
         StringBuilder w = new StringBuilder();
@@ -403,7 +409,8 @@ public class CompoundCRS extends GeodeticCRS {
 
     /**
      * Return a String representation of this Datum.
-     * @return 
+     *
+     * @return
      */
     @Override
     public String toString() {

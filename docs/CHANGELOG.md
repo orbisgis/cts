@@ -1,0 +1,1 @@
+# ChangeLog for v1.6.0

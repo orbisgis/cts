@@ -1,11 +1,11 @@
 /*
- * Coordinate Transformations Suite (abridged CTS)  is a library developped to 
- * perform Coordinate Transformations using well known geodetic algorithms 
- * and parameter sets. 
+ * Coordinate Transformations Suite (abridged CTS)  is a library developped to
+ * perform Coordinate Transformations using well known geodetic algorithms
+ * and parameter sets.
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
- * name. It has been renamed CTS in 2009 and shared to the community from 
+ * name. It has been renamed CTS in 2009 and shared to the community from
  * the OrbisGIS code repository.
  *
  * CTS is free software: you can redistribute it and/or modify it under the
@@ -23,14 +23,13 @@
  */
 package org.cts.op.transformation;
 
-import static java.lang.Math.sin;
-
 import org.cts.CoordinateDimensionException;
 import org.cts.Identifier;
 import org.cts.IllegalCoordinateException;
 import org.cts.op.AbstractCoordinateOperation;
 import org.cts.op.CoordinateOperation;
-import org.cts.op.NonInvertibleOperationException;
+
+import static java.lang.Math.sin;
 
 /**
  * Seven-Parameter transformations are mathematical similarities or Helmert
@@ -102,22 +101,22 @@ public class SevenParameterTransformation extends AbstractCoordinateOperation
     /**
      * <p>7-parameter transformation for geodesy calculation.</p>
      *
-     * @param tx translation parameter along x axis (meters)
-     * @param ty translation parameter along y axis (meters)
-     * @param tz translation parameter along z axis (meters)
-     * @param rx rotation parameter around x axis (radians)
-     * @param ry rotation parameter around y axis (radians)
-     * @param rz rotation parameter around z axis (radians)
-     * @param scale scale factor
+     * @param tx                 translation parameter along x axis (meters)
+     * @param ty                 translation parameter along y axis (meters)
+     * @param tz                 translation parameter along z axis (meters)
+     * @param rx                 rotation parameter around x axis (radians)
+     * @param ry                 rotation parameter around y axis (radians)
+     * @param rz                 rotation parameter around z axis (radians)
+     * @param scale              scale factor
      * @param rotationConvention rotation convention (POSITION_VECTOR or
-     * COORDINATE_FRAME)
-     * @param linearized true means sin(x) is replaced by x
-     * @param precision mean precision of the geodetic transformation
+     *                           COORDINATE_FRAME)
+     * @param linearized         true means sin(x) is replaced by x
+     * @param precision          mean precision of the geodetic transformation
      */
     private SevenParameterTransformation(double tx, double ty, double tz,
-            double rx, double ry, double rz,
-            double scale, int rotationConvention,
-            boolean linearized, double precision) {
+                                         double rx, double ry, double rz,
+                                         double scale, int rotationConvention,
+                                         boolean linearized, double precision) {
         super(idT);
         if (rx == 0.0 && ry == 0.0 && rz == 0.0 && scale == 1.0) {
             setIdentifier(idT);
@@ -153,17 +152,17 @@ public class SevenParameterTransformation extends AbstractCoordinateOperation
     /**
      * <p>Create a 7-Parameter transformation with a default precision.</p>
      *
-     * @param tx translation parameter along x axis (meters)
-     * @param ty translation parameter along y axis (meters)
-     * @param tz translation parameter along z axis (meters)
-     * @param rx_sec rotation parameter around x axis (seconds)
-     * @param ry_sec rotation parameter around y axis (seconds)
-     * @param rz_sec rotation parameter around z axis (seconds)
-     * @param ds_ppm scale factor in ppm (parts per million)
+     * @param tx                 translation parameter along x axis (meters)
+     * @param ty                 translation parameter along y axis (meters)
+     * @param tz                 translation parameter along z axis (meters)
+     * @param rx_sec             rotation parameter around x axis (seconds)
+     * @param ry_sec             rotation parameter around y axis (seconds)
+     * @param rz_sec             rotation parameter around z axis (seconds)
+     * @param ds_ppm             scale factor in ppm (parts per million)
      * @param rotationConvention convention used for the rotation (Position-
-     * Vector or Coordinate-Frame)
-     * @param linearized true if the formula is linearized (sin(x) = x)
-     * @return 
+     *                           Vector or Coordinate-Frame)
+     * @param linearized         true if the formula is linearized (sin(x) = x)
+     * @return
      */
     public static SevenParameterTransformation createSevenParameterTransformation(
             double tx, double ty, double tz,
@@ -180,17 +179,17 @@ public class SevenParameterTransformation extends AbstractCoordinateOperation
     /**
      * <p>Create a 7-parameter transformation with a specific precision.</p>
      *
-     * @param tx translation parameter along x axis (meters)
-     * @param ty translation parameter along y axis (meters)
-     * @param tz translation parameter along z axis (meters)
-     * @param rx_sec rotation parameter around x axis (seconds)
-     * @param ry_sec rotation parameter around y axis (seconds)
-     * @param rz_sec rotation parameter around z axis (seconds)
-     * @param ds_ppm scale factor in ppm (parts per million)
+     * @param tx                 translation parameter along x axis (meters)
+     * @param ty                 translation parameter along y axis (meters)
+     * @param tz                 translation parameter along z axis (meters)
+     * @param rx_sec             rotation parameter around x axis (seconds)
+     * @param ry_sec             rotation parameter around y axis (seconds)
+     * @param rz_sec             rotation parameter around z axis (seconds)
+     * @param ds_ppm             scale factor in ppm (parts per million)
      * @param rotationConvention convention used for the rotation (Position-
-     * Vector or Coordinate-Frame)
-     * @param linearized true if the formula is linearized (sin(x) = x)
-     * @param precision precision of the transformation in meters
+     *                           Vector or Coordinate-Frame)
+     * @param linearized         true if the formula is linearized (sin(x) = x)
+     * @param precision          precision of the transformation in meters
      */
     public static SevenParameterTransformation createSevenParameterTransformation(
             double tx, double ty, double tz,
@@ -216,15 +215,15 @@ public class SevenParameterTransformation extends AbstractCoordinateOperation
      * and it is recommended by the International Association of Geodesy and ISO
      * 19111).</p>
      *
-     * @param tx translation parameter along x axis (meters)
-     * @param ty translation parameter along y axis (meters)
-     * @param tz translation parameter along z axis (meters)
+     * @param tx     translation parameter along x axis (meters)
+     * @param ty     translation parameter along y axis (meters)
+     * @param tz     translation parameter along z axis (meters)
      * @param rx_sec rotation parameter around x axis (seconds, point vector
-     * convention)
+     *               convention)
      * @param ry_sec rotation parameter around y axis (seconds, point vector
-     * convention)
+     *               convention)
      * @param rz_sec rotation parameter around z axis (seconds, point vector
-     * convention)
+     *               convention)
      * @param ds_ppm scale factor in ppm (parts per million)
      */
     public static SevenParameterTransformation createBursaWolfTransformation(
@@ -267,16 +266,16 @@ public class SevenParameterTransformation extends AbstractCoordinateOperation
      * and it is recommended by the International Association of Geodesy and ISO
      * 19111).</p>
      *
-     * @param tx translation parameter along x axis (meters)
-     * @param ty translation parameter along y axis (meters)
-     * @param tz translation parameter along z axis (meters)
-     * @param rx_sec rotation parameter around x axis (seconds, point vector
-     * convention)
-     * @param ry_sec rotation parameter around y axis (seconds, point vector
-     * convention)
-     * @param rz_sec rotation parameter around z axis (seconds, point vector
-     * convention)
-     * @param ds_ppm scale factor in ppm (parts per million)
+     * @param tx        translation parameter along x axis (meters)
+     * @param ty        translation parameter along y axis (meters)
+     * @param tz        translation parameter along z axis (meters)
+     * @param rx_sec    rotation parameter around x axis (seconds, point vector
+     *                  convention)
+     * @param ry_sec    rotation parameter around y axis (seconds, point vector
+     *                  convention)
+     * @param rz_sec    rotation parameter around z axis (seconds, point vector
+     *                  convention)
+     * @param ds_ppm    scale factor in ppm (parts per million)
      * @param precision mean precision of the geodetic transformation
      */
     public static SevenParameterTransformation createBursaWolfTransformation(
@@ -298,15 +297,15 @@ public class SevenParameterTransformation extends AbstractCoordinateOperation
      * opposite rotation angle convention. It is used in USA and recommended by
      * NATO.</p> <p>Formulas are linearized as in BursaWolf transformation.</p>
      *
-     * @param tx translation parameter along x axis (meters)
-     * @param ty translation parameter along y axis (meters)
-     * @param tz translation parameter along z axis (meters)
+     * @param tx     translation parameter along x axis (meters)
+     * @param ty     translation parameter along y axis (meters)
+     * @param tz     translation parameter along z axis (meters)
      * @param rx_sec rotation parameter around x axis (seconds, point vector
-     * convention)
+     *               convention)
      * @param ry_sec rotation parameter around y axis (seconds, point vector
-     * convention)
+     *               convention)
      * @param rz_sec rotation parameter around z axis (seconds, point vector
-     * convention)
+     *               convention)
      * @param ds_ppm scale factor in ppm (parts per million)
      */
     public static SevenParameterTransformation createCoordinateFrameRotation(
@@ -327,16 +326,16 @@ public class SevenParameterTransformation extends AbstractCoordinateOperation
      * opposite rotation angle convention. It is used in USA and recommended by
      * NATO.</p> <p>Formulas are linearized as in BursaWolf transformation.</p>
      *
-     * @param tx translation parameter along x axis (meters)
-     * @param ty translation parameter along y axis (meters)
-     * @param tz translation parameter along z axis (meters)
-     * @param rx_sec rotation parameter around x axis (seconds, point vector
-     * convention)
-     * @param ry_sec rotation parameter around y axis (seconds, point vector
-     * convention)
-     * @param rz_sec rotation parameter around z axis (seconds, point vector
-     * convention)
-     * @param ds_ppm scale factor in ppm (parts per million)
+     * @param tx        translation parameter along x axis (meters)
+     * @param ty        translation parameter along y axis (meters)
+     * @param tz        translation parameter along z axis (meters)
+     * @param rx_sec    rotation parameter around x axis (seconds, point vector
+     *                  convention)
+     * @param ry_sec    rotation parameter around y axis (seconds, point vector
+     *                  convention)
+     * @param rz_sec    rotation parameter around z axis (seconds, point vector
+     *                  convention)
+     * @param ds_ppm    scale factor in ppm (parts per million)
      * @param precision mean precision of the geodetic transformation
      */
     public static SevenParameterTransformation createCoordinateFrameRotation(
@@ -356,7 +355,7 @@ public class SevenParameterTransformation extends AbstractCoordinateOperation
      *
      * @param coord the coordinate to transform
      * @throws IllegalCoordinateException if <code>coord</code> is not
-     * compatible with this <code>CoordinateOperation</code>.
+     *                                    compatible with this <code>CoordinateOperation</code>.
      */
     @Override
     public double[] transform(double[] coord) throws IllegalCoordinateException {
@@ -424,11 +423,11 @@ public class SevenParameterTransformation extends AbstractCoordinateOperation
             @Override
             public double getPrecision() {
                 if (linearized == NOT_LINEARIZED) return precision;
-                // If the transformation is linearized, inverseTransformation return a lesser precision
-                // so that direct transformation may always have priority over inverse transformation.
-                else if (Math.abs(rx) + Math.abs(ry) + Math.abs(rz) < 0.0001) return precision*0.9;
-                else if (Math.abs(rx) + Math.abs(ry) + Math.abs(rz) < 0.001) return precision*0.5;
-                else return precision*0.1;
+                    // If the transformation is linearized, inverseTransformation return a lesser precision
+                    // so that direct transformation may always have priority over inverse transformation.
+                else if (Math.abs(rx) + Math.abs(ry) + Math.abs(rz) < 0.0001) return precision * 0.9;
+                else if (Math.abs(rx) + Math.abs(ry) + Math.abs(rz) < 0.001) return precision * 0.5;
+                else return precision * 0.1;
             }
         };
     }
@@ -455,11 +454,11 @@ public class SevenParameterTransformation extends AbstractCoordinateOperation
                 sry = linearized ? sry : sin(sry);
                 srz = linearized ? srz : sin(srz);
                 double e = scale;
-                double e2 = e*e;
-                double det = e * (e2 + srx*srx + sry*sry + srz*srz);
-                coord[0] = (x * (e2 + srx*srx) + z * (srx*srz - e*sry) + y * (e*srz + srx*sry)) / det;
-                coord[1] = (y * (e2 + sry*sry) + x * (sry*srx - e*srz) + z * (e*srx + sry*srz)) / det;
-                coord[2] = (z * (e2 + srz*srz) + y * (srz*sry - e*srx) + x * (e*sry + srz*srx)) / det;
+                double e2 = e * e;
+                double det = e * (e2 + srx * srx + sry * sry + srz * srz);
+                coord[0] = (x * (e2 + srx * srx) + z * (srx * srz - e * sry) + y * (e * srz + srx * sry)) / det;
+                coord[1] = (y * (e2 + sry * sry) + x * (sry * srx - e * srz) + z * (e * srx + sry * srz)) / det;
+                coord[2] = (z * (e2 + srz * srz) + y * (srz * sry - e * srx) + x * (e * sry + srz * srx)) / det;
                 return coord;
             }
 
@@ -473,9 +472,9 @@ public class SevenParameterTransformation extends AbstractCoordinateOperation
                 if (linearized == NOT_LINEARIZED) return precision;
                     // If the transformation is linearized, inverseTransformation return a lesser precision
                     // so that direct transformation may always have priority over inverse transformation.
-                else if (Math.abs(rx) + Math.abs(ry) + Math.abs(rz) < 0.0001) return precision*0.9;
-                else if (Math.abs(rx) + Math.abs(ry) + Math.abs(rz) < 0.001) return precision*0.5;
-                else return precision*0.1;
+                else if (Math.abs(rx) + Math.abs(ry) + Math.abs(rz) < 0.0001) return precision * 0.9;
+                else if (Math.abs(rx) + Math.abs(ry) + Math.abs(rz) < 0.001) return precision * 0.5;
+                else return precision * 0.1;
             }
 
         };
@@ -499,7 +498,6 @@ public class SevenParameterTransformation extends AbstractCoordinateOperation
 
     /**
      * Returns a WKT representation of the seven parameter transformation.
-     *
      */
     @Override
     public String toWKT() {
@@ -562,15 +560,15 @@ public class SevenParameterTransformation extends AbstractCoordinateOperation
             return true;
         }
         if (o instanceof CoordinateOperation) {
-            if (this.isIdentity() && ((CoordinateOperation)o).isIdentity()) {
+            if (this.isIdentity() && ((CoordinateOperation) o).isIdentity()) {
                 return true;
             }
             if (o instanceof SevenParameterTransformation) {
                 SevenParameterTransformation transfo = (SevenParameterTransformation) o;
                 return ((this.tx == transfo.tx) && (this.ty == transfo.ty) && (this.tz == transfo.tz)
-                    && (this.rx == transfo.rx) && (this.ry == transfo.ry) && (this.rz == transfo.rz)
-                    && (this.scale == transfo.scale) && (this.rotationConvention == transfo.rotationConvention)
-                    && (this.linearized == transfo.linearized));
+                        && (this.rx == transfo.rx) && (this.ry == transfo.ry) && (this.rz == transfo.rz)
+                        && (this.scale == transfo.scale) && (this.rotationConvention == transfo.rotationConvention)
+                        && (this.linearized == transfo.linearized));
             }
         }
         return false;

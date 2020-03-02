@@ -1,11 +1,11 @@
 /*
- * Coordinate Transformations Suite (abridged CTS)  is a library developped to 
- * perform Coordinate Transformations using well known geodetic algorithms 
- * and parameter sets. 
+ * Coordinate Transformations Suite (abridged CTS)  is a library developped to
+ * perform Coordinate Transformations using well known geodetic algorithms
+ * and parameter sets.
  * Its main focus are simplicity, flexibility, interoperability, in this order.
  *
  * This library has been originally developed by Michaël Michaud under the JGeod
- * name. It has been renamed CTS in 2009 and shared to the community from 
+ * name. It has been renamed CTS in 2009 and shared to the community from
  * the OrbisGIS code repository.
  *
  * CTS is free software: you can redistribute it and/or modify it under the
@@ -34,10 +34,9 @@ import java.util.List;
  * Identifier also offers new unique ids for every object created in the LOCAL
  * namespace.
  *
+ * @author Michaël Michaud
  * @see Identifiable
  * @see IdentifiableComponent
- *
- * @author Michaël Michaud
  */
 public class Identifier implements Identifiable {
 
@@ -50,11 +49,13 @@ public class Identifier implements Identifiable {
     /**
      * Return an identifier which is unique for this program session. This
      * identifier is usually associated with the LOCAL namespace
-     * @return 
+     *
+     * @return
      */
     public static int getNewId() {
         return localId++;
     }
+
     /**
      * Mandatory attribute (default = LOCAL).
      */
@@ -84,14 +85,14 @@ public class Identifier implements Identifiable {
      * Creates a complete identifier.
      *
      * @param authorityName namespace of the identifier ie EPSG, IGNF
-     * @param authorityKey unique key in the namespace
-     * @param name name or description
-     * @param shortName short name used for user interfaces
-     * @param remarks remarks containing additionnal information on the object
-     * @param aliases synonyms of this Identifiable
+     * @param authorityKey  unique key in the namespace
+     * @param name          name or description
+     * @param shortName     short name used for user interfaces
+     * @param remarks       remarks containing additionnal information on the object
+     * @param aliases       synonyms of this Identifiable
      */
     public Identifier(String authorityName, String authorityKey, String name,
-            String shortName, String remarks, List<Identifiable> aliases) {
+                      String shortName, String remarks, List<Identifiable> aliases) {
         this.authorityName = authorityName;
         this.authorityKey = authorityKey;
         this.name = name;
@@ -115,7 +116,7 @@ public class Identifier implements Identifiable {
      * Create a local identifier.
      *
      * @param clazz the class of the identified object
-     * @param name the name of the identified object
+     * @param name  the name of the identified object
      */
     public Identifier(Class clazz, String name) {
         this(Identifiable.LOCAL + "_" + clazz.getSimpleName(),
@@ -126,8 +127,8 @@ public class Identifier implements Identifiable {
     /**
      * Create a local identifier.
      *
-     * @param clazz the class of the identified object
-     * @param name the name of the identified object
+     * @param clazz     the class of the identified object
+     * @param name      the name of the identified object
      * @param shortName the short name of the identified object
      */
     public Identifier(Class clazz, String name, String shortName) {
@@ -139,13 +140,13 @@ public class Identifier implements Identifiable {
     /**
      * Create a local identifier.
      *
-     * @param clazz the class of the identified object
-     * @param name the name of the identified object
+     * @param clazz     the class of the identified object
+     * @param name      the name of the identified object
      * @param shortName the short name of the identified object
-     * @param aliases synonyms of this Identifiable
+     * @param aliases   synonyms of this Identifiable
      */
     public Identifier(Class clazz, String name, String shortName,
-            List<Identifiable> aliases) {
+                      List<Identifiable> aliases) {
         this(Identifiable.LOCAL + "_" + clazz.getSimpleName(),
                 "" + getNewId(),
                 name, shortName, null, aliases);
@@ -155,7 +156,7 @@ public class Identifier implements Identifiable {
      * Creates a complete identifier.
      *
      * @param authorityName ie EPSG, IGNF
-     * @param authorityKey ie 4326, LAMB
+     * @param authorityKey  ie 4326, LAMB
      * @param name
      */
     public Identifier(String authorityName, String authorityKey, String name) {
@@ -166,9 +167,9 @@ public class Identifier implements Identifiable {
      * Creates a complete identifier.
      *
      * @param authorityName ie EPSG, IGNF
-     * @param authorityKey ie 4326, LAMB
+     * @param authorityKey  ie 4326, LAMB
      * @param name
-     * @param shortName a short name to use in user interfaces
+     * @param shortName     a short name to use in user interfaces
      */
     public Identifier(String authorityName, String authorityKey, String name, String shortName) {
         this(authorityName, authorityKey, name, shortName, null, null);
@@ -177,7 +178,8 @@ public class Identifier implements Identifiable {
     /**
      * Return the authority name of this identifier (ex. EPSG, IGN-F) The
      * namespace may represent a database name, a URL, a URN...
-     * @return 
+     *
+     * @return
      */
     @Override
     public String getAuthorityName() {
@@ -187,7 +189,8 @@ public class Identifier implements Identifiable {
     /**
      * Returns the key of this identifier (id must be unique inside the
      * authority name).
-     * @return 
+     *
+     * @return
      */
     @Override
     public String getAuthorityKey() {
@@ -207,7 +210,8 @@ public class Identifier implements Identifiable {
 
     /**
      * Returns a string used to identify clearly the object.
-     * @return 
+     *
+     * @return
      */
     @Override
     public String getName() {
@@ -218,7 +222,8 @@ public class Identifier implements Identifiable {
      * Returns a short string used to identify unambiguously the object. A short
      * name should have less than 16 characters whenever possible, and should
      * never exceed 48 characters.
-     * @return 
+     *
+     * @return
      */
     @Override
     public String getShortName() {
@@ -239,7 +244,8 @@ public class Identifier implements Identifiable {
 
     /**
      * Returns remarks.
-     * @return 
+     *
+     * @return
      */
     @Override
     public String getRemarks() {
@@ -268,7 +274,8 @@ public class Identifier implements Identifiable {
 
     /**
      * Get aliases
-     * @return 
+     *
+     * @return
      */
     @Override
     public List<Identifiable> getAliases() {
@@ -279,7 +286,7 @@ public class Identifier implements Identifiable {
      * Add an alias
      *
      * @param alias an alias for this object
-     * @return 
+     * @return
      */
     @Override
     public boolean addAlias(Identifiable alias) {
@@ -292,7 +299,7 @@ public class Identifier implements Identifiable {
     /**
      * Returns a WKT representation of the identifier.
      *
-     * @return 
+     * @return
      */
     public String toWKT() {
         String w = "AUTHORITY[\"" +
@@ -308,7 +315,7 @@ public class Identifier implements Identifiable {
      * (namespace + id), then between aliases.
      *
      * @param object The object to compare this Identifier against
-     * @return 
+     * @return
      */
     @Override
     public boolean equals(Object object) {
@@ -371,7 +378,8 @@ public class Identifier implements Identifiable {
 
     /**
      * Returns the hash code for this Identifier.
-     * @return 
+     *
+     * @return
      */
     @Override
     public int hashCode() {
@@ -384,7 +392,8 @@ public class Identifier implements Identifiable {
 
     /**
      * Returns a String representation of this identifier.
-     * @return 
+     *
+     * @return
      */
     @Override
     public String toString() {
