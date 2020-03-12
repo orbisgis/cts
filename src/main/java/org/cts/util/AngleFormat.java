@@ -32,64 +32,141 @@ import java.util.regex.Pattern;
 import static java.lang.Math.*;
 
 /**
- * <p>Formatter to print angles as a degrees/minutes/seconds (DMS) and to parse
- * DMS strings</p>
- * <p>The format method uses pattern such as #D� MM' SS\" H(N|S) to define the
- * string representation of an angle.</p>
+ * Formatter to print angles as a degrees/minutes/seconds (DMS) and to parse DMS strings.
+ * The format method uses pattern such as #D° MM' SS\" H(N|S) to define the string representation of an angle.
  *
- * @author Michaël Michaud<br>
- * <p>
+ * @author Michaël Michaud
+ *
  */
 public final class AngleFormat {
 
+    private static double DEG_TO_MIN = 60.0;
+    private static double DEG_TO_SEC = 3600.0;
+
     /**
-     * <p>This is the pattern used to define a DMS angle pattern.</p>
+     * Regex capture groups for DMSH format pattern parts.
+     */
+    private static final int
+            PREFIX = 1,
+            DEGREE_FORMAT = 2, DEGREE_SUFFIX = 3,
+            MINUTE_FORMAT = 4, MINUTE_SUFFIX = 5,
+            SECOND_FORMAT = 6, SECOND_SUFFIX = 7,
+            HEMISPHERE = 8, POSITIVE_SUFFIX = 9, NEGATIVE_SUFFIX = 10;
+
+    /**
+     * This is the pattern used to define a DMS angle pattern with the following capture groups :
+     * - 1  : the prefix, {@link AngleFormat#PREFIX}
+     * - 2  : the degree format, {@link AngleFormat#DEGREE_FORMAT}
+     * - 3  : the degree suffix, {@link AngleFormat#DEGREE_SUFFIX}
+     * - 4  : the minute format, {@link AngleFormat#MINUTE_FORMAT}
+     * - 5  : the minute suffix, {@link AngleFormat#MINUTE_SUFFIX}
+     * - 6  : the second format, {@link AngleFormat#SECOND_FORMAT}
+     * - 7  : the second suffix, {@link AngleFormat#SECOND_SUFFIX}
+     * - 8  : the hemisphere, {@link AngleFormat#HEMISPHERE}
+     * - 9  : the positive suffix, {@link AngleFormat#POSITIVE_SUFFIX}
+     * - 10 : the negative suffix, {@link AngleFormat#NEGATIVE_SUFFIX}
      */
     private static final Pattern DMSHFormatPattern = Pattern.compile(
-            "([^#DMS]*)" + // prefix part (group 1)
-                    "(?:(#?D+(?:\\.D+)?)([^#\\.MSH]*))" + // degrees part (groups 2, 3)
-                    "(?:(#?M+(?:\\.M+)?)([^#\\.DSH]*))?" + // minutes part (groups 4, 5)
-                    "(?:(#?S+(?:\\.S+)?)([^#\\.DMH]*))?" + // seconds part (groups 6, 7)
-                    "(H\\((\\w+)\\|(\\w+)\\))?" // hemisphere part (groups 8,9,10)
+            "(?:([^#DMS]*))" + // prefix part (group 1)
+            "(?:(#?D+(?:\\.D+)?)([^#.MSH]*))" + // degrees part (groups 2, 3)
+            "(?:(#?M+(?:\\.M+)?)([^#.DSH]*))?" + // minutes part (groups 4, 5)
+            "(?:(#?S+(?:\\.S+)?)([^#.DMH]*))?" + // seconds part (groups 6, 7)
+            "(H\\((\\w+)\\|(\\w+)\\))?" // hemisphere part (groups 8,9,10)
     );
+
     /**
-     * <p>This is the pattern used to parse a string representing a DMSH
-     * angle.</p>
+     * Regex capture groups for DMSH format parts.
+     */
+    private static final int
+            SIGNUM = 1,
+            DEGREE_VALUE = 2, DEGREE_UNIT = 3,
+            MINUTE_VALUE = 4, MINUTE_UNIT = 5,
+            SECOND_VALUE = 6, SECOND_UNIT = 7;
+
+    /**
+     * This is the pattern used to parse a string representing a DMSH angle with the following capture groups :
+     * - 1  : the signum, {@link AngleFormat#SIGNUM}
+     * - 2  : the degree value, {@link AngleFormat#DEGREE_VALUE}
+     * - 3  : the degree unit, {@link AngleFormat#DEGREE_UNIT}
+     * - 4  : the minute value, {@link AngleFormat#MINUTE_VALUE}
+     * - 5  : the minute unit, {@link AngleFormat#MINUTE_UNIT}
+     * - 6  : the second value, {@link AngleFormat#SECOND_VALUE}
+     * - 7  : the second unit, {@link AngleFormat#SECOND_UNIT}
+     * - 8  : the hemisphere, {@link AngleFormat#HEMISPHERE}
      */
     private static final Pattern DMSHFormat = Pattern.compile(
             // prefix, non capturing, any character sequence but signum, dot or digit
-            "[^\\d\\+\\-\\.]*"
-                    + // signum, capturing (eventually followed by some spaces)
-                    "([\\+\\-])?[\\s]*"
-                    + // degrees, capturing, MANDATORY ('0', '0.0' or '.0'),
-                    "([\\d]+(?:[\\.,]\\d*)?|[\\.,]\\d+)"
-                    + // units, capturing optional initial (d[egree]d[egré]g[rado]...)
-                    "[\\s]*(?:\u00B0|([dDgG])[a-zA-Z]*\\.?)?[\\s]*"
-                    + // minutes, capturing, optional
-                    "([\\d]+(?:[\\.,]\\d*)?)?"
-                    + // units, capturing optional initial (m[in.])
-                    "[\\s]*(?:'|([mM])[a-zA-Z]*\\.?)?[\\s]*"
-                    + // minutes, capturing, optional
-                    "([\\d]+(?:[\\.,]\\d*)?)?"
-                    + // units, capturing optional initial (m[in.])
-                    "[\\s]*(?:\"|([sS])[a-zA-Z]*\\.?)?[\\s]*"
-                    + // hemisphere, capturing, optional (caution, the s for south may have
-                    // been captured by the second units group
-                    "([NSEWOnsewo])?"
-                    + // any other character, non capturing
-                    ".*");
-    public static final AngleFormat LONGITUDE_FORMATTER = new AngleFormat("#D° MM' SS.SSSSS\" H(E|W)");
-    public static final AngleFormat LATITUDE_FORMATTER = new AngleFormat("#D° MM' SS.SSSSS\" H(N|S)");
-    private String prefix = "";
+            "[^\\d+\\-.]*" +
+            // signum, capturing (eventually followed by some spaces)
+            "([+\\-])?[\\s]*" +
+            // degrees, capturing, MANDATORY ('0', '0.0' or '.0'),
+            "([\\d]+(?:[.,]\\d*)?|[.,]\\d+)" +
+            // units, capturing optional initial (d[egree]d[egré]g[rado]...)
+            "[\\s]*(?:°|([dDgG])[a-zA-Z]*\\.?)?[\\s]*" +
+            // minutes, capturing, optional
+            "([\\d]+(?:[.,]\\d*)?)?" +
+            // units, capturing optional initial (m[in.])
+            "[\\s]*(?:'|([mM])[a-zA-Z]*\\.?)?[\\s]*" +
+            // seconds, capturing, optional
+            "([\\d]+(?:[.,]\\d*)?)?" +
+            // units, capturing optional initial (m[in.])
+            "[\\s]*(?:\"|([sS])[a-zA-Z]*\\.?)?[\\s]*" +
+            // hemisphere, capturing, optional (caution, the s for south may have been captured by the second units
+            // group
+            "([NSEWOnsewo])?" +
+            // any other character, non capturing
+            ".*");
+
+    /**
+     * String prefix of the format.
+     */
+    private String prefix = null;
+    /**
+     * DecimalFormat of the degree part.
+     */
     private DecimalFormat degree_format = new DecimalFormat("#0");
+    /**
+     * String suffix of the degree part.
+     */
     private String degree_suffix = "° ";
+    /**
+     * DecimalFormat of the minute part.
+     */
     private DecimalFormat minute_format = new DecimalFormat("00");
+    /**
+     * String suffix of the minute part.
+     */
     private String minute_suffix = "' ";
+    /**
+     * DecimalFormat of the second part.
+     */
     private DecimalFormat second_format = new DecimalFormat("00.000");
+    /**
+     * String suffix of the second part.
+     */
     private String second_suffix = "\" ";
+    /**
+     * Indicates if the format has a hemisphere suffix.
+     */
     private boolean suffix = true;
+    /**
+     * Positive hemisphere suffix.
+     */
     private String positive_suffix = "N";
+    /**
+     * Negative hemisphere suffix.
+     */
     private String negative_suffix = "S";
+
+    /**
+     * Longitude angle format with the syntax : #D° MM' SS.SSSSS" H(E|W)
+     */
+    public static final AngleFormat LONGITUDE_FORMATTER = new AngleFormat("#D° MM' SS.SSSSS\" H(E|W)");
+
+    /**
+     * Latitude angle format with the syntax : #D° MM' SS.SSSSS" H(N|S)
+     */
+    public static final AngleFormat LATITUDE_FORMATTER = new AngleFormat("#D° MM' SS.SSSSS\" H(N|S)");
 
     public static double rad2deg(double angle) {
         return angle * 180.0 / PI;
@@ -116,11 +193,11 @@ public final class AngleFormat {
     }
 
     public static double deg2min(double angle) {
-        return angle * 60.0;
+        return angle * DEG_TO_MIN;
     }
 
     public static double deg2sec(double angle) {
-        return angle * 3600.0;
+        return angle * DEG_TO_SEC;
     }
 
     public static double gra2rad(double angle) {
@@ -136,14 +213,14 @@ public final class AngleFormat {
         double dd = floor(abs(dmsAngle));
         double mm = floor(100.0 * (abs(dmsAngle) - dd));
         double ss = 10000.0 * (abs(dmsAngle) - dd - mm / 100.0);
-        return sign * (dd + mm / 60.0 + ss / 3600.0);
+        return sign * (dd + mm / DEG_TO_MIN + ss / DEG_TO_SEC);
     }
 
     public static double dd2dms(double ddAngle) {
         double sign = signum(ddAngle);
         double dd = floor(abs(ddAngle));
-        double mm = floor(60.0 * (abs(ddAngle) - dd));
-        double ss = 3600.0 * (abs(ddAngle) - dd - mm / 60.0);
+        double mm = floor(DEG_TO_MIN * (abs(ddAngle) - dd));
+        double ss = DEG_TO_SEC * (abs(ddAngle) - dd - mm / DEG_TO_MIN);
         return sign * (dd + mm / 100.0 + ss / 10000.0);
     }
 
@@ -172,7 +249,7 @@ public final class AngleFormat {
      *                </ul>
      *                <p>Exemples :</p>
      *                <ul>
-     *                <li>latitude = #D\u00B0 MM' SS.SSS\" H(N|S) --> latitude = 45\u00B0 09'
+     *                <li>latitude = #D° MM' SS.SSS\" H(N|S) --> latitude = 45° 09'
      *                56.897" S</li>
      *                <li>#D deg #M min --> -4 deg 6 min</li>
      *                </ul>
@@ -183,48 +260,40 @@ public final class AngleFormat {
             throw new IllegalArgumentException(pattern + " is an illegal pattern for an AngleFormat");
         }
 
-        prefix = matcher.group(1);
+        prefix = matcher.group(PREFIX);
 
-        if (null == matcher.group(2)) {
-            degree_format = null;
-        } else {
-            degree_format = new DecimalFormat(matcher.group(2).replaceAll("D", "0"));
-            degree_format.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.ENGLISH));
-        }
-        if (null == matcher.group(3)) {
-            degree_suffix = "";
-        } else {
-            degree_suffix = matcher.group(3);
-        }
+        //The degree part is mandatory in the regex DMSHFormatPattern so there is always a degree_format and degree_suffix
+        degree_format = new DecimalFormat(matcher.group(DEGREE_FORMAT).replaceAll("D", "0"));
+        degree_format.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.ENGLISH));
+        degree_suffix = matcher.group(DEGREE_SUFFIX);
 
-        if (null == matcher.group(4)) {
+        if (null == matcher.group(MINUTE_FORMAT)) {
             minute_format = null;
         } else {
-            minute_format = new DecimalFormat(matcher.group(4).replaceAll("M", "0"));
+            minute_format = new DecimalFormat(matcher.group(MINUTE_FORMAT).replaceAll("M", "0"));
             minute_format.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.ENGLISH));
         }
-        if (null == matcher.group(5)) {
+        if (null == matcher.group(MINUTE_SUFFIX)) {
             minute_suffix = "";
         } else {
-            minute_suffix = matcher.group(5);
+            minute_suffix = matcher.group(MINUTE_SUFFIX);
         }
 
-        if (null == matcher.group(6)) {
+        if (null == matcher.group(SECOND_FORMAT)) {
             second_format = null;
         } else {
-            second_format = new DecimalFormat(matcher.group(6).replaceAll("S", "0"));
+            second_format = new DecimalFormat(matcher.group(SECOND_FORMAT).replaceAll("S", "0"));
             second_format.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.ENGLISH));
         }
-        if (null == matcher.group(7)) {
+        if (null == matcher.group(SECOND_SUFFIX)) {
             second_suffix = "";
         } else {
-            second_suffix = matcher.group(7);
+            second_suffix = matcher.group(SECOND_SUFFIX);
         }
 
-        if (null != matcher.group(8)) {
-            suffix = true;
-            positive_suffix = matcher.group(9);
-            negative_suffix = matcher.group(10);
+        if (null != matcher.group(HEMISPHERE)) {
+            positive_suffix = matcher.group(POSITIVE_SUFFIX);
+            negative_suffix = matcher.group(NEGATIVE_SUFFIX);
         } else {
             suffix = false;
         }
@@ -237,7 +306,6 @@ public final class AngleFormat {
      */
     public String format(double angle) {
         double absangle = Math.abs(angle);
-        double signum = Math.signum(angle);
         StringBuilder sb = new StringBuilder();
         if (prefix != null) {
             sb.append(prefix);
@@ -248,55 +316,56 @@ public final class AngleFormat {
 
         // minute_format == null --> only degrees are represented
         if (minute_format == null) {
-            sb.append(degree_format.format(absangle)).append(degree_suffix);
+            sb.append(degree_format.format(absangle));
         } else {
-            sb.append(degree_format.format(Math.floor(absangle))).append(degree_suffix);
+            sb.append(degree_format.format(Math.floor(absangle)));
         }
+        sb.append(degree_suffix);
         if (degree_suffix.length() == 0) {
             sb.append(" ");
         }
 
         if (minute_format != null) {
-            // second_format == null --> only degrees / minutes are reprsented
-            double minutes = deg2min(absangle) % 60;
+            // second_format == null --> only degrees / minutes are represented
+            double minutes = deg2min(absangle) % DEG_TO_MIN;
             if (second_format == null) {
-                sb.append(minute_format.format(minutes)).append(minute_suffix);
+                sb.append(minute_format.format(minutes));
             } else {
-                sb.append(minute_format.format(Math.floor(minutes))).append(minute_suffix);
+                sb.append(minute_format.format(Math.floor(minutes)));
             }
+            sb.append(minute_suffix);
             if (minute_suffix.length() == 0) {
                 sb.append(" ");
             }
 
             if (second_format != null) {
-                double seconds = deg2sec(absangle) % 60;
+                double seconds = deg2sec(absangle) % DEG_TO_MIN;
                 sb.append(second_format.format(seconds)).append(second_suffix);
             }
         }
 
-        if (suffix && angle >= 0) {
-            sb.append(positive_suffix);
-        } else if (suffix && angle < 0) {
-            sb.append(negative_suffix);
+        if (suffix) {
+            if (angle >= 0) {
+                sb.append(positive_suffix);
+            } else {
+                sb.append(negative_suffix);
+            }
         }
 
         return sb.toString();
     }
 
     /**
-     * Parse a string representing an angle written in DMSH (degrees / minutes /
-     * seconds / hemisphere). The parser is very flexible and can analyze
-     * strings as
-     * <ul>
-     * <li>2</li>
-     * <li>.2\u00B0</li>
-     * <li>-.2\u00B0</li>
-     * <li>0.2\u00B0 S</li>
-     * <li>2\u00B0 2'</li>
-     * <li>2\u00B0 2' 2" W</li>
-     * <li>2\u00B0 02' 02" N</li>
-     * <li>l=-2\u00B02'2.222"</li>
-     * </ul>
+     * Parse a string representing an angle written in DMSH (degrees / minutes / seconds / hemisphere). The parser is
+     * very flexible and can analyze strings as :
+     * - 2
+     * - .2°
+     * - -.2°
+     * - 0.2° S
+     * - 2° 2'
+     * - 2° 2' 2" W
+     * - 2° 02' 02" N
+     * - l=-2°2'2.222"
      *
      * @param angle the string to parse
      * @return the angle in degrees
@@ -304,36 +373,30 @@ public final class AngleFormat {
     public static double parseAngle(String angle) throws IllegalArgumentException {
         Matcher m = DMSHFormat.matcher(angle);
         if (m.matches()) {
-            try {
-                double degrees = Double.parseDouble(m.group(2));
-                String deg = m.group(3);
-                double minutes = m.group(4) == null ? 0.0 : Double.parseDouble(m.group(4));
-                String min = m.group(5);
-                double seconds = m.group(6) == null ? 0.0 : Double.parseDouble(m.group(6));
-                String sec = m.group(7);
-                double a = degrees + minutes / 60.0 + seconds / 3600.0;
+            double degrees = Double.parseDouble(m.group(DEGREE_VALUE));
+            String deg = m.group(DEGREE_UNIT);
+            double minutes = m.group(MINUTE_VALUE) == null ? 0.0 : Double.parseDouble(m.group(MINUTE_VALUE));
+            String min = m.group(MINUTE_UNIT);
+            double seconds = m.group(SECOND_VALUE) == null ? 0.0 : Double.parseDouble(m.group(SECOND_VALUE));
+            String sec = m.group(SECOND_UNIT);
+            double a = degrees + minutes / DEG_TO_MIN + seconds / DEG_TO_SEC;
 
-                String signum = m.group(1);
-                // If there is a - signum, the hemisphere (north, south, east,
-                // west) is ignored
-                if (null != signum && signum.equals("-")) {
-                    return -a;
-                }
-                // Hemisphere
-                String h = m.group(8);
-                if (null != h && h.matches("[SsOoWw].*")) {
-                    return -a;
-                } // if the sec unit group is not null but the degree unit group
-                // is null and the min unit group is null,
-                // then the s of the second unit group means south.
-                else if (null != sec && deg == null && min == null) {
-                    // last s means south and not second
-                    return -a;
-                } else {
-                    return a;
-                }
-            } catch (NumberFormatException e) {
-                throw e;
+            String signum = m.group(SIGNUM);
+            // If there is a - signum, the hemisphere (north, south, east, west) is ignored
+            if ("-".equals(signum)) {
+                return -a;
+            }
+            // Hemisphere
+            String h = m.group(HEMISPHERE);
+            if (h != null && h.matches("[SsOoWw].*")) {
+                return -a;
+            } // if the sec unit group is not null but the degree unit group is null and the min unit group is null,
+            // then the s of the second unit group means south.
+            else if (sec != null && deg == null && min == null) {
+                // last s means south and not second
+                return -a;
+            } else {
+                return a;
             }
         } else {
             throw new IllegalArgumentException(angle + " is not a recognized angle value");
@@ -341,27 +404,24 @@ public final class AngleFormat {
     }
 
     /**
-     * <p>This method parse a string which represent an angle in radians, in
-     * grades or in degrees.</p>
-     * <p>The parser try to recognize a symbol to determine the units used in
-     * the string and convert the angle into radians.</p>
+     * This method parse a string which represent an angle in radians, in grades or in degrees.
+     * The parser try to recognize a symbol to determine the units used in the string and convert the angle into
+     * radians.
      */
     public static double parseAndConvert2Radians(String angle) throws IllegalArgumentException {
         // If angle contains no unit, the angle is in radians
-        if (angle.matches("[\\+\\-]?([0-9]+([\\.,][0-9]+)|[\\.][0-9]+)")) {
+        if (angle.matches("[+\\-]?([0-9]+([.,][0-9]+)|[.][0-9]+)")) {
             angle = angle.replaceAll(",", ".");
             return Double.parseDouble(angle);
-        } // If angle ends with g, gr, grad or grades, the angle is converted from
-        // grades to radians
+        } // If angle ends with g, gr, grad or grades, the angle is converted from grades to radians
         else if (angle.matches("(?i).*(g|g\\.|gr|gr\\.|grad|grad\\.|grades)\\z")) {
             angle = angle.replaceAll("(?i)[\\s]*(g|g\\.|gr|gr\\.|grad|grad\\.|grades)\\z", "");
             angle = angle.replaceAll(",", ".");
-            return Double.parseDouble(angle) * Math.PI / 200;
-        } // Else if, the angle is considered as a degree/minutes/seconds angle,
-        // and the parseAngle method is used
+            return gra2rad(Double.parseDouble(angle));
+        } // Else if, the angle is considered as a degree/minutes/seconds angle, and the parseAngle method is used
         else {
             double d = parseAngle(angle);
-            return d * Math.PI / 180;
+            return deg2rad(d);
         }
     }
 }
