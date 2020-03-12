@@ -374,7 +374,7 @@ public final class AngleFormat {
      * @return The {@link String} formatted angle.
      */
     public String format(double angle) {
-        double absAngle = Math.abs(angle);
+        double absAngle = abs(angle);
         StringBuilder sb = new StringBuilder();
         if (prefix != null) {
             sb.append(prefix);
@@ -486,13 +486,13 @@ public final class AngleFormat {
         }
         // If angle contains no unit, the angle is in radians
         if (angle.matches("[+\\-]?([0-9]+([.,][0-9]+)|[.][0-9]+)")) {
-            angle = angle.replaceAll(",", ".");
-            return Double.parseDouble(angle);
+            String formatted = angle.replaceAll(",", ".");
+            return Double.parseDouble(formatted);
         } // If angle ends with g, gr, grad or grades, the angle is converted from grades to radians
         else if (angle.matches("(?i).*(g|g\\.|gr|gr\\.|grad|grad\\.|grades)\\z")) {
-            angle = angle.replaceAll("(?i)[\\s]*(g|g\\.|gr|gr\\.|grad|grad\\.|grades)\\z", "");
-            angle = angle.replaceAll(",", ".");
-            return gra2rad(Double.parseDouble(angle));
+            String formatted = angle.replaceAll("(?i)[\\s]*(g|g\\.|gr|gr\\.|grad|grad\\.|grades)\\z", "");
+            formatted = formatted.replaceAll(",", ".");
+            return gra2rad(Double.parseDouble(formatted));
         } // Else if, the angle is considered as a degree/minutes/seconds angle, and the parseAngle method is used
         else {
             double d = parseAngle(angle);
