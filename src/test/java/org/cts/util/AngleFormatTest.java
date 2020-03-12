@@ -197,8 +197,8 @@ class AngleFormatTest {
         assertEquals("+02° ", formatWithoutMH.format(2.1010));
 
         AngleFormat formatWithoutMS = new AngleFormat("#DD° H(N|S)");
-        assertEquals("-42° ", formatWithoutMH.format(-42.2154444));
-        assertEquals("+02° ", formatWithoutMH.format(2.1010));
+        assertEquals("42° S", formatWithoutMS.format(-42.2154444));
+        assertEquals("02° N", formatWithoutMS.format(2.1010));
 
         AngleFormat formatWithoutMSH = new AngleFormat("#DD°");
         assertEquals("-42°", formatWithoutMSH.format(-42.2154444));
@@ -207,6 +207,7 @@ class AngleFormatTest {
 
     @Test
     void angleFormatBadTest(){
+        assertThrows(IllegalArgumentException.class, () -> new AngleFormat(null));
         assertThrows(IllegalArgumentException.class, () -> new AngleFormat(""));
         assertThrows(IllegalArgumentException.class, () -> new AngleFormat("Not a valid format"));
         assertThrows(IllegalArgumentException.class, () -> new AngleFormat("prefix#MM' SS.SSS\" H(N|S)"));

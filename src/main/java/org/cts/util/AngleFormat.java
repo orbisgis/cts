@@ -23,6 +23,8 @@
  */
 package org.cts.util;
 
+import org.orbisgis.commons.annotations.NotNull;
+
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
@@ -118,31 +120,31 @@ public final class AngleFormat {
             ".*");
 
     /**
-     * String prefix of the format.
+     * {@link String} prefix of the format.
      */
     private String prefix = null;
     /**
-     * DecimalFormat of the degree part.
+     * {@link DecimalFormat} of the degree part.
      */
     private DecimalFormat degree_format = new DecimalFormat("#0");
     /**
-     * String suffix of the degree part.
+     * {@link String} suffix of the degree part.
      */
     private String degree_suffix = "° ";
     /**
-     * DecimalFormat of the minute part.
+     * {@link DecimalFormat} of the minute part.
      */
     private DecimalFormat minute_format = new DecimalFormat("00");
     /**
-     * String suffix of the minute part.
+     * {@link String} suffix of the minute part.
      */
     private String minute_suffix = "' ";
     /**
-     * DecimalFormat of the second part.
+     * {@link DecimalFormat} of the second part.
      */
     private DecimalFormat second_format = new DecimalFormat("00.000");
     /**
-     * String suffix of the second part.
+     * {@link String} suffix of the second part.
      */
     private String second_suffix = "\" ";
     /**
@@ -168,42 +170,102 @@ public final class AngleFormat {
      */
     public static final AngleFormat LATITUDE_FORMATTER = new AngleFormat("#D° MM' SS.SSSSS\" H(N|S)");
 
+    /**
+     * Convert a radian angle into degrees.
+     *
+     * @param angle Angle in radians.
+     * @return Angle in degrees.
+     */
     public static double rad2deg(double angle) {
         return angle * 180.0 / PI;
     }
 
+    /**
+     * Convert a radian angle into grades.
+     *
+     * @param angle Angle in radians.
+     * @return Angle in grades.
+     */
     public static double rad2gra(double angle) {
         return angle * 200.0 / PI;
     }
 
+    /**
+     * Convert a radian angle into minutes.
+     *
+     * @param angle Angle in radians.
+     * @return Angle in minutes.
+     */
     public static double rad2min(double angle) {
         return angle * 10800.0 / PI;
     }
 
+    /**
+     * Convert a radian angle into seconds.
+     *
+     * @param angle Angle in radians.
+     * @return Angle in seconds.
+     */
     public static double rad2sec(double angle) {
         return angle * 648000.0 / PI;
     }
 
+    /**
+     * Convert a degrees angle into radians.
+     *
+     * @param angle Angle in degrees.
+     * @return Angle in radians.
+     */
     public static double deg2rad(double angle) {
         return angle * PI / 180.0;
     }
 
+    /**
+     * Convert a degrees angle into grades.
+     *
+     * @param angle Angle in degrees.
+     * @return Angle in grades.
+     */
     public static double deg2gra(double angle) {
         return angle * 200.0 / 180.0;
     }
 
+    /**
+     * Convert a degrees angle into minutes.
+     *
+     * @param angle Angle in degrees.
+     * @return Angle in minutes.
+     */
     public static double deg2min(double angle) {
         return angle * DEG_TO_MIN;
     }
 
+    /**
+     * Convert a degrees angle into seconds.
+     *
+     * @param angle Angle in degrees.
+     * @return Angle in seconds.
+     */
     public static double deg2sec(double angle) {
         return angle * DEG_TO_SEC;
     }
 
+    /**
+     * Convert a grades angle into radians.
+     *
+     * @param angle Angle in grades.
+     * @return Angle in radians.
+     */
     public static double gra2rad(double angle) {
         return angle * PI / 200.0;
     }
 
+    /**
+     * Convert a grades angle into degrees.
+     *
+     * @param angle Angle in grades.
+     * @return Angle in degrees.
+     */
     public static double gra2deg(double angle) {
         return angle * 180.0 / 200.0;
     }
@@ -224,6 +286,9 @@ public final class AngleFormat {
         return sign * (dd + mm / 100.0 + ss / 10000.0);
     }
 
+    /**
+     * Main constructor.
+     */
     public AngleFormat() {
         degree_format.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.ENGLISH));
         minute_format.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.ENGLISH));
@@ -254,10 +319,13 @@ public final class AngleFormat {
      *                <li>#D deg #M min --> -4 deg 6 min</li>
      *                </ul>
      */
-    public AngleFormat(String pattern) throws IllegalArgumentException {
+    public AngleFormat(@NotNull String pattern) throws IllegalArgumentException {
+        if (pattern == null) {
+            throw new IllegalArgumentException("The pattern should not be null.");
+        }
         Matcher matcher = DMSHFormatPattern.matcher(pattern);
         if (!matcher.matches()) {
-            throw new IllegalArgumentException(pattern + " is an illegal pattern for an AngleFormat");
+            throw new IllegalArgumentException(pattern + " is an illegal pattern for an AngleFormat.");
         }
 
         prefix = matcher.group(PREFIX);
@@ -302,10 +370,11 @@ public final class AngleFormat {
     /**
      * Format an angle following the special pattern defined by this object.
      *
-     * @param angle angle to format (the angle must be in degrees).
+     * @param angle Angle to format (the angle must be in degrees).
+     * @return The {@link String} formatted angle.
      */
     public String format(double angle) {
-        double absangle = Math.abs(angle);
+        double absAngle = Math.abs(angle);
         StringBuilder sb = new StringBuilder();
         if (prefix != null) {
             sb.append(prefix);
@@ -316,9 +385,9 @@ public final class AngleFormat {
 
         // minute_format == null --> only degrees are represented
         if (minute_format == null) {
-            sb.append(degree_format.format(absangle));
+            sb.append(degree_format.format(absAngle));
         } else {
-            sb.append(degree_format.format(Math.floor(absangle)));
+            sb.append(degree_format.format(floor(absAngle)));
         }
         sb.append(degree_suffix);
         if (degree_suffix.length() == 0) {
@@ -327,11 +396,11 @@ public final class AngleFormat {
 
         if (minute_format != null) {
             // second_format == null --> only degrees / minutes are represented
-            double minutes = deg2min(absangle) % DEG_TO_MIN;
+            double minutes = deg2min(absAngle) % DEG_TO_MIN;
             if (second_format == null) {
                 sb.append(minute_format.format(minutes));
             } else {
-                sb.append(minute_format.format(Math.floor(minutes)));
+                sb.append(minute_format.format(floor(minutes)));
             }
             sb.append(minute_suffix);
             if (minute_suffix.length() == 0) {
@@ -339,7 +408,7 @@ public final class AngleFormat {
             }
 
             if (second_format != null) {
-                double seconds = deg2sec(absangle) % DEG_TO_MIN;
+                double seconds = deg2sec(absAngle) % DEG_TO_MIN;
                 sb.append(second_format.format(seconds)).append(second_suffix);
             }
         }
@@ -367,8 +436,8 @@ public final class AngleFormat {
      * - 2° 02' 02" N
      * - l=-2°2'2.222"
      *
-     * @param angle the string to parse
-     * @return the angle in degrees
+     * @param angle The {@link String} to parse
+     * @return The angle in degrees
      */
     public static double parseAngle(String angle) throws IllegalArgumentException {
         Matcher m = DMSHFormat.matcher(angle);
@@ -399,7 +468,7 @@ public final class AngleFormat {
                 return a;
             }
         } else {
-            throw new IllegalArgumentException(angle + " is not a recognized angle value");
+            throw new IllegalArgumentException(angle + " is not a recognized angle value.");
         }
     }
 
@@ -407,8 +476,14 @@ public final class AngleFormat {
      * This method parse a string which represent an angle in radians, in grades or in degrees.
      * The parser try to recognize a symbol to determine the units used in the string and convert the angle into
      * radians.
+     *
+     * @param angle The {@link String} angle representation.
+     * @return The angle value in radians.
      */
-    public static double parseAndConvert2Radians(String angle) throws IllegalArgumentException {
+    public static double parseAndConvert2Radians(@NotNull String angle) throws IllegalArgumentException {
+        if(angle == null){
+            throw new IllegalArgumentException("The angle should not be null.");
+        }
         // If angle contains no unit, the angle is in radians
         if (angle.matches("[+\\-]?([0-9]+([.,][0-9]+)|[.][0-9]+)")) {
             angle = angle.replaceAll(",", ".");
