@@ -3,7 +3,7 @@
 [![Build Stat](https://img.shields.io/jenkins/s/http/jenkins-ng.orbisgis.org/job/cts.svg)](http://jenkins-ng.orbisgis.org/job/cts) 
 [![Build Test](https://img.shields.io/jenkins/t/http/jenkins-ng.orbisgis.org/job/cts.svg)](https://jenkins-ng.orbisgis.org/job/cts/test_results_analyzer/) 
 [![codecov](https://img.shields.io/codecov/c/github/orbisgis/cts.svg)](https://codecov.io/gh/orbisgis/cts) 
-[![Codacy Badge](https://img.shields.io/codacy/grade/d9b34e00264d4702b8340f8544cec21f.svg)](https://www.codacy.com/app/orbisgis/cts?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=orbisgis/orbisdata&amp;utm_campaign=Badge_Grade) 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/d9b34e00264d4702b8340f8544cec21f)](https://www.codacy.com/gh/orbisgis/cts?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=orbisgis/cts&amp;utm_campaign=Badge_Grade)
 
 Coordinate Transformation Suite (abridged CTS)  is a library developed to
 perform coordinate transformations using well known geodetic algorithms and
