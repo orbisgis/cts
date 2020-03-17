@@ -24,7 +24,6 @@
 
 package org.cts.util;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -441,12 +440,12 @@ class ComplexTest {
     @Test
     void toStringTest() {
         LOGGER.info("Complex construction");
-        Assertions.assertEquals("[0.0 + 0.0i]", new Complex().toString());
-        Assertions.assertEquals("[1.0 + 0.0i]", ONE.toString());
-        Assertions.assertEquals("[0.0 + 1.0i]", i.toString());
-        Assertions.assertEquals("[1.0 - 2.0i]", Complex.cartesian(1.0, -2.0).toString());
-        Assertions.assertEquals("[3.0 + 0.0i]", Complex.cartesian(3.0).toString());
-        Assertions.assertEquals("[0.7071067811865476 + 0.7071067811865475i]", Complex.polar(PI/4).toString());
-        Assertions.assertEquals("[3.0000000000000004 + 3.0i]", Complex.polar(3.0*Math.sqrt(2.0), PI/4).toString());
+        assertEquals("[0.0 + 0.0i]", new Complex().toString());
+        assertEquals("[1.0 + 0.0i]", ONE.toString());
+        assertEquals("[0.0 + 1.0i]", i.toString());
+        assertEquals("[1.0 - 2.0i]", Complex.cartesian(1.0, -2.0).toString());
+        assertEquals("[3.0 + 0.0i]", Complex.cartesian(3.0).toString());
+        assertEquals("[0.7071067811865476 + 0.7071067811865475i]", Complex.polar(PI/4).toString());
+        assertEquals("[3.0000000000000004 + 3.0i]", Complex.polar(3.0*Math.sqrt(2.0), PI/4).toString());
     }
 }
