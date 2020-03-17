@@ -33,7 +33,8 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Tests for UTMUtils
  *
- * @author Erwan Bocher
+ * @author Erwan Bocher (CNRS)
+ * @author Sylvain PALOMINOS (UBS Lab-STICC 2020)
  */
 public class UTMUtilsTest {
     private static final int MIN_LATITUDE = -90;
@@ -108,10 +109,10 @@ public class UTMUtilsTest {
         assertArrayEquals(new String[]{"37", "N"}, UTMUtils.getZoneHemisphere(74.23f, 33.68f));
         assertArrayEquals(new String[]{"35", "N"}, UTMUtils.getZoneHemisphere(74.23f, 32.68f));
 
-        assertThrows(IllegalArgumentException.class, () -> {UTMUtils.getZoneHemisphere(-91.0f, 0.0f);});
-        assertThrows(IllegalArgumentException.class, () -> {UTMUtils.getZoneHemisphere(91.0f, 0.0f);});
-        assertThrows(IllegalArgumentException.class, () -> {UTMUtils.getZoneHemisphere(0.0f, -181.0f);});
-        assertThrows(IllegalArgumentException.class, () -> {UTMUtils.getZoneHemisphere(0.0f, 181.0f);});
+        assertThrows(IllegalArgumentException.class, () -> UTMUtils.getZoneHemisphere(-91.0f, 0.0f));
+        assertThrows(IllegalArgumentException.class, () -> UTMUtils.getZoneHemisphere(91.0f, 0.0f));
+        assertThrows(IllegalArgumentException.class, () -> UTMUtils.getZoneHemisphere(0.0f, -181.0f));
+        assertThrows(IllegalArgumentException.class, () -> UTMUtils.getZoneHemisphere(0.0f, 181.0f));
     }
 
     @Test
