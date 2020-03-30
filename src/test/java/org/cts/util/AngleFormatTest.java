@@ -27,6 +27,8 @@ package org.cts.util;
 import org.junit.jupiter.api.Test;
 
 import static java.lang.Math.PI;
+import static org.cts.TestUtils.PRECISION;
+import static org.cts.TestUtils.assertEqualsWithPrecision;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -35,14 +37,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  */
 class AngleFormatTest {
 
-    private static final double PRECISION = 1.0e-15;
     private static final double DEG55_IN_RAD = 9.599310885968813e-1;
     private static final double DEG55_IN_GRA = 6.111111111111111e1;
-
-    private static void assertEqualsWithPrecision(double expected, double actual, double precision){
-        double exp = Math.floor(expected == 0 ? 1 : Math.log10(Math.abs(expected)));
-        assertEquals(expected, actual, Math.pow(10, exp) * precision);
-    }
 
     @Test
     void longitudeFormatterTest(){
