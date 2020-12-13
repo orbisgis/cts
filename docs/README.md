@@ -12,7 +12,7 @@ order.
 
 #### History
 
-Originally developed by Michaël Michaud under the name of JGeod, the library was
+Originally developed by Michaël Michaud under the name [JTransfoCoord](http://michael.michaud.free.fr/index_geodesie.html) and then JGeod, the library was
 renamed to CTS in 2009.  Today CTS is maintained by the OrbisGIS team in
 collaboration with Michaël Michaud.
 
