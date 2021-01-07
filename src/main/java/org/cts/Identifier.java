@@ -302,12 +302,11 @@ public class Identifier implements Identifiable {
      * @return
      */
     public String toWKT() {
-        String w = "AUTHORITY[\"" +
+        return "AUTHORITY[\"" +
                 this.getAuthorityName() +
                 "\",\"" +
                 this.getAuthorityKey() +
                 "\"]";
-        return w;
     }
 
     /**
