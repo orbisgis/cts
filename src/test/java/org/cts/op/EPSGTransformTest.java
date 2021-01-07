@@ -91,4 +91,33 @@ class EPSGTransformTest extends BaseCoordinateTransformTest {
         double[] result = transform((GeodeticCRS) inputCRS, (GeodeticCRS) outputCRS, pointSource);
         assertTrue(checkEquals2D("EPSG:4326 to EPSG:4299", result, pointDest, tolerance));
     }
+    
+    @Test
+    void testFrenchEPSGCodeFrom4326To27700() throws Exception {
+        String csNameSrc = "EPSG:4326"; //Input EPSG
+        double[] pointSource = new double[]{-7.899170,52.831312};
+        String csNameDest = "EPSG:27700";  //Target EPSG 
+        double[] pointDest = new double[]{2838.77,342299.51};
+        double tolerance = 0.01;
+        CoordinateReferenceSystem inputCRS = cRSFactory.getCRS(csNameSrc);
+        CoordinateReferenceSystem outputCRS = cRSFactory.getCRS(csNameDest);
+        verbose = true;
+        double[] result = transform((GeodeticCRS) inputCRS, (GeodeticCRS) outputCRS, pointSource);
+        assertTrue(checkEquals2D("EPSG:4326 to EPSG:27700", result, pointDest, tolerance));
+    }
+    
+    //TODO : Fix me
+    //@Test
+    void testFrenchEPSGCodeFrom4326To2232() throws Exception {
+        String csNameSrc = "EPSG:4326"; //Input EPSG
+        double[] pointSource = new double[]{-105,40};
+        String csNameDest = "EPSG:2232";  //Target EPSG 
+        double[] pointDest = new double[]{3140089.069 , 1789525.0783};
+        double tolerance = 0.001;
+        CoordinateReferenceSystem inputCRS = cRSFactory.getCRS(csNameSrc);
+        CoordinateReferenceSystem outputCRS = cRSFactory.getCRS(csNameDest);
+        verbose = true;
+        double[] result = transform((GeodeticCRS) inputCRS, (GeodeticCRS) outputCRS, pointSource);
+        assertTrue(checkEquals2D("EPSG:4326 to EPSG:2232", result, pointDest, tolerance));
+    }
 }

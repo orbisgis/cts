@@ -237,12 +237,11 @@ public class Axis {
      * @return
      */
     public String toWKT() {
-        String w = "AXIS[\"" +
+        return "AXIS[\"" +
                 this.getName() +
                 "\"," +
                 this.getDirection() +
                 ']';
-        return w;
     }
 
     /**

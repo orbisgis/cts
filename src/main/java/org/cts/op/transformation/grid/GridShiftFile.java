@@ -280,7 +280,7 @@ public class GridShiftFile
 
     @Override
     public String toString() {
-        String buf = "Headers  : " + this.overviewHeaderCount +
+        return "Headers  : " + this.overviewHeaderCount +
                 "\nSub Hdrs : " +
                 this.subGridHeaderCount +
                 "\nSub Grids: " +
@@ -301,7 +301,6 @@ public class GridShiftFile
                 this.toSemiMajorAxis +
                 "\nTo Min Ax: " +
                 this.toSemiMinorAxis;
-        return buf;
     }
 
     public SubGrid[] getSubGridTree() {

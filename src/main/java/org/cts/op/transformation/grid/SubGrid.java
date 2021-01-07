@@ -312,7 +312,7 @@ public class SubGrid implements Cloneable, Serializable {
     }
 
     public String getDetails() {
-        String buf = "Sub Grid : " + this.subGridName +
+        return "Sub Grid : " + this.subGridName +
                 "\nParent   : " +
                 this.parentSubGridName +
                 "\nCreated  : " +
@@ -333,7 +333,6 @@ public class SubGrid implements Cloneable, Serializable {
                 this.lonInterval +
                 "\nNode Cnt : " +
                 this.nodeCount;
-        return buf;
     }
 
     @Override
