@@ -117,35 +117,8 @@
         <system>Github</system>
         <url>https://github.com/orbisgis/cts/issues</url>
     </issueManagement>
-    <ciManagement>
-        <system>Travis CI</system>
-        <url>https://travis-ci.com/cts/orbisdata</url>
-    </ciManagement>
     <scm>
-        <connection>scm:git:git://github.com/cts/orbisdata</connection>
+        <connection>scm:git:git://github.com/orbisgis/cts</connection>
     </scm>
-
-    <repositories>
-        <repository>
-            <id>orbisgis-release</id>
-            <url>http://nexus.orbisgis.org/repository/orbisgis-release</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-        </repository>
-        <repository>
-            <id>orbisgis-snapshot</id>
-            <url>http://nexus.orbisgis.org/repository/orbisgis-snapshot</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-        </repository>
-    </repositories>
 
 </project>
