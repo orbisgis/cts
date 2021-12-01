@@ -30,7 +30,6 @@ jobs:
           server-password: MAVEN_PASSWORD
           gpg-private-key: ${{ secrets.GPG_SIGNING_KEY }}
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
-
       # Install the GPG secret key
       - name: Install gpg secret key
         run: |
