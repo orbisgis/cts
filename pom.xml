@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.orbisgis</groupId>
         <artifactId>orbisparent</artifactId>
-        <version>1.0.3</version>
+        <version>1.1.0</version>
     </parent>
 
     <artifactId>cts</artifactId>
@@ -25,7 +25,9 @@
         <name>CNRS</name>
         <url>http://www.orbisgis.org</url>
     </organization>
+
     <url>http://github.com/orbisgis/cts</url>
+
     <licenses>
         <license>
             <name>GNU Lesser General Public License (LGPLV3+)</name>
@@ -44,19 +46,36 @@
         </developer>
     </developers>
 
+    <scm>
+        <connection>scm:git:https://github.com/orbisgis/cts.git</connection>
+        <developerConnection>scm:git:https://github.com/orbisgis/cts.git</developerConnection>
+        <url>git@github.com:orbisgis/cts.git</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <issueManagement>
+        <system>Github</system>
+        <url>https://github.com/orbisgis/cts/issues</url>
+    </issueManagement>
+
     <!-- Properties -->
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.build.timestamp.format>YYYY-MM-dd</maven.build.timestamp.format>
-        <buildNumber>${maven.build.timestamp}</buildNumber>
-        <maven.compiler.target>8</maven.compiler.target>
-        <maven.compiler.source>8</maven.compiler.source>
-        <site.basedir>${project.basedir}</site.basedir>
-
-        <commons-version>1.0.3</commons-version>
+        <commons-version>1.1.0-SNAPSHOT</commons-version>
     </properties>
 
     <!-- Dependencies -->
+    <repositories>
+        <repository>
+            <id>oss-sonatype</id>
+            <name>oss-sonatype-snapshot</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+        </repository>
+        <repository>
+            <id>orbisgis-release</id>
+            <name>oss-sonatype-release</name>
+            <url>https://oss.sonatype.org/content/repositories/releases/</url>
+        </repository>
+    </repositories>
 
     <dependencies>
         <dependency>
@@ -64,16 +83,8 @@
             <artifactId>junit-jupiter-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
         </dependency>
         <dependency>
             <groupId>org.orbisgis</groupId>
@@ -81,44 +92,5 @@
             <version>${commons-version}</version>
         </dependency>
     </dependencies>
-
-    <!-- Build Settings -->
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>versions-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-enforcer-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
-
-    <!-- Environment Settings -->
-    <issueManagement>
-        <system>Github</system>
-        <url>https://github.com/orbisgis/cts/issues</url>
-    </issueManagement>
-    <scm>
-        <connection>scm:git:git://github.com/orbisgis/cts</connection>
-    </scm>
 
 </project>
