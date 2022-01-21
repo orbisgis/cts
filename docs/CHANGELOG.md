@@ -4,3 +4,4 @@
 `Complex.cartesian()` for cartesian coordinates and `Complex.polar()` for polar coordinates.
 - upgrade to java 11
 - upgrade parent to 
+- update to OrbisParent 1.2.0-SNAPSHOT
