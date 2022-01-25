@@ -3,9 +3,9 @@ name: CI release
 on:
   workflow_dispatch:
     inputs:
-      next-version:
+      nextVersion:
         required: false
-        description: "Next version"
+        description: "Next version (optional)"
 
 jobs:
   build:
@@ -56,7 +56,7 @@ jobs:
             -ntp \
             --batch-mode \
             -P deploy \
-            -Dmaven.test.skip=true
+            -Dmaven.test.skip=true \
             release:prepare release:perform \
             -Dusername=$GITHUB_ACTOR -Dpassword=$GITHUB_TOKEN ${VERSION:+"-DdevelopmentVersion="$VERSION"-SNAPSHOT"}
         env:
