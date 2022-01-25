@@ -34,17 +34,27 @@ CTS.  If not, see <http://www.gnu.org/licenses/>.
 
 #### Declaring project dependencies
 
-##### With maven
+You can include CTS in your project thanks to Maven repositories.
+
+From maven central, check https://search.maven.org/artifact/org.orbisgis/cts/1.5.2/bundle
+
+To use the current snapshot add in the pom
+
+```xml
+<repository>
+  <id>orbisgis-snapshot</id>
+  <name>OrbisGIS sonatype snapshot repository</name>
+  <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+</repository>
+```
+
+and the following dependency
 
 ```xml
 <dependency>
     <groupId>org.orbisgis</groupId>
     <artifactId>cts</artifactId>
-    <version>1.5.3</version>
+    <version>1.6.0-SNAPSHOT</version>
 </dependency>
 ```
-
-##### Pre-built jar
-
-You can find latest jar release on [maven central](http://search.maven.org/#search|ga|1|g%3A%22org.orbisgis%22%20AND%20a%3A%22cts%22).
 
