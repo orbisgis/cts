@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.orbisgis</groupId>
         <artifactId>orbisparent</artifactId>
-        <version>1.2.0-SNAPSHOT</version>
+        <version>1.2.0</version>
     </parent>
 
     <artifactId>cts</artifactId>
@@ -60,7 +60,7 @@
 
     <!-- Properties -->
     <properties>
-        <commons-version>1.2.0-SNAPSHOT</commons-version>
+        <commons-version>1.2.0</commons-version>
     </properties>
 
     <!-- Dependencies -->
