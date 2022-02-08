@@ -314,9 +314,9 @@ public final class AngleFormat {
      *                </ul>
      *                <p>Exemples :</p>
      *                <ul>
-     *                <li>latitude = #D° MM' SS.SSS\" H(N|S) --> latitude = 45° 09'
+     *                <li>latitude = #D° MM' SS.SSS\" H(N|S) --&gt; latitude = 45° 09'
      *                56.897" S</li>
-     *                <li>#D deg #M min --> -4 deg 6 min</li>
+     *                <li>#D deg #M min --&gt; -4 deg 6 min</li>
      *                </ul>
      */
     public AngleFormat(@NotNull String pattern) throws IllegalArgumentException {
