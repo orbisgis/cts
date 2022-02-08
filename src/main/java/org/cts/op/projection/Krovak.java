@@ -118,11 +118,9 @@ public class Krovak extends Projection {
      * Transform coord using the Krovak (North Orientated) Projection. Input
      * coord is supposed to be a geographic latitude / longitude coordinate in
      * radians. Algorithm based on the OGP's Guidance Note Number 7 Part 2 :
-     * <http://www.epsg.org/guides/G7-2.html>
+     * <a href=http://www.epsg.org/guides/G7-2.html>G7-2</a>
      *
      * @param coord coordinate to transform
-     * @throws CoordinateDimensionException if <code>coord</code> length is not
-     *                                      compatible with this <code>CoordinateOperation</code>.
      */
     @Override
     public double[] transform(double[] coord) {
@@ -147,7 +145,7 @@ public class Krovak extends Projection {
      * Creates the inverse operation for Krovak (North Orientated) Projection.
      * Input coord is supposed to be a projected easting / northing coordinate
      * in meters. Algorithm based on the OGP's Guidance Note Number 7 Part 2 :
-     * <http://www.epsg.org/guides/G7-2.html>
+     * <a href=http://www.epsg.org/guides/G7-2.html>G7-2</a>
      */
     @Override
     public Projection inverse() {

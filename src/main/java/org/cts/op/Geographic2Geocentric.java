@@ -32,16 +32,17 @@ import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 
 /**
- * <p>Transform geographic coordinates (latitude, longitude, ellipsoidal height
- * into geocentric coordinates.</p>
- * <p>Geographic coordinates and geocentric coordinates are supposed to use the
- * same reference datum and to be standardized :</p>
+ * Transform geographic coordinates (latitude, longitude, ellipsoidal height
+ * into geocentric coordinates.
+ *
+ * Geographic coordinates and geocentric coordinates are supposed to use the
+ * same reference datum and to be standardized :
  * <ul>
  * <li>Geographic coordinates are given in the following order : latitude
  * (radians), longitude (radians from Greenwich) and optionnaly ellipsoidal
  * height (default = 0.0).</li>
  * <li>The center of the geocentric system (center of the mass) is equal to the
- * geographic coordinates reference ellipsoid.</p>
+ * geographic coordinates reference ellipsoid.
  * <li>Z axis is oriented from origin to North Pole</li>
  * <li>Y axis is oriented from origin to intersection of equator and Greenwich
  * Meridian</li>

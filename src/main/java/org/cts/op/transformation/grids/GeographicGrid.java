@@ -272,7 +272,9 @@ public class GeographicGrid implements Grid {
 
     /**
      * Return a double value interpolated in this geographic grid with a
-     * bilinear interpolation method.<p>
+     * bilinear interpolation method.
+     *
+     *
      * <pre>
      *     dx
      * ----------

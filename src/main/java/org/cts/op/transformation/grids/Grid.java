@@ -41,7 +41,7 @@ import org.cts.cs.OutOfExtentException;
  * <li>x0, y0, the real coordinates of the grid cell at column 0, row 0</li>
  * <li>gridWidth and gridHeight, which represent the real grid width and the
  * real grid height</li>
- * <ul>
+ * </ul>
  * Other derivative parameters are
  * <ul>
  * <li>dx = gridWidth/(column number -1)</li>
@@ -50,7 +50,7 @@ import org.cts.cs.OutOfExtentException;
  * For interpolation methods, see
  * <a href="http://www.geovista.psu.edu/sites/geocomp99/Gc99/082/gc_082.htm">
  * What's the point? Interpolation and extrapolation with a regular grid DEM</a>
- * </p>
+ *
  *
  * @author Michaël Michaud
  */

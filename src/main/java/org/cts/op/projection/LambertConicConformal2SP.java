@@ -51,7 +51,7 @@ public class LambertConicConformal2SP extends Projection {
     public static final Identifier LCC2SP =
             new Identifier("EPSG", "9802", "Lambert Conic Conformal (2SP)", "Lambert secant");
     /**
-     * Lambert 93, the new projection used in France with RGF93 datum.<p>
+     * Lambert 93, the new projection used in France with RGF93 datum.
      */
     public static final LambertConicConformal2SP LAMBERT93 = createLCC2SP(
             Ellipsoid.GRS80, 46.5, 44.0, 49.0, 3.0, 700000.0, 6600000.0);
@@ -150,8 +150,6 @@ public class LambertConicConformal2SP extends Projection {
      * radians.
      *
      * @param coord coordinate to transform
-     * @throws IllegalCoordinateException if <code>coord</code> is not
-     *                                    compatible with this <code>CoordinateOperation</code>..
      */
     @Override
     public double[] transform(double[] coord) {

@@ -87,7 +87,6 @@ jobs:
           git commit -a -m "Empty changelog."
           git push origin master
 
-
       # If the version change is a major or minor, create a branch from the previous tag for future revisions.
       - name: Branch fork
         run: |

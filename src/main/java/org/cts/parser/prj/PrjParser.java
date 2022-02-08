@@ -30,13 +30,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Parser for PRJ / WKT (OGC & ESRI) String.
- * <p>
- * This very simple parser works in tree steps: 1. it parses the PRJ String and
- * produces an abstract tree, without any assumptions on it being a valid OGC
- * WKT String. 2. it walks the tree looking for the values needed for
- * transformation into a proj4 description string. 3. the proj4 description
- * string is passed to the {@link org.jproj.parser.Proj4Parser } that builds the
+ * Parser for PRJ / WKT (OGC and ESRI) String.
+ *
+ * This very simple parser works in tree steps:
+ * 1. it parses the PRJ String and produces an abstract tree, without any assumptions on it being a valid OGC
+ * WKT String.
+ * 2. it walks the tree looking for the values needed for transformation into a proj4 description string.
+ * 3. the proj4 description string is passed to the parser that builds the
  * CRS.
  *
  * @author Antoine Gourlay, Erwan Bocher, Jules Party

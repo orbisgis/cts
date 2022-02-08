@@ -30,7 +30,7 @@ import java.util.Arrays;
 
 /**
  * A CoordinateSystem is a set of ordered {@link Axis} defining how coordinates
- * assigned to a point have to be interpreted.</p>
+ * assigned to a point have to be interpreted.
  *
  * @author Michaël Michaud
  */
