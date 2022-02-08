@@ -35,9 +35,9 @@ import org.cts.op.CoordinateOperation;
  * describing a point on the earth's surface, in latitude and longitude or
  * another coordinate system. Vertical datums are used to measure elevations or
  * underwater depths. In engineering and drafting, a datum is a reference point,
- * surface, or axis on an object against which measurements are made.<p> (Taken
- * from <a ref="http://en.wikipedia.org/wiki/Datum">wikipedia</a> on
- * 2006-10-06)</p>
+ * surface, or axis on an object against which measurements are made.
+ * (Taken from <a href="http://en.wikipedia.org/wiki/Datum">wikipedia</a> on
+ * 2006-10-06)
  *
  * @author Michaël Michaud
  */

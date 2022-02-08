@@ -107,11 +107,9 @@ public class MillerCylindrical extends Projection {
      * supposed to be a geographic latitude / longitude coordinate in radians.
      * Algorithm based on the USGS professional paper 1395, "Map Projection - A
      * Working Manual" by John P. Snyder :
-     * <http://pubs.er.usgs.gov/publication/pp1395>
+     * <a href=http://pubs.er.usgs.gov/publication/pp1395>pp1395</a>
      *
      * @param coord coordinate to transform
-     * @throws CoordinateDimensionException if <code>coord</code> length is not
-     *                                      compatible with this <code>CoordinateOperation</code>.
      */
     @Override
     public double[] transform(double[] coord) {
@@ -129,7 +127,7 @@ public class MillerCylindrical extends Projection {
      * coord is supposed to be a projected easting / northing coordinate in
      * meters. Algorithm based on the USGS professional paper 1395, "Map
      * Projection - A Working Manual" by John P. Snyder :
-     * <http://pubs.er.usgs.gov/publication/pp1395>
+     * <a href=http://pubs.er.usgs.gov/publication/pp1395>pp1395</a>
      */
     @Override
     public Projection inverse() {

@@ -46,20 +46,20 @@ import java.util.Set;
  * <li> 2. From a OGC WKT String (PRJ) (that can be read from a file).</li>
  * </ul>
  * <p>Case 1 :</p>
- * <ul>Creation of the {@link org.cts.crs.CoordinateReferenceSystem} from a text
+ * Creation of the {@link org.cts.crs.CoordinateReferenceSystem} from a text
  * file will be delegated to one of {@link org.cts.registry.RegistryManager}'s
  * registries. If {@link org.cts.registry.RegistryManager} don't know the
- * authority of the CRS, an exception is returned.</ul>
+ * authority of the CRS, an exception is returned.
  * <p>Case 2 :</p>
- * <ul>Creation of the {@link org.cts.crs.CoordinateReferenceSystem} from a OGC
+ * Creation of the {@link org.cts.crs.CoordinateReferenceSystem} from a OGC
  * WKT String (PRJ) will be delegated to the
- * {@link org.cts.parser.prj.PrjParser}.</ul>
+ * {@link org.cts.parser.prj.PrjParser}.
  * <p>This class also manages a Cache which return
  * {@link org.cts.crs.CoordinateReferenceSystem}s which have already been
  * parsed.</p>
  *
  * @author Erwan Bocher
- * @TODO authorityAndSrid is the same as Identifier.getCode()
+ * TODO authorityAndSrid is the same as Identifier.getCode()
  */
 public class CRSFactory {
 

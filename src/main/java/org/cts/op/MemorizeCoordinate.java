@@ -58,8 +58,6 @@ public class MemorizeCoordinate extends AbstractCoordinateOperation {
      * Add a fourth coordinate, to save a value.
      *
      * @param coord is an array containing one, two or three ordinates
-     * @throws IllegalCoordinateException if <code>coord</code> is not
-     *                                    compatible with this <code>CoordinateOperation</code>.
      */
     @Override
     public double[] transform(double[] coord) {

@@ -57,7 +57,7 @@ import java.util.Map;
  * or from an OGC WKT String.
  *
  * @author Michaël Michaud, Erwan Bocher, Jules Party
- * @TODO Not sure this class is useful here. I would prefer a clear separation
+ * TODO Not sure this class is useful here. I would prefer a clear separation
  * between the model (CRS/Datum/Ellipsoid/Projection...) and the parsers which
  * create CRS from a file or from a stream. CRSHelper is in-between, no more a
  * file, but not yet a model.

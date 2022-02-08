@@ -118,11 +118,9 @@ public class SwissObliqueMercator extends Projection {
      * is supposed to be a geographic latitude / longitude coordinate in
      * radians. Algorithm based on a Swiss Federal Office of Topography document
      * :
-     * <http://www.swisstopo.admin.ch/internet/swisstopo/en/home/topics/survey/sys/refsys/switzerland.parsysrelated1.37696.downloadList.97912.DownloadFile.tmp/swissprojectionen.pdf>
+     * <a href=http://www.swisstopo.admin.ch/internet/swisstopo/en/home/topics/survey/sys/refsys/switzerland.parsysrelated1.37696.downloadList.97912.DownloadFile.tmp/swissprojectionen.pdf>swissprojectionen.pdf</a>
      *
      * @param coord coordinate to transform
-     * @throws CoordinateDimensionException if <code>coord</code> length is not
-     *                                      compatible with this <code>CoordinateOperation</code>.
      */
     @Override
     public double[] transform(double[] coord) {
@@ -162,7 +160,7 @@ public class SwissObliqueMercator extends Projection {
      * Input coord is supposed to be a projected easting / northing coordinate
      * in meters. Algorithm based on a Swiss Federal Office of Topography
      * document:
-     * <http://www.swisstopo.admin.ch/internet/swisstopo/en/home/topics/survey/sys/refsys/switzerland.parsysrelated1.37696.downloadList.97912.DownloadFile.tmp/swissprojectionen.pdf>
+     * <a href=http://www.swisstopo.admin.ch/internet/swisstopo/en/home/topics/survey/sys/refsys/switzerland.parsysrelated1.37696.downloadList.97912.DownloadFile.tmp/swissprojectionen.pdf>swissprojectionen.pdf</a>
      */
     @Override
     public Projection inverse() {

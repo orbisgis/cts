@@ -30,14 +30,20 @@ import org.cts.op.AbstractCoordinateOperation;
 import org.cts.op.CoordinateOperation;
 
 /**
- * <p>GeocentricTranslation is a coordinate operation used to transform
+ * GeocentricTranslation is a coordinate operation used to transform
  * geocentric coordinates with a 3D translation defined by three parameters
- * representing translation values along x axis, y axis and z axis.</p> <p>In
- * this operation, one assume that the axis of the ellipsoids are parallel, that
+ * representing translation values along x axis, y axis and z axis.
+ *
+ * In this operation, one assume that the axis of the ellipsoids are parallel, that
  * the prime meridian is Greenwich, and that there is no scale difference
- * between the source and target CoordinateReferenceSystem.</p> <p>Equations of
- * this transformation are : <ul> <li>X' = X + tx</li> <li>Y' = Y + ty</li>
- * <li>Z' = Z + tz</li> </ul> </p>
+ * between the source and target CoordinateReferenceSystem.
+ *
+ * Equations of this transformation are :
+ * <ul>
+ *     <li>X' = X + tx</li>
+ *     <li>Y' = Y + ty</li>
+ *      <li>Z' = Z + tz</li>
+ * </ul>
  *
  * @author Michaël Michaud, Erwan Bocher
  */
@@ -85,9 +91,11 @@ public class GeocentricTranslation extends AbstractCoordinateOperation implement
 
     /**
      * <p>Return a coordinates representing the same point as coord but in
-     * another CoordinateReferenceSystem.</p> <p>Equations of this
+     * another CoordinateReferenceSystem.
+     *
+     * Equations of this
      * transformation are : <ul> <li>X' = X + tx</li> <li>Y' = Y + ty</li>
-     * <li>Z' = Z + tz</li> </ul> </p>
+     * <li>Z' = Z + tz</li> </ul>
      *
      * @param coord coordinate to transform
      * @throws IllegalCoordinateException if <code>coord</code> is not
