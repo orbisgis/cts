@@ -23,8 +23,6 @@
  */
 package org.cts.util;
 
-import org.orbisgis.commons.annotations.NotNull;
-
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
@@ -319,7 +317,7 @@ public final class AngleFormat {
      *                <li>#D deg #M min --&gt; -4 deg 6 min</li>
      *                </ul>
      */
-    public AngleFormat(@NotNull String pattern) throws IllegalArgumentException {
+    public AngleFormat(String pattern) throws IllegalArgumentException {
         if (pattern == null) {
             throw new IllegalArgumentException("The pattern should not be null.");
         }
@@ -480,7 +478,7 @@ public final class AngleFormat {
      * @param angle The {@link String} angle representation.
      * @return The angle value in radians.
      */
-    public static double parseAndConvert2Radians(@NotNull String angle) throws IllegalArgumentException {
+    public static double parseAndConvert2Radians(String angle) throws IllegalArgumentException {
         if(angle == null){
             throw new IllegalArgumentException("The angle should not be null.");
         }

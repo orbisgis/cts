@@ -2,13 +2,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <!-- Maven Coordinates -->
-    <parent>
-        <groupId>org.orbisgis</groupId>
-        <artifactId>orbisparent</artifactId>
-        <version>1.2.0</version>
-    </parent>
 
+    <groupId>org.orbisgis</groupId>
     <artifactId>cts</artifactId>
     <version>1.7.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
@@ -58,7 +53,27 @@
 
     <!-- Properties -->
     <properties>
-        <commons-version>1.2.0</commons-version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven-version>3.5.0</maven-version>
+        <java-version>11</java-version>
+        <maven.compiler.target>${java-version}</maven.compiler.target>
+        <maven.compiler.source>${java-version}</maven.compiler.source>
+
+        <!-- Dependencies versions -->
+        <junit-version>5.8.2</junit-version>
+        <slf4j-version>1.7.36</slf4j-version>
+
+        <!-- Plugins versions -->
+        <exec-maven-version>3.0.0</exec-maven-version>
+        <maven-assembly-version>3.3.0</maven-assembly-version>
+        <maven-bundle-version>5.1.2</maven-bundle-version>
+        <maven-enforcer-version>3.0.0</maven-enforcer-version>
+        <maven-gpg-plugin-version>3.0.1</maven-gpg-plugin-version>
+        <maven-jar-version>3.2.0</maven-jar-version>
+        <maven-javadoc-version>3.3.1</maven-javadoc-version>
+        <maven-release-version>3.0.0-M4</maven-release-version>
+        <maven-surefire-version>3.0.0-M5</maven-surefire-version>
+        <version-maven-version>2.8.1</version-maven-version>
     </properties>
 
     <!-- Dependencies -->
@@ -79,16 +94,175 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit-version}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.orbisgis</groupId>
-            <artifactId>commons</artifactId>
-            <version>${commons-version}</version>
+            <version>${slf4j-version}</version>
         </dependency>
     </dependencies>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <!-- Sign -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-gpg-plugin</artifactId>
+                    <version>${maven-gpg-plugin-version}</version>
+                    <configuration>
+                        <gpgArguments>
+                            <arg>--pinentry-mode</arg>
+                            <arg>loopback</arg>
+                        </gpgArguments>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>sign-artifacts</id>
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>sign</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <!-- Test -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${maven-surefire-version}</version>
+                    <configuration>
+                        <useSystemClassLoader>false</useSystemClassLoader>
+                    </configuration>
+                </plugin>
+                <!-- Package the project into a JAR file -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>${maven-jar-version}</version>
+                    <configuration>
+                        <archive>
+                            <manifest>
+                                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                            </manifest>
+                            <manifestEntries>
+                                <Specification-Vendor-URL>${project.organization.url}</Specification-Vendor-URL>
+                                <Specification-URL>${project.url}</Specification-URL>
+                            </manifestEntries>
+                        </archive>
+                    </configuration>
+                </plugin>
+                <!-- Generation of the OSGI bundle -->
+                <plugin>
+                    <groupId>org.apache.felix</groupId>
+                    <artifactId>maven-bundle-plugin</artifactId>
+                    <version>${maven-bundle-version}</version>
+                    <extensions>true</extensions>
+                    <configuration>
+                        <instructions>
+                            <Bundle-Vendor>Lab-STICC - CNRS UMR 6285</Bundle-Vendor>
+                        </instructions>
+                    </configuration>
+                </plugin>
+                <!-- Tool version check -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>${maven-enforcer-version}</version>
+                    <executions>
+                        <execution>
+                            <id>enforce-versions</id>
+                            <goals>
+                                <goal>enforce</goal>
+                            </goals>
+                            <configuration>
+                                <rules>
+                                    <bannedPlugins>
+                                        <!-- Will only display a warning but does not fail the build. -->
+                                        <level>WARN</level>
+                                        <excludes>
+                                            <exclude>org.apache.maven.plugins:maven-verifier-plugin</exclude>
+                                        </excludes>
+                                    </bannedPlugins>
+                                    <requireMavenVersion>
+                                        <version>${maven-version}</version>
+                                    </requireMavenVersion>
+                                    <requireJavaVersion>
+                                        <version>${java-version}</version>
+                                    </requireJavaVersion>
+                                </rules>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <!-- Versions check -->
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>versions-maven-plugin</artifactId>
+                    <version>${version-maven-version}</version>
+                    <configuration>
+                        <rulesUri>
+                            https://raw.githubusercontent.com/orbisgis/orbisgis-parents/master/maven-version-rules.xml
+                        </rulesUri>
+                    </configuration>
+                </plugin>
+                <!-- Javadoc generation -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>${maven-javadoc-version}</version>
+                    <configuration>
+                        <doclint>all,-missing</doclint>
+                        <quiet>true</quiet>
+                    </configuration>
+                </plugin>
+                <!-- Maven release generation -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>${maven-release-version}</version>
+                    <configuration>
+                        <autoVersionSubmodules>true</autoVersionSubmodules>
+                        <tagNameFormat>v@{project.version}</tagNameFormat>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>display-dependency-updates</goal>
+                            <goal>display-plugin-updates</goal>
+                        </goals>
+                        <phase>validate</phase>
+                    </execution>
+                </executions>
+                <inherited>false</inherited>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
