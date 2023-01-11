@@ -38,9 +38,7 @@ import org.cts.registry.EPSGRegistry;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *
@@ -284,5 +282,41 @@ class PrjParserTest extends CTSTestCase {
         params = new PrjParser().getParameters(crs.toWKT());
         assertEquals(6378137.0, Double.parseDouble(params.get("a")), 0.001);
         assertEquals(500000, Double.parseDouble(params.get("x_0")), 0.001);
+    }
+
+    @Test
+    void testCompareCRS_PRJ() throws Exception {
+        CRSFactory cRSFactory = new CRSFactory();
+        String prj = "GEOCCS[\"WGS 84 (geocentric)\",\n"
+                + "    DATUM[\"World Geodetic System 1984\",\n"
+                + "        SPHEROID[\"WGS 84\",6378137.0,298.257223563,\n"
+                + "            AUTHORITY[\"EPSG\",\"7030\"]],\n"
+                + "        AUTHORITY[\"EPSG\",\"6326\"]],\n"
+                + "    PRIMEM[\"Greenwich\",0.0,\n"
+                + "        AUTHORITY[\"EPSG\",\"8901\"]],\n"
+                + "    UNIT[\"m\",1.0],\n"
+                + "    AXIS[\"Geocentric X\",OTHER],\n"
+                + "    AXIS[\"Geocentric Y\",EAST],\n"
+                + "    AXIS[\"Geocentric Z\",NORTH],\n"
+                + "    AUTHORITY[\"EPSG\",\"4328\"]]";
+        CoordinateReferenceSystem crs = cRSFactory.createFromPrj(prj);
+        assertNotNull(crs);
+
+        String prj2 = "PROJCS[\"NTF (Paris) / Lambert zone II\",GEOGCS[\"NTF (Paris)\","
+                + "DATUM[\"Nouvelle_Triangulation_Francaise_Paris\","
+                + "SPHEROID[\"Clarke 1880 (IGN)\",6378249.2,293.4660212936269,"
+                + "AUTHORITY[\"EPSG\",\"7011\"]],TOWGS84[-168,-60,320,0,0,0,0],"
+                + "AUTHORITY[\"EPSG\",\"6807\"]],PRIMEM[\"Paris\",2.33722917,"
+                + "AUTHORITY[\"EPSG\",\"8903\"]],UNIT[\"grad\",0.01570796326794897,"
+                + "AUTHORITY[\"EPSG\",\"9105\"]],AUTHORITY[\"EPSG\",\"4807\"]],UNIT[\"metre\",1,"
+                + "AUTHORITY[\"EPSG\",\"9001\"]],PROJECTION[\"Lambert_Conformal_Conic_1SP\"],"
+                + "PARAMETER[\"latitude_of_origin\",52],PARAMETER[\"central_meridian\",0],"
+                + "PARAMETER[\"scale_factor\",0.99987742],PARAMETER[\"false_easting\",600000],"
+                + "PARAMETER[\"false_northing\",2200000],"
+                + "AUTHORITY[\"EPSG\",\"27572\"],AXIS[\"X\",EAST],AXIS[\"Y\",NORTH]]";
+
+        CoordinateReferenceSystem crs2 = cRSFactory.createFromPrj(prj2);
+        assertNotNull(crs);
+        assertFalse(crs.equals(crs2));
     }
 }

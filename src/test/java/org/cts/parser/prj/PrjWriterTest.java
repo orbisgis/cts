@@ -1,5 +1,6 @@
 package org.cts.parser.prj;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -59,5 +60,23 @@ class PrjWriterTest {
         assertEquals("0.41887902047863906", PrjWriter.prettyRound(0.4188790204786, 1E-11));
         assertEquals("-0.39269908169872414", PrjWriter.prettyRound(-22.5*Math.PI/180.0, 1E-11));
         assertEquals("-0.39269908169872414", PrjWriter.prettyRound(-0.39269908169872, 1E-11));
+    }
+
+    @Test
+    @Disabled
+    void testFormatPRJ() {
+        String prj = "GEOCCS[\"WGS 84 (geocentric)\",\n"
+                + "    DATUM[\"World Geodetic System 1984\",\n"
+                + "        SPHEROID[\"WGS 84\",6378137.0,298.257223563,\n"
+                + "            AUTHORITY[\"EPSG\",\"7030\"]],\n"
+                + "        AUTHORITY[\"EPSG\",\"6326\"]],\n"
+                + "    PRIMEM[\"Greenwich\",0.0,\n"
+                + "        AUTHORITY[\"EPSG\",\"8901\"]],\n"
+                + "    UNIT[\"m\",1.0],\n"
+                + "    AXIS[\"Geocentric X\",OTHER],\n"
+                + "    AXIS[\"Geocentric Y\",EAST],\n"
+                + "    AXIS[\"Geocentric Z\",NORTH],\n"
+                + "    AUTHORITY[\"EPSG\",\"4328\"]]";
+        assertEquals(prj, PrjWriter.formatWKT(prj));
     }
 }
