@@ -194,7 +194,7 @@ public class GeodeticDatum extends AbstractDatum {
 
 
     // Original NAD83 datum. For topographic purposes.
-    // To get pecise transformation from NAD83(1986) to NAD83(HARN) and be
+    // To get precise transformation from NAD83(1986) to NAD83(HARN) and be
     // consistent with WGS, one must use extended NADCON grids (5-6 cm accuracy)
     // NADCON grids are not yet implemented in CTS library.
     public final static GeodeticDatum NAD83 = new GeodeticDatum(
@@ -247,14 +247,15 @@ public class GeodeticDatum extends AbstractDatum {
             PrimeMeridian.GREENWICH, Ellipsoid.GRS80, null,
             new GeographicExtent("Greece - onshore", 34.88, 41.75, 19.57, 28.3), "", "1987");
 
-    public final static GeodeticDatum HERMANNSKOGEL = new GeodeticDatum(
-            new Identifier("EPSG", "4312", "Militar-Geographische Institut", "MGI"),
-            PrimeMeridian.GREENWICH, Ellipsoid.BESSEL1841, null,
+    public final static GeodeticDatum HERMANNSKOGEL = new GeodeticDatum( new Identifier("EPSG", "4312",
+            "Militar-Geographische Institut", "MGI"),
+            PrimeMeridian.GREENWICH, Ellipsoid.BESSEL1841,
+            SevenParameterTransformation.createBursaWolfTransformation(577.326,90.129,463.919,5.1366,1.4742,5.2970,2.4232),
             new GeographicExtent("Austria", 46.4, 49.02, 9.53, 17.17), "", "");
-
     public final static GeodeticDatum POSTDAM = new GeodeticDatum(
             new Identifier("EPSG", "4314", "Deutsches Hauptdreiecksnetz", "DHDN"),
-            PrimeMeridian.GREENWICH, Ellipsoid.BESSEL1841, null,
+            PrimeMeridian.GREENWICH, Ellipsoid.BESSEL1841,
+            SevenParameterTransformation.createBursaWolfTransformation(598.1,73.7,418.2,0.202,0.045,-2.455,6.7),
             new GeographicExtent("Germany - states of former West Germany onshore", 47.27, 55.09, 5.87, 13.84), "", "");
 
     public final static GeodeticDatum CARTHAGE = new GeodeticDatum(
