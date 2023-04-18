@@ -36,6 +36,7 @@ import org.cts.op.transformation.GeocentricTranslation;
 import org.cts.op.transformation.NTv2GridShiftTransformation;
 import org.cts.registry.EPSGRegistry;
 import org.cts.registry.IGNFRegistry;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
@@ -88,5 +89,15 @@ class CRSHelperTest {
                 CoordinateOperationFactory.includeFilter(ops, NTv2GridShiftTransformation.class)));
         datum.removeAllTransformations();
         GeodeticDatum.RGF93.removeAllTransformations();
+    }
+
+    @Test
+    @Disabled
+    void testCreateCRS() throws Exception {
+        CRSFactory factory = new CRSFactory();
+        factory.getRegistryManager().addRegistry(new EPSGRegistry());
+        CoordinateReferenceSystem crs = factory.getCRS("EPSG:2100");
+        assertNotNull(crs);
+        assertNotNull(crs.getDatum());
     }
 }
