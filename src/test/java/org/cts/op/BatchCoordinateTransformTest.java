@@ -77,7 +77,7 @@ public class BatchCoordinateTransformTest extends BaseCoordinateTransformTest {
                 inputCRS = cRSFactory.getCRS(csNameSrc);
                 outputCRS = cRSFactory.getCRS(csNameDest);
             }catch (CRSException ex){
-                throw new RuntimeException("Cannot create the CRS's for the id : "+ id);
+                throw new CRSException("Cannot create the CRS's for the id : "+ id);
             }
             double[] pointSource = new double[]{csNameSrc_X, csNameSrc_Y};
             double[] result = transform((GeodeticCRS) inputCRS, (GeodeticCRS) outputCRS, pointSource);
