@@ -630,7 +630,7 @@ public class CRSHelper {
         Ellipsoid ellps = null;
 
         if (null != ellipsoidName) {
-            ellps = Ellipsoid.ellipsoidFromName.get(ellipsoidName.replaceAll("[^a-zA-Z0-9_]", "").toLowerCase());
+            ellps = Ellipsoid.ellipsoidFromName.get(ellipsoidName.replaceAll("[^a-zA-Z0-9]", "").toLowerCase());
         }
         if (ellps == null && authorityCode != null) {
             String[] authNameWithKey = authorityCode.split(":");
