@@ -8663,7 +8663,8 @@
 # Cape / Lo33
 <22293> +proj=tmerc +lat_0=0 +lon_0=33 +k=1 +x_0=0 +y_0=0 +axis=wsu +a=6378249.145 +b=6356514.966398753 +towgs84=-136,-108,-292,0,0,0,0 +units=m +no_defs  <>
 # Carthage (Paris) / Tunisia Mining Grid
-<22300>  <>
+# Unable to translate coordinate system EPSG:22300 into PROJ.4 format.
+#
 # Carthage / UTM zone 32N
 <22332> +proj=utm +zone=32 +datum=carthage +units=m +no_defs  <>
 # Carthage / Nord Tunisie
@@ -9874,7 +9875,8 @@
 # Tananarive (Paris) / Laborde Grid (deprecated)
 <29700> +proj=omerc +lat_0=-18.9 +lonc=44.10000000000001 +alpha=18.9 +k=0.9995000000000001 +x_0=400000 +y_0=800000 +gamma=18.9 +ellps=intl +towgs84=-189,-242,-91,0,0,0,0 +pm=paris +units=m +no_defs  <>
 # Tananarive (Paris) / Laborde Grid
-<29701>  <>
+# Unable to translate coordinate system EPSG:29701 into PROJ.4 format.
+#
 # Tananarive (Paris) / Laborde Grid approximation
 <29702> +proj=omerc +lat_0=-18.9 +lonc=44.10000000000001 +alpha=18.9 +k=0.9995000000000001 +x_0=400000 +y_0=800000 +gamma=18.9 +ellps=intl +towgs84=-189,-242,-91,0,0,0,0 +pm=paris +units=m +no_defs  <>
 # Tananarive / UTM zone 38S
