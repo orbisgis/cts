@@ -3,4 +3,4 @@
 + Update SLF4J to 2.0.9
 + Fix parsing ellipsoid name
 + Update EPSG file
-+ Update dependencies and maven plugins
++ Update dependencies
