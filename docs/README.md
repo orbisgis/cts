@@ -36,7 +36,7 @@ CTS.  If not, see <http://www.gnu.org/licenses/>.
 
 You can include CTS in your project thanks to Maven repositories.
 
-From maven central, check https://search.maven.org/artifact/org.orbisgis/cts/1.5.2/bundle
+From maven central, check https://search.maven.org/artifact/org.orbisgis/cts/1.7.1/bundle
 
 To use the current snapshot add in the pom
 
@@ -54,7 +54,7 @@ and the following dependency
 <dependency>
     <groupId>org.orbisgis</groupId>
     <artifactId>cts</artifactId>
-    <version>1.6.0-SNAPSHOT</version>
+    <version>1.7.2-SNAPSHOT</version>
 </dependency>
 ```
 
