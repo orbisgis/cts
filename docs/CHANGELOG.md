@@ -4,4 +4,3 @@
 + Fix parsing ellipsoid name
 + Update EPSG file
 + Update dependencies
-
