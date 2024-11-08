@@ -23,9 +23,6 @@
  */
 package org.cts;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +39,6 @@ import java.util.Map;
 public class IdentifiableComponent implements Identifiable {
 
     private Identifier identifier;
-    static final Logger LOGGER = LoggerFactory.getLogger(CRSHelper.class);
     private static Map<Identifier, IdentifiableComponent> registry = new HashMap<Identifier, IdentifiableComponent>();
 
     /**
@@ -191,8 +187,6 @@ public class IdentifiableComponent implements Identifiable {
     private void registerComponent() {
         if (!registry.containsKey(getIdentifier())) {
             registry.put(getIdentifier(), this);
-        } else {
-            LOGGER.debug("A component has already been registered for key " + getAuthorityName() + ":" + getAuthorityKey() + ".");
         }
     }
 
