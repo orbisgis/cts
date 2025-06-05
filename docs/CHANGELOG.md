@@ -3,3 +3,4 @@
 - Use junit-jupiter-api in test scope only #160
 - Remove unnecessary logger
 - Update github actions
+- Update to central portal publishing
