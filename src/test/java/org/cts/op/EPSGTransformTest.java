@@ -166,6 +166,20 @@ class EPSGTransformTest extends BaseCoordinateTransformTest {
         assertTrue(checkEquals2D("EPSG:2100 to EPSG:4326 ", result, pointDest, tolerance));
     }
 
+    @Test
+    void testEPSGCodeFrom27700To4326() throws Exception {
+        String csNameSrc = "EPSG:27700"; //Input EPSG
+        double[] pointSource = new double[]{489581,-55232};
+        String csNameDest = "EPSG:4326";  //Target EPSG
+        double[] pointDest = new double[]{-0.7667563514593325, 49.396886444795};
+        double tolerance = 0.01;
+        CoordinateReferenceSystem inputCRS = cRSFactory.getCRS(csNameSrc);
+        CoordinateReferenceSystem outputCRS = cRSFactory.getCRS(csNameDest);
+        verbose = false;
+        double[] result = transform((GeodeticCRS) inputCRS, (GeodeticCRS) outputCRS, pointSource);
+        assertTrue(checkEquals2D("EPSG:27700 to EPSG:4326 ", result, pointDest, tolerance));
+    }
+
 
     //TODO : Fix me add support to NADGRID
     @Disabled

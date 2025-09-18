@@ -28,6 +28,7 @@ import java.io.File;
 import java.io.RandomAccessFile;
 import java.net.URI;
 import java.nio.CharBuffer;
+import java.util.List;
 import java.util.Map;
 
 import org.cts.CRSFactory;
@@ -318,5 +319,36 @@ class PrjParserTest extends CTSTestCase {
         CoordinateReferenceSystem crs2 = cRSFactory.createFromPrj(prj2);
         assertNotNull(crs);
         assertFalse(crs.equals(crs2));
+    }
+
+    @Test
+    void testWKT2() {
+        String prj = "PROJCRS[\"WGS 84 / UTM zone 31N\",\n" +
+                "BASEGEOGCRS[\"WGS 84\",ENSEMBLE[\"World Geodetic System 1984 ensemble\",MEMBER[\"World Geodetic System 1984 (Transit)\"],MEMBER[\"World Geodetic System 1984 (G730)\"],MEMBER[\"World Geodetic System 1984 (G873)\"],MEMBER[\"World Geodetic System 1984 (G1150)\"],MEMBER[\"World Geodetic System 1984 (G1674)\"],MEMBER[\"World Geodetic System 1984 (G1762)\"],MEMBER[\"World Geodetic System 1984 (G2139)\"],MEMBER[\"World Geodetic System 1984 (G2296)\"],ELLIPSOID[\"WGS 84\",6378137,298.257223563,LENGTHUNIT[\"metre\",1]],ENSEMBLEACCURACY[2.0]],PRIMEM[\"Greenwich\",0,ANGLEUNIT[\"degree\",0.0174532925199433]],ID[\"EPSG\",4326]],\n" +
+                "CONVERSION[\"UTM zone 31N\",METHOD[\"Transverse Mercator\",ID[\"EPSG\",9807]],PARAMETER[\"Latitude of natural origin\",0,ANGLEUNIT[\"degree\",0.0174532925199433],ID[\"EPSG\",8801]],PARAMETER[\"Longitude of natural origin\",3,ANGLEUNIT[\"degree\",0.0174532925199433],ID[\"EPSG\",8802]],PARAMETER[\"Scale factor at natural origin\",0.9996,SCALEUNIT[\"unity\",1],ID[\"EPSG\",8805]],PARAMETER[\"False easting\",500000,LENGTHUNIT[\"metre\",1],ID[\"EPSG\",8806]],PARAMETER[\"False northing\",0,LENGTHUNIT[\"metre\",1],ID[\"EPSG\",8807]]],\n" +
+                "CS[Cartesian,2],\n" +
+                "AXIS[\"(E)\",east,ORDER[1],LENGTHUNIT[\"metre\",1]],\n" +
+                "AXIS[\"(N)\",north,ORDER[2],LENGTHUNIT[\"metre\",1]],\n" +
+                "USAGE[SCOPE[\"Navigation and medium accuracy spatial referencing.\"],AREA[\"Between 0°E and 6°E, northern hemisphere between equator and 84°N, onshore and offshore. Algeria. Andorra. Belgium. Benin. Burkina Faso. Denmark - North Sea. France. Germany - North Sea. Ghana. Luxembourg. Mali. Netherlands. Niger. Nigeria. Norway. Spain. Togo. United Kingdom (UK) - North Sea.\"],BBOX[0,0,84,6]],\n" +
+                "ID[\"EPSG\",32631]]";
+        PrjElement prjElement = parser.getAsPrjElement(prj);
+        assertInstanceOf(PrjNodeElement.class, prjElement);
+        PrjNodeElement firstNode = (PrjNodeElement) prjElement;
+        assertEquals("PROJCRS", firstNode.getName());
+        List<PrjElement> nodes = firstNode.getChildren();
+        PrjNodeElement id_epsg=null;
+        for (PrjElement node : nodes) {
+            if(node instanceof PrjNodeElement) {
+                id_epsg = (PrjNodeElement) node;
+                if (id_epsg.getName().equals("ID")) {
+                    break;
+                }
+            }
+        }
+        assertEquals("ID", id_epsg.getName());
+        List<PrjElement> epsgElement = id_epsg.getChildren();
+        assertEquals(2, epsgElement.size());
+        assertEquals("EPSG", ((PrjStringElement)epsgElement.get(0)).getValue());
+        assertEquals(32631, ((PrjNumberElement)epsgElement.get(1)).getValue());
     }
 }
