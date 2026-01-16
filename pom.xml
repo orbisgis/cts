@@ -293,7 +293,7 @@
         </snapshotRepository>
         <repository>
             <id>central</id>
-            <url>https://central.sonatype.com</url>
+            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
     </distributionManagement>
 
