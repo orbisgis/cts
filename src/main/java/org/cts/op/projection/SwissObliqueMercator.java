@@ -190,7 +190,7 @@ public class SwissObliqueMercator extends Projection {
 
             @Override
             public String toString() {
-                return SwissObliqueMercator.this.toString() + " inverse";
+                return SwissObliqueMercator.this + " inverse";
             }
         };
     }

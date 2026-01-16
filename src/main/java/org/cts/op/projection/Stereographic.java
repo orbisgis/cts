@@ -53,7 +53,7 @@ public class Stereographic extends Projection {
             e, // eccentricity of the ellipsoid
             e2; // square eccentricity of the ellipsoid
     protected final double[] invcoeff;
-    private double PI_2 = PI / 2;
+    private final double PI_2 = PI / 2;
 
     /**
      * Create a new Stereographic Projection corresponding to the
@@ -191,7 +191,7 @@ public class Stereographic extends Projection {
 
             @Override
             public String toString() {
-                return Stereographic.this.toString() + " inverse";
+                return Stereographic.this + " inverse";
             }
         };
     }

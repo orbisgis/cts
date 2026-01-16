@@ -33,7 +33,7 @@ public class PrjNodeElement extends AbstractPrjElement {
     /**
      * The name of this node.
      */
-    private String name;
+    private final String name;
 
     /**
      * Creates a node from its name and the list of its children.

@@ -176,7 +176,7 @@ public class LambertAzimuthalEqualArea extends Projection {
 
             @Override
             public String toString() {
-                return LambertAzimuthalEqualArea.this.toString() + " inverse";
+                return LambertAzimuthalEqualArea.this + " inverse";
             }
         };
     }

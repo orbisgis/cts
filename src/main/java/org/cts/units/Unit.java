@@ -46,10 +46,10 @@ import static org.cts.units.Quantity.*;
 public class Unit extends IdentifiableComponent implements java.io.Serializable {
 
     // A table containing tables mapping symbols to unit for each quantity Class
-    private static Map<Quantity, Map<String, Unit>> map =
+    private static final Map<Quantity, Map<String, Unit>> map =
             new HashMap<Quantity, Map<String, Unit>>();
     // A table containing base units for each quantity Class
-    private static Map<Quantity, Unit> baseUnits = new HashMap<Quantity, Unit>();
+    private static final Map<Quantity, Unit> baseUnits = new HashMap<Quantity, Unit>();
 
     /**
      * Static method returning a Unit from its symbol and quantity Class.
@@ -130,7 +130,7 @@ public class Unit extends IdentifiableComponent implements java.io.Serializable 
         KILOMETER = new Unit(LENGTH, 1000d, new Identifier("EPSG", "9036", "kilometer", "km", "", aliases));
     }
 
-    private Quantity quantity;
+    private final Quantity quantity;
     private double scale;
     private double offset = 0d;  // used for temperature units
 

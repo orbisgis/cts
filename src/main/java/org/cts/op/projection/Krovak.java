@@ -190,7 +190,7 @@ public class Krovak extends Projection {
 
             @Override
             public String toString() {
-                return Krovak.this.toString() + " inverse";
+                return Krovak.this + " inverse";
             }
         };
     }

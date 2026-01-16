@@ -66,7 +66,7 @@ public class CRSHelper {
 
     static final Logger LOGGER = LoggerFactory.getLogger(CRSHelper.class);
 
-    private static CRSGridCache<String, AbstractCoordinateOperation> CRSGRIDPOOL = new CRSGridCache<String, AbstractCoordinateOperation>(5);
+    private static final CRSGridCache<String, AbstractCoordinateOperation> CRSGRIDPOOL = new CRSGridCache<String, AbstractCoordinateOperation>(5);
 
     /**
      * Creates a new {@link org.cts.crs.CoordinateReferenceSystem} with the

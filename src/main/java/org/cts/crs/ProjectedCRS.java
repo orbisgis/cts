@@ -67,7 +67,7 @@ public class ProjectedCRS extends GeodeticCRS {
     /**
      * The projection used by this ProjectedCRS.
      */
-    private Projection projection;
+    private final Projection projection;
 
     /**
      * Create a new ProjectedCRS.

@@ -26,6 +26,8 @@ package org.cts.op.transformation.grids;
 import org.cts.cs.GeographicExtent;
 import org.cts.cs.OutOfExtentException;
 
+import java.util.Objects;
+
 /**
  * A grid with column and rows representing meridians and parallels and cell
  * values representing any parameter as heights (geoid definition), altitudes
@@ -371,8 +373,8 @@ public class GeographicGrid implements Grid {
         if (Double.compare(that.xL, xL) != 0) return false;
         if (Double.compare(that.y0, y0) != 0) return false;
         if (Double.compare(that.yL, yL) != 0) return false;
-        if (context != null ? !context.equals(that.context) : that.context != null) return false;
-        if (extent != null ? !extent.equals(that.extent) : that.extent != null) return false;
+        if (!Objects.equals(context, that.context)) return false;
+        if (!Objects.equals(extent, that.extent)) return false;
         double[][][] thisArray3 = this.values;
         double[][][] thatArray3 = that.values;
         if (thisArray3.length != thatArray3.length) return false;

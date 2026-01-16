@@ -159,7 +159,7 @@ public class GaussSchreiberTransverseMercator extends Projection {
 
             @Override
             public String toString() {
-                return GaussSchreiberTransverseMercator.this.toString() + " inverse";
+                return GaussSchreiberTransverseMercator.this + " inverse";
             }
         };
     }

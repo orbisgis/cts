@@ -34,7 +34,7 @@ public abstract class AbstractPrjElement implements PrjElement {
     /**
      * The list of the children of this PrjElement.
      */
-    private List<PrjElement> children;
+    private final List<PrjElement> children;
 
     /**
      * Create a PrjElement that uses the list of PrjElement in parameter as

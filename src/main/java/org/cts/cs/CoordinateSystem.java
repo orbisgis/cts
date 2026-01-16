@@ -39,13 +39,13 @@ public class CoordinateSystem {
     /**
      * The {@linkplain Axis axes} of this CoordinateSystem.
      */
-    private Axis[] axes;
+    private final Axis[] axes;
 
     /**
      * The {@linkplain Unit units} for the {@linkplain Axis axes} of this
      * CoordinateSystem.
      */
-    private Unit[] units;
+    private final Unit[] units;
 
     /**
      * Create a new Coordinate System from an array of {@link Axis}

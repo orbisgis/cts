@@ -130,7 +130,7 @@ public final class PrjWriter {
                     n++;
                     w.append("\n").append(indent(n)).append(begin);
                 }
-                dontAddAlinea = begin.substring(begin.length() - 2).equals("],");
+                dontAddAlinea = begin.endsWith("],");
                 ind = end.indexOf(",");
             }
             n = checkIndent(end, n);
@@ -165,7 +165,7 @@ public final class PrjWriter {
      */
     private static int checkIndent(String end, int n) {
         int k = end.length() - 1;
-        while (end.substring(k, k + 1).equals("]")) {
+        while (end.charAt(k) == ']') {
             n--;
             k--;
         }

@@ -166,7 +166,7 @@ public class CassiniSoldner extends Projection {
 
             @Override
             public String toString() {
-                return CassiniSoldner.this.toString() + " inverse";
+                return CassiniSoldner.this + " inverse";
             }
         };
     }

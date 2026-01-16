@@ -44,7 +44,7 @@ public class LongitudeRotation extends AbstractCoordinateOperation {
     /**
      * The rotation angle in radians.
      */
-    private double rotationAngle;
+    private final double rotationAngle;
 
     /**
      * <p>Create a new LongitudeRotation converter.</p>

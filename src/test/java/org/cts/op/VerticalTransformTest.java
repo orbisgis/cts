@@ -24,8 +24,7 @@
 package org.cts.op;
 
 import static java.lang.Math.PI;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.cts.Identifier;
 import org.cts.IllegalCoordinateException;
@@ -42,7 +41,7 @@ import org.junit.jupiter.api.Test;
  */
 class VerticalTransformTest extends BaseCoordinateTransformTest {
 
-    private Geographic2DCRS RGF93crs = new Geographic2DCRS(new Identifier("EPSG", "4171", "RGF93"), GeodeticDatum.RGF93);
+    private final Geographic2DCRS RGF93crs = new Geographic2DCRS(new Identifier("EPSG", "4171", "RGF93"), GeodeticDatum.RGF93);
     Geographic2DCRS WGS84crs = new Geographic2DCRS(new Identifier("EPSG", "4326", "WGS84"), GeodeticDatum.RGF93);
 
 
@@ -794,7 +793,7 @@ class VerticalTransformTest extends BaseCoordinateTransformTest {
                 + "        UNIT[\"m\",1.0],\n"
                 + "        AXIS[\"Gravity-related height\",UP]]]";
         CoordinateReferenceSystem scrs = cRSFactory.createFromPrj(prjString);
-        assertTrue(scrs instanceof CompoundCRS);
+        assertInstanceOf(CompoundCRS.class, scrs);
         CompoundCRS sourceCRS = (CompoundCRS) scrs;
         prjString = "COMPD_CS[\"RGF93 + IGN69\",\n"
                 + "     GEOGCS[\"RGF93\",\n"
@@ -814,7 +813,7 @@ class VerticalTransformTest extends BaseCoordinateTransformTest {
                 + "        UNIT[\"m\",1.0],\n"
                 + "        AXIS[\"Ellipsoidal height\",UP]]]";
         CoordinateReferenceSystem tcrs = cRSFactory.createFromPrj(prjString);
-        assertTrue(tcrs instanceof CompoundCRS);
+        assertInstanceOf(CompoundCRS.class, tcrs);
         CompoundCRS targetCRS = (CompoundCRS) tcrs;
         double[] inputPoint = new double[]{750000, 7000000, 100};
         double[] expectedPoint = new double[]{3.69807131, 50.09631762, 144.492};
@@ -832,7 +831,7 @@ class VerticalTransformTest extends BaseCoordinateTransformTest {
                 + "    UNIT[\"m\",1.0],\n"
                 + "    AXIS[\"Ellipsoidal height\",UP]]";
         CoordinateReferenceSystem crs = cRSFactory.createFromPrj(prjString);
-        assertTrue(crs instanceof VerticalCRS);
+        assertInstanceOf(VerticalCRS.class, crs);
         VerticalCRS vcrs = (VerticalCRS) crs;
         assertEquals(vcrs.getDatum().getEllipsoid(), Ellipsoid.GRS80);
     }
@@ -856,7 +855,7 @@ class VerticalTransformTest extends BaseCoordinateTransformTest {
                 + "    AXIS[\"Geocentric Z\",NORTH],\n"
                 + "    AUTHORITY[\"EPSG\",\"4370\"]]";
         CoordinateReferenceSystem tcrs = cRSFactory.createFromPrj(prjString);
-        assertTrue(tcrs instanceof GeocentricCRS);
+        assertInstanceOf(GeocentricCRS.class, tcrs);
         GeocentricCRS targetCRS = (GeocentricCRS) tcrs;
         double[] inputPoint = new double[]{650000, 2300000, 100};
         double[] expectedPoint = new double[]{4294839.989, 225283.135, 4694418.993};

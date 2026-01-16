@@ -56,24 +56,24 @@ class CirceMetropoleComplianceTest extends BaseCoordinateTransformTest {
     // ------------------------------------------------------------------------
     // Datum
     // ------------------------------------------------------------------------
-    private static GeodeticDatum NTF_G = GeodeticDatum.createGeodeticDatum(
+    private static final GeodeticDatum NTF_G = GeodeticDatum.createGeodeticDatum(
             new Identifier("IGNF","NTF_G","NTF"), PrimeMeridian.GREENWICH, Ellipsoid.CLARKE1880IGN,
             new GeocentricTranslation(-168, -60, 320, 1), GeographicExtent.WORLD, null, null);
-    private static GeodeticDatum NTF_P = GeodeticDatum.createGeodeticDatum(
+    private static final GeodeticDatum NTF_P = GeodeticDatum.createGeodeticDatum(
             new Identifier("IGNF","NTF_P","NTF_P"), PrimeMeridian.PARIS, Ellipsoid.CLARKE1880IGN,
             new GeocentricTranslation(-168, -60, 320, 1), GeographicExtent.WORLD, null, null);
-    private static GeodeticDatum ED50 = GeodeticDatum.createGeodeticDatum(
+    private static final GeodeticDatum ED50 = GeodeticDatum.createGeodeticDatum(
             new Identifier("IGNF","ED50","ED50"),     PrimeMeridian.GREENWICH, Ellipsoid.INTERNATIONAL1924,
             new GeocentricTranslation(-84, -97, -117, 1), GeographicExtent.WORLD, null, null);
     //static GeodeticDatum WGS84 = GeodeticDatum.createGeodeticDatum(
     //        new Identifier("EPSG","6326","WGS84"),  PrimeMeridian.GREENWICH, Ellipsoid.GRS80,
     //        Identity.IDENTITY, GeographicExtent.WORLD,null,null);
-    private static GeodeticDatum WGS84 = GeodeticDatum.WGS84;
-    private static GeodeticDatum RGF93 = GeodeticDatum.createGeodeticDatum(
+    private static final GeodeticDatum WGS84 = GeodeticDatum.WGS84;
+    private static final GeodeticDatum RGF93 = GeodeticDatum.createGeodeticDatum(
             new Identifier("IGNF","RGF93","RGF93"),  PrimeMeridian.GREENWICH, Ellipsoid.GRS80,
             Identity.IDENTITY, GeographicExtent.WORLD, null, null);
     //static GeodeticDatum ETRS89 = RGF93;
-    private static GeodeticDatum ETRS89 = GeodeticDatum.createGeodeticDatum(
+    private static final GeodeticDatum ETRS89 = GeodeticDatum.createGeodeticDatum(
             new Identifier("IGNF","ETRS89","ETRS 89"),  PrimeMeridian.GREENWICH, Ellipsoid.GRS80,
             Identity.IDENTITY, GeographicExtent.WORLD, null, null);
 
@@ -81,19 +81,19 @@ class CirceMetropoleComplianceTest extends BaseCoordinateTransformTest {
     // ------------------------------------------------------------------------
     // Geocentric CRS
     // ------------------------------------------------------------------------
-    private static GeocentricCRS WGS84_CARTESIAN = new GeocentricCRS(new Identifier("IGNF","WGS84","WGS84 Cartésiennes géocentriques"),WGS84, GeocentricCRS.XYZ);
-    private static GeocentricCRS RGF93_CARTESIAN = new GeocentricCRS(new Identifier("IGNF","RGF93","RGF93 Cartésiennes géocentriques"),RGF93, GeocentricCRS.XYZ);
+    private static final GeocentricCRS WGS84_CARTESIAN = new GeocentricCRS(new Identifier("IGNF","WGS84","WGS84 Cartésiennes géocentriques"),WGS84, GeocentricCRS.XYZ);
+    private static final GeocentricCRS RGF93_CARTESIAN = new GeocentricCRS(new Identifier("IGNF","RGF93","RGF93 Cartésiennes géocentriques"),RGF93, GeocentricCRS.XYZ);
     static GeocentricCRS ETRS89_CARTESIAN = new GeocentricCRS(new Identifier("IGNF","ETRS89","ETRS89 cartesiennes geocentriques"),ETRS89, GeocentricCRS.XYZ);
 
     // ------------------------------------------------------------------------
     // Geographic CRS
     // ------------------------------------------------------------------------
-    private static Geographic2DCRS NTF_G_GEO2D = new Geographic2DCRS(new Identifier("IGNF","NTF_G_2DGEO_GR","NTF_G Géographique (gr)"), NTF_G, Geographic2DCRS.LONLAT_GG_CS);
-    private static Geographic2DCRS NTF_P_GEO2D = new Geographic2DCRS(new Identifier("IGNF","NTF_P_2DGEO_GR","NTF_P Géographique (gr)"), NTF_P, Geographic2DCRS.LONLAT_GG_CS);
-    private static Geographic2DCRS ED50_GEO2D = new Geographic2DCRS(new Identifier("IGNF","ED50_2DGEO_D","ED50 Géographique (deg)"), ED50, Geographic2DCRS.LONLAT_DD_CS);
-    private static Geographic3DCRS ED50_GEO3D = new Geographic3DCRS(new Identifier("IGNF","ED50_3DGEO_D","ED50 Géographique (deg)"), ED50, Geographic3DCRS.LONLATH_DDM_CS);
-    private static Geographic2DCRS WGS84_GEO2D = new Geographic2DCRS(new Identifier("IGNF","WGS84_2DGEO_D","WGS84 Géographique (deg)"), WGS84, Geographic2DCRS.LONLAT_DD_CS);
-    private static Geographic3DCRS WGS84_GEO3D = new Geographic3DCRS(new Identifier("IGNF","WGS84_3DGEO_D","WGS84 Géographique (deg)"), WGS84, Geographic3DCRS.LONLATH_DDM_CS);
+    private static final Geographic2DCRS NTF_G_GEO2D = new Geographic2DCRS(new Identifier("IGNF","NTF_G_2DGEO_GR","NTF_G Géographique (gr)"), NTF_G, Geographic2DCRS.LONLAT_GG_CS);
+    private static final Geographic2DCRS NTF_P_GEO2D = new Geographic2DCRS(new Identifier("IGNF","NTF_P_2DGEO_GR","NTF_P Géographique (gr)"), NTF_P, Geographic2DCRS.LONLAT_GG_CS);
+    private static final Geographic2DCRS ED50_GEO2D = new Geographic2DCRS(new Identifier("IGNF","ED50_2DGEO_D","ED50 Géographique (deg)"), ED50, Geographic2DCRS.LONLAT_DD_CS);
+    private static final Geographic3DCRS ED50_GEO3D = new Geographic3DCRS(new Identifier("IGNF","ED50_3DGEO_D","ED50 Géographique (deg)"), ED50, Geographic3DCRS.LONLATH_DDM_CS);
+    private static final Geographic2DCRS WGS84_GEO2D = new Geographic2DCRS(new Identifier("IGNF","WGS84_2DGEO_D","WGS84 Géographique (deg)"), WGS84, Geographic2DCRS.LONLAT_DD_CS);
+    private static final Geographic3DCRS WGS84_GEO3D = new Geographic3DCRS(new Identifier("IGNF","WGS84_3DGEO_D","WGS84 Géographique (deg)"), WGS84, Geographic3DCRS.LONLATH_DDM_CS);
 
     // ------------------------------------------------------------------------
     // Projected CRS
@@ -102,17 +102,17 @@ class CirceMetropoleComplianceTest extends BaseCoordinateTransformTest {
             LambertConicConformal1SP.createLCC1SP(Ellipsoid.CLARKE1880IGN, 55d*180d/200d, 0.99987734, 0, 600000, 200000));
     static ProjectedCRS LAMB2 = new ProjectedCRS(new Identifier("IGNF","LAMB2","Lambert 2"), NTF_P,
             LambertConicConformal1SP.createLCC1SP(Ellipsoid.CLARKE1880IGN, 52d*180d/200d, 0.99987742, 0, 600000, 200000));
-    private static ProjectedCRS LAMB3 = new ProjectedCRS(new Identifier("IGNF","LAMB2","Lambert 2"), NTF_P,
+    private static final ProjectedCRS LAMB3 = new ProjectedCRS(new Identifier("IGNF","LAMB2","Lambert 2"), NTF_P,
             LambertConicConformal1SP.createLCC1SP(Ellipsoid.CLARKE1880IGN, 49d*180d/200d, 0.99987750, 0, 600000, 200000));
     static ProjectedCRS LAMB4 = new ProjectedCRS(new Identifier("IGNF","LAMB2","Lambert 2"), NTF_P,
             LambertConicConformal1SP.createLCC1SP(Ellipsoid.CLARKE1880IGN, 46.85*180d/200d, 0.99994471, 0, 600000, 200000));
-    private static ProjectedCRS LAMBE = new ProjectedCRS(new Identifier("IGNF","LAMBE","Lambert 2 étendu"), NTF_P,
+    private static final ProjectedCRS LAMBE = new ProjectedCRS(new Identifier("IGNF","LAMBE","Lambert 2 étendu"), NTF_P,
             LambertConicConformal1SP.createLCC1SP(Ellipsoid.CLARKE1880IGN, 52d*180d/200d, 0.99987742, 0, 600000, 2200000));
 
-    private static ProjectedCRS LAMBGC = new ProjectedCRS(new Identifier("IGNF","LAMBGC","Lambert Grand Champ"), NTF_P,
+    private static final ProjectedCRS LAMBGC = new ProjectedCRS(new Identifier("IGNF","LAMBGC","Lambert Grand Champ"), NTF_P,
             LambertConicConformal2SP.createLCC2SP(Ellipsoid.CLARKE1880IGN, 47d, 45d, 49d, 0, 600000, 600000));
 
-    private static ProjectedCRS LAMB_OACI_DECCA = new ProjectedCRS(new Identifier("IGNF","LAMB_OACI","Lambert OACI DECCA (GRS_80)"),
+    private static final ProjectedCRS LAMB_OACI_DECCA = new ProjectedCRS(new Identifier("IGNF","LAMB_OACI","Lambert OACI DECCA (GRS_80)"),
             WGS84,
             LambertConicConformal2SP.createLCC2SP(Ellipsoid.GRS80,
                     AngleFormat.parseAngle("44°47'30\""),
@@ -124,18 +124,18 @@ class CirceMetropoleComplianceTest extends BaseCoordinateTransformTest {
             WGS84,
             new UniversalTransverseMercatorAuto(Ellipsoid.WGS84, new HashMap<String, Measure>()));
 
-    private static ProjectedCRS WGS_UTM31N;
+    private static final ProjectedCRS WGS_UTM31N;
 
-    private static ProjectedCRS LAMB93 = new ProjectedCRS(new Identifier("IGNF","LAMB93","Lambert 93"), RGF93,
+    private static final ProjectedCRS LAMB93 = new ProjectedCRS(new Identifier("IGNF","LAMB93","Lambert 93"), RGF93,
             LambertConicConformal2SP.createLCC2SP(Ellipsoid.GRS80, 46.5d, 44d, 49d, 3d, 700000, 6600000));
 
-    private static ProjectedCRS LAMBERT_CC42 = new ProjectedCRS(new Identifier("IGNF","LAMBERT CC42","Lambert CC42"), RGF93,
+    private static final ProjectedCRS LAMBERT_CC42 = new ProjectedCRS(new Identifier("IGNF","LAMBERT CC42","Lambert CC42"), RGF93,
             LambertConicConformal2SP.createLCC2SP(Ellipsoid.GRS80, 42d, 41.25d, 42.75d, 3d, 1700000, 1200000));
 
-    private static ProjectedCRS LAMBERT_CC43 = new ProjectedCRS(new Identifier("IGNF","LAMBERT CC43","Lambert CC43"), RGF93,
+    private static final ProjectedCRS LAMBERT_CC43 = new ProjectedCRS(new Identifier("IGNF","LAMBERT CC43","Lambert CC43"), RGF93,
             LambertConicConformal2SP.createLCC2SP(Ellipsoid.GRS80, 43d, 42.25d, 43.75d, 3d, 1700000, 2200000));
 
-    private static ProjectedCRS ETRS_LCC = new ProjectedCRS(new Identifier("IGNF","ETRS_LCC","ETRS89 LCC"), ETRS89,
+    private static final ProjectedCRS ETRS_LCC = new ProjectedCRS(new Identifier("IGNF","ETRS_LCC","ETRS89 LCC"), ETRS89,
             LambertConicConformal2SP.createLCC2SP(Ellipsoid.GRS80, 52d, 35d, 65d, 10d, 4000000, 2800000));
 
     private static Map<String,Measure> params = new HashMap<String,Measure>();
@@ -146,15 +146,15 @@ class CirceMetropoleComplianceTest extends BaseCoordinateTransformTest {
         params.put(Parameter.FALSE_EASTING, new Measure(4321000, Unit.METER));
         params.put(Parameter.FALSE_NORTHING, new Measure(3210000, Unit.METER));
     }
-    private static ProjectedCRS ETRS89_LAEA = new ProjectedCRS(new Identifier("IGNF","ETRS89LAEA","ETRS89 LAEA"), ETRS89,
+    private static final ProjectedCRS ETRS89_LAEA = new ProjectedCRS(new Identifier("IGNF","ETRS89LAEA","ETRS89 LAEA"), ETRS89,
             new LambertAzimuthalEqualArea(Ellipsoid.GRS80, params));
 
-    private static ProjectedCRS ETRS_UTM32N;
+    private static final ProjectedCRS ETRS_UTM32N;
 
     // ------------------------------------------------------------------------
     // Vertical CRS
     // ------------------------------------------------------------------------
-    private static VerticalCRS IGN69 = new VerticalCRS(new Identifier("IGNF","IGN69","IGN69"), new VerticalDatum(
+    private static final VerticalCRS IGN69 = new VerticalCRS(new Identifier("IGNF","IGN69","IGN69"), new VerticalDatum(
             new Identifier("EPSG", "5119", "Nivellement general de la France - IGN69", "IGN69"),
             new GeographicExtent("France", 42, 51.5, -5.5, 8.5),
             "Mean sea level at Marseille.",
@@ -163,9 +163,9 @@ class CirceMetropoleComplianceTest extends BaseCoordinateTransformTest {
                     new Identifier("EPSG", "5120", "Nivellement general de la France - IGN78", "IGN78"),
                     new GeographicExtent("Corse (France)", 41.2, 43.2, 8.41666666666666, 9.71666666666666),
                     "", "", VerticalDatum.Type.GEOIDAL, "RAC09.txt", GeodeticDatum.RGF93));
-    private static VerticalCRS EGM2008 = new VerticalCRS(new Identifier("IGNF","EGM2008","EGM2008"), VerticalDatum.EGM2008);
+    private static final VerticalCRS EGM2008 = new VerticalCRS(new Identifier("IGNF","EGM2008","EGM2008"), VerticalDatum.EGM2008);
 
-    private static VerticalCRS RGF93_HEIGHT = new VerticalCRS(new Identifier("IGNF","RGF93_HEIGHT","RGF93 HEIGHT"), VerticalDatum.GRS80VD);
+    private static final VerticalCRS RGF93_HEIGHT = new VerticalCRS(new Identifier("IGNF","RGF93_HEIGHT","RGF93 HEIGHT"), VerticalDatum.GRS80VD);
 
     // ------------------------------------------------------------------------
     // Projected CRS

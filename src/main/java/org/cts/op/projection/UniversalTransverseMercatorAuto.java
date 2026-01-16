@@ -134,7 +134,7 @@ public class UniversalTransverseMercatorAuto extends Projection {
 
             @Override
             public String toString() {
-                return UniversalTransverseMercatorAuto.this.toString() + " inverse";
+                return UniversalTransverseMercatorAuto.this + " inverse";
             }
         };
     }

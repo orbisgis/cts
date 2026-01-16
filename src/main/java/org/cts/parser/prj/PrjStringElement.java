@@ -31,7 +31,7 @@ public class PrjStringElement extends AbstractPrjElement {
     /**
      * The value of the PrjStringElement.
      */
-    private String value;
+    private final String value;
 
     /**
      * Create a new PrjStringElement.

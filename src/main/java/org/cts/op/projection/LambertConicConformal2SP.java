@@ -193,7 +193,7 @@ public class LambertConicConformal2SP extends Projection {
 
             @Override
             public String toString() {
-                return LambertConicConformal2SP.this.toString() + " inverse";
+                return LambertConicConformal2SP.this + " inverse";
             }
         };
     }

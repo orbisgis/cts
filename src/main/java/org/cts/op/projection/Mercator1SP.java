@@ -183,7 +183,7 @@ public class Mercator1SP extends Projection {
 
             @Override
             public String toString() {
-                return Mercator1SP.this.toString() + " inverse";
+                return Mercator1SP.this + " inverse";
             }
         };
     }

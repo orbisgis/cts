@@ -47,7 +47,7 @@ public class UTMUtils {
      * {@link Map} with the UTM zone + hemisphere string representation ([0-9][0-9][NS]) as key and the corresponding
      * EPSG code as value.
      */
-    private static Map<String, Integer> utmEpsg = new HashMap<>();
+    private static final Map<String, Integer> utmEpsg = new HashMap<>();
 
     // Initialisation of the utmEpsg map.
     static {

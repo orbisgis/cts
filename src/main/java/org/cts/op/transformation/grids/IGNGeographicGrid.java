@@ -268,7 +268,7 @@ public class IGNGeographicGrid extends GeographicGrid {
             }
         }
         // decimal part size --> scale
-        scale = (int) Math.rint(Math.pow(10.0, (double) nbdec));
+        scale = (int) Math.rint(Math.pow(10.0, nbdec));
         extent = new GeographicExtent("GG", y0, yL, x0, xL, modulo);
     }
 }

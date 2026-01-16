@@ -56,7 +56,7 @@ public class ObliqueStereographicAlternative extends Projection {
             e2, // square eccentricity of the ellipsoid
             c, // constant of the projection
             n; // exponent of the projection
-    private double PI_2 = PI / 2;
+    private final double PI_2 = PI / 2;
 
     /**
      * Create a new Oblique Stereographic Alternative Projection corresponding
@@ -181,7 +181,7 @@ public class ObliqueStereographicAlternative extends Projection {
 
             @Override
             public String toString() {
-                return ObliqueStereographicAlternative.this.toString() + " inverse";
+                return ObliqueStereographicAlternative.this + " inverse";
             }
         };
     }

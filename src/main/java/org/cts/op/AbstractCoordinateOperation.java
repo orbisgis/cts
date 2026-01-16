@@ -71,7 +71,7 @@ public abstract class AbstractCoordinateOperation
      */
     public CoordinateOperation inverse()
             throws NonInvertibleOperationException {
-        throw new NonInvertibleOperationException(this.toString()
+        throw new NonInvertibleOperationException(this
                 + " is non invertible");
     }
 

@@ -180,7 +180,7 @@ public class AlbersEqualArea extends Projection {
 
             @Override
             public String toString() {
-                return AlbersEqualArea.this.toString() + " inverse";
+                return AlbersEqualArea.this + " inverse";
             }
         };
     }

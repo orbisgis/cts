@@ -182,7 +182,7 @@ public class CylindricalEqualArea extends Projection {
 
             @Override
             public String toString() {
-                return CylindricalEqualArea.this.toString() + " inverse";
+                return CylindricalEqualArea.this + " inverse";
             }
         };
     }
