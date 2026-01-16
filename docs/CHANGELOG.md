@@ -6,3 +6,4 @@
 - Change to central portal publishing
 - Add a new method to return the elements from a PRJ string
 - Remove old sonatype url
+- Clean up the code
