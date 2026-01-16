@@ -157,7 +157,7 @@ public class MillerCylindrical extends Projection {
 
             @Override
             public String toString() {
-                return MillerCylindrical.this.toString() + " inverse";
+                return MillerCylindrical.this + " inverse";
             }
         };
     }

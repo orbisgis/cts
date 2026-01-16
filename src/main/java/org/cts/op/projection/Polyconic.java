@@ -186,7 +186,7 @@ public class Polyconic extends Projection {
 
             @Override
             public String toString() {
-                return Polyconic.this.toString() + " inverse";
+                return Polyconic.this + " inverse";
             }
         };
     }

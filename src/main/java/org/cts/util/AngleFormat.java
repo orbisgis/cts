@@ -40,8 +40,8 @@ import static java.lang.Math.*;
  */
 public final class AngleFormat {
 
-    private static double DEG_TO_MIN = 60.0;
-    private static double DEG_TO_SEC = 3600.0;
+    private static final double DEG_TO_MIN = 60.0;
+    private static final double DEG_TO_SEC = 3600.0;
 
     /**
      * Regex capture groups for DMSH format pattern parts.

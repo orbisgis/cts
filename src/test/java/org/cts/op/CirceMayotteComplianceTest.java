@@ -49,18 +49,18 @@ class CirceMayotteComplianceTest extends BaseCoordinateTransformTest {
     // ////////////////////////////////////////////////////////////////////////
     // DATUM
     // ////////////////////////////////////////////////////////////////////////
-    private static GeodeticDatum COMBANI1950 = GeodeticDatum.createGeodeticDatum(
+    private static final GeodeticDatum COMBANI1950 = GeodeticDatum.createGeodeticDatum(
             new Identifier("IGNF","REG3180001","COMBANI 1950"), PrimeMeridian.GREENWICH, Ellipsoid.INTERNATIONAL1924,
             SevenParameterTransformation.createBursaWolfTransformation(
                     -599.928, -275.552, -195.665,
                     -0.0835,  -0.4715,     0.0602,
                     49.2814), MAYOTTE,null,null);
 
-    private static GeodeticDatum CAD1997 = GeodeticDatum.createGeodeticDatum(
+    private static final GeodeticDatum CAD1997 = GeodeticDatum.createGeodeticDatum(
             new Identifier("IGNF","REG7010001","CADASTRE 1997"), PrimeMeridian.GREENWICH, Ellipsoid.INTERNATIONAL1924,
             new GeocentricTranslation(-381.788, -57.501, -256.673), MAYOTTE,null,null);
 
-    private static GeodeticDatum RGM04 = GeodeticDatum.createGeodeticDatum(
+    private static final GeodeticDatum RGM04 = GeodeticDatum.createGeodeticDatum(
             new Identifier("IGNF","RGM04","RGM04"), PrimeMeridian.GREENWICH, Ellipsoid.GRS80,
             Identity.IDENTITY, MAYOTTE,null,null);
 

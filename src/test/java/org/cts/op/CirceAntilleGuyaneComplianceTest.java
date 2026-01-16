@@ -52,60 +52,60 @@ class CirceAntilleGuyaneComplianceTest extends BaseCoordinateTransformTest {
     // ////////////////////////////////////////////////////////////////////////
     // DATUM
     // ////////////////////////////////////////////////////////////////////////
-    private static GeodeticDatum FORT_DESAIX = GeodeticDatum.createGeodeticDatum(
+    private static final GeodeticDatum FORT_DESAIX = GeodeticDatum.createGeodeticDatum(
             new Identifier("IGNF","FORT_DESAIX","FORT_DESAIX"), PrimeMeridian.GREENWICH, Ellipsoid.INTERNATIONAL1924,
             SevenParameterTransformation.createBursaWolfTransformation(
                     127.744,  547.069,  118.359,
                      -3.1116,   4.9509,  -0.8837,
                      14.1012), GeographicExtent.WORLD,null,null);
 
-    private static GeodeticDatum RRAF_MTQ = GeodeticDatum.createGeodeticDatum(
+    private static final GeodeticDatum RRAF_MTQ = GeodeticDatum.createGeodeticDatum(
             new Identifier("IGNF","RRAF_MTQ","RRAF_MTQ"), PrimeMeridian.GREENWICH, Ellipsoid.GRS80,
             SevenParameterTransformation.createBursaWolfTransformation(
                      0.7696,  -0.8692, -12.0631,
                     -0.32511, -0.21041, -0.02390,
                      0.2829), GeographicExtent.WORLD,null,null);
 
-    private static GeodeticDatum STE_ANNE = GeodeticDatum.createGeodeticDatum(
+    private static final GeodeticDatum STE_ANNE = GeodeticDatum.createGeodeticDatum(
             new Identifier("IGNF","STE_ANNE","STE_ANNE"), PrimeMeridian.GREENWICH, Ellipsoid.INTERNATIONAL1924,
             SevenParameterTransformation.createBursaWolfTransformation(
                     -471.060,   -3.212,  -305.843,
                        0.4752,  -0.9978,    0.2068,
                        2.1353), GeographicExtent.WORLD,null,null);
 
-    private static GeodeticDatum RRAF_GUA = GeodeticDatum.createGeodeticDatum(
+    private static final GeodeticDatum RRAF_GUA = GeodeticDatum.createGeodeticDatum(
             new Identifier("IGNF","RRAF_GUA","RRAF_GUA"), PrimeMeridian.GREENWICH, Ellipsoid.GRS80,
             SevenParameterTransformation.createBursaWolfTransformation(
                      1.2239,   2.4156,  -1.7598,
                      0.03800, -0.16101, -0.04925,
                      0.2387 ), GeographicExtent.WORLD,null,null);
 
-    private static GeodeticDatum FORT_MARIGOT = GeodeticDatum.createGeodeticDatum(
+    private static final GeodeticDatum FORT_MARIGOT = GeodeticDatum.createGeodeticDatum(
             new Identifier("IGNF","FORT_MARIGOT","FORT_MARIGOT"), PrimeMeridian.GREENWICH, Ellipsoid.INTERNATIONAL1924,
             SevenParameterTransformation.createBursaWolfTransformation(
                     151.613,  253.832, -429.084 ,
                     -0.0506,   0.0958,  -0.5974,
                     -0.3971), GeographicExtent.WORLD,null,null);
 
-    private static GeodeticDatum RRAF_SBSM = GeodeticDatum.createGeodeticDatum(
+    private static final GeodeticDatum RRAF_SBSM = GeodeticDatum.createGeodeticDatum(
             new Identifier("IGNF","RRAF_SBSM","RRAF_SBSM"), PrimeMeridian.GREENWICH, Ellipsoid.GRS80,
             SevenParameterTransformation.createBursaWolfTransformation(
                     14.6642,   5.2493,   0.1981,
                     -0.06838,  0.09141, -0.58131,
                     -0.4067  ), GeographicExtent.WORLD,null,null);
 
-    private static GeodeticDatum CSG1967 = GeodeticDatum.createGeodeticDatum(
+    private static final GeodeticDatum CSG1967 = GeodeticDatum.createGeodeticDatum(
             new Identifier("IGNF","REG4070001","CSG 1967"), PrimeMeridian.GREENWICH, Ellipsoid.INTERNATIONAL1924,
             SevenParameterTransformation.createBursaWolfTransformation(
                     -193.066,  236.993, 105.447,
                        0.4814,  -0.8074,  0.1276,
                        1.5649), GUYANE, null, null);
 
-    private static GeodeticDatum RGAF09 = GeodeticDatum.createGeodeticDatum(
+    private static final GeodeticDatum RGAF09 = GeodeticDatum.createGeodeticDatum(
             new Identifier("IGNF","RGAF09","RGAF09"), PrimeMeridian.GREENWICH, Ellipsoid.GRS80,
             Identity.IDENTITY, GeographicExtent.WORLD,null,null);
 
-    private static GeodeticDatum RGFG95 = GeodeticDatum.createGeodeticDatum(
+    private static final GeodeticDatum RGFG95 = GeodeticDatum.createGeodeticDatum(
             new Identifier("IGNF","RGFG95","RGFG95"), PrimeMeridian.GREENWICH, Ellipsoid.GRS80,
             Identity.IDENTITY, GeographicExtent.WORLD,null,null);
 

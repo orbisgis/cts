@@ -46,7 +46,7 @@ public class InterpolationMethodException extends Exception {
      * @param method the interpolation method
      */
     public InterpolationMethodException(Grid.InterpolationMethod method) {
-        super("" + method + " is not a valid interpolation method");
+        super(method + " is not a valid interpolation method");
     }
 
     /**
@@ -56,6 +56,6 @@ public class InterpolationMethodException extends Exception {
      * @param gridClass the class trying to use the interpolation method
      */
     public InterpolationMethodException(Grid.InterpolationMethod method, Class gridClass) {
-        super("" + method + " is not a valid interpolation method for " + gridClass.getName());
+        super(method + " is not a valid interpolation method for " + gridClass.getName());
     }
 }

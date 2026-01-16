@@ -149,7 +149,7 @@ public class PrimeMeridian extends IdentifiableComponent {
      * The angle formed by this meridian with the international Greenwich
      * meridian in decimal degrees.
      */
-    private double ddLongitude;
+    private final double ddLongitude;
 
     /**
      * primeMeridianFromName associates each prime meridian to a short string

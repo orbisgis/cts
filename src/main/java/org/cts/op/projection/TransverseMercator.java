@@ -137,7 +137,7 @@ public class TransverseMercator extends Projection {
 
             @Override
             public String toString() {
-                return TransverseMercator.this.toString() + " inverse";
+                return TransverseMercator.this + " inverse";
             }
         };
     }

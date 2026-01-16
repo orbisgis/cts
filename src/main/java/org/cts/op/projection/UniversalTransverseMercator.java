@@ -199,7 +199,7 @@ public class UniversalTransverseMercator extends Projection {
 
             @Override
             public String toString() {
-                return UniversalTransverseMercator.this.toString() + " inverse";
+                return UniversalTransverseMercator.this + " inverse";
             }
         };
     }

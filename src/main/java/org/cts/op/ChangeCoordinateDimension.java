@@ -53,7 +53,8 @@ public class ChangeCoordinateDimension extends AbstractCoordinateOperation {
         }
     };
 
-    private int inputDim, outputDim;
+    private final int inputDim;
+    private final int outputDim;
 
     /**
      * Creates a new CoordinateOperation increasing (resp decreasing) the coord

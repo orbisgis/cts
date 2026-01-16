@@ -57,7 +57,9 @@ public class GeocentricTranslation extends AbstractCoordinateOperation implement
     /**
      * Translation value used in this Geocentric translation.
      */
-    private double tx, ty, tz;
+    private final double tx;
+    private final double ty;
+    private final double tz;
 
     // Inverse translation
     private GeocentricTranslation inverse;

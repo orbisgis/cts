@@ -150,7 +150,7 @@ public class EquidistantCylindrical extends Projection {
 
             @Override
             public String toString() {
-                return EquidistantCylindrical.this.toString() + " inverse";
+                return EquidistantCylindrical.this + " inverse";
             }
         };
     }

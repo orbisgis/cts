@@ -190,7 +190,7 @@ public class ObliqueMercator extends Projection {
 
             @Override
             public String toString() {
-                return ObliqueMercator.this.toString() + " inverse";
+                return ObliqueMercator.this + " inverse";
             }
         };
     }

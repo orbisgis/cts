@@ -43,11 +43,11 @@ public class UnitConversion extends AbstractCoordinateOperation {
     /**
      * Units used in source coordinates.
      */
-    private Unit[] sourceUnits;
+    private final Unit[] sourceUnits;
     /**
      * Units expected in the resulting coordinates.
      */
-    private Unit[] targetUnits;
+    private final Unit[] targetUnits;
 
     private final static Map<String, UnitConversion> unitConverters = new HashMap<String, UnitConversion>();
 

@@ -72,7 +72,7 @@ class CRSHelperTest {
         GeodeticDatum datum = (GeodeticDatum)crs.getDatum();
         assertEquals(datum.getEllipsoid(), Ellipsoid.GRS80);
         Projection projection = crs.getProjection();
-        assertTrue(projection instanceof TransverseMercator);
+        assertInstanceOf(TransverseMercator.class, projection);
     }
 
     @Test

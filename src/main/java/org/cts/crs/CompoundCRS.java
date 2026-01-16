@@ -48,8 +48,8 @@ import static org.cts.op.CoordinateOperationSequence.cleverAdd;
  */
 public class CompoundCRS extends GeodeticCRS {
 
-    private GeodeticCRS horizontalCRS;
-    private VerticalCRS verticalCRS;
+    private final GeodeticCRS horizontalCRS;
+    private final VerticalCRS verticalCRS;
 
     /**
      * Creates a new CompoundCRS from a 2D horizontal CRS and a 1D vertical CRS.

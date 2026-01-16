@@ -93,7 +93,7 @@ public class GridUtils {
             in = new BufferedInputStream(urlGrid.openStream());
             fout = new FileOutputStream(outputFile);
 
-            final byte data[] = new byte[1024];
+            final byte[] data = new byte[1024];
             int count;
             while ((count = in.read(data, 0, 1024)) != -1) {
                 fout.write(data, 0, count);

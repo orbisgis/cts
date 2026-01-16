@@ -59,13 +59,13 @@ class PrjParserTest extends CTSTestCase {
         String prj = "TOTO[\"some text\"]";
         PrjElement elem = parser.parseNode(CharBuffer.wrap(prj));
 
-        assertTrue(elem instanceof PrjNodeElement);
+        assertInstanceOf(PrjNodeElement.class, elem);
 
         PrjNodeElement ne = (PrjNodeElement) elem;
         assertEquals("TOTO", ne.getName());
         assertEquals(1, elem.getChildren().size());
 
-        assertTrue(ne.getChildren().get(0) instanceof PrjStringElement);
+        assertInstanceOf(PrjStringElement.class, ne.getChildren().get(0));
 
         PrjStringElement se = (PrjStringElement) ne.getChildren().get(0);
         assertEquals("some text", se.getValue());
@@ -96,7 +96,7 @@ class PrjParserTest extends CTSTestCase {
         PrjStringElement se = (PrjStringElement) ne.getChildren().get(0);
         assertEquals("some text", se.getValue());
 
-        assertTrue(ne.getChildren().get(1) instanceof PrjNumberElement);
+        assertInstanceOf(PrjNumberElement.class, ne.getChildren().get(1));
         PrjNumberElement nne = (PrjNumberElement) ne.getChildren().get(1);
         assertEquals(48.000178, nne.getValue(), 0);
     }
@@ -112,7 +112,7 @@ class PrjParserTest extends CTSTestCase {
         PrjStringElement se = (PrjStringElement) ne.getChildren().get(0);
         assertEquals("some text", se.getValue());
 
-        assertTrue(ne.getChildren().get(1) instanceof PrjNodeElement);
+        assertInstanceOf(PrjNodeElement.class, ne.getChildren().get(1));
         ne = (PrjNodeElement) ne.getChildren().get(1);
         assertEquals("TATA", ne.getName());
         se = (PrjStringElement) ne.getChildren().get(0);
@@ -254,7 +254,7 @@ class PrjParserTest extends CTSTestCase {
                 + "    AUTHORITY[\"EPSG\",\"4328\"]]";
         CoordinateReferenceSystem crs = cRSFactory.createFromPrj(prj);
         assertNotNull(crs);
-        assertTrue(crs instanceof GeocentricCRS);
+        assertInstanceOf(GeocentricCRS.class, crs);
     }
 
     @Test
@@ -318,7 +318,7 @@ class PrjParserTest extends CTSTestCase {
 
         CoordinateReferenceSystem crs2 = cRSFactory.createFromPrj(prj2);
         assertNotNull(crs);
-        assertFalse(crs.equals(crs2));
+        assertNotEquals(crs, crs2);
     }
 
     @Test

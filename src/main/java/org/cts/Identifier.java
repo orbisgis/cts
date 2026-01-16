@@ -59,15 +59,15 @@ public class Identifier implements Identifiable {
     /**
      * Mandatory attribute (default = LOCAL).
      */
-    private String authorityName;
+    private final String authorityName;
     /**
      * Mandatory attribute (getNewId can generate local unique ID).
      */
-    private String authorityKey;
+    private final String authorityKey;
     /**
      * Complete name, sometimes called description.
      */
-    private String name;
+    private final String name;
     /**
      * Short name used for user interface.
      */
@@ -325,7 +325,7 @@ public class Identifier implements Identifiable {
             Identifier other = (Identifier) object;
             // Test equality between this code and object's code
             if (getAuthorityName() != null && other.getAuthorityName() != null
-                    && getAuthorityName().toUpperCase().equals(other.getAuthorityName().toUpperCase())
+                    && getAuthorityName().equalsIgnoreCase(other.getAuthorityName())
                     && getAuthorityKey() != null && other.getAuthorityKey() != null
                     && getAuthorityKey().equals(other.getAuthorityKey())) {
                 return true;
@@ -337,7 +337,7 @@ public class Identifier implements Identifiable {
                 areEquals
                         = this.getAuthorityName() != null
                         && id2.getAuthorityName() != null
-                        && this.getAuthorityName().toUpperCase().equals(id2.getAuthorityName().toUpperCase())
+                        && this.getAuthorityName().equalsIgnoreCase(id2.getAuthorityName())
                         && this.getAuthorityKey() != null
                         && id2.getAuthorityKey() != null
                         && this.getAuthorityKey().equals(id2.getAuthorityKey());
@@ -349,7 +349,7 @@ public class Identifier implements Identifiable {
                 areEquals
                         = id1.getAuthorityName() != null
                         && other.getAuthorityName() != null
-                        && id1.getAuthorityName().toUpperCase().equals(other.getAuthorityName().toUpperCase())
+                        && id1.getAuthorityName().equalsIgnoreCase(other.getAuthorityName())
                         && id1.getAuthorityKey() != null
                         && other.getAuthorityKey() != null
                         && id1.getAuthorityKey().equals(other.getAuthorityKey());
@@ -360,7 +360,7 @@ public class Identifier implements Identifiable {
                     areEquals
                             = id1.getAuthorityName() != null
                             && id2.getAuthorityName() != null
-                            && id1.getAuthorityName().toUpperCase().equals(id2.getAuthorityName().toUpperCase())
+                            && id1.getAuthorityName().equalsIgnoreCase(id2.getAuthorityName())
                             && id1.getAuthorityKey() != null
                             && id2.getAuthorityKey() != null
                             && id1.getAuthorityKey().equals(id2.getAuthorityKey());

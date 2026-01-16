@@ -63,7 +63,7 @@ import java.util.Set;
  */
 public class CRSFactory {
 
-    private RegistryManager registryManager = new RegistryManager();
+    private final RegistryManager registryManager = new RegistryManager();
     protected final CRSCache<String, CoordinateReferenceSystem> CRSPOOL = new CRSCache<String, CoordinateReferenceSystem>(10);
 
     /**

@@ -39,7 +39,7 @@ import java.util.Map;
 public class IdentifiableComponent implements Identifiable {
 
     private Identifier identifier;
-    private static Map<Identifier, IdentifiableComponent> registry = new HashMap<Identifier, IdentifiableComponent>();
+    private static final Map<Identifier, IdentifiableComponent> registry = new HashMap<Identifier, IdentifiableComponent>();
 
     /**
      * Return this component's Identifier
@@ -205,7 +205,7 @@ public class IdentifiableComponent implements Identifiable {
         if (object instanceof Identifiable) {
             Identifiable other = (Identifiable) object;
             return ((getAuthorityName() != null && other.getAuthorityName() != null
-                    && getAuthorityName().toUpperCase().equals(other.getAuthorityName().toUpperCase())
+                    && getAuthorityName().equalsIgnoreCase(other.getAuthorityName())
                     && getAuthorityKey() != null && other.getAuthorityKey() != null
                     && getAuthorityKey().equals(other.getAuthorityKey()))
                     || getName().equals(other.getName()));

@@ -170,7 +170,7 @@ public class NewZealandMapGrid extends Projection {
 
             @Override
             public String toString() {
-                return NewZealandMapGrid.this.toString() + " inverse";
+                return NewZealandMapGrid.this + " inverse";
             }
         };
     }
