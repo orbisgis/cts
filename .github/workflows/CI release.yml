@@ -55,14 +55,23 @@ jobs:
       #   - upload release to maven repo
       - name: Release
         run: |
-          VERSION=${{ github.event.inputs.nextVersion }}
-          mvn \
-            -ntp \
-            --batch-mode \
-            -P deploy \
-            -Dmaven.test.skip=true \
-            release:prepare release:perform \
-            -Dusername=$GITHUB_ACTOR -Dpassword=$GITHUB_TOKEN ${VERSION:+"-DdevelopmentVersion="$VERSION"-SNAPSHOT"}
+          VERSION="${{ github.event.inputs.nextVersion }}"
+          MVN_ARGS=(
+            -ntp
+            --batch-mode
+            -P deploy
+            -Dmaven.test.skip=true
+            release:prepare
+            release:perform
+            -Dusername="$GITHUB_ACTOR"
+            -Dpassword="$GITHUB_TOKEN"
+          )
+      
+          if [ -n "$VERSION" ]; then
+            MVN_ARGS+=(-DdevelopmentVersion="${VERSION}-SNAPSHOT")
+          fi
+      
+          mvn "${MVN_ARGS[@]}"
         env:
           MAVEN_USERNAME: ${{ secrets.MVN_CENTRAL_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.MVN_CENTRAL_PASSWORD }}
