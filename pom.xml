@@ -78,6 +78,11 @@
     <!-- Dependencies -->
     <repositories>
         <repository>
+            <id>repo1.maven.org</id>
+            <name>Maven2 repository 1</name>
+            <url>https://repo1.maven.org/maven2</url>
+        </repository>
+        <repository>
             <name>Central Portal Snapshots</name>
             <id>central-portal-snapshots</id>
             <url>https://central.sonatype.com/repository/maven-snapshots/</url>
@@ -89,7 +94,15 @@
             </snapshots>
         </repository>
     </repositories>
-
+    <pluginRepositories>
+        <pluginRepository>
+            <id>central</id>
+            <url>https://repo1.maven.org/maven2</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </pluginRepository>
+    </pluginRepositories>
     <dependencies>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -269,6 +282,15 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
             </plugin>
+            <plugin>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <version>0.8.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <publishingServerId>central</publishingServerId>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
@@ -285,16 +307,4 @@
             </build>
         </profile>
     </profiles>
-
-    <distributionManagement>
-        <snapshotRepository>
-            <id>central</id>
-            <url>https://central.sonatype.com/repository/maven-snapshots/</url>
-        </snapshotRepository>
-        <repository>
-            <id>central</id>
-            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-    </distributionManagement>
-
 </project>
