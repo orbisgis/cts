@@ -19,10 +19,8 @@ jobs:
       # Install the GPG secret key
       - name: Step 2 - Import GPG Key
         run: |
-          echo "${{ secrets.GPG_PUBLIC_KEY }}" | gpg --import
           echo "${{ secrets.GPG_SECRET_KEY }}" | gpg --import --no-tty --batch --yes
         env:
-          GPG_PUBLIC_KEY: ${{ secrets.GPG_PUBLIC_KEY }}
           GPG_SECRET_KEY: ${{ secrets.GPG_SECRET_KEY }}
 
       # Set up the jdk using version 11 of Adoptium Temurin
