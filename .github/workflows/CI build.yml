@@ -1,0 +1,55 @@
+name: CI build
+
+on:
+  pull_request:
+    branches: [ '**' ]
+  workflow_run:
+    workflows: ["CI release"]
+    branches: [ '**' ]
+    types:
+      - completed
+  workflow_dispatch:
+
+jobs:
+  build:
+    # Main build job used to
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout the source code of the project
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      # Set up the jdk using version 11 of Adoptium Temurin
+      - name: Setup java 11 using Adoptium Temurin
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+
+      # Build the project using
+      #   - clean : clean up the workspace
+      #   - validate : perform different check like the dependency and plugin version update
+      #   - compile : compile the source code.
+      #   - test : Perform the tests.
+      - name: Build
+        run: mvn -ntp clean validate compile test javadoc:test-javadoc javadoc:jar
+
+      # Check changelog update
+      - name: Check changelog update
+        uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          filters: |
+            changelog:
+              - 'docs/CHANGELOG.md'
+            sources:
+              - '**/pom.xml'
+              - '**/README.md'
+              - '**/src/**'
+        if: github.event_name != 'workflow_dispatch'
+
+      - if: steps.changes.outputs.changelog == 'false' && github.event_name != 'workflow_dispatch' && steps.changes.outputs.sources == 'true'
+        run: |
+          echo "Please update the Changelog.md file."
+          exit 1

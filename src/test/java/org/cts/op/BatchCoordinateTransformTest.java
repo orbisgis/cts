@@ -25,6 +25,8 @@ package org.cts.op;
 
 import java.io.FileReader;
 import java.io.LineNumberReader;
+
+import org.cts.crs.CRSException;
 import org.cts.crs.CoordinateReferenceSystem;
 import org.cts.crs.GeodeticCRS;
 import org.junit.jupiter.api.Test;
@@ -69,8 +71,14 @@ public class BatchCoordinateTransformTest extends BaseCoordinateTransformTest {
             double csNameDest_X = parseNumber(values[5]);
             double csNameDest_Y = parseNumber(values[6]);
             double tolerance = parseNumber(values[7]);
-            CoordinateReferenceSystem inputCRS = cRSFactory.getCRS(csNameSrc);
-            CoordinateReferenceSystem outputCRS = cRSFactory.getCRS(csNameDest);
+            CoordinateReferenceSystem inputCRS;
+            CoordinateReferenceSystem outputCRS;
+            try {
+                inputCRS = cRSFactory.getCRS(csNameSrc);
+                outputCRS = cRSFactory.getCRS(csNameDest);
+            }catch (CRSException ex){
+                throw new CRSException("Cannot create the CRS's for the id : "+ id);
+            }
             double[] pointSource = new double[]{csNameSrc_X, csNameSrc_Y};
             double[] result = transform((GeodeticCRS) inputCRS, (GeodeticCRS) outputCRS, pointSource);
             double[] pointDest = new double[]{csNameDest_X, csNameDest_Y};

@@ -31,7 +31,7 @@ public class PrjNumberElement extends AbstractPrjElement {
     /**
      * The value of the PrjNumberElement.
      */
-    private double value;
+    private final double value;
 
     /**
      * Create a new PrjNumberElement.

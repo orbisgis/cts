@@ -35,9 +35,9 @@ import org.cts.op.CoordinateOperation;
  * describing a point on the earth's surface, in latitude and longitude or
  * another coordinate system. Vertical datums are used to measure elevations or
  * underwater depths. In engineering and drafting, a datum is a reference point,
- * surface, or axis on an object against which measurements are made.<p> (Taken
- * from <a ref="http://en.wikipedia.org/wiki/Datum">wikipedia</a> on
- * 2006-10-06)</p>
+ * surface, or axis on an object against which measurements are made.
+ * (Taken from <a href="http://en.wikipedia.org/wiki/Datum">wikipedia</a> on
+ * 2006-10-06)
  *
  * @author Michaël Michaud
  */
@@ -46,30 +46,30 @@ public interface Datum extends Identifiable {
     /**
      * Returns origin description of this Datum.
      */
-    public String getOrigin();
+    String getOrigin();
 
     /**
      * Returns the valid extent of this Datum.
      */
-    public Extent getExtent();
+    Extent getExtent();
 
     /**
      * Returns the realization epoch as a String.
      */
-    public String getEpoch();
+    String getEpoch();
 
     /**
      * Returns the ellipsoid of this datum.
      */
-    public Ellipsoid getEllipsoid();
+    Ellipsoid getEllipsoid();
 
     /**
      * Returns the ellipsoid of this datum.
      */
-    public CoordinateOperation getToWGS84();
+    CoordinateOperation getToWGS84();
 
     /**
      * Returns the primemeridian of this datum.
      */
-    public PrimeMeridian getPrimeMeridian();
+    PrimeMeridian getPrimeMeridian();
 }

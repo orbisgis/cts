@@ -57,7 +57,7 @@ import java.util.Map;
  * or from an OGC WKT String.
  *
  * @author Michaël Michaud, Erwan Bocher, Jules Party
- * @TODO Not sure this class is useful here. I would prefer a clear separation
+ * TODO Not sure this class is useful here. I would prefer a clear separation
  * between the model (CRS/Datum/Ellipsoid/Projection...) and the parsers which
  * create CRS from a file or from a stream. CRSHelper is in-between, no more a
  * file, but not yet a model.
@@ -66,7 +66,7 @@ public class CRSHelper {
 
     static final Logger LOGGER = LoggerFactory.getLogger(CRSHelper.class);
 
-    private static CRSGridCache<String, AbstractCoordinateOperation> CRSGRIDPOOL = new CRSGridCache<String, AbstractCoordinateOperation>(5);
+    private static final CRSGridCache<String, AbstractCoordinateOperation> CRSGRIDPOOL = new CRSGridCache<String, AbstractCoordinateOperation>(5);
 
     /**
      * Creates a new {@link org.cts.crs.CoordinateReferenceSystem} with the
@@ -630,7 +630,7 @@ public class CRSHelper {
         Ellipsoid ellps = null;
 
         if (null != ellipsoidName) {
-            ellps = Ellipsoid.ellipsoidFromName.get(ellipsoidName.replaceAll("[^a-zA-Z0-9_]", "").toLowerCase());
+            ellps = Ellipsoid.ellipsoidFromName.get(ellipsoidName.replaceAll("[^a-zA-Z0-9]", "").toLowerCase());
         }
         if (ellps == null && authorityCode != null) {
             String[] authNameWithKey = authorityCode.split(":");

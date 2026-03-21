@@ -30,13 +30,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Parser for PRJ / WKT (OGC & ESRI) String.
- * <p>
- * This very simple parser works in tree steps: 1. it parses the PRJ String and
- * produces an abstract tree, without any assumptions on it being a valid OGC
- * WKT String. 2. it walks the tree looking for the values needed for
- * transformation into a proj4 description string. 3. the proj4 description
- * string is passed to the {@link org.jproj.parser.Proj4Parser } that builds the
+ * Parser for PRJ / WKT (OGC and ESRI) String.
+ *
+ * This very simple parser works in tree steps:
+ * 1. it parses the PRJ String and produces an abstract tree, without any assumptions on it being a valid OGC
+ * WKT String.
+ * 2. it walks the tree looking for the values needed for transformation into a proj4 description string.
+ * 3. the proj4 description string is passed to the parser that builds the
  * CRS.
  *
  * @author Antoine Gourlay, Erwan Bocher, Jules Party
@@ -50,6 +50,28 @@ public class PrjParser {
     }
 
     /**
+     * Parses a WKT PRJ String into a {@code PrjElement}.
+     *
+     * <p>
+     * This is the main entry point of the parser.
+     *
+     * @param prjString a WKT string
+     * @return a {@code PrjElement}
+     * @throws PrjParserException if the PRJ cannot be parsed into a CRS for any
+     *                            reason
+     */
+    public PrjElement getAsPrjElement(String prjString) {
+        CharBuffer s = CharBuffer.wrap(prjString);
+        PrjElement e;
+        try {
+            e = parseNode(s);
+        } catch (BufferUnderflowException ex) {
+            throw new PrjParserException("Failed to read PRJ.", ex);
+        }
+        return e;
+    }
+
+    /**
      * Parses a WKT PRJ String into a set of parameters.
      * <p>
      * This is the main entry point of the parser.
@@ -60,14 +82,7 @@ public class PrjParser {
      *                            reason
      */
     public Map<String, String> getParameters(String prjString) {
-        CharBuffer s = CharBuffer.wrap(prjString);
-        PrjElement e;
-        try {
-            e = parseNode(s);
-        } catch (BufferUnderflowException ex) {
-            throw new PrjParserException("Failed to read PRJ.", ex);
-        }
-        return PrjMatcher.match(e);
+        return PrjMatcher.match(getAsPrjElement(prjString));
     }
 
     /**

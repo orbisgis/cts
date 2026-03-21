@@ -1,0 +1,47 @@
+name: CI snapshot
+
+on:
+  push:
+    branches: [ '**' ]
+  workflow_run:
+    workflows: ["CI release"]
+    branches: [ '**' ]
+    types:
+      - completed
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Upload Snapshot
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout the source code of the project
+      - name: Checkout
+        uses: actions/checkout@v2
+
+        # Install the GPG secret key
+      - name: Step 2 - Import GPG Key
+        run: |
+          echo "${{ secrets.GPG_SECRET_KEY }}" | gpg --import --no-tty --batch --yes
+        env:
+          GPG_SECRET_KEY: ${{ secrets.GPG_SECRET_KEY }}
+
+      # Set up the jdk using version 11 of Adoptium Temurin
+      - name: Setup java 11 using Adoptium Temurin
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+          server-id: central
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
+          gpg-private-key: ${{ secrets.GPG_SECRET_KEY }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+
+      # Deploy the snapshot
+      - name: Deploy
+        run: mvn deploy -ntp --batch-mode
+        env:
+          MAVEN_USERNAME: ${{ secrets.MVN_CENTRAL_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.MVN_CENTRAL_PASSWORD }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}

@@ -33,14 +33,20 @@ import java.util.Map;
 import static java.lang.Math.*;
 
 /**
- * An ellipsoid is a mathematical surface used to describe the Earth surface.<p>
+ * An ellipsoid is a mathematical surface used to describe the Earth surface.
+ *
  * It is only an approximation of the Earth surface, but it is used as a
  * reference surface for the expression of coordinates as a latitude and a
- * longitude.<p> The definition of an ellipsoid is based on two parameters :
+ * longitude.
+ *
+ * The definition of an ellipsoid is based on two parameters :
  * <ul> <li>1st parameter = semi-major axis</li> <li>2nd parameter = inverse
  * flattening, semi-minor axis or eccentricity. The parameter type is choosen
- * among the values of SecondParameter enum.</li> </ul> <h3>Note on the
- * precision of some algorithms :</h3> <ul> <li>The calculation of semi-minor
+ * among the values of SecondParameter enum.</li> </ul>
+ *
+ * Note on the precision of some algorithms :
+ *
+ * <ul> <li>The calculation of semi-minor
  * axis, inverse flattening and eccentricity are precise. For example, the
  * construction of 10 successive ellipsoids using alternatively the 3 parameters
  * keeps a precision of less than 0.01 micron for the semi-minor axis</li>
@@ -576,8 +582,8 @@ public class Ellipsoid extends IdentifiableComponent {
     }
 
     /**
-     * This second method to compute the meridian arc length is taken from <a
-     * href="http://www.ngs.noaa.gov/gps-toolbox/Hehl">. It is based upon an
+     * This second method to compute the meridian arc length is taken from
+     * <a href="http://www.ngs.noaa.gov/gps-toolbox/Hehl">gps-toolbox/Hehl</a>. It is based upon an
      * iterative method and the precision of the result will depend on the
      * number of iterations. It is to be used with arcFromLat or from
      * latFromArc.

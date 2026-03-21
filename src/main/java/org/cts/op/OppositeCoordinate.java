@@ -37,7 +37,7 @@ public class OppositeCoordinate extends AbstractCoordinateOperation {
     /**
      * The index of the coordinate to transform.
      */
-    private int index;
+    private final int index;
 
     /**
      * Construct the transformation turning the value at the given index into

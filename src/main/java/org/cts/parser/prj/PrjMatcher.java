@@ -51,7 +51,7 @@ public final class PrjMatcher {
     /**
      * The map that contained all the parsed informations.
      */
-    private Map<String, String> params = new HashMap<String, String>();
+    private final Map<String, String> params = new HashMap<String, String>();
     private int indexAxis = 0;
 
     /**

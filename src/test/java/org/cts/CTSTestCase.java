@@ -39,6 +39,11 @@ import org.slf4j.LoggerFactory;
  */
 public class CTSTestCase {
 
+    static {
+        //Here change the log level
+        System.setProperty(org.slf4j.simple.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "DEBUG");
+    }
+
     protected Logger LOGGER = LoggerFactory.getLogger(CTSTestCase.class);
     protected static CRSFactory cRSFactory;
 

@@ -56,7 +56,7 @@ class EllipsoidTest extends CTSTestCase {
         assertEquals(e3.toString(), "[Test:0003] Construction from Eccentricity "
                 + "(Semi-major axis = 6380000.0 | Eccentricity = 0.1)");
     }
-    private double tol = 1E-15;
+    private final double tol = 1E-15;
 
     @Test
     void testSPHERE() {
@@ -297,7 +297,7 @@ class EllipsoidTest extends CTSTestCase {
         assertEquals(KRASSOWSKI.getKCoeff(8)[6], 0, tol, KRASSOWSKI.getName() + " KCoeff6");
         assertEquals(KRASSOWSKI.getKCoeff(8)[7], 0, tol, KRASSOWSKI.getName() + " KCoeff7");
     }
-    private Ellipsoid eTest = createEllipsoidFromEccentricity(6380000, 0.08199188998);
+    private final Ellipsoid eTest = createEllipsoidFromEccentricity(6380000, 0.08199188998);
 
     /*
      * Test isometricLatitudeTest() based on the algorithm "ALG0001" from the IGN.
@@ -325,7 +325,7 @@ class EllipsoidTest extends CTSTestCase {
         assertEquals(eTest.latitude(0), 0, 1e-11, "latitude equator");
         assertEquals(eTest.latitude(Double.POSITIVE_INFINITY), Math.PI / 2, 1e-11, "latitude pole");
     }
-    private Ellipsoid eTest2 = createEllipsoidFromEccentricity(6378388, 0.08199189);
+    private final Ellipsoid eTest2 = createEllipsoidFromEccentricity(6378388, 0.08199189);
 
     /*
      * Test transverseRadiusOfCurvatureTest() based on the algorithm "ALG0021" from the IGN.

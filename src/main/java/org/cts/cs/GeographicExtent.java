@@ -1,5 +1,5 @@
 /*
- * Coordinate Transformations Suite (abridged CTS)  is a library developped to
+ * Coordinate Transformations Suite (abridged CTS)  is a library developed to
  * perform Coordinate Transformations using well known geodetic algorithms
  * and parameter sets.
  * Its main focus are simplicity, flexibility, interoperability, in this order.
@@ -44,36 +44,36 @@ public class GeographicExtent implements Extent {
     /**
      * The name of this GeographicExtent.
      */
-    private String name;
+    private final String name;
 
     /**
      * The western bound of this GeographicExtent.
      */
-    private double westernBound;
+    private final double westernBound;
 
     /**
      * The eastern bound of this GeographicExtent.
      */
-    private double easternBound;
+    private final double easternBound;
 
     /**
      * The southern bound of this GeographicExtent.
      */
-    private double southernBound;
+    private final double southernBound;
 
     /**
      * The northern bound of this GeographicExtent.
      */
-    private double northernBound;
+    private final double northernBound;
 
     /**
      * The modulo value (360 for an extent in degree) for this GeographicExtent.
      */
-    private double modulo;
+    private final double modulo;
 
     /**
      * Creates a new GeographicExtent. If easternBound is lower than
-     * westernBound, CTS consider that the GeographicExtent crosses the 180
+     * westernBound, CTS considers that the GeographicExtent crosses the 180
      * meridian.
      *
      * @param name          the name of the GeographicExtent
@@ -114,8 +114,8 @@ public class GeographicExtent implements Extent {
         this.name = name;
         this.southernBound = southernBound;
         this.northernBound = northernBound;
-        this.westernBound = westernBound;
-        this.easternBound = easternBound < westernBound
+        this.westernBound = (westernBound + modulo/2.0) % modulo - modulo/2.0;
+        this.easternBound = easternBound < this.westernBound
                 ? easternBound + modulo : easternBound;
         this.modulo = modulo;
     }
@@ -139,7 +139,7 @@ public class GeographicExtent implements Extent {
      * Return the eastern bound of this geographic area.
      */
     public double getEasternBound() {
-        return westernBound;
+        return easternBound;
     }
 
     /**

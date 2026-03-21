@@ -51,7 +51,7 @@ class UserDefinedTransform extends BaseCoordinateTransformTest {
             LongitudeRotation.getLongitudeRotationFrom(PrimeMeridian.PARIS);
     private final LongitudeRotation GREENWICH2PARIS =
             LongitudeRotation.getLongitudeRotationTo(PrimeMeridian.PARIS);
-    private static UnitConversion RAD2DD = createUnitConverter(Unit.RADIAN, Unit.DEGREE);
+    private static final UnitConversion RAD2DD = createUnitConverter(Unit.RADIAN, Unit.DEGREE);
     private final static UnitConversion DD2RAD = createUnitConverter(Unit.DEGREE, Unit.RADIAN);
 
     /**

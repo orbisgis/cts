@@ -31,7 +31,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Michaël Michaud
@@ -47,8 +47,8 @@ class ProjectionTest {
                     put(Parameter.FALSE_NORTHING, new Measure(0, Unit.METER));
                 }});
         assertTrue(utm.isDirect());
-        assertTrue(!utm.inverse().isDirect());
-        assertTrue(!utm.inverse().toString().equals(utm.toString()));
-        assertTrue(utm.inverse().inverse() == utm);
+        assertFalse(utm.inverse().isDirect());
+        assertFalse(utm.inverse().toString().equals(utm.toString()));
+        assertSame(utm.inverse().inverse(), utm);
     }
 }

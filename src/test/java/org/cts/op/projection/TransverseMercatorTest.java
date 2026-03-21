@@ -32,6 +32,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -80,7 +81,7 @@ class TransverseMercatorTest extends CTSTestCase {
             put(Parameter.FALSE_NORTHING, new Measure(0, Unit.METER));
             put(Parameter.LATITUDE_OF_ORIGIN, new Measure(20, Unit.DEGREE));
         }});
-        assertTrue(!checkEquals2D("", tmerc1.transform(new double[]{0.0,0.0}), tmerc2.transform(new double[]{0.0,0.0}), 1000));
+        assertFalse(checkEquals2D("", tmerc1.transform(new double[]{0.0, 0.0}), tmerc2.transform(new double[]{0.0, 0.0}), 1000));
     }
 
 }

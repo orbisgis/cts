@@ -53,7 +53,7 @@ public class Stereographic extends Projection {
             e, // eccentricity of the ellipsoid
             e2; // square eccentricity of the ellipsoid
     protected final double[] invcoeff;
-    private double PI_2 = PI / 2;
+    private final double PI_2 = PI / 2;
 
     /**
      * Create a new Stereographic Projection corresponding to the
@@ -120,11 +120,9 @@ public class Stereographic extends Projection {
      * Transform coord using the Stereographic Projection. Input coord is
      * supposed to be a geographic latitude / longitude coordinate in radians.
      * Algorithm based on the OGP's Guidance Note Number 7 Part 2 :
-     * <http://www.epsg.org/guides/G7-2.html>
+     * <a href=http://www.epsg.org/guides/G7-2.html>G7-2</a>
      *
      * @param coord coordinate to transform
-     * @throws CoordinateDimensionException if <code>coord</code> length is not
-     *                                      compatible with this <code>CoordinateOperation</code>.
      */
     @Override
     public double[] transform(double[] coord) {
@@ -153,7 +151,7 @@ public class Stereographic extends Projection {
      * Creates the inverse operation for Stereographic Projection. Input coord
      * is supposed to be a projected easting / northing coordinate in meters.
      * Algorithm based on the OGP's Guidance Note Number 7 Part 2 :
-     * <http://www.epsg.org/guides/G7-2.html>
+     * <a href=http://www.epsg.org/guides/G7-2.html>G7-2</a>
      */
     @Override
     public Projection inverse() {
@@ -193,7 +191,7 @@ public class Stereographic extends Projection {
 
             @Override
             public String toString() {
-                return Stereographic.this.toString() + " inverse";
+                return Stereographic.this + " inverse";
             }
         };
     }

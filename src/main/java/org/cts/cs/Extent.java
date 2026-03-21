@@ -37,11 +37,11 @@ public interface Extent {
     /**
      * Return the name of this extent.
      */
-    public String getName();
+    String getName();
 
     /**
      * Return wether coord is inside this Extent or not. It's up to the user to
      * check consistency between coord and extent type.
      */
-    public boolean isInside(double[] coord);
+    boolean isInside(double[] coord);
 }

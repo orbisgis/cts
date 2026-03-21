@@ -147,8 +147,6 @@ public class UniversalTransverseMercator extends Projection {
      * radians.
      *
      * @param coord coordinate to transform
-     * @throws CoordinateDimensionException if <code>coord</code> length is not
-     *                                      compatible with this <code>CoordinateOperation</code>.
      */
     @Override
     public double[] transform(double[] coord) {
@@ -201,7 +199,7 @@ public class UniversalTransverseMercator extends Projection {
 
             @Override
             public String toString() {
-                return UniversalTransverseMercator.this.toString() + " inverse";
+                return UniversalTransverseMercator.this + " inverse";
             }
         };
     }

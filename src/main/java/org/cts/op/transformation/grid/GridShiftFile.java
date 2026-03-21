@@ -175,10 +175,10 @@ public class GridShiftFile
         raf.read(b8);
         this.toSemiMinorAxis = Util.getDouble(b8, bigEndian);
 
-        long offset = this.overviewHeaderCount * 16;
+        long offset = this.overviewHeaderCount * 16L;
         for (int i = 0; i < this.subGridCount; i++) {
             subGrid[i] = new SubGrid(raf, offset, bigEndian);
-            offset = offset + this.subGridHeaderCount * 16 + subGrid[i].getNodeCount() * 16;
+            offset = offset + this.subGridHeaderCount * 16L + subGrid[i].getNodeCount() * 16L;
         }
         this.topLevelSubGrid = createSubGridTree(subGrid);
         this.lastSubGrid = this.topLevelSubGrid[0];

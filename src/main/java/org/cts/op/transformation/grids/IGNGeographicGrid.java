@@ -36,8 +36,9 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 /**
- * <p>Classe representing a Geographic grid as defined by IGN (France).</p>
+ * Classe representing a Geographic grid as defined by IGN (France).
  * Here is an exemple of a Geographic Grid from IGN with some explanations. GR1D
+ * {@code
  * REFALT 700 20370201<br>
  * GR1D1 -61.7000 -61.4750 15.8000 15.9250 .0250 .0250<br>
  * GR1D2 INTERPOLATION BILINEAIRE<br>
@@ -63,7 +64,7 @@ import java.util.zip.ZipInputStream;
  * longitude, latitude, N, precision code<br>
  * For geoid grids :<br>
  * N = He - A = Ellipsoidal height - Altitude (above geoid)<br>
- *
+ * }
  * @author Michaël Michaud, Jules Party, Erwan Bocher
  */
 public class IGNGeographicGrid extends GeographicGrid {
@@ -267,7 +268,7 @@ public class IGNGeographicGrid extends GeographicGrid {
             }
         }
         // decimal part size --> scale
-        scale = (int) Math.rint(Math.pow(10.0, (double) nbdec));
+        scale = (int) Math.rint(Math.pow(10.0, nbdec));
         extent = new GeographicExtent("GG", y0, yL, x0, xL, modulo);
     }
 }

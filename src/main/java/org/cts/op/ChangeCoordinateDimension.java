@@ -53,7 +53,8 @@ public class ChangeCoordinateDimension extends AbstractCoordinateOperation {
         }
     };
 
-    private int inputDim, outputDim;
+    private final int inputDim;
+    private final int outputDim;
 
     /**
      * Creates a new CoordinateOperation increasing (resp decreasing) the coord
@@ -73,8 +74,6 @@ public class ChangeCoordinateDimension extends AbstractCoordinateOperation {
      *
      * @param coord is an array containing one, two or three ordinates
      * @return
-     * @throws IllegalCoordinateException if <code>coord</code> is not
-     *                                    compatible with this <code>CoordinateOperation</code>.
      */
     @Override
     public double[] transform(double[] coord) {

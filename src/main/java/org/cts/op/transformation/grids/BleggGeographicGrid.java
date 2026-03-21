@@ -64,7 +64,7 @@ import java.util.BitSet;
  */
 public class BleggGeographicGrid extends GeographicGrid {
 
-    private static DecimalFormat formatter = new DecimalFormat();
+    private static final DecimalFormat formatter = new DecimalFormat();
     private int groupSize;
 
     public int getGroupSize() {
@@ -430,7 +430,7 @@ public class BleggGeographicGrid extends GeographicGrid {
         public void setBytes(byte[] bytes) {
             for (int i = 0; i < bytes.length; i++) {
                 if ((bytes[i] & 1) == 1) {
-                    bitSet.set(i * 8 + 0);
+                    bitSet.set(i * 8);
                 }
                 if ((bytes[i] & 2) == 2) {
                     bitSet.set(i * 8 + 1);

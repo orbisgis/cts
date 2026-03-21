@@ -23,9 +23,6 @@
  */
 package org.cts;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,8 +39,7 @@ import java.util.Map;
 public class IdentifiableComponent implements Identifiable {
 
     private Identifier identifier;
-    static final Logger LOGGER = LoggerFactory.getLogger(CRSHelper.class);
-    private static Map<Identifier, IdentifiableComponent> registry = new HashMap<Identifier, IdentifiableComponent>();
+    private static final Map<Identifier, IdentifiableComponent> registry = new HashMap<Identifier, IdentifiableComponent>();
 
     /**
      * Return this component's Identifier
@@ -191,8 +187,6 @@ public class IdentifiableComponent implements Identifiable {
     private void registerComponent() {
         if (!registry.containsKey(getIdentifier())) {
             registry.put(getIdentifier(), this);
-        } else {
-            LOGGER.debug("A component has already been registered for key " + getAuthorityName() + ":" + getAuthorityKey() + ".");
         }
     }
 
@@ -211,7 +205,7 @@ public class IdentifiableComponent implements Identifiable {
         if (object instanceof Identifiable) {
             Identifiable other = (Identifiable) object;
             return ((getAuthorityName() != null && other.getAuthorityName() != null
-                    && getAuthorityName().toUpperCase().equals(other.getAuthorityName().toUpperCase())
+                    && getAuthorityName().equalsIgnoreCase(other.getAuthorityName())
                     && getAuthorityKey() != null && other.getAuthorityKey() != null
                     && getAuthorityKey().equals(other.getAuthorityKey()))
                     || getName().equals(other.getName()));

@@ -28,6 +28,7 @@ import java.io.File;
 import java.io.RandomAccessFile;
 import java.net.URI;
 import java.nio.CharBuffer;
+import java.util.List;
 import java.util.Map;
 
 import org.cts.CRSFactory;
@@ -38,9 +39,7 @@ import org.cts.registry.EPSGRegistry;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *
@@ -60,13 +59,13 @@ class PrjParserTest extends CTSTestCase {
         String prj = "TOTO[\"some text\"]";
         PrjElement elem = parser.parseNode(CharBuffer.wrap(prj));
 
-        assertTrue(elem instanceof PrjNodeElement);
+        assertInstanceOf(PrjNodeElement.class, elem);
 
         PrjNodeElement ne = (PrjNodeElement) elem;
         assertEquals("TOTO", ne.getName());
         assertEquals(1, elem.getChildren().size());
 
-        assertTrue(ne.getChildren().get(0) instanceof PrjStringElement);
+        assertInstanceOf(PrjStringElement.class, ne.getChildren().get(0));
 
         PrjStringElement se = (PrjStringElement) ne.getChildren().get(0);
         assertEquals("some text", se.getValue());
@@ -97,7 +96,7 @@ class PrjParserTest extends CTSTestCase {
         PrjStringElement se = (PrjStringElement) ne.getChildren().get(0);
         assertEquals("some text", se.getValue());
 
-        assertTrue(ne.getChildren().get(1) instanceof PrjNumberElement);
+        assertInstanceOf(PrjNumberElement.class, ne.getChildren().get(1));
         PrjNumberElement nne = (PrjNumberElement) ne.getChildren().get(1);
         assertEquals(48.000178, nne.getValue(), 0);
     }
@@ -113,7 +112,7 @@ class PrjParserTest extends CTSTestCase {
         PrjStringElement se = (PrjStringElement) ne.getChildren().get(0);
         assertEquals("some text", se.getValue());
 
-        assertTrue(ne.getChildren().get(1) instanceof PrjNodeElement);
+        assertInstanceOf(PrjNodeElement.class, ne.getChildren().get(1));
         ne = (PrjNodeElement) ne.getChildren().get(1);
         assertEquals("TATA", ne.getName());
         se = (PrjStringElement) ne.getChildren().get(0);
@@ -255,7 +254,7 @@ class PrjParserTest extends CTSTestCase {
                 + "    AUTHORITY[\"EPSG\",\"4328\"]]";
         CoordinateReferenceSystem crs = cRSFactory.createFromPrj(prj);
         assertNotNull(crs);
-        assertTrue(crs instanceof GeocentricCRS);
+        assertInstanceOf(GeocentricCRS.class, crs);
     }
 
     @Test
@@ -284,5 +283,72 @@ class PrjParserTest extends CTSTestCase {
         params = new PrjParser().getParameters(crs.toWKT());
         assertEquals(6378137.0, Double.parseDouble(params.get("a")), 0.001);
         assertEquals(500000, Double.parseDouble(params.get("x_0")), 0.001);
+    }
+
+    @Test
+    void testCompareCRS_PRJ() throws Exception {
+        CRSFactory cRSFactory = new CRSFactory();
+        String prj = "GEOCCS[\"WGS 84 (geocentric)\",\n"
+                + "    DATUM[\"World Geodetic System 1984\",\n"
+                + "        SPHEROID[\"WGS 84\",6378137.0,298.257223563,\n"
+                + "            AUTHORITY[\"EPSG\",\"7030\"]],\n"
+                + "        AUTHORITY[\"EPSG\",\"6326\"]],\n"
+                + "    PRIMEM[\"Greenwich\",0.0,\n"
+                + "        AUTHORITY[\"EPSG\",\"8901\"]],\n"
+                + "    UNIT[\"m\",1.0],\n"
+                + "    AXIS[\"Geocentric X\",OTHER],\n"
+                + "    AXIS[\"Geocentric Y\",EAST],\n"
+                + "    AXIS[\"Geocentric Z\",NORTH],\n"
+                + "    AUTHORITY[\"EPSG\",\"4328\"]]";
+        CoordinateReferenceSystem crs = cRSFactory.createFromPrj(prj);
+        assertNotNull(crs);
+
+        String prj2 = "PROJCS[\"NTF (Paris) / Lambert zone II\",GEOGCS[\"NTF (Paris)\","
+                + "DATUM[\"Nouvelle_Triangulation_Francaise_Paris\","
+                + "SPHEROID[\"Clarke 1880 (IGN)\",6378249.2,293.4660212936269,"
+                + "AUTHORITY[\"EPSG\",\"7011\"]],TOWGS84[-168,-60,320,0,0,0,0],"
+                + "AUTHORITY[\"EPSG\",\"6807\"]],PRIMEM[\"Paris\",2.33722917,"
+                + "AUTHORITY[\"EPSG\",\"8903\"]],UNIT[\"grad\",0.01570796326794897,"
+                + "AUTHORITY[\"EPSG\",\"9105\"]],AUTHORITY[\"EPSG\",\"4807\"]],UNIT[\"metre\",1,"
+                + "AUTHORITY[\"EPSG\",\"9001\"]],PROJECTION[\"Lambert_Conformal_Conic_1SP\"],"
+                + "PARAMETER[\"latitude_of_origin\",52],PARAMETER[\"central_meridian\",0],"
+                + "PARAMETER[\"scale_factor\",0.99987742],PARAMETER[\"false_easting\",600000],"
+                + "PARAMETER[\"false_northing\",2200000],"
+                + "AUTHORITY[\"EPSG\",\"27572\"],AXIS[\"X\",EAST],AXIS[\"Y\",NORTH]]";
+
+        CoordinateReferenceSystem crs2 = cRSFactory.createFromPrj(prj2);
+        assertNotNull(crs);
+        assertNotEquals(crs, crs2);
+    }
+
+    @Test
+    void testWKT2() {
+        String prj = "PROJCRS[\"WGS 84 / UTM zone 31N\",\n" +
+                "BASEGEOGCRS[\"WGS 84\",ENSEMBLE[\"World Geodetic System 1984 ensemble\",MEMBER[\"World Geodetic System 1984 (Transit)\"],MEMBER[\"World Geodetic System 1984 (G730)\"],MEMBER[\"World Geodetic System 1984 (G873)\"],MEMBER[\"World Geodetic System 1984 (G1150)\"],MEMBER[\"World Geodetic System 1984 (G1674)\"],MEMBER[\"World Geodetic System 1984 (G1762)\"],MEMBER[\"World Geodetic System 1984 (G2139)\"],MEMBER[\"World Geodetic System 1984 (G2296)\"],ELLIPSOID[\"WGS 84\",6378137,298.257223563,LENGTHUNIT[\"metre\",1]],ENSEMBLEACCURACY[2.0]],PRIMEM[\"Greenwich\",0,ANGLEUNIT[\"degree\",0.0174532925199433]],ID[\"EPSG\",4326]],\n" +
+                "CONVERSION[\"UTM zone 31N\",METHOD[\"Transverse Mercator\",ID[\"EPSG\",9807]],PARAMETER[\"Latitude of natural origin\",0,ANGLEUNIT[\"degree\",0.0174532925199433],ID[\"EPSG\",8801]],PARAMETER[\"Longitude of natural origin\",3,ANGLEUNIT[\"degree\",0.0174532925199433],ID[\"EPSG\",8802]],PARAMETER[\"Scale factor at natural origin\",0.9996,SCALEUNIT[\"unity\",1],ID[\"EPSG\",8805]],PARAMETER[\"False easting\",500000,LENGTHUNIT[\"metre\",1],ID[\"EPSG\",8806]],PARAMETER[\"False northing\",0,LENGTHUNIT[\"metre\",1],ID[\"EPSG\",8807]]],\n" +
+                "CS[Cartesian,2],\n" +
+                "AXIS[\"(E)\",east,ORDER[1],LENGTHUNIT[\"metre\",1]],\n" +
+                "AXIS[\"(N)\",north,ORDER[2],LENGTHUNIT[\"metre\",1]],\n" +
+                "USAGE[SCOPE[\"Navigation and medium accuracy spatial referencing.\"],AREA[\"Between 0°E and 6°E, northern hemisphere between equator and 84°N, onshore and offshore. Algeria. Andorra. Belgium. Benin. Burkina Faso. Denmark - North Sea. France. Germany - North Sea. Ghana. Luxembourg. Mali. Netherlands. Niger. Nigeria. Norway. Spain. Togo. United Kingdom (UK) - North Sea.\"],BBOX[0,0,84,6]],\n" +
+                "ID[\"EPSG\",32631]]";
+        PrjElement prjElement = parser.getAsPrjElement(prj);
+        assertInstanceOf(PrjNodeElement.class, prjElement);
+        PrjNodeElement firstNode = (PrjNodeElement) prjElement;
+        assertEquals("PROJCRS", firstNode.getName());
+        List<PrjElement> nodes = firstNode.getChildren();
+        PrjNodeElement id_epsg=null;
+        for (PrjElement node : nodes) {
+            if(node instanceof PrjNodeElement) {
+                id_epsg = (PrjNodeElement) node;
+                if (id_epsg.getName().equals("ID")) {
+                    break;
+                }
+            }
+        }
+        assertEquals("ID", id_epsg.getName());
+        List<PrjElement> epsgElement = id_epsg.getChildren();
+        assertEquals(2, epsgElement.size());
+        assertEquals("EPSG", ((PrjStringElement)epsgElement.get(0)).getValue());
+        assertEquals(32631, ((PrjNumberElement)epsgElement.get(1)).getValue());
     }
 }

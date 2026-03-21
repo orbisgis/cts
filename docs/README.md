@@ -1,8 +1,5 @@
 # CTS 
 [![GitHub](https://img.shields.io/github/license/orbisgis/cts.svg)](https://github.com/orbisgis/cts/blob/master/docs/LICENSE.md) 
-[![Build Stat](https://img.shields.io/jenkins/s/http/jenkins-ng.orbisgis.org/job/cts.svg)](http://jenkins-ng.orbisgis.org/job/cts) 
-[![Build Test](https://img.shields.io/jenkins/t/http/jenkins-ng.orbisgis.org/job/cts.svg)](https://jenkins-ng.orbisgis.org/job/cts/test_results_analyzer/) 
-[![codecov](https://img.shields.io/codecov/c/github/orbisgis/cts.svg)](https://codecov.io/gh/orbisgis/cts) 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/d9b34e00264d4702b8340f8544cec21f)](https://www.codacy.com/gh/orbisgis/cts?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=orbisgis/cts&amp;utm_campaign=Badge_Grade)
 
 Coordinate Transformation Suite (abridged CTS)  is a library developed to
@@ -37,17 +34,27 @@ CTS.  If not, see <http://www.gnu.org/licenses/>.
 
 #### Declaring project dependencies
 
-##### With maven
+You can include CTS in your project thanks to Maven repositories.
+
+From maven central, check https://search.maven.org/artifact/org.orbisgis/cts/1.7.1/bundle
+
+To use the current snapshot add in the pom
+
+```xml
+<repository>
+  <id>orbisgis-snapshot</id>
+  <name>OrbisGIS sonatype snapshot repository</name>
+  <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+</repository>
+```
+
+and the following dependency
 
 ```xml
 <dependency>
     <groupId>org.orbisgis</groupId>
     <artifactId>cts</artifactId>
-    <version>1.5.3</version>
+    <version>1.7.2-SNAPSHOT</version>
 </dependency>
 ```
-
-##### Pre-built jar
-
-You can find latest jar release on [maven central](http://search.maven.org/#search|ga|1|g%3A%22org.orbisgis%22%20AND%20a%3A%22cts%22).
 

@@ -73,8 +73,8 @@ public class Parameter {
      * Key to access false_northing, one possible parameter of the projection.
      */
     public static final String FALSE_NORTHING = "false northing";
-    private String name;
-    private Measure measure;
+    private final String name;
+    private final Measure measure;
 
     /**
      * Creates a new Parameters defined by his name and his measure.

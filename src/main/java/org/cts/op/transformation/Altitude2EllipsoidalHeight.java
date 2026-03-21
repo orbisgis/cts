@@ -51,19 +51,19 @@ public class Altitude2EllipsoidalHeight extends AbstractCoordinateOperation impl
     /**
      * The GeographicGrid that define this transformation.
      */
-    private GeographicGrid GRID;
+    private final GeographicGrid GRID;
 
     /**
      * The name of the grid file used to define this transformation.
      */
-    private String gridFileName;
+    private final String gridFileName;
 
     /**
      * The geodetic datum associated to this transformation. The latitude and
      * longitude of the coordinate must be expressed in this datum to obtain
      * good results.
      */
-    private GeodeticDatum associatedDatum;
+    private final GeodeticDatum associatedDatum;
 
     /**
      * The Identifier used for all Altitude to Ellipsoidal Height translations.

@@ -288,7 +288,7 @@ public abstract class Projection extends AbstractCoordinateOperation {
     @Override
     public Projection inverse()
             throws NonInvertibleOperationException {
-        throw new NonInvertibleOperationException(this.toString()
+        throw new NonInvertibleOperationException(this
                 + " is non invertible");
     }
 

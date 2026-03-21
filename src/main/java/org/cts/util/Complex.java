@@ -49,11 +49,11 @@ public final class Complex extends Number {
     /**
      * Real part of this {@link Complex}.
      */
-    private double re;
+    private final double re;
     /**
      * Imaginary part of this {@link Complex}.
      */
-    private double im;
+    private final double im;
 
     /**
      * Constructs a {@link Complex} number with its cartesian arguments : imaginary and real parts.

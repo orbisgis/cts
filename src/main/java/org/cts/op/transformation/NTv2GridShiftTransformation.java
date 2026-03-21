@@ -154,7 +154,6 @@ public class NTv2GridShiftTransformation extends AbstractCoordinateOperation imp
      * Creates the inverse CoordinateOperation.
      *
      * @return
-     * @throws org.cts.op.NonInvertibleOperationException
      */
     @Override
     public CoordinateOperation inverse() {

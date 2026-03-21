@@ -46,7 +46,7 @@ public abstract class GeodeticCRS extends IdentifiableComponent
      * The {@link GeodeticDatum} to which this
      * <code>CoordinateReferenceSystem</code> is refering.
      */
-    private GeodeticDatum geodeticDatum;
+    private final GeodeticDatum geodeticDatum;
 
     /**
      * @see CoordinateReferenceSystem#getProjection()

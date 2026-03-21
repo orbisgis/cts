@@ -33,19 +33,27 @@ import static java.lang.Math.sin;
 
 /**
  * Seven-Parameter transformations are mathematical similarities or Helmert
- * transformations in a three dimensional space.<p> In the geodesy domain,
+ * transformations in a three dimensional space.
+ *
+ * In the geodesy domain,
  * formulas are often linearized, considering that rotation angles are small
  * enough to replace sin(x) by x, cos(x) by 1 and sin(x)*sin(x) by 0. This is
  * the case of Bursa-Wolf formulas and Coordinate- frame rotation. If you want
  * to use non linearized formulas, please, use the
- * createSevenParameterTransformation constructor<p> Geodesian also use two
- * different conventions for rotation angle : <ul><li>The Position Vector
+ * createSevenParameterTransformation constructor
+ *
+ * Geodesian also use two
+ * different conventions for rotation angle :
+ * <ul>
+ *     <li>The Position Vector
  * convention, used in Bursa-Wolf formulas are widely used in Europe. It is used
  * by the International Association of Geodesy and recommended by ISO 19111). In
  * this convention, rx, ry and rz are the rotations to be applied to the point's
- * vector.</li> <li>The CoordinateFrame convention uses opposite values for
+ * vector.</li>
+ *      <li>The CoordinateFrame convention uses opposite values for
  * rotations. In this convention, most used in USA and recommended by NATO,
  * rotation parameters represent rotations to be applied to the frame.</li>
+ * </ul>
  *
  * @author Michaël Michaud
  */
@@ -207,7 +215,7 @@ public class SevenParameterTransformation extends AbstractCoordinateOperation
      * <p>Create a Bursa-Wolf transformation with the default precision.</p>
      * <p>Bursa-Wolf transformation (or simplified seven parameters
      * transformation or linearized Helmert transformation) is a 3D similarity
-     * with very small rotations (< 2") making it possible to approximate sin(r)
+     * with very small rotations (&lt; 2") making it possible to approximate sin(r)
      * with r, cos(r) with 1 and sin(r)*sin(r) with 0, which is very helpful to
      * compute the transformation parameters from two data sets using a mean
      * square method.</p> <p>This is the the most widely used method to
@@ -258,7 +266,7 @@ public class SevenParameterTransformation extends AbstractCoordinateOperation
      * <p>Create a Bursa-Wolf transformation with a specific precision.</p>
      * <p>Bursa-Wolf transformation (or simplified seven parameters
      * transformation or linearized Helmert transformation) is a 3D similarity
-     * with very small rotations (< 2") making it possible to approximate sin(r)
+     * with very small rotations (&lt; 2") making it possible to approximate sin(r)
      * with r, cos(r) with 1 and sin(r)*sin(r) with 0, which is very helpful to
      * compute the transformation parameters from two data sets using a mean
      * square method.</p> <p>This is the the most widely used method to

@@ -23,8 +23,6 @@
  */
 package org.cts.util;
 
-import org.orbisgis.commons.annotations.NotNull;
-
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
@@ -42,8 +40,8 @@ import static java.lang.Math.*;
  */
 public final class AngleFormat {
 
-    private static double DEG_TO_MIN = 60.0;
-    private static double DEG_TO_SEC = 3600.0;
+    private static final double DEG_TO_MIN = 60.0;
+    private static final double DEG_TO_SEC = 3600.0;
 
     /**
      * Regex capture groups for DMSH format pattern parts.
@@ -314,12 +312,12 @@ public final class AngleFormat {
      *                </ul>
      *                <p>Exemples :</p>
      *                <ul>
-     *                <li>latitude = #D° MM' SS.SSS\" H(N|S) --> latitude = 45° 09'
+     *                <li>latitude = #D° MM' SS.SSS\" H(N|S) --&gt; latitude = 45° 09'
      *                56.897" S</li>
-     *                <li>#D deg #M min --> -4 deg 6 min</li>
+     *                <li>#D deg #M min --&gt; -4 deg 6 min</li>
      *                </ul>
      */
-    public AngleFormat(@NotNull String pattern) throws IllegalArgumentException {
+    public AngleFormat(String pattern) throws IllegalArgumentException {
         if (pattern == null) {
             throw new IllegalArgumentException("The pattern should not be null.");
         }
@@ -480,7 +478,7 @@ public final class AngleFormat {
      * @param angle The {@link String} angle representation.
      * @return The angle value in radians.
      */
-    public static double parseAndConvert2Radians(@NotNull String angle) throws IllegalArgumentException {
+    public static double parseAndConvert2Radians(String angle) throws IllegalArgumentException {
         if(angle == null){
             throw new IllegalArgumentException("The angle should not be null.");
         }

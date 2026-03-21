@@ -46,6 +46,6 @@ public class NonInvertibleOperationException extends CoordinateOperationExceptio
      * @param op the interpolation method
      */
     public NonInvertibleOperationException(CoordinateOperation op) {
-        super("" + op.getName() + " is not invertible");
+        super(op.getName() + " is not invertible");
     }
 }

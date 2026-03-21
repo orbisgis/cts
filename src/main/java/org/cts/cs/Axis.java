@@ -40,7 +40,7 @@ public class Axis {
     /**
      * The map that allows CTS to get Axes from their name.
      */
-    private static Map<Direction, Map<String, Axis>> axisFromDirAndName = new EnumMap<Direction, Map<String, Axis>>(Direction.class);
+    private static final Map<Direction, Map<String, Axis>> axisFromDirAndName = new EnumMap<Direction, Map<String, Axis>>(Direction.class);
 
     /**
      * Easting axis. Used for planimetric coordinate system, generally in pair
@@ -143,7 +143,7 @@ public class Axis {
     /**
      * The name of this Axis (X, Y, Z, LONGITUDE, ALTITUDE,&hellip;).
      */
-    private String name;
+    private final String name;
 
     /**
      * The direction of the axis as it is defined in OGC WKT. It should only
@@ -151,7 +151,7 @@ public class Axis {
      * <a href =http://trac.osgeo.org/gdal/wiki/rfc20_srs_axes>here</a> for
      * further details.
      */
-    private Direction direction;
+    private final Direction direction;
 
     /**
      * Register the axis into the map that allows CTS to get Axes from their

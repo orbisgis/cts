@@ -63,7 +63,7 @@ public class FrenchGeocentricNTF2RGF extends AbstractCoordinateOperation
     /**
      * The GeographicGrid that define this transformation.
      */
-    private IGNGeographicGrid GRID3D;
+    private final IGNGeographicGrid GRID3D;
 
     // Inverse transformation
     private FrenchGeocentricNTF2RGF inverse;

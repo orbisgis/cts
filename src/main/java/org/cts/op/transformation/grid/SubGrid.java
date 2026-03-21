@@ -31,19 +31,19 @@ import java.io.Serializable;
 public class SubGrid implements Cloneable, Serializable {
 
     private static final int REC_SIZE = 16;
-    private String subGridName;
-    private String parentSubGridName;
-    private String created;
-    private String updated;
-    private double minLat;
-    private double maxLat;
-    private double minLon;
-    private double maxLon;
-    private double latInterval;
-    private double lonInterval;
-    private int nodeCount;
-    private int lonColumnCount;
-    private int latRowCount;
+    private final String subGridName;
+    private final String parentSubGridName;
+    private final String created;
+    private final String updated;
+    private final double minLat;
+    private final double maxLat;
+    private final double minLon;
+    private final double maxLon;
+    private final double latInterval;
+    private final double lonInterval;
+    private final int nodeCount;
+    private final int lonColumnCount;
+    private final int latRowCount;
     private float[] latShift;
     private float[] lonShift;
     private float[] latAccuracy;
@@ -223,7 +223,7 @@ public class SubGrid implements Cloneable, Serializable {
             }
         } else {
             byte[] b4 = new byte[4];
-            long nodeOffset = this.subGridOffset + 176L + indexA * 16;
+            long nodeOffset = this.subGridOffset + 176L + indexA * 16L;
             this.raf.seek(nodeOffset);
             this.raf.read(b4);
             float latShiftA = Util.getFloat(b4, this.bigEndian);
@@ -234,7 +234,7 @@ public class SubGrid implements Cloneable, Serializable {
             this.raf.read(b4);
             float lonAccuracyA = Util.getFloat(b4, this.bigEndian);
 
-            nodeOffset = this.subGridOffset + 176L + indexB * 16;
+            nodeOffset = this.subGridOffset + 176L + indexB * 16L;
             this.raf.seek(nodeOffset);
             this.raf.read(b4);
             float latShiftB = Util.getFloat(b4, this.bigEndian);
@@ -245,7 +245,7 @@ public class SubGrid implements Cloneable, Serializable {
             this.raf.read(b4);
             float lonAccuracyB = Util.getFloat(b4, this.bigEndian);
 
-            nodeOffset = this.subGridOffset + 176L + indexC * 16;
+            nodeOffset = this.subGridOffset + 176L + indexC * 16L;
             this.raf.seek(nodeOffset);
             this.raf.read(b4);
             float latShiftC = Util.getFloat(b4, this.bigEndian);
@@ -256,7 +256,7 @@ public class SubGrid implements Cloneable, Serializable {
             this.raf.read(b4);
             float lonAccuracyC = Util.getFloat(b4, this.bigEndian);
 
-            nodeOffset = this.subGridOffset + 176L + indexD * 16;
+            nodeOffset = this.subGridOffset + 176L + indexD * 16L;
             this.raf.seek(nodeOffset);
             this.raf.read(b4);
             float latShiftD = Util.getFloat(b4, this.bigEndian);

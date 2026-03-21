@@ -54,7 +54,6 @@ public class Identity extends AbstractCoordinateOperation implements ParamBasedT
      * Apply the identity transformation to input coordinates.
      *
      * @param coord is an array containing one, two or three ordinates
-     * @throws IllegalCoordinateException
      */
     @Override
     public double[] transform(double[] coord) {

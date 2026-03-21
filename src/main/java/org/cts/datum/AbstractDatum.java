@@ -39,17 +39,17 @@ public abstract class AbstractDatum extends IdentifiableComponent
     /**
      * The valid {@link Extent} of this Datum.
      */
-    private Extent extent;
+    private final Extent extent;
 
     /**
      * The description of this Datum origin.
      */
-    private String origin;
+    private final String origin;
 
     /**
      * The realization epoch of this Datum as a String.
      */
-    private String epoch;
+    private final String epoch;
 
     /**
      * Creates a new Datum.

@@ -23,8 +23,6 @@
  */
 package org.cts.util;
 
-import org.orbisgis.commons.annotations.NotNull;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,7 +47,7 @@ public class UTMUtils {
      * {@link Map} with the UTM zone + hemisphere string representation ([0-9][0-9][NS]) as key and the corresponding
      * EPSG code as value.
      */
-    private static Map<String, Integer> utmEpsg = new HashMap<>();
+    private static final Map<String, Integer> utmEpsg = new HashMap<>();
 
     // Initialisation of the utmEpsg map.
     static {
@@ -268,7 +266,6 @@ public class UTMUtils {
      * @param longitude Longitude position.
      * @return String array with two values : the zone number as first one and the hemisphere as the second one.
      */
-    @NotNull
     public static String[] getZoneHemisphere(float latitude, float longitude) {
         if (isValidLatitude(latitude) && isValidLongitude(longitude)) {
             int zone = (int) Math.floor(longitude / UTM_SPAN + UTM_ZONE_OFFSET);
@@ -329,7 +326,6 @@ public class UTMUtils {
      * @param longitude Longitude in the desired UTM.
      * @return The UTM proj String representation.
      */
-    @NotNull
     public static String getProj(float latitude, float longitude) {
         String[] utmInfo = getZoneHemisphere(latitude, longitude);
         if (utmInfo[1].equals("S")) {
