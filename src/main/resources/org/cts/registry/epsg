@@ -8268,6 +8268,10 @@
 <8347> +proj=tmerc +lat_0=43 +lon_0=-122 +k=1.000223 +x_0=20000 +y_0=0 +ellps=GRS80 +units=m +no_defs  <>
 # NAD83(2011) / Oregon Willamette Pass zone (ft)
 <8348> +proj=tmerc +lat_0=43 +lon_0=-122 +k=1.000223 +x_0=19999.99999992 +y_0=0 +ellps=GRS80 +units=ft +no_defs  <>
+# RGF93V2 / Lambert-93
+<9793> +proj=lcc +lat_1=49 +lat_2=44 +lat_0=46.5 +lon_0=3 +x_0=700000 +y_0=6600000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs  <>
+# RGF93V2B / Lambert-93
+<9794> +proj=lcc +lat_1=49 +lat_2=44 +lat_0=46.5 +lon_0=3 +x_0=700000 +y_0=6600000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs  <>
 # Pulkovo 1995 / Gauss-Kruger zone 4
 <20004> +proj=tmerc +lat_0=0 +lon_0=21 +k=1 +x_0=4500000 +y_0=0 +ellps=krass +towgs84=24.47,-130.89,-81.56,0,0,0.13,-0.22 +units=m +no_defs  <>
 # Pulkovo 1995 / Gauss-Kruger zone 5
